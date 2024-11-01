@@ -74,17 +74,6 @@
             z-index: 5;
         }
 
-        #sidebar {
-            width: 250px;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-            z-index: 10;
-        }
-
         button {
             width: 100%;
             padding: 8px 0;
@@ -119,6 +108,7 @@
             /* color: black; */
             cursor: grab;
             transition: all 0.3s ease;
+            transition: color 0.2s ease, left 0.1s ease, top 0.1s ease;
         }
 
         #hospital-list-sidebar:hover {
@@ -167,6 +157,7 @@
         }
 
         #close-sidebar {
+            margin-top: 50px;
             background: #444444;
             color: #ffffff;
             border: none;
@@ -186,10 +177,50 @@
             background-color: #333333;
         }
 
+        /* Dark text style for the sidebar */
+        .dark-text {
+            color: #333 !important;
+        }
+
+        .dark-text h2,
+        .dark-text p.count-display {
+            color: #333 !important;
+        }
+
+        .theme-toggle-btn {
+            background-color: #333;
+            /* Dark background */
+            color: #fff;
+            /* Light icon color */
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            /* Adjust for desired position */
+            right: 10px;
+            z-index: 20;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease;
+        }
+
+        .theme-toggle-btn:hover {
+            background-color: #555;
+            /* Slightly lighter on hover */
+        }
+
+
+
+
         /* Responsive Styles */
         @media (max-width: 768px) {
             #hospital-list-sidebar {
-                width: 85%;
+                width: 80%;
                 top: auto;
                 left: 7.5%;
                 max-height: 60vh;
@@ -216,7 +247,7 @@
             button {
                 font-size: 12px;
                 padding: 6px 0;
-            }   
+            }
         }
 
         @media (max-width: 480px) {
@@ -253,10 +284,17 @@
 <body>
 
     <div id="hospital-list-sidebar" style="display: none;">
-        <button id="close-sidebar">Close</button>
+        <button id="toggle-theme" class="theme-toggle-btn">
+            <i class="fas fa-adjust"></i>
+        </button>
+        <!-- <button id="close-sidebar" class="close-btn">
+            <i class="fas fa-times"></i>
+        </button> -->
         <h2>Current Locations Using Goliath’s Solutions</h2>
         <ul id="hospital-list"></ul>
     </div>
+
+
 
     <div class="mapbox-button-group">
         <button id="fly-to-uk">UK</button>
@@ -610,21 +648,6 @@
             map.on('moveend', () => spinGlobe());
             spinGlobe();
 
-            // Click interaction on the 'us-states-fill' layer
-            // map.on('click', (e) => {
-            //     const [selectedState] = map.queryRenderedFeatures(e.point, {
-            //         layers: ['us-states-fill']
-            //     });
-
-            //     if (selectedState) {
-            //         const { name, id } = selectedState.properties;
-            //         alert(`The ${id} is short for ${name}`);
-            //     }
-            //     // console.log(selectedState)
-            // });
-
-            // Hover effect for the 'us-states-fill' layer
-
             let hoveredPolygonId = null;
             map.on('mousemove', 'us-states-fill', (e) => {
                 if (e.features.length > 0) {
@@ -643,9 +666,9 @@
                 hoveredPolygonId = null;
             });
 
-            document.getElementById('close-sidebar').addEventListener('click', () => {
-                document.getElementById('hospital-list-sidebar').style.display = 'none';
-            });
+            // document.getElementById('close-sidebar').addEventListener('click', () => {
+            //     document.getElementById('hospital-list-sidebar').style.display = 'none';
+            // });
 
             document.getElementById("fly-to-uk").addEventListener("click", () => {
                 map.flyTo({ center: [360.242386, 51.633362], zoom: 4, pitch: 45 });
@@ -672,7 +695,6 @@
             document.getElementById("reset-view").addEventListener("click", () => {
                 map.flyTo({ center: INITIAL_CENTER, zoom: INITIAL_ZOOM, pitch: 0 });
             });
-
 
             const sidebar = document.getElementById("hospital-list-sidebar");
 
@@ -710,6 +732,14 @@
                 if (rect.right > windowWidth) element.style.left = `${windowWidth - rect.width}px`;
                 if (rect.bottom > windowHeight) element.style.top = `${windowHeight - rect.height}px`;
             }
+
+            const toggleThemeButton = document.getElementById("toggle-theme");
+
+            toggleThemeButton.addEventListener("click", () => {
+                const sidebar = document.getElementById("hospital-list-sidebar");
+                sidebar.classList.toggle("dark-text"); // Toggles dark text color on sidebar
+            });
+
 
         });
     </script>
