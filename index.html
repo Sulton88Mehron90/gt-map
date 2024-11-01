@@ -245,7 +245,11 @@
             color: #333 !important;
         }
 
-       
+        .custom-marker {
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
         /* Responsive Styles */
 
         @media (max-width: 768px) {
@@ -448,12 +452,14 @@
                 map.setFeatureState({ source: 'us-states', id: selectedStateId }, { selected: true });
             });
 
+            const logoUrl = './img/gtLogo.png';
+
             let statesWithFacilities = new Set();
 
             fetch('./data/facilities.json')
                 .then(response => response.json())
                 .then(facilities => {
-                    // Generate a unique list of states with facilities
+                    // Generating a unique list of states with facilities
                     facilities.forEach(facility => {
                         const state = facility.location.split(', ')[1];
                         statesWithFacilities.add(state);
@@ -464,13 +470,31 @@
                         const popup = new mapboxgl.Popup({ offset: 15, closeButton: false })
                             .setHTML(`<strong>${hospital_name}</strong><br>${location}<br>EHR System: ${ehr_system}<br>Address: ${hospital_address}`);
 
-                        const marker = new mapboxgl.Marker({ color, scale: 0.7 })
+                        // Create a custom marker element
+                        const markerElement = document.createElement('div');
+                        markerElement.className = 'custom-marker';
+                        markerElement.style.backgroundImage = `url(${logoUrl})`;
+                        markerElement.style.width = '30px';
+                        markerElement.style.height = '30px';
+                        markerElement.style.borderRadius = '50%';
+                        markerElement.style.backgroundSize = 'cover';
+
+                        const marker = new mapboxgl.Marker(markerElement)
                             .setLngLat([longitude, latitude])
-                            .setPopup(popup);
+                            .setPopup(popup)
+                            .addTo(map);
 
-                        marker.getElement().style.width = "15px";
-                        marker.getElement().style.height = "15px";
 
+
+                        // const marker = new mapboxgl.Marker({ color, scale: 0.7 })
+                        //     .setLngLat([longitude, latitude])
+                        //     .setPopup(popup);
+
+                        // marker.getElement().style.width = "15px";
+                        // marker.getElement().style.height = "15px";
+
+
+                        // Event listeners for hover to show/hide popup
                         marker.getElement().addEventListener('mouseenter', () => popup.addTo(map));
                         marker.getElement().addEventListener('mouseleave', () => popup.remove());
 
@@ -479,17 +503,32 @@
 
 
                     // Toggle marker visibility based on zoom level
+                    // function toggleMarkers() {
+                    //     const zoomLevel = map.getZoom();
+                    //     if (zoomLevel >= 3) {
+                    //         markers.forEach(marker => {
+                    //             if (!marker._map) {
+                    //                 marker.addTo(map);
+                    //             }
+                    //         });
+                    //     } else {
+                    //         markers.forEach(marker => marker.remove());
+                    //     }
+                    // }
+
+                    // map.on('move', toggleMarkers);
+                    // map.on('zoom', toggleMarkers);
+
+                    // Toggle marker visibility based on zoom level
                     function toggleMarkers() {
                         const zoomLevel = map.getZoom();
-                        if (zoomLevel >= 3) {
-                            markers.forEach(marker => {
-                                if (!marker._map) {
-                                    marker.addTo(map);
-                                }
-                            });
-                        } else {
-                            markers.forEach(marker => marker.remove());
-                        }
+                        markers.forEach(marker => {
+                            if (zoomLevel >= 3 && !marker._map) {
+                                marker.addTo(map);
+                            } else if (zoomLevel < 3 && marker._map) {
+                                marker.remove();
+                            }
+                        });
                     }
 
                     map.on('move', toggleMarkers);
@@ -718,14 +757,14 @@
             // }
 
 
-// Define the closeSidebar function
-function closeSidebar() {
-    sidebar.style.display = 'none';
-    if (selectedStateId !== null) {
-        map.setFeatureState({ source: 'us-states', id: selectedStateId }, { selected: false });
-    }
-    selectedStateId = null;
-}
+            // Define the closeSidebar function
+            function closeSidebar() {
+                sidebar.style.display = 'none';
+                if (selectedStateId !== null) {
+                    map.setFeatureState({ source: 'us-states', id: selectedStateId }, { selected: false });
+                }
+                selectedStateId = null;
+            }
             document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
 
 
@@ -798,8 +837,6 @@ function closeSidebar() {
 
                 sidebar.classList.toggle("dark-text"); // Toggles dark text color on sidebar
             });
-
-
         });
     </script>
 </body>
