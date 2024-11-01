@@ -189,14 +189,18 @@
         /* Responsive Styles */
         @media (max-width: 768px) {
             #hospital-list-sidebar {
-                width: 80%;
+                width: 85%;
                 top: auto;
-                left: 10%;
+                left: 7.5%;
                 max-height: 60vh;
                 padding: 15px;
+                position: fixed;
+                bottom: 0;
+                overflow-y: auto;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             }
 
-            #hospital-list {
+            #hospital-list li {
                 font-size: 0.85rem;
             }
 
@@ -212,25 +216,21 @@
             button {
                 font-size: 12px;
                 padding: 6px 0;
-            }
-
-            #hospital-list-sidebar {
-                position: static;
-                box-shadow: none;
-            }
+            }   
         }
 
         @media (max-width: 480px) {
             #hospital-list-sidebar {
                 width: 90%;
                 left: 5%;
-                bottom: 0;
                 max-height: 50vh;
                 padding: 10px;
+                bottom: 0;
             }
 
-            #hospital-list {
+            #hospital-list li {
                 font-size: 0.8rem;
+                padding: 5px;
             }
 
             #close-sidebar {
