@@ -536,9 +536,14 @@
                         });
                     }
 
+                    // Attach 'zoomend' event to adjust markers based on zoom level
+                    map.on('zoomend', toggleMarkers);
 
-                    map.on('move', toggleMarkers);
-                    map.on('zoom', toggleMarkers);
+                    // Optional: Initial call to set visibility based on the starting zoom level
+                    toggleMarkers();
+
+                    // map.on('move', toggleMarkers);
+                    // map.on('zoom', toggleMarkers);
 
                     // Set up cluster source for hospitals
                     map.addSource('hospitals', {
@@ -560,8 +565,8 @@
                             })),
                         },
                         cluster: true,
-                        clusterMaxZoom: 12,
-                        clusterRadius: 60,
+                        clusterMaxZoom: 14,// Increase this value to reduce unclustered points at higher zoom levels
+                        clusterRadius: 80,// Increase radius to group more points together in clusters
                     });
 
                     // Cluster layer for hospitals
@@ -839,7 +844,7 @@
 
             toggleThemeButton.addEventListener("click", () => {
 
-                sidebar.classList.toggle("dark-text"); 
+                sidebar.classList.toggle("dark-text");
             });
         });
     </script>
