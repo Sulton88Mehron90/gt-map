@@ -245,7 +245,7 @@
             color: #333 !important;
         }
 
-
+       
         /* Responsive Styles */
 
         @media (max-width: 768px) {
@@ -322,7 +322,6 @@
 </head>
 
 <body>
-
     <div id="hospital-list-sidebar" style="display: none;">
         <div class="sidebar-header">
             <button id="close-sidebar" class="close-btn">
@@ -335,8 +334,6 @@
         <h2>Current Locations Using Goliath’s Solutions</h2>
         <ul id="hospital-list"></ul>
     </div>
-
-
 
     <div class="mapbox-button-group">
         <button id="fly-to-uk">UK</button>
@@ -708,19 +705,27 @@
                 hoveredPolygonId = null;
             });
 
-            // Define the closeSidebar function
-            function closeSidebar() {
-                const sidebar = document.getElementById('hospital-list-sidebar');
-                sidebar.style.display = 'none';
+            // // Define the closeSidebar function
+            // function closeSidebar() {
+            //     const sidebar = document.getElementById('hospital-list-sidebar');
+            //     sidebar.style.display = 'none';
 
-                // Deselect any previously selected state
-                if (selectedStateId !== null) {
-                    map.setFeatureState({ source: 'us-states', id: selectedStateId }, { selected: false });
-                }
-                selectedStateId = null; // Clear the selected state ID
-            }
+            //     // Deselect any previously selected state
+            //     if (selectedStateId !== null) {
+            //         map.setFeatureState({ source: 'us-states', id: selectedStateId }, { selected: false });
+            //     }
+            //     selectedStateId = null; // Clear the selected state ID
+            // }
 
 
+// Define the closeSidebar function
+function closeSidebar() {
+    sidebar.style.display = 'none';
+    if (selectedStateId !== null) {
+        map.setFeatureState({ source: 'us-states', id: selectedStateId }, { selected: false });
+    }
+    selectedStateId = null;
+}
             document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
 
 
@@ -790,7 +795,7 @@
             const toggleThemeButton = document.getElementById("toggle-theme");
 
             toggleThemeButton.addEventListener("click", () => {
-                const sidebar = document.getElementById("hospital-list-sidebar");
+
                 sidebar.classList.toggle("dark-text"); // Toggles dark text color on sidebar
             });
 
