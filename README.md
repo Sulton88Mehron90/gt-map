@@ -1,6 +1,6 @@
 # gt-map
 
-## Deployment Link
+# deployment Link
 
 You can access the latest deployment here: [gt-map.vercel.app](https://gt-map.vercel.app)
 
