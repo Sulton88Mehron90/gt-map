@@ -569,29 +569,81 @@
                         clusterRadius: 80,// Increase radius to group more points together in clusters
                     });
 
-                    // Cluster layer for hospitals
-                    map.addLayer({
-                        id: 'clusters',
-                        type: 'circle',
-                        source: 'hospitals',
-                        filter: ['has', 'point_count'],
-                        paint: {
-                            'circle-color': [
-                                'step',
-                                ['get', 'point_count'],
-                                '#4CAF50',  // Small clusters
-                                50, '#2196F3',  // Medium clusters
-                                100, '#FF9800'  // Large clusters
-                            ],
-                            'circle-radius': [
-                                'step',
-                                ['get', 'point_count'],
-                                15, // Small clusters
-                                50, 20, // Medium clusters
-                                100, 25  // Large clusters
-                            ]
-                        }
-                    });
+                    // // Cluster layer for hospitals
+                    // map.addLayer({
+                    //     id: 'clusters',
+                    //     type: 'circle',
+                    //     source: 'hospitals',
+                    //     filter: ['has', 'point_count'],
+                    //     paint: {
+                    //         'circle-color': [
+                    //             'step',
+                    //             ['get', 'point_count'],
+                    //             '#4CAF50',  // Small clusters
+                    //             50, '#2196F3',  // Medium clusters
+                    //             100, '#FF9800'  // Large clusters
+                    //         ],
+                    //         'circle-radius': [
+                    //             'step',
+                    //             ['get', 'point_count'],
+                    //             15, // Small clusters
+                    //             50, 20, // Medium clusters
+                    //             100, 25  // Large clusters
+                    //         ]
+                    //     }
+                    // });
+
+                    // Cluster layer for hospitals with company colors
+
+// map.addLayer({
+//     id: 'clusters',
+//     type: 'circle',
+//     source: 'hospitals',
+//     filter: ['has', 'point_count'],
+//     paint: {
+//         'circle-color': [
+//             'step',
+//             ['get', 'point_count'],
+//             '#0f2844', // Small clusters (Goliath's dark blue)
+//             10, '#ff8502', // Medium clusters (Goliath's orange) for clusters with more than 10 points
+//             30, '#0f2844' // Large clusters (white) for clusters with more than 30 points
+//         ],
+//         'circle-radius': [
+//             'step',
+//             ['get', 'point_count'],
+//             15, // Small clusters
+//             20, 20, // Medium clusters
+//             30, 25  // Large clusters
+//         ]
+//     }
+// });
+
+// Cluster layer with Goliath Technologies colors and outline for better visibility
+map.addLayer({
+    id: 'clusters',
+    type: 'circle',
+    source: 'hospitals',
+    filter: ['has', 'point_count'],
+    paint: {
+        'circle-color': [
+            'step',
+            ['get', 'point_count'],
+            '#ff8502',  // Small clusters (dark blue)
+            10, ' #0f2844'  // Medium and large clusters (orange)
+        ],
+        'circle-radius': [
+            'step',
+            ['get', 'point_count'],
+            10,   // Small clusters
+            20, 15, // Medium clusters
+            50, 20 // Large clusters (reduced size)
+        ],
+        'circle-stroke-width': 1, // Add a thin outline
+        'circle-stroke-color': '#0f2844' // Dark blue outline for consistency
+    }
+});
+
+
 
                     // Cluster count layer
                     map.addLayer({
