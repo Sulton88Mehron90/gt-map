@@ -716,43 +716,42 @@
                         countDisplay.style.marginTop = '10px';
                         list.before(countDisplay);
 
-                        // Show facilities in the sidebar if the state has data
-                        // if (stateHospitals.length > 0) {
-                        //     stateHospitals.forEach(hospital => {
-                        //         const listItem = document.createElement('li');
-                        //         listItem.innerHTML = `<i class="fas fa-hospital-symbol"></i> <strong>${hospital.hospital_name}</strong><br>${hospital.location}<br>EHR System: ${hospital.ehr_system}`;
-
-                        //         list.appendChild(listItem);
-
-                        //         // Conditional background color based on the EHR system
-                        //         listItem.style.backgroundColor = hospital.ehr_system === 'SystemA' ? '#ff8502' : '#0f2844';
-
-                        //         list.appendChild(listItem);
-                        //     });
-                        //     sidebar.style.display = 'block'; // Show sidebar only if data exists
-                        // } else {
-                        //     sidebar.style.display = 'none'; // Hide sidebar if no facilities
-                        // }
-
                         if (stateHospitals.length > 0) {
     stateHospitals.forEach(hospital => {
         const listItem = document.createElement('li');
-        
-        // Make the hospital name clickable by adding a fly-to event
-        listItem.innerHTML = `
-            <i class="fas fa-hospital-symbol"></i> 
-            <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
-                ${hospital.hospital_name}
-            </strong><br>
-            ${hospital.location}<br>
-            EHR System: ${hospital.ehr_system}
-        `;
+
+        // Select the appropriate EHR logo based on the ehr_system value
+let ehrLogo;
+switch (hospital.ehr_system) {
+    case 'Cerner':
+        ehrLogo = '<img src="./img/cerner-logo.png" alt="Cerner logo" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%;">';
+        break;
+    case 'Epic':
+        ehrLogo = '<img src="./img/epic-logo.png" alt="Epic logo" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px;">';
+        break;
+    case 'Meditech':
+        ehrLogo = '<img src="./img/meditech-logo.png" alt="Meditech logo" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px; border-radius: 50%;">';
+        break;
+    default:
+        ehrLogo = ''; // Optional default logo
+        break;
+}
+
+// Display hospital name, EHR system with logo, and location details
+listItem.innerHTML = `
+    <i class="fas fa-hospital-symbol"></i> 
+    <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
+        ${hospital.hospital_name}
+    </strong><br>
+    ${hospital.location}<br>
+    EHR System: ${ehrLogo}${hospital.ehr_system}
+`;
 
         // Fly to the hospital location on the map when the name is clicked
         listItem.querySelector('.clickable-hospital').addEventListener('click', () => {
             map.flyTo({
                 center: [hospital.longitude, hospital.latitude],
-                zoom: 12,  // Adjust zoom level as desired
+                zoom: 12,
                 pitch: 45,
                 bearing: 0,
                 essential: true
