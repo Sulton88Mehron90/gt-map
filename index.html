@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Guides</title>
+    <title>Goliath Technologies Map</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
     <link rel="icon" href="./img/gtLogo2.png" type="image/png">
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.css" rel="stylesheet">
@@ -19,6 +19,7 @@
             height: 100%;
             font-family: Arial, sans-serif;
             color: #333;
+            overflow: hidden;
         }
 
         #map {
@@ -418,8 +419,11 @@
 
     <div id="map"></div>
     </div>
-    <script>
-        const sidebar = document.getElementById("hospital-list-sidebar");
+
+<script>
+// Initialize the map after the DOM is fully loaded
+document.addEventListener("DOMContentLoaded", () => {
+    const sidebar = document.getElementById("hospital-list-sidebar");
         const INITIAL_CENTER = [-119.0187, 35.3733];
         const INITIAL_ZOOM = 1;
         mapboxgl.accessToken = 'pk.eyJ1IjoibmFuYWpvbjY2IiwiYSI6ImNtMnJxMmZtNTAwYWcyc3B1bGtzdjR5NTkifQ.5aPfUP-w8DUsBpaqVgjG9A';
@@ -438,6 +442,11 @@
             duration: 3000,
             easing: (t) => t * (2 - t)
         });
+
+        // Event listeners to handle resize and ensure map fits container
+        window.addEventListener("load", () => map.resize());
+        map.on("load", () => setTimeout(() => map.resize(), 100));
+        window.addEventListener("resize", () => map.resize());
 
         map.on('load', () => {
             map.setFog({});
@@ -940,6 +949,7 @@
             });
 
         });
+});    
     </script>
 </body>
 
