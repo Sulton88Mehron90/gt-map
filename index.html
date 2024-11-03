@@ -10,6 +10,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js"></script>
+    <script
+        src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet"
+        href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.css"
+        type="text/css">
+
 </head>
 
 <style>
@@ -57,7 +63,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 10px;
+        font-size: 11px;
         cursor: pointer;
         font-weight: bold;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -286,76 +292,80 @@
         color: white;
         transition: max-height 0.3s ease-in-out;
     }
- /* Flexbox for sidebar header to align items horizontally */
-.sidebar-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-}
 
-/* Adjust button alignment and spacing */
-.button-group {
-    display: flex;
-    align-items: center; /* Align buttons vertically on the same line */
-    gap: 5px; /* Adjust spacing between buttons */
-}
+    /* Flexbox for sidebar header to align items horizontally */
+    .sidebar-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
 
-/* Round button styling */
-.round-button {
-    background-color: #333;
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    transition: background-color 0.3s ease;
-}
+    /* Adjust button alignment and spacing */
+    .button-group {
+        display: flex;
+        align-items: center;
+        /* Align buttons vertically on the same line */
+        gap: 5px;
+        /* Adjust spacing between buttons */
+    }
 
-.round-button:hover {
-    background-color: #555;
-}
+    /* Round button styling */
+    .round-button {
+        background-color: #333;
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        transition: background-color 0.3s ease;
+    }
 
-/* Sidebar logo styling */
-.sidebar-logo {
-    width: 20px;
-    height: auto;
-    border-radius: 50%;
-    background-color: #333;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    margin-right: 10px;
-}
+    .round-button:hover {
+        background-color: #555;
+    }
 
-/* Styles for the collapsed sidebar */
-#hospital-list-sidebar.collapsed {
-    max-height: 50px;
-    overflow: hidden;
-    padding: 10px; 
-    transition: max-height 0.3s ease-in-out;
-}
+    /* Sidebar logo styling */
+    .sidebar-logo {
+        width: 20px;
+        height: auto;
+        border-radius: 50%;
+        background-color: #333;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        margin-right: 10px;
+    }
 
-/* Hide content in the collapsed state */
-#hospital-list-sidebar.collapsed h2,
-#hospital-list-sidebar.collapsed ul,
-#hospital-list-sidebar.collapsed .count-display {
-    display: none;
-}
+    /* Styles for the collapsed sidebar */
+    #hospital-list-sidebar.collapsed {
+        max-height: 50px;
+        overflow: hidden;
+        padding: 10px;
+        transition: max-height 0.3s ease-in-out;
+    }
 
-#hospital-list-sidebar.collapsed .sidebar-header {
-    justify-content: flex-start; 
-}
+    /* Hide content in the collapsed state */
+    #hospital-list-sidebar.collapsed h2,
+    #hospital-list-sidebar.collapsed ul,
+    #hospital-list-sidebar.collapsed .count-display {
+        display: none;
+    }
 
-/* Highlight the sidebar while dragging */
-.hospital-list-sidebar.dragging {
-    cursor: grab;
-    opacity: 0.9;
-    transition: opacity 0.1s ease;
-}
+    #hospital-list-sidebar.collapsed .sidebar-header {
+        justify-content: flex-start;
+    }
+
+    /* Highlight the sidebar while dragging */
+    .hospital-list-sidebar.dragging {
+        cursor: grab;
+        opacity: 0.9;
+        transition: opacity 0.1s ease;
+    }
+
 
     /* Responsive Styles */
 
@@ -506,7 +516,8 @@
                 // style: 'mapbox://styles/mapbox/streets-v12',
                 projection: 'globe',
                 zoom: INITIAL_ZOOM,
-                center: INITIAL_CENTER
+                center: INITIAL_CENTER,
+                attributionControl: false  // This removes the Mapbox attribution
             });
 
             map.easeTo({
@@ -515,6 +526,15 @@
                 duration: 3000,
                 easing: (t) => t * (2 - t)
             });
+
+            // Define the geocoder instance and add it to the map
+            const geocoder = new MapboxGeocoder({
+                accessToken: mapboxgl.accessToken,
+                mapboxgl: mapboxgl
+            });
+
+            // Add the geocoder to the map in the bottom-right corner
+            map.addControl(geocoder, 'bottom-right');
 
             // Event listeners to handle resize and ensure map fits container
             window.addEventListener("load", () => map.resize());
@@ -1031,77 +1051,76 @@
                 const minimizeIcon = document.getElementById('minimize-sidebar').querySelector('i');
                 if (sidebar.classList.contains('collapsed')) {
                     minimizeIcon.classList.remove('fa-chevron-up');
-                    minimizeIcon.classList.add('fa-chevron-down'); 
+                    minimizeIcon.classList.add('fa-chevron-down');
                 } else {
                     minimizeIcon.classList.remove('fa-chevron-down');
-                    minimizeIcon.classList.add('fa-chevron-up'); 
+                    minimizeIcon.classList.add('fa-chevron-up');
                 }
             });
 
         });
 
         document.addEventListener("DOMContentLoaded", () => {
-    const sidebar = document.getElementById("hospital-list-sidebar");
-    let isDragging = false;
-    let startX, startY, initialLeft, initialTop;
+            const sidebar = document.getElementById("hospital-list-sidebar");
+            let isDragging = false;
+            let startX, startY, initialLeft, initialTop;
 
-    // Function to handle the start of dragging (touch or mouse)
-    function startDrag(e) {
-        isDragging = true;
-        startX = e.touches ? e.touches[0].clientX : e.clientX;
-        startY = e.touches ? e.touches[0].clientY : e.clientY;
-        const rect = sidebar.getBoundingClientRect();
-        initialLeft = rect.left;
-        initialTop = rect.top;
+            // Function to handle the start of dragging (touch or mouse)
+            function startDrag(e) {
+                isDragging = true;
+                startX = e.touches ? e.touches[0].clientX : e.clientX;
+                startY = e.touches ? e.touches[0].clientY : e.clientY;
+                const rect = sidebar.getBoundingClientRect();
+                initialLeft = rect.left;
+                initialTop = rect.top;
 
-        sidebar.classList.add("dragging");
-    }
+                sidebar.classList.add("dragging");
+            }
 
-    // Function to handle dragging (touchmove or mousemove)
-    function handleDrag(e) {
-        if (!isDragging) return;
+            // Function to handle dragging (touchmove or mousemove)
+            function handleDrag(e) {
+                if (!isDragging) return;
 
-        const currentX = e.touches ? e.touches[0].clientX : e.clientX;
-        const currentY = e.touches ? e.touches[0].clientY : e.clientY;
+                const currentX = e.touches ? e.touches[0].clientX : e.clientX;
+                const currentY = e.touches ? e.touches[0].clientY : e.clientY;
 
-        const dx = currentX - startX;
-        const dy = currentY - startY;
+                const dx = currentX - startX;
+                const dy = currentY - startY;
 
-        sidebar.style.left = `${initialLeft + dx}px`;
-        sidebar.style.top = `${initialTop + dy}px`;
-    }
+                sidebar.style.left = `${initialLeft + dx}px`;
+                sidebar.style.top = `${initialTop + dy}px`;
+            }
 
-    // Function to end dragging (touchend or mouseup)
-    function endDrag() {
-        isDragging = false;
-        sidebar.classList.remove("dragging");
-        constrainToViewport(sidebar);
-    }
+            // Function to end dragging (touchend or mouseup)
+            function endDrag() {
+                isDragging = false;
+                sidebar.classList.remove("dragging");
+                constrainToViewport(sidebar);
+            }
 
-    // So the sidebar stays within viewport
-    function constrainToViewport(element) {
-        const rect = element.getBoundingClientRect();
-        const windowWidth = window.innerWidth;
-        const windowHeight = window.innerHeight;
+            // So the sidebar stays within viewport
+            function constrainToViewport(element) {
+                const rect = element.getBoundingClientRect();
+                const windowWidth = window.innerWidth;
+                const windowHeight = window.innerHeight;
 
-        if (rect.left < 0) element.style.left = "0px";
-        if (rect.top < 0) element.style.top = "0px";
-        if (rect.right > windowWidth) element.style.left = `${windowWidth - rect.width}px`;
-        if (rect.bottom > windowHeight) element.style.top = `${windowHeight - rect.height}px`;
-    }
+                if (rect.left < 0) element.style.left = "0px";
+                if (rect.top < 0) element.style.top = "0px";
+                if (rect.right > windowWidth) element.style.left = `${windowWidth - rect.width}px`;
+                if (rect.bottom > windowHeight) element.style.top = `${windowHeight - rect.height}px`;
+            }
 
-    // Touch and mouse events to the sidebar header for dragging
-    const header = sidebar.querySelector(".sidebar-header");
-    header.addEventListener("mousedown", startDrag);
-    document.addEventListener("mousemove", handleDrag);
-    document.addEventListener("mouseup", endDrag);
+            // Touch and mouse events to the sidebar header for dragging
+            const header = sidebar.querySelector(".sidebar-header");
+            header.addEventListener("mousedown", startDrag);
+            document.addEventListener("mousemove", handleDrag);
+            document.addEventListener("mouseup", endDrag);
 
-    // Touch event listeners for mobile screens
-    header.addEventListener("touchstart", startDrag);
-    document.addEventListener("touchmove", handleDrag);
-    document.addEventListener("touchend", endDrag);
-});
-
+            // Touch event listeners for mobile screens
+            header.addEventListener("touchstart", startDrag);
+            document.addEventListener("touchmove", handleDrag);
+            document.addEventListener("touchend", endDrag);
+        });
     </script>
 
     <a href="https://goliathtechnologies.com/" target="_blank" id="home-logo">
