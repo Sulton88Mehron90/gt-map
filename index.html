@@ -279,7 +279,6 @@
     #hospital-list-sidebar {
         position: absolute;
         top: 100px;
-        /* Position below the logo */
         left: 0;
         width: 260px;
         max-height: 400px;
@@ -293,7 +292,6 @@
         transition: max-height 0.3s ease-in-out;
     }
 
-    /* Flexbox for sidebar header to align items horizontally */
     .sidebar-header {
         display: flex;
         align-items: center;
@@ -301,13 +299,10 @@
         width: 100%;
     }
 
-    /* Adjust button alignment and spacing */
     .button-group {
         display: flex;
         align-items: center;
-        /* Align buttons vertically on the same line */
         gap: 5px;
-        /* Adjust spacing between buttons */
     }
 
     /* Round button styling */
@@ -330,7 +325,6 @@
         background-color: #555;
     }
 
-    /* Sidebar logo styling */
     .sidebar-logo {
         width: 20px;
         height: auto;
@@ -365,7 +359,6 @@
         opacity: 0.9;
         transition: opacity 0.1s ease;
     }
-
 
     /* Responsive Styles */
 
@@ -503,6 +496,7 @@
     <div id="map"></div>
 
     <script>
+
         // Initialize the map after the DOM is fully loaded
         document.addEventListener("DOMContentLoaded", () => {
             const sidebar = document.getElementById("hospital-list-sidebar");
@@ -517,7 +511,6 @@
                 projection: 'globe',
                 zoom: INITIAL_ZOOM,
                 center: INITIAL_CENTER,
-                attributionControl: false  // This removes the Mapbox attribution
             });
 
             map.easeTo({
@@ -527,13 +520,12 @@
                 easing: (t) => t * (2 - t)
             });
 
-            // Define the geocoder instance and add it to the map
+            // search. geocoder instance and add it to the map
             const geocoder = new MapboxGeocoder({
                 accessToken: mapboxgl.accessToken,
                 mapboxgl: mapboxgl
             });
 
-            // Add the geocoder to the map in the bottom-right corner
             map.addControl(geocoder, 'bottom-right');
 
             // Event listeners to handle resize and ensure map fits container
