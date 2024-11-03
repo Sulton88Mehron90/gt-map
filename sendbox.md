@@ -1827,3 +1827,407 @@
  //background hower
  background-color: #45a049;
  background: linear-gradient(145deg, #ff5656, #d32626);
+
+ //from november 3
+  <!-- <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            color: #333;
+            overflow: hidden;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .mapboxgl-ctrl-top-right {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .mapbox-button-group {
+            position: absolute;
+            top: 150px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            z-index: 10;
+        }
+
+        .mapbox-button-group button {
+            /* background: linear-gradient(145deg, #ff5656, #d32626); */
+            color: #ffff;
+            border: none;
+            border-radius: 8px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease-in-out;
+            /* background-color:#ff8502;
+            background-color:#0f2844, */
+        }
+
+        .mapbox-button-group button:hover {
+            transform: scale(1.1);
+            background: linear-gradient(145deg, #ff4343, #b31919);
+            /* background: linear-gradient(145deg, #ff8502, #0f2844); */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        #container {
+            display: flex;
+            flex-direction: row-reverse;
+            height: 100%;
+            z-index: 5;
+        }
+
+        button {
+            width: 100%;
+            padding: 8px 0;
+            margin: 10px 0;
+            background-color: #4CAF50;
+            /* background-color:#ff8502;
+            background-color:#0f2844;
+            background-color:#ffa849; */
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+            /* background-color: #ff8502;
+            background-color: #0f2844;
+            background-color: #ffa849; */
+        }
+
+        #hospital-list-sidebar {
+            font-family: 'Open Sans', sans-serif;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100%;
+            max-height: 400px;
+            /* background: linear-gradient(145deg, rgba(255, 86, 86, 0.85), rgba(211, 38, 38, 0.85)); */
+            background: linear-gradient(145deg, #0f2844, #1c3a5c);
+            border-radius: 12px;
+            /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); */
+            box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 10;
+            color: white;
+            /* color: black; */
+            cursor: grab;
+            /* transition: all 0.3s ease;
+            transition: color 0.2s ease, left 0.1s ease, top 0.1s ease; */
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(0);
+        }
+
+        #hospital-list-sidebar:hover {
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+        }
+
+        #hospital-list-sidebar.hidden {
+            transform: translateX(-100%);
+        }
+
+        #hospital-list-sidebar h2 {
+            /* font-family: 'Poppins', sans-serif;  */
+            font-family: 'Open Sans', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #ffffff;
+            /* margin-bottom: 15px; */
+            margin-top: 5px;
+            margin-bottom: 10px;
+            text-align: center;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        #hospital-list-sidebar p.count-display {
+            font-size: 1rem;
+            color: #f5eaea;
+            text-align: center;
+            font-weight: 500;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        #hospital-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+        #hospital-list li {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            line-height: 1.4;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            /* transition: background-color 0.3s; */
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        #hospital-list li:hover {
+            /* background-color: rgba(255, 255, 255, 0.25); */
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: scale(1.02);
+        }
+
+        #hospital-list-sidebar.collapsed {
+            width: 50px;
+            overflow: hidden;
+            transition: width 0.3s;
+        }
+
+        #hospital-list li:hover::after {
+            /* content: 'More details available'; */
+            color: #fff;
+            font-size: 0.75rem;
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+        }
+
+        #hospital-list-sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #hospital-list-sidebar::-webkit-scrollbar-thumb {
+            background: #ff8502;
+            border-radius: 10px;
+        }
+
+        /* Header container for close and theme toggle buttons */
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            width: 100%;
+        }
+
+        /* Style for the Goliath Technologies logo in the sidebar */
+        .sidebar-logo {
+            width: 20px;
+            height: auto;
+            border-radius: 50%;
+            margin-right: auto;
+            background-color: #333;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 20;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease;
+            margin-right: 10px;
+            margin-left: 10px;
+        }
+
+        sidebar-logo:hover {
+            background-color: #e31515;
+        }
+
+        /* Close button */
+        #close-sidebar {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            /* position: absolute; */
+            z-index: 20;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease;
+            margin-right: 10px;
+            margin-left: 10px;
+        }
+
+        #close-sidebar:hover {
+            background-color: #555;
+        }
+
+        #close-sidebar i {
+            font-size: 12px;
+        }
+
+        /* Theme toggle button */
+        .theme-toggle-btn {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            z-index: 20;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease;
+            display: none;
+        }
+
+        .theme-toggle-btn:hover {
+            background-color: #555;
+        }
+
+        .dark-text {
+            color: #333 !important;
+        }
+
+        .dark-text h2,
+        .dark-text p.count-display {
+            color: #333 !important;
+        }
+
+        .custom-marker {
+            background-repeat: no-repeat;
+            background-position: center;
+            cursor: default;
+        }
+
+        #home-logo {
+            position: fixed;
+            top: 20px;
+            left: 1px;
+            z-index: 20;
+            width: 80px;
+            height: auto;
+            padding: 0;
+            margin: 0;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        #home-logo img {
+            display: block;
+            width: 100%;
+            height: auto;
+            /* filter: drop-shadow(1px 1px 2px rgba(4, 0, 12, 0.9)); */
+            filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.8));
+        }
+
+
+        /* Responsive Styles */
+
+        @media (max-width: 768px) {
+            #hospital-list-sidebar {
+                width: 80%;
+                top: auto;
+                left: 7.5%;
+                max-height: 60vh;
+                padding: 15px;
+                position: fixed;
+                bottom: 0;
+                overflow-y: auto;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            }
+
+            #hospital-list li {
+                font-size: 0.85rem;
+            }
+
+            #close-sidebar {
+                padding: 5px;
+                font-size: 0.85rem;
+            }
+
+            .sidebar-header {
+                justify-content: space-evenly;
+            }
+
+            #container {
+                flex-direction: column;
+            }
+
+            button {
+                font-size: 12px;
+                padding: 6px 0;
+            }
+
+            #home-logo {
+                width: 60px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #hospital-list-sidebar {
+                width: 90%;
+                left: 5%;
+                max-height: 50vh;
+                padding: 10px;
+                bottom: 0;
+            }
+
+            #hospital-list li {
+                font-size: 0.8rem;
+                padding: 5px;
+            }
+
+            #close-sidebar {
+                padding: 4px;
+                font-size: 0.8rem;
+            }
+
+            #close-sidebar,
+            .theme-toggle-btn {
+                width: 30px;
+                height: 30px;
+            }
+
+            button {
+                margin: 5px 0;
+            }
+
+            #hospital-list li {
+                font-size: 12px;
+                padding: 5px;
+            }
+
+            #home-logo {
+                width: 40px;
+            }
+        }
+    </style> -->
+
+    
