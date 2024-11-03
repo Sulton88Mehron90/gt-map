@@ -365,6 +365,24 @@
         transition: opacity 0.1s ease;
     }
 
+    .mapboxgl-ctrl-geocoder {
+        width: 30% !important; 
+        max-width: none !important; 
+        font-size: 13px; 
+    }
+
+    .mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--button {
+    position: absolute; 
+    left: 100px; 
+    top: 50%; 
+    transform: translateY(-50%); 
+    font-size: 16px; 
+    color: #333; 
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
     /* Responsive Styles */
 
     @media (max-width: 768px) {
@@ -414,11 +432,18 @@
             height: 18px;
         }
 
+        .mapboxgl-ctrl-geocoder {
+        width: 50% !important; 
+        max-width: none !important; 
+        margin: 10px auto; 
+        font-size: 14px; 
+    }
+
     }
 
     @media (max-width: 480px) {
         #hospital-list-sidebar {
-            width: 90%;
+            width: 30%;
             left: 5%;
             max-height: 50vh;
             padding: 10px;
@@ -457,7 +482,13 @@
         #hospital-list-sidebar.minimized {
             width: 30px;
         }
+
+        .mapboxgl-ctrl-geocoder {
+        width: 90% !important;
+        font-size: 12px;
     }
+    }
+
 </style>
 
 </head>
