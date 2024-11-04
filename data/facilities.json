@@ -733,10 +733,9 @@
         "hospital_address": "444 W. Lake Street, Suite 2500, Chicago, IL 60606",
         "latitude": 41.8865,
         "longitude": -87.6380,
-        "color": "#57fa7d", 
-        "scale": 0.6 
+        "color": "#57fa7d",
+        "scale": 0.6
     },
-
     {
         "ehr_system": "Cerner",
         "hospital_name": "St. Anthony Hospital",
@@ -821,7 +820,6 @@
         "scale": 0.6,
         "parent_company": "CommonSpirit Health"
     },
-
     {
         "ehr_system": "Epic",
         "hospital_name": "California Hospital Medical Center",
@@ -894,117 +892,116 @@
         "scale": 0.6,
         "parent_company": "CommonSpirit Health"
     },
-
-  {			
-    "ehr_system": "Cerner",			
-    "hospital_name": "Fort Sanders Regional Medical Center",			
-    "hospital_count": 1,			
-    "location": "Knoxville, TN",			
-    "hospital_address": "1901 Clinch Avenue, Knoxville, TN 37916",			
-    "latitude": 35.9585,			
-    "longitude": -83.9339,
-    "color": "#57fa7d", 
-    "scale": 0.6 			
-  },			
-  {			
-    "ehr_system": "Cerner",			
-    "hospital_name": "Parkwest Medical Center",			
-    "hospital_count": 1,			
-    "location": "Knoxville, TN",			
-    "hospital_address": "9352 Park West Boulevard, Knoxville, TN 37923",			
-    "latitude": 35.9249,			
-    "longitude": -84.0948,
-    "color": "#57fa7d", 
-    "scale": 0.6 			
-  },			
-  {			
-    "ehr_system": "Cerner",			
-    "hospital_name": "Methodist Medical Center of Oak Ridge",			
-    "hospital_count": 1,			
-    "location": "Oak Ridge, TN",			
-    "hospital_address": "990 Oak Ridge Turnpike, Oak Ridge, TN 37830",			
-    "latitude": 36.0126,			
-    "longitude": -84.2665,
-    "color": "#57fa7d", 
-    "scale": 0.6 			
-  },			
-  {			
-    "ehr_system": "Cerner",			
-    "hospital_name": "LeConte Medical Center",			
-    "hospital_count": 1,			
-    "location": "Sevierville, TN",			
-    "hospital_address": "742 Middle Creek Road, Sevierville, TN 37862",			
-    "latitude": 35.8478,			
-    "longitude": -83.5662,
-    "color": "#57fa7d", 
-    "scale": 0.6 			
-  },			
-  {			
-    "ehr_system": "Cerner",			
-    "hospital_name": "Cumberland Medical Center",			
-    "hospital_count": 1,			
-    "location": "Crossville, TN",			
-    "hospital_address": "421 South Main Street, Crossville, TN 38555",			
-    "latitude": 35.9467,			
-    "longitude": -85.0250,
-    "color": "#57fa7d", 
-    "scale": 0.6 		
-  },			
-  {			
-    "ehr_system": "Cerner",			
-    "hospital_name": "Morristown-Hamblen Healthcare System",			
-    "hospital_count": 1,			
-    "location": "Morristown, TN",			
-    "hospital_address": "908 West Fourth North Street, Morristown, TN 37814",			
-    "latitude": 36.2182,			
-    "longitude": -83.3069,
-    "color": "#57fa7d", 
-    "scale": 0.6 			
-  },			
-  {			
-    "ehr_system": "Cerner",			
-    "hospital_name": "Roane Medical Center",			
-    "hospital_count": 1,			
-    "location": "Harriman, TN",			
-    "hospital_address": "8045 Roane Medical Center Drive, Harriman, TN 37748",			
-    "latitude": 35.9320,			
-    "longitude": -84.5431,
-    "color": "#57fa7d", 
-    "scale": 0.6 			
-  },			
-  {			
-    "ehr_system": "Cerner",			
-    "hospital_name": "Claiborne Medical Center",			
-    "hospital_count": 1,			
-    "location": "Tazewell, TN",			
-    "hospital_address": "1850 Old Knoxville Road, Tazewell, TN 37879",			
-    "latitude": 36.4402,			
-    "longitude": -83.5861,
-    "color": "#57fa7d", 
-    "scale": 0.6 			
-  },			
-  {			
-    "ehr_system": "Cerner",			
-    "hospital_name": "Fort Loudoun Medical Center",			
-    "hospital_count": 1,			
-    "location": "Lenoir City, TN",			
-    "hospital_address": "550 Fort Loudoun Medical Center Drive, Lenoir City, TN 37772",			
-    "latitude": 35.7971,			
-    "longitude": -84.2659,
-    "color": "#57fa7d", 
-    "scale": 0.6 			
-  },			
-  {			
-    "ehr_system": "Cerner",			
-    "hospital_name": "Thompson Cancer Survival Center",			
-    "hospital_count": 1,			
-    "location": "Knoxville, TN",			
-    "hospital_address": "1915 White Avenue, Knoxville, TN 37916",			
-    "latitude": 35.9576,			
-    "longitude": -83.9337,
-    "color": "#57fa7d", 
-    "scale": 0.6 			
-  },
+    {
+        "ehr_system": "Cerner",
+        "hospital_name": "Fort Sanders Regional Medical Center",
+        "hospital_count": 1,
+        "location": "Knoxville, TN",
+        "hospital_address": "1901 Clinch Avenue, Knoxville, TN 37916",
+        "latitude": 35.9585,
+        "longitude": -83.9339,
+        "color": "#57fa7d",
+        "scale": 0.6
+    },
+    {
+        "ehr_system": "Cerner",
+        "hospital_name": "Parkwest Medical Center",
+        "hospital_count": 1,
+        "location": "Knoxville, TN",
+        "hospital_address": "9352 Park West Boulevard, Knoxville, TN 37923",
+        "latitude": 35.9249,
+        "longitude": -84.0948,
+        "color": "#57fa7d",
+        "scale": 0.6
+    },
+    {
+        "ehr_system": "Cerner",
+        "hospital_name": "Methodist Medical Center of Oak Ridge",
+        "hospital_count": 1,
+        "location": "Oak Ridge, TN",
+        "hospital_address": "990 Oak Ridge Turnpike, Oak Ridge, TN 37830",
+        "latitude": 36.0126,
+        "longitude": -84.2665,
+        "color": "#57fa7d",
+        "scale": 0.6
+    },
+    {
+        "ehr_system": "Cerner",
+        "hospital_name": "LeConte Medical Center",
+        "hospital_count": 1,
+        "location": "Sevierville, TN",
+        "hospital_address": "742 Middle Creek Road, Sevierville, TN 37862",
+        "latitude": 35.8478,
+        "longitude": -83.5662,
+        "color": "#57fa7d",
+        "scale": 0.6
+    },
+    {
+        "ehr_system": "Cerner",
+        "hospital_name": "Cumberland Medical Center",
+        "hospital_count": 1,
+        "location": "Crossville, TN",
+        "hospital_address": "421 South Main Street, Crossville, TN 38555",
+        "latitude": 35.9467,
+        "longitude": -85.0250,
+        "color": "#57fa7d",
+        "scale": 0.6
+    },
+    {
+        "ehr_system": "Cerner",
+        "hospital_name": "Morristown-Hamblen Healthcare System",
+        "hospital_count": 1,
+        "location": "Morristown, TN",
+        "hospital_address": "908 West Fourth North Street, Morristown, TN 37814",
+        "latitude": 36.2182,
+        "longitude": -83.3069,
+        "color": "#57fa7d",
+        "scale": 0.6
+    },
+    {
+        "ehr_system": "Cerner",
+        "hospital_name": "Roane Medical Center",
+        "hospital_count": 1,
+        "location": "Harriman, TN",
+        "hospital_address": "8045 Roane Medical Center Drive, Harriman, TN 37748",
+        "latitude": 35.9320,
+        "longitude": -84.5431,
+        "color": "#57fa7d",
+        "scale": 0.6
+    },
+    {
+        "ehr_system": "Cerner",
+        "hospital_name": "Claiborne Medical Center",
+        "hospital_count": 1,
+        "location": "Tazewell, TN",
+        "hospital_address": "1850 Old Knoxville Road, Tazewell, TN 37879",
+        "latitude": 36.4402,
+        "longitude": -83.5861,
+        "color": "#57fa7d",
+        "scale": 0.6
+    },
+    {
+        "ehr_system": "Cerner",
+        "hospital_name": "Fort Loudoun Medical Center",
+        "hospital_count": 1,
+        "location": "Lenoir City, TN",
+        "hospital_address": "550 Fort Loudoun Medical Center Drive, Lenoir City, TN 37772",
+        "latitude": 35.7971,
+        "longitude": -84.2659,
+        "color": "#57fa7d",
+        "scale": 0.6
+    },
+    {
+        "ehr_system": "Cerner",
+        "hospital_name": "Thompson Cancer Survival Center",
+        "hospital_count": 1,
+        "location": "Knoxville, TN",
+        "hospital_address": "1915 White Avenue, Knoxville, TN 37916",
+        "latitude": 35.9576,
+        "longitude": -83.9337,
+        "color": "#57fa7d",
+        "scale": 0.6
+    },
     {
         "ehr_system": "Epic",
         "hospital_name": "Children's Hospital Los Angeles (CHLA)",
@@ -1100,5 +1097,108 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Cedars-Sinai Health System"
+    },
+    {
+        "ehr_system": "Cerner-ITWorks",
+        "hospital_name": "Medical Center Hospital",
+        "hospital_count": 1,
+        "location": "Odessa, TX",
+        "hospital_address": "500 West 4th Street, Odessa, TX 79761",
+        "latitude": 31.84504,
+        "longitude": -102.37367,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Ector County Hospital District"
+    },
+    {
+        "ehr_system": "Cerner-ITWorks",
+        "hospital_name": "Einstein Medical Center Philadelphia",
+        "hospital_count": 1,
+        "location": "Philadelphia, PA",
+        "hospital_address": "5501 Old York Road, Philadelphia, PA 19141",
+        "latitude": 40.0357,
+        "longitude": -75.1456,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Einstein Healthcare Network"
+    },
+    {
+        "ehr_system": "Cerner-ITWorks",
+        "hospital_name": "Einstein Medical Center Montgomery",
+        "hospital_count": 1,
+        "location": "East Norriton, PA",
+        "hospital_address": "559 W Germantown Pike, East Norriton, PA 19403",
+        "latitude": 40.1545,
+        "longitude": -75.3291,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Einstein Healthcare Network"
+    },
+    {
+        "ehr_system": "Cerner-ITWorks",
+        "hospital_name": "Einstein Medical Center Elkins Park",
+        "hospital_count": 1,
+        "location": "Elkins Park, PA",
+        "hospital_address": "60 Township Line Road, Elkins Park, PA 19027",
+        "latitude": 40.0707,
+        "longitude": -75.1305,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Einstein Healthcare Network"
+    },
+
+    {
+        "ehr_system": "Cerner-ITWorks",
+        "hospital_name": "Fort HealthCare",
+        "hospital_count": 1,
+        "location": "Fort Atkinson, WI",
+        "hospital_address": "611 Sherman Avenue East, Fort Atkinson, WI 53538",
+        "latitude": 42.9285,
+        "longitude": -88.8262,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Fort HealthCare, Inc."
+    },
+
+    {
+        "ehr_system": "Cerner",
+        "hospital_name": "Medical Center Hospital",
+        "hospital_count": 1,
+        "location": "Odessa, TX",
+        "hospital_address": "500 West 4th Street, Odessa, TX 79761",
+        "latitude": 31.8495,
+        "longitude": -102.3676,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Ector County Hospital District"
+    },
+
+    {
+        "ehr_system": "Epic",
+        "hospital_name": "Tift Regional Medical Center",
+        "hospital_count": 1,
+        "location": "Tifton, GA",
+        "hospital_address": "901 East 18th Street, Tifton, GA 31794",
+        "latitude": 31.4716,
+        "longitude": -83.4914,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Southwell Health"
+    },
+
+
+    {
+        "ehr_system": "Epic",
+        "hospital_name": "Alder Hey Children's Hospital",
+        "hospital_count": 1,
+        "location": "Liverpool, UK",
+        "hospital_address": "Eaton Road, Liverpool L12 2AP, United Kingdom",
+        "latitude": 53.4163,
+        "longitude": -2.9056,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "NHS Foundation Trust"
     }
+    
+    
 ]
