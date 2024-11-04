@@ -822,6 +822,79 @@
         "parent_company": "CommonSpirit Health"
     },
 
+    {
+        "ehr_system": "Epic",
+        "hospital_name": "California Hospital Medical Center",
+        "hospital_count": 1,
+        "location": "Los Angeles, CA",
+        "hospital_address": "1401 S Grand Ave, Los Angeles, CA 90015",
+        "latitude": 34.0407,
+        "longitude": -118.2664,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "CommonSpirit Health"
+    },
+    {
+        "ehr_system": "Epic",
+        "hospital_name": "Saint Francis Memorial Hospital",
+        "hospital_count": 1,
+        "location": "San Francisco, CA",
+        "hospital_address": "900 Hyde St, San Francisco, CA 94109",
+        "latitude": 37.7904,
+        "longitude": -122.4183,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "CommonSpirit Health"
+    },
+    {
+        "ehr_system": "Epic",
+        "hospital_name": "MercyOne Des Moines Medical Center",
+        "hospital_count": 1,
+        "location": "Des Moines, IA",
+        "hospital_address": "1111 6th Ave, Des Moines, IA 50314",
+        "latitude": 41.5931,
+        "longitude": -93.6229,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "CommonSpirit Health"
+    },
+    {
+        "ehr_system": "Cerner",
+        "hospital_name": "St. Elizabeth Regional Medical Center",
+        "hospital_count": 1,
+        "location": "Lincoln, NE",
+        "hospital_address": "555 S 70th St, Lincoln, NE 68510",
+        "latitude": 40.8077,
+        "longitude": -96.6272,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "CommonSpirit Health"
+    },
+    {
+        "ehr_system": "Cerner",
+        "hospital_name": "CHI St. Luke’s Health - Baylor St. Luke’s Medical Center",
+        "hospital_count": 1,
+        "location": "Houston, TX",
+        "hospital_address": "6720 Bertner Ave, Houston, TX 77030",
+        "latitude": 29.7065,
+        "longitude": -95.3994,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "CommonSpirit Health"
+    },
+    {
+        "ehr_system": "Epic",
+        "hospital_name": "CHI Franciscan St. Joseph Medical Center",
+        "hospital_count": 1,
+        "location": "Tacoma, WA",
+        "hospital_address": "1717 S J St, Tacoma, WA 98405",
+        "latitude": 47.2426,
+        "longitude": -122.4572,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "CommonSpirit Health"
+    },
+
   {			
     "ehr_system": "Cerner",			
     "hospital_name": "Fort Sanders Regional Medical Center",			
@@ -931,5 +1004,101 @@
     "longitude": -83.9337,
     "color": "#57fa7d", 
     "scale": 0.6 			
-  }					
+  },
+    {
+        "ehr_system": "Epic",
+        "hospital_name": "Children's Hospital Los Angeles (CHLA)",
+        "hospital_count": 1,
+        "location": "Los Angeles, CA",
+        "hospital_address": "4650 Sunset Blvd, Los Angeles, CA 90027",
+        "latitude": 34.0971,
+        "longitude": -118.2870,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Children's Hospital Los Angeles"
+    },
+    {
+        "ehr_system": "Cerner",
+        "hospital_name": "Shriners for Children Medical Center",
+        "hospital_count": 1,
+        "location": "Pasadena, CA",
+        "hospital_address": "909 S Fair Oaks Ave, Pasadena, CA 91105",
+        "latitude": 34.1298,
+        "longitude": -118.1528,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Shriners Hospitals for Children"
+    },
+    {
+        "ehr_system": "Epic",
+        "hospital_name": "Miller Children's & Women's Hospital",
+        "hospital_count": 1,
+        "location": "Long Beach, CA",
+        "hospital_address": "2801 Atlantic Ave, Long Beach, CA 90806",
+        "latitude": 33.8076,
+        "longitude": -118.1892,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "MemorialCare Health System"
+    },
+    {
+        "ehr_system": "Epic",
+        "hospital_name": "CHOC Children's Hospital",
+        "hospital_count": 1,
+        "location": "Orange, CA",
+        "hospital_address": "1201 W La Veta Ave, Orange, CA 92868",
+        "latitude": 33.7774,
+        "longitude": -117.8677,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Children's Hospital of Orange County"
+    },
+    {
+        "ehr_system": "Epic",
+        "hospital_name": "Kaiser Permanente Los Angeles Medical Center",
+        "hospital_count": 1,
+        "location": "Los Angeles, CA",
+        "hospital_address": "4867 Sunset Blvd, Los Angeles, CA 90027",
+        "latitude": 34.0976,
+        "longitude": -118.2941,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Kaiser Permanente"
+    },
+    {
+        "ehr_system": "Epic",
+        "hospital_name": "Loma Linda University Children's Hospital",
+        "hospital_count": 1,
+        "location": "Loma Linda, CA",
+        "hospital_address": "11234 Anderson St, Loma Linda, CA 92354",
+        "latitude": 34.0494,
+        "longitude": -117.2622,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Loma Linda University Health"
+    },
+    {
+        "ehr_system": "Epic",
+        "hospital_name": "Mattel Children's Hospital UCLA",
+        "hospital_count": 1,
+        "location": "Los Angeles, CA",
+        "hospital_address": "757 Westwood Plaza, Los Angeles, CA 90095",
+        "latitude": 34.0655,
+        "longitude": -118.4443,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "UCLA Health"
+    },
+    {
+        "ehr_system": "Epic",
+        "hospital_name": "Cedars-Sinai Guerin Children's",
+        "hospital_count": 1,
+        "location": "Los Angeles, CA",
+        "hospital_address": "8700 Beverly Blvd, Los Angeles, CA 90048",
+        "latitude": 34.0762,
+        "longitude": -118.3790,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Cedars-Sinai Health System"
+    }
 ]

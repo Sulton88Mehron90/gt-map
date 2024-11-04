@@ -1040,7 +1040,8 @@
                                             ehrLogo = '<img src="./img/cerner-logo.png" alt="Cerner logo" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%;">';
                                             break;
                                         case 'Epic':
-                                            ehrLogo = '<img src="./img/epic-logo.png" alt="Epic logo" style="width: 20px; height: 18px; vertical-align: middle; margin-right: 5px;">';
+                                            // ehrLogo = '<img src="./img/epic-logo.png" alt="Epic logo" style="width: 20px; height: 18px; vertical-align: middle; margin-right: 5px;">';
+                                            ehrLogo = `<img src="./img/epic-logo.png" alt="Epic logo" style="width: 20px; height: 18px; vertical-align: middle; margin-right: 5px;">`; // Logo only, no text
                                             break;
                                         case 'Meditech':
                                             ehrLogo = '<img src="./img/meditech-logo.png" alt="Meditech logo" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%;">';
@@ -1060,15 +1061,27 @@
                                     //     EHR System: ${ehrLogo}${hospital.ehr_system}
                                     // `;
 
-                                    listItem.innerHTML = `
+//                                     listItem.innerHTML = `
+//     <i class="fas fa-hospital-symbol"></i> 
+//     <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
+//         ${hospital.hospital_name}
+//     </strong><br>
+//     ${hospital.parent_company ? `Parent Company: ${hospital.parent_company}<br>` : ""}
+//     ${hospital.location}<br>
+//     EHR System: ${ehrLogo}${hospital.ehr_system}
+// `;
+
+listItem.innerHTML = `
     <i class="fas fa-hospital-symbol"></i> 
     <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
         ${hospital.hospital_name}
     </strong><br>
     ${hospital.parent_company ? `Parent Company: ${hospital.parent_company}<br>` : ""}
     ${hospital.location}<br>
-    EHR System: ${ehrLogo}${hospital.ehr_system}
+    EHR System: ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}
 `;
+
+
 
                                     // Add a special note if this is the CommonSpirit Health Headquarters
                                     if (hospital.hospital_name === "CommonSpirit Health Headquarters") {
