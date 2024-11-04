@@ -50,8 +50,9 @@
         right: 20px;
         display: flex;
         flex-direction: column;
-        gap: 1px;
-        z-index: 10;
+        align-items: flex-end;
+    gap: 0px;
+    z-index: 10;
     }
 
     .mapbox-button-group button {
@@ -373,7 +374,7 @@
 
     .mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--button {
         position: absolute;
-        left: 100px;
+        /* left: 100px; */
         top: 50%;
         transform: translateY(-50%);
         font-size: 16px;
@@ -382,6 +383,42 @@
         border: none;
         cursor: pointer;
     }
+
+    #geocoder-container {
+    display: inline-block;
+    width: 250px; 
+    margin-left: 10px;
+    position: relative; 
+}
+
+.mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: #333;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+#toggle-geocoder {
+    width: 30px;
+    height: 30px;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease-in-out;
+    border: 0.5px solid #ff8502;
+}
 
     /* Responsive Styles */
 
@@ -447,6 +484,15 @@
             font-size: 14px;
         }
 
+        #geocoder-container {
+        width: 200px;
+        margin-left: 5px;
+    }
+
+    .mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--input {
+        font-size: 12px;
+    }
+
     }
 
     @media (max-width: 480px) {
@@ -503,7 +549,24 @@
             width: 90% !important;
             font-size: 12px;
         }
+
+        #geocoder-container {
+        width: 150px;
+        margin-left: 2px;
     }
+
+    #toggle-geocoder {
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+    }
+
+    .mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--input {
+        font-size: 11px;
+    }
+
+    }
+
 </style>
 
 </head>
@@ -542,7 +605,14 @@
         <button id="reset-view">
             <i class="fas fa-sync-alt"></i>
         </button>
-    </div>
+        
+        <!-- Geocoder field and toggle button -->
+        <div id="geocoder-container" style="display: none;"></div>
+        <button id="toggle-geocoder">
+            <i class="fas fa-search"></i>
+        </button>
+    </div>    
+    
 
     <div id="map"></div>
 
@@ -572,12 +642,49 @@
             });
 
             // search. geocoder instance and add it to the map
-            const geocoder = new MapboxGeocoder({
-                accessToken: mapboxgl.accessToken,
-                mapboxgl: mapboxgl
-            });
+            // const geocoder = new MapboxGeocoder({
+            //     accessToken: mapboxgl.accessToken,
+            //     mapboxgl: mapboxgl
+            // });
 
-            map.addControl(geocoder, 'bottom-right');
+            // map.addControl(geocoder, 'bottom-right');
+
+            // Toggle the geocoder visibility
+            
+    const geocoderToggle = document.getElementById("toggle-geocoder");
+    const geocoderContainer = document.getElementById("geocoder-container");
+    let geocoder;
+
+    geocoderToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        
+        // Toggle geocoder visibility
+        if (geocoderContainer.style.display === "none") {
+            geocoderContainer.style.display = "block";
+            geocoderToggle.style.display = "none"; // Hide the toggle icon
+            
+            if (!geocoder) {
+                geocoder = new MapboxGeocoder({
+                    accessToken: mapboxgl.accessToken,
+                    mapboxgl: mapboxgl,
+                });
+                geocoderContainer.appendChild(geocoder.onAdd(map));
+            }
+        } else {
+            geocoderContainer.style.display = "none";
+            geocoderToggle.style.display = "flex"; // Show the toggle icon again
+        }
+    });
+
+    // Hide geocoder and show toggle button when clicking outside
+    document.addEventListener("click", (event) => {
+        if (!geocoderContainer.contains(event.target) && event.target !== geocoderToggle) {
+            geocoderContainer.style.display = "none";
+            geocoderToggle.style.display = "flex"; // Show the toggle icon again
+        }
+    });
+
+
 
             // Event listeners to handle resize and ensure map fits container
             window.addEventListener("load", () => map.resize());
