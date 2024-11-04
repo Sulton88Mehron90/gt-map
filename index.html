@@ -15,7 +15,6 @@
     <link rel="stylesheet"
         href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.css"
         type="text/css">
-
 </head>
 
 <style>
@@ -51,8 +50,8 @@
         display: flex;
         flex-direction: column;
         align-items: flex-end;
-    gap: 0px;
-    z-index: 10;
+        gap: 0px;
+        z-index: 10;
     }
 
     .mapbox-button-group button {
@@ -385,40 +384,40 @@
     }
 
     #geocoder-container {
-    display: inline-block;
-    width: 250px; 
-    margin-left: 10px;
-    position: relative; 
-}
+        display: inline-block;
+        width: 250px;
+        margin-left: 10px;
+        position: relative;
+    }
 
-.mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--button {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 16px;
-    color: #333;
-    background: none;
-    border: none;
-    cursor: pointer;
-}
+    .mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--button {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 16px;
+        color: #333;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
 
-#toggle-geocoder {
-    width: 30px;
-    height: 30px;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-weight: bold;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease-in-out;
-    border: 0.5px solid #ff8502;
-}
+    #toggle-geocoder {
+        width: 30px;
+        height: 30px;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-weight: bold;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease-in-out;
+        border: 0.5px solid #ff8502;
+    }
 
     /* Responsive Styles */
 
@@ -485,14 +484,13 @@
         }
 
         #geocoder-container {
-        width: 200px;
-        margin-left: 5px;
-    }
+            width: 200px;
+            margin-left: 5px;
+        }
 
-    .mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--input {
-        font-size: 12px;
-    }
-
+        .mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--input {
+            font-size: 12px;
+        }
     }
 
     @media (max-width: 480px) {
@@ -551,20 +549,19 @@
         }
 
         #geocoder-container {
-        width: 150px;
-        margin-left: 2px;
-    }
+            width: 150px;
+            margin-left: 2px;
+        }
 
-    #toggle-geocoder {
-        width: 30px;
-        height: 30px;
-        font-size: 14px;
-    }
+        #toggle-geocoder {
+            width: 30px;
+            height: 30px;
+            font-size: 14px;
+        }
 
-    .mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--input {
-        font-size: 11px;
-    }
-
+        .mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--input {
+            font-size: 11px;
+        }
     }
 
 </style>
@@ -605,14 +602,14 @@
         <button id="reset-view">
             <i class="fas fa-sync-alt"></i>
         </button>
-        
+
         <!-- Geocoder field and toggle button -->
         <div id="geocoder-container" style="display: none;"></div>
         <button id="toggle-geocoder">
             <i class="fas fa-search"></i>
         </button>
-    </div>    
-    
+    </div>
+
 
     <div id="map"></div>
 
@@ -650,41 +647,39 @@
             // map.addControl(geocoder, 'bottom-right');
 
             // Toggle the geocoder visibility
-            
-    const geocoderToggle = document.getElementById("toggle-geocoder");
-    const geocoderContainer = document.getElementById("geocoder-container");
-    let geocoder;
 
-    geocoderToggle.addEventListener("click", (e) => {
-        e.stopPropagation();
-        
-        // Toggle geocoder visibility
-        if (geocoderContainer.style.display === "none") {
-            geocoderContainer.style.display = "block";
-            geocoderToggle.style.display = "none"; // Hide the toggle icon
-            
-            if (!geocoder) {
-                geocoder = new MapboxGeocoder({
-                    accessToken: mapboxgl.accessToken,
-                    mapboxgl: mapboxgl,
-                });
-                geocoderContainer.appendChild(geocoder.onAdd(map));
-            }
-        } else {
-            geocoderContainer.style.display = "none";
-            geocoderToggle.style.display = "flex"; // Show the toggle icon again
-        }
-    });
+            const geocoderToggle = document.getElementById("toggle-geocoder");
+            const geocoderContainer = document.getElementById("geocoder-container");
+            let geocoder;
 
-    // Hide geocoder and show toggle button when clicking outside
-    document.addEventListener("click", (event) => {
-        if (!geocoderContainer.contains(event.target) && event.target !== geocoderToggle) {
-            geocoderContainer.style.display = "none";
-            geocoderToggle.style.display = "flex"; // Show the toggle icon again
-        }
-    });
+            geocoderToggle.addEventListener("click", (e) => {
+                e.stopPropagation();
 
+                // Toggle geocoder visibility
+                if (geocoderContainer.style.display === "none") {
+                    geocoderContainer.style.display = "block";
+                    geocoderToggle.style.display = "none"; 
 
+                    if (!geocoder) {
+                        geocoder = new MapboxGeocoder({
+                            accessToken: mapboxgl.accessToken,
+                            mapboxgl: mapboxgl,
+                        });
+                        geocoderContainer.appendChild(geocoder.onAdd(map));
+                    }
+                } else {
+                    geocoderContainer.style.display = "none";
+                    geocoderToggle.style.display = "flex"; 
+                }
+            });
+
+            // Hide geocoder and show toggle button when clicking outside
+            document.addEventListener("click", (event) => {
+                if (!geocoderContainer.contains(event.target) && event.target !== geocoderToggle) {
+                    geocoderContainer.style.display = "none";
+                    geocoderToggle.style.display = "flex"; 
+                }
+            });
 
             // Event listeners to handle resize and ensure map fits container
             window.addEventListener("load", () => map.resize());
@@ -786,9 +781,32 @@
                         });
 
                         // Add markers for each facility
-                        const markers = facilities.map(({ ehr_system, hospital_name, location, hospital_address, longitude, latitude, color }) => {
+                        // const markers = facilities.map(({ ehr_system, hospital_name, location, hospital_address, longitude, latitude, color }) => {
+                        //     const popup = new mapboxgl.Popup({ offset: 15, closeButton: false })
+                        //         .setHTML(`<strong>${hospital_name}</strong><br>${location}<br>EHR System: ${ehr_system}<br>Address: ${hospital_address}`);
+
+                        let markers = facilities.map(({ ehr_system, hospital_name, location, hospital_address, longitude, latitude, parent_company }) => {
+                            let popupContent = `
+        <strong>${hospital_name}</strong><br>
+        ${location}<br>
+        ${parent_company ? `Parent Company: ${parent_company}<br>` : ""}
+        EHR System: ${ehr_system}<br>
+        Address: ${hospital_address}
+    `;
+
+                            // Add a special note if this is the CommonSpirit Health Headquarters
+                            // if (hospital_name === "CommonSpirit Health Headquarters") {
+                            //     popupContent += `<br><strong style="color: red;">Note:</strong> CommonSpirit Health operates over 140 hospitals across 21 states. 
+                            //     <a href="https://www.commonspirit.org/" target="_blank" style="color: red;">Visit Website</a>`;
+                            // }
+
+                            if (hospital_name === "CommonSpirit Health Headquarters") {
+                                popupContent += `<br><strong style="color: #ff8502;">Note:</strong> CommonSpirit Health operates over 140 hospitals across 21 states. 
+        <a href="https://www.commonspirit.org/" target="_blank" style="color: #06b4fd;">Visit Website</a>`;
+                            }
+
                             const popup = new mapboxgl.Popup({ offset: 15, closeButton: false })
-                                .setHTML(`<strong>${hospital_name}</strong><br>${location}<br>EHR System: ${ehr_system}<br>Address: ${hospital_address}`);
+                                .setHTML(popupContent);
 
                             // Create a custom marker element
                             const markerElement = document.createElement('div');
@@ -804,15 +822,28 @@
                                 .setPopup(popup)
                                 .addTo(map);
 
-                            // Event listeners for hover to show/hide popup
-                            marker.getElement().addEventListener('mouseenter', () => popup.addTo(map));
-                            marker.getElement().addEventListener('mouseleave', () => popup.remove());
+                            // // Event listeners for hover to show/hide popup
+                            // marker.getElement().addEventListener('mouseenter', () => popup.addTo(map));
+                            // marker.getElement().addEventListener('mouseleave', () => popup.remove());
 
-                            // Additional event listener for touch devices (show popup on tap)
-                            marker.getElement().addEventListener('click', (e) => {
-                                e.stopPropagation(); // Prevent sidebar from opening
-                                popup.addTo(map);
-                            });
+                            // // Additional event listener for touch devices (show popup on tap)
+                            // marker.getElement().addEventListener('click', (e) => {
+                            //     e.stopPropagation(); // Prevent sidebar from opening
+                            //     popup.addTo(map);
+                            // });
+
+                            // Apply specific hover behavior based on the hospital name
+                            if (hospital_name !== "CommonSpirit Health Headquarters") {
+                                // Standard behavior: show/hide popup on hover
+                                marker.getElement().addEventListener('mouseenter', () => popup.addTo(map));
+                                marker.getElement().addEventListener('mouseleave', () => popup.remove());
+                            } else {
+                                // For CommonSpirit Headquarters, keep popup open on click
+                                marker.getElement().addEventListener('click', (e) => {
+                                    e.stopPropagation();
+                                    popup.addTo(map);
+                                });
+                            }
 
                             return marker;
                         });
@@ -850,6 +881,8 @@
                                         location: facility.location,
                                         ehr_system: facility.ehr_system,
                                         hospital_address: facility.hospital_address,
+                                        hospital_parent_company: facility.parent_company,
+                                        hospital_hospital_count: facility.hospital_count,
                                     },
                                     geometry: {
                                         type: 'Point',
@@ -987,16 +1020,6 @@
                             if (existingCountDisplay) existingCountDisplay.remove();
 
                             // Display facility count
-                            // const countDisplay = document.createElement('p');
-                            // countDisplay.classList.add('count-display');
-                            // countDisplay.innerText = `Total Facilities: ${stateHospitals.length}`;
-                            // countDisplay.style.fontWeight = 'bold';
-                            // // countDisplay.style.color = '#FFFFFF';
-                            // countDisplay.style.color = '#ff8502';
-                            // countDisplay.style.marginTop = '10px';
-                            // list.before(countDisplay);
-
-                            // Display facility count
                             const countDisplay = document.createElement('p');
                             countDisplay.classList.add('count-display');
                             countDisplay.innerHTML = `Total Facilities: <span style="color: #ff8502;">${stateHospitals.length}</span>`;
@@ -1028,14 +1051,30 @@
                                     }
 
                                     // Display hospital name, EHR system with logo, and location details
+                                    //                                     listItem.innerHTML = `
+                                    //     <i class="fas fa-hospital-symbol"></i> 
+                                    //     <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
+                                    //         ${hospital.hospital_name}
+                                    //     </strong><br>
+                                    //     ${hospital.location}<br>
+                                    //     EHR System: ${ehrLogo}${hospital.ehr_system}
+                                    // `;
+
                                     listItem.innerHTML = `
     <i class="fas fa-hospital-symbol"></i> 
     <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
         ${hospital.hospital_name}
     </strong><br>
+    ${hospital.parent_company ? `Parent Company: ${hospital.parent_company}<br>` : ""}
     ${hospital.location}<br>
     EHR System: ${ehrLogo}${hospital.ehr_system}
 `;
+
+                                    // Add a special note if this is the CommonSpirit Health Headquarters
+                                    if (hospital.hospital_name === "CommonSpirit Health Headquarters") {
+                                        listItem.innerHTML += `<br><strong style="color: #ff8502;">Note:</strong> CommonSpirit Health operates over 140 hospitals across 21 states. 
+    <a href="https://www.commonspirit.org/" target="_blank" style="color: #06b4fd;">Visit Website</a>`;
+                                    }
 
                                     // Fly to the hospital location on the map when the name is clicked
                                     listItem.querySelector('.clickable-hospital').addEventListener('click', () => {

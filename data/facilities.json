@@ -733,7 +733,203 @@
         "hospital_address": "444 W. Lake Street, Suite 2500, Chicago, IL 60606",
         "latitude": 41.8865,
         "longitude": -87.6380,
+        "color": "#57fa7d", 
+        "scale": 0.6 
+    },
+
+    {
+        "ehr_system": "Cerner",
+        "hospital_name": "St. Anthony Hospital",
+        "hospital_count": 1,
+        "location": "Lakewood, CO",
+        "hospital_address": "11600 W 2nd Pl, Lakewood, CO 80228",
+        "latitude": 39.7186,
+        "longitude": -105.1305,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "CommonSpirit Health"
+    },
+    {
+        "ehr_system": "Cerner",
+        "hospital_name": "OrthoColorado Hospital",
+        "hospital_count": 1,
+        "location": "Lakewood, CO",
+        "hospital_address": "11650 W 2nd Pl, Lakewood, CO 80228",
+        "latitude": 39.7186,
+        "longitude": -105.1305,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "CommonSpirit Health"
+    },
+    {
+        "ehr_system": "Cerner",
+        "hospital_name": "St. Mary-Corwin Medical Center",
+        "hospital_count": 1,
+        "location": "Pueblo, CO",
+        "hospital_address": "1008 Minnequa Avenue, Pueblo, CO 81004",
+        "latitude": 38.2342,
+        "longitude": -104.6189,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "CommonSpirit Health"
+    },
+    {
+        "ehr_system": "Cerner",
+        "hospital_name": "Mercy Hospital",
+        "hospital_count": 1,
+        "location": "Durango, CO",
+        "hospital_address": "1010 Three Springs Blvd., Durango, CO 81301",
+        "latitude": 37.2413,
+        "longitude": -107.8253,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "CommonSpirit Health"
+    },
+    {
+        "ehr_system": "Cerner",
+        "hospital_name": "Holy Cross Hospital \u2013 Salt Lake",
+        "hospital_count": 1,
+        "location": "Salt Lake City, UT",
+        "hospital_address": "1050 East South Temple, Salt Lake City, UT 84102",
+        "latitude": 40.7736,
+        "longitude": -111.8611,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "CommonSpirit Health"
+    },
+    {
+        "ehr_system": "Cerner",
+        "hospital_name": "Holy Cross Hospital \u2013 Jordan Valley West",
+        "hospital_count": 1,
+        "location": "West Valley City, UT",
+        "hospital_address": "3460 South Pioneer Parkway, West Valley City, UT 84120",
+        "latitude": 40.6916,
+        "longitude": -111.9936,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "CommonSpirit Health"
+    },
+    {
+        "ehr_system": "Cerner",
+        "hospital_name": "CHI St. Alexius Health Bismarck",
+        "hospital_count": 1,
+        "location": "Bismarck, ND",
+        "hospital_address": "900 E Broadway Ave, Bismarck, ND 58501",
+        "latitude": 46.8083,
+        "longitude": -100.7837,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "CommonSpirit Health"
+    },
+
+  {			
+    "ehr_system": "Cerner",			
+    "hospital_name": "Fort Sanders Regional Medical Center",			
+    "hospital_count": 1,			
+    "location": "Knoxville, TN",			
+    "hospital_address": "1901 Clinch Avenue, Knoxville, TN 37916",			
+    "latitude": 35.9585,			
+    "longitude": -83.9339,
     "color": "#57fa7d", 
-    "scale": 0.6 
-    }
+    "scale": 0.6 			
+  },			
+  {			
+    "ehr_system": "Cerner",			
+    "hospital_name": "Parkwest Medical Center",			
+    "hospital_count": 1,			
+    "location": "Knoxville, TN",			
+    "hospital_address": "9352 Park West Boulevard, Knoxville, TN 37923",			
+    "latitude": 35.9249,			
+    "longitude": -84.0948,
+    "color": "#57fa7d", 
+    "scale": 0.6 			
+  },			
+  {			
+    "ehr_system": "Cerner",			
+    "hospital_name": "Methodist Medical Center of Oak Ridge",			
+    "hospital_count": 1,			
+    "location": "Oak Ridge, TN",			
+    "hospital_address": "990 Oak Ridge Turnpike, Oak Ridge, TN 37830",			
+    "latitude": 36.0126,			
+    "longitude": -84.2665,
+    "color": "#57fa7d", 
+    "scale": 0.6 			
+  },			
+  {			
+    "ehr_system": "Cerner",			
+    "hospital_name": "LeConte Medical Center",			
+    "hospital_count": 1,			
+    "location": "Sevierville, TN",			
+    "hospital_address": "742 Middle Creek Road, Sevierville, TN 37862",			
+    "latitude": 35.8478,			
+    "longitude": -83.5662,
+    "color": "#57fa7d", 
+    "scale": 0.6 			
+  },			
+  {			
+    "ehr_system": "Cerner",			
+    "hospital_name": "Cumberland Medical Center",			
+    "hospital_count": 1,			
+    "location": "Crossville, TN",			
+    "hospital_address": "421 South Main Street, Crossville, TN 38555",			
+    "latitude": 35.9467,			
+    "longitude": -85.0250,
+    "color": "#57fa7d", 
+    "scale": 0.6 		
+  },			
+  {			
+    "ehr_system": "Cerner",			
+    "hospital_name": "Morristown-Hamblen Healthcare System",			
+    "hospital_count": 1,			
+    "location": "Morristown, TN",			
+    "hospital_address": "908 West Fourth North Street, Morristown, TN 37814",			
+    "latitude": 36.2182,			
+    "longitude": -83.3069,
+    "color": "#57fa7d", 
+    "scale": 0.6 			
+  },			
+  {			
+    "ehr_system": "Cerner",			
+    "hospital_name": "Roane Medical Center",			
+    "hospital_count": 1,			
+    "location": "Harriman, TN",			
+    "hospital_address": "8045 Roane Medical Center Drive, Harriman, TN 37748",			
+    "latitude": 35.9320,			
+    "longitude": -84.5431,
+    "color": "#57fa7d", 
+    "scale": 0.6 			
+  },			
+  {			
+    "ehr_system": "Cerner",			
+    "hospital_name": "Claiborne Medical Center",			
+    "hospital_count": 1,			
+    "location": "Tazewell, TN",			
+    "hospital_address": "1850 Old Knoxville Road, Tazewell, TN 37879",			
+    "latitude": 36.4402,			
+    "longitude": -83.5861,
+    "color": "#57fa7d", 
+    "scale": 0.6 			
+  },			
+  {			
+    "ehr_system": "Cerner",			
+    "hospital_name": "Fort Loudoun Medical Center",			
+    "hospital_count": 1,			
+    "location": "Lenoir City, TN",			
+    "hospital_address": "550 Fort Loudoun Medical Center Drive, Lenoir City, TN 37772",			
+    "latitude": 35.7971,			
+    "longitude": -84.2659,
+    "color": "#57fa7d", 
+    "scale": 0.6 			
+  },			
+  {			
+    "ehr_system": "Cerner",			
+    "hospital_name": "Thompson Cancer Survival Center",			
+    "hospital_count": 1,			
+    "location": "Knoxville, TN",			
+    "hospital_address": "1915 White Avenue, Knoxville, TN 37916",			
+    "latitude": 35.9576,			
+    "longitude": -83.9337,
+    "color": "#57fa7d", 
+    "scale": 0.6 			
+  }					
 ]
