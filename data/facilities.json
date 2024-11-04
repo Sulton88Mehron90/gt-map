@@ -672,7 +672,7 @@
     },
     {
         "ehr_system": "Cerner",
-        "hospital_name": "Children’s National Health Center - Montgomery County",
+        "hospital_name": "Children's National Health Center - Montgomery County",
         "hospital_count": 1,
         "location": "Rockville, MD",
         "hospital_address": "15245 Shady Grove Rd, Rockville, MD 20850",
@@ -683,7 +683,7 @@
     },
     {
         "ehr_system": "Cerner",
-        "hospital_name": "Children’s National Pediatric Specialists of Virginia",
+        "hospital_name": "Children's National Pediatric Specialists of Virginia",
         "hospital_count": 1,
         "location": "Fairfax, VA",
         "hospital_address": "3023 Hamaker Ct, Fairfax, VA 22031",
@@ -694,7 +694,7 @@
     },
     {
         "ehr_system": "Cerner",
-        "hospital_name": "Children’s National Health Center - Friendship Heights",
+        "hospital_name": "Children's National Health Center - Friendship Heights",
         "hospital_count": 1,
         "location": "Washington, DC",
         "hospital_address": "5028 Wisconsin Ave NW, Washington, DC 20016",
@@ -705,7 +705,7 @@
     },
     {
         "ehr_system": "Cerner",
-        "hospital_name": "Children’s National Health Center - Laurel Lakes",
+        "hospital_name": "Children's National Health Center - Laurel Lakes",
         "hospital_count": 1,
         "location": "Laurel, MD",
         "hospital_address": "13922 Baltimore Ave, Laurel, MD 20707",
@@ -716,7 +716,7 @@
     },
     {
         "ehr_system": "Cerner",
-        "hospital_name": "Children’s National Health Center - Frederick",
+        "hospital_name": "Children's National Health Center - Frederick",
         "hospital_count": 1,
         "location": "Frederick, MD",
         "hospital_address": "5900 Frederick Crossing Lane, Frederick, MD 21704",
@@ -870,7 +870,7 @@
     },
     {
         "ehr_system": "Cerner",
-        "hospital_name": "CHI St. Luke’s Health - Baylor St. Luke’s Medical Center",
+        "hospital_name": "CHI St. Luke's Health - Baylor St. Luke's Medical Center",
         "hospital_count": 1,
         "location": "Houston, TX",
         "hospital_address": "6720 Bertner Ave, Houston, TX 77030",
@@ -1159,7 +1159,91 @@
         "scale": 0.6,
         "parent_company": "Fort HealthCare, Inc."
     },
-
+        {
+            "ehr_system": "Meditech",
+            "hospital_name": "Betsy Johnson Hospital",
+            "hospital_count": 1,
+            "location": "Dunn, NC, USA",
+            "hospital_address": "800 Tilghman Dr, Dunn, NC 28334, United States",
+            "latitude": 35.3182,
+            "longitude": -78.6163,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Harnett Health"
+        },
+        {
+            "ehr_system": "Meditech",
+            "hospital_name": "Central Harnett Hospital",
+            "hospital_count": 1,
+            "location": "Lillington, NC, USA",
+            "hospital_address": "215 Brightwater Dr, Lillington, NC 27546, United States",
+            "latitude": 35.3964,
+            "longitude": -78.8227,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Harnett Health"
+        },
+        {
+            "ehr_system": "Meditech",
+            "hospital_name": "Harnett Health Med First Primary & Urgent Care",
+            "hospital_count": 1,
+            "location": "Dunn, NC, USA",
+            "hospital_address": "803 Tilghman Dr, Dunn, NC 28334, United States",
+            "latitude": 35.3184,
+            "longitude": -78.6159,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Harnett Health"
+        },
+        {
+            "ehr_system": "Meditech",
+            "hospital_name": "Harnett Health Angier Medical Services",
+            "hospital_count": 1,
+            "location": "Angier, NC, USA",
+            "hospital_address": "84 Medical Dr, Angier, NC 27501, United States",
+            "latitude": 35.5078,
+            "longitude": -78.7361,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Harnett Health"
+        },
+        {
+            "ehr_system": "Meditech",
+            "hospital_name": "Harnett Health Buies Creek Medical Center",
+            "hospital_count": 1,
+            "location": "Buies Creek, NC, USA",
+            "hospital_address": "112 Hillcrest Dr, Buies Creek, NC 27506, United States",
+            "latitude": 35.4106,
+            "longitude": -78.7413,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Harnett Health"
+        },
+        {
+            "ehr_system": "Meditech",
+            "hospital_name": "Harnett Health Coats Medical Services",
+            "hospital_count": 1,
+            "location": "Coats, NC, USA",
+            "hospital_address": "25 N Johnson St, Coats, NC 27521, United States",
+            "latitude": 35.4076,
+            "longitude": -78.6739,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Harnett Health"
+        },
+        {
+            "ehr_system": "Meditech",
+            "hospital_name": "Harnett Health Benson Area Medical Center",
+            "hospital_count": 1,
+            "location": "Benson, NC, USA",
+            "hospital_address": "3333 NC-242 N, Benson, NC 27504, United States",
+            "latitude": 35.3799,
+            "longitude": -78.5467,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Harnett Health"
+        },
+    
     {
         "ehr_system": "Cerner",
         "hospital_name": "Medical Center Hospital",
@@ -1186,19 +1270,123 @@
         "parent_company": "Southwell Health"
     },
 
+    {
+        "ehr_system": "na", 
+        "hospital_name": "Esse Health",
+        "hospital_count": 1,
+        "location": "St. Louis, Missouri, USA",
+        "hospital_address": "12655 Olive Blvd #300, St. Louis, MO 63141, United States",
+        "latitude": 38.6767,
+        "longitude": -90.4707,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Esse Health"
+    },
 
     {
-        "ehr_system": "Epic",
+        "ehr_system": "na",
+        "hospital_name": "University of Louisville School of Dentistry",
+        "hospital_count": 1,
+        "location": "Louisville, Kentucky, USA",
+        "hospital_address": "501 S Preston St, Louisville, KY 40202, United States",
+        "latitude": 38.2498,
+        "longitude": -85.747,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "University of Louisville"
+    },
+    
+    {
+        "ehr_system": "na", 
+        "hospital_name": "California Department of Public Health",
+        "hospital_count": 1,
+        "location": "Sacramento, California, USA",
+        "hospital_address": "1615 Capitol Ave, Sacramento, CA 95814, United States",
+        "latitude": 38.5737,
+        "longitude": -121.4885,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "State of California"
+    },
+    
+    {
+        "ehr_system": "na", 
+        "hospital_name": "Exeter Hospital",
+        "hospital_count": 1,
+        "location": "Exeter, New Hampshire, USA",
+        "hospital_address": "5 Alumni Dr, Exeter, NH 03833, United States",
+        "latitude": 42.9735,
+        "longitude": -70.9495,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Exeter Health Resources"
+    },
+    
+    {
+        "ehr_system": "Meditech",
         "hospital_name": "Alder Hey Children's Hospital",
         "hospital_count": 1,
-        "location": "Liverpool, UK",
+        "location": "Liverpool, Merseyside, North West, England, UK",
         "hospital_address": "Eaton Road, Liverpool L12 2AP, United Kingdom",
         "latitude": 53.4163,
         "longitude": -2.9056,
         "color": "#57fa7d",
         "scale": 0.6,
-        "parent_company": "NHS Foundation Trust"
+        "parent_company": "Alder Hey Children's NHS Foundation Trust"
+    },
+
+    {
+        "ehr_system": "Meditech",
+        "hospital_name": "Liverpool Women's Hospital",
+        "hospital_count": 1,
+        "location": "Liverpool, Merseyside, North West, England, UK",
+        "hospital_address": "Crown Street, Liverpool, L8 7SS, United Kingdom",
+        "latitude": 53.4011,
+        "longitude": -2.9608,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Liverpool Women's NHS Foundation Trust"
+    },
+
+    {
+        "ehr_system": "Meditech",
+        "hospital_name": "The Clatterbridge Cancer Centre",
+        "hospital_count": 1,
+        "location": "Wirral, Merseyside, North West, England, UK",
+        "hospital_address": "Clatterbridge Rd, Bebington, Wirral CH63 4JY, United Kingdom",
+        "latitude": 53.3335,
+        "longitude": -3.0132,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "The Clatterbridge Cancer Centre NHS Foundation Trust"
+    },
+
+    {
+        "ehr_system": "Meditech",
+        "hospital_name": "Sault Area Hospital",
+        "hospital_count": 1,
+        "location": "Sault Ste. Marie, Ontario, Canada",
+        "hospital_address": "750 Great Northern Rd, Sault Ste. Marie, ON P6B 0A8, Canada",
+        "latitude": 46.5337,
+        "longitude": -84.3353,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Sault Area Hospital Group"
+    },
+
+    {
+        "ehr_system": "Meditech",
+        "hospital_name": "Department of Public Health Aruba",
+        "hospital_count": 1,
+        "location": "Oranjestad, Aruba",
+        "hospital_address": "Caya Ing. Roland Lacle #4, Oranjestad, Aruba",
+        "latitude": 12.5246,
+        "longitude": -70.027,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Government of Aruba"
     }
     
+
     
 ]
