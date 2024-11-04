@@ -880,13 +880,24 @@
                             if (existingCountDisplay) existingCountDisplay.remove();
 
                             // Display facility count
+                            // const countDisplay = document.createElement('p');
+                            // countDisplay.classList.add('count-display');
+                            // countDisplay.innerText = `Total Facilities: ${stateHospitals.length}`;
+                            // countDisplay.style.fontWeight = 'bold';
+                            // // countDisplay.style.color = '#FFFFFF';
+                            // countDisplay.style.color = '#ff8502';
+                            // countDisplay.style.marginTop = '10px';
+                            // list.before(countDisplay);
+
+                            // Display facility count
                             const countDisplay = document.createElement('p');
                             countDisplay.classList.add('count-display');
-                            countDisplay.innerText = `Total Facilities: ${stateHospitals.length}`;
+                            countDisplay.innerHTML = `Total Facilities: <span style="color: #ff8502;">${stateHospitals.length}</span>`;
                             countDisplay.style.fontWeight = 'bold';
                             countDisplay.style.color = '#FFFFFF';
                             countDisplay.style.marginTop = '10px';
                             list.before(countDisplay);
+
 
                             if (stateHospitals.length > 0) {
                                 stateHospitals.forEach(hospital => {

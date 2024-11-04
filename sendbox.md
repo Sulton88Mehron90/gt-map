@@ -718,6 +718,7 @@
                         countDisplay.innerText = `Total Facilities: ${stateHospitals.length}`;
                         countDisplay.style.fontWeight = 'bold';
                         countDisplay.style.color = '#FFFFFF';
+                        countDisplay.style.color = '#ff8502';
                         countDisplay.style.marginTop = '10px';
                         list.before(countDisplay);
 
