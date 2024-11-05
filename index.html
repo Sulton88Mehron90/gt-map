@@ -8,6 +8,7 @@
     <link rel="icon" href="./img/gtLogo.png" type="image/png">
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js"></script>
     <script
@@ -15,556 +16,6 @@
     <link rel="stylesheet"
         href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.css"
         type="text/css">
-</head>
-
-<style>
-    html,
-    body {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        font-family: Arial, sans-serif;
-        color: #333;
-        overflow: hidden;
-    }
-
-    #map {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 1;
-    }
-
-    .mapboxgl-ctrl-top-right {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-    }
-
-    .mapbox-button-group {
-        position: absolute;
-        top: 150px;
-        right: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 0px;
-        z-index: 10;
-    }
-
-    .mapbox-button-group button {
-        color: #ffff;
-        border: none;
-        border-radius: 8px;
-        width: 30px;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 11px;
-        cursor: pointer;
-        font-weight: bold;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        transition: all 0.3s ease-in-out;
-        border: 0.5px solid #ff8502;
-    }
-
-    .mapbox-button-group button:hover {
-        transform: scale(1.1);
-        /* background: linear-gradient(145deg, #ff4343, #b31919); */
-        /* background: linear-gradient(145deg, #ffa849, #ff8502); */
-        background: linear-gradient(145deg, #ff8502, #ff8502);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
-    }
-
-    #container {
-        display: flex;
-        flex-direction: row-reverse;
-        height: 100%;
-        z-index: 5;
-    }
-
-    button {
-        width: 100%;
-        padding: 8px 0;
-        margin: 10px 0;
-        /* background-color:#4CAF50;
-        background-color:#ff8502; */
-        background-color: #0f2844;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    button:hover {
-        background-color: #45a049;
-    }
-
-    #hospital-list-sidebar {
-        font-family: 'Open Sans', sans-serif;
-        position: absolute;
-        left: 20px;
-        top: 100px;
-        width: 260px;
-        height: 100%;
-        max-height: 400px;
-        background: linear-gradient(145deg, #0f2844, #1c3a5c);
-        border-radius: 12px;
-        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4);
-        padding: 20px;
-        overflow-y: auto;
-        z-index: 10;
-        color: white;
-        cursor: grab;
-        transition: transform 0.3s ease-in-out;
-    }
-
-    #hospital-list-sidebar:hover {
-        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
-    }
-
-    #hospital-list-sidebar.hidden {
-        transform: translateX(-100%);
-    }
-
-    #hospital-list-sidebar h2 {
-        font-family: 'Open Sans', sans-serif;
-        font-size: 1.4rem;
-        font-weight: 600;
-        color: #ffffff;
-        margin-top: 5px;
-        margin-bottom: 10px;
-        text-align: center;
-        border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-        padding-bottom: 8px;
-        letter-spacing: 0.5px;
-    }
-
-    #hospital-list-sidebar p.count-display {
-        font-size: 1rem;
-        color: #f5eaea;
-        text-align: center;
-        font-weight: 500;
-        margin: 10px 0;
-    }
-
-    #hospital-list {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-        font-size: 0.9rem;
-    }
-
-    #hospital-list li {
-        margin: 10px 0;
-        padding: 10px;
-        background-color: rgba(255, 255, 255, 0.15);
-        border-radius: 8px;
-        line-height: 1.4;
-        font-size: 0.95rem;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-        transition: background-color 0.3s, transform 0.2s;
-    }
-
-    #hospital-list li:hover {
-        background-color: rgba(255, 255, 255, 0.2);
-        transform: scale(1.02);
-    }
-
-    #hospital-list-sidebar.collapsed {
-        width: 50px;
-        overflow: hidden;
-        transition: width 0.3s;
-    }
-
-    #hospital-list-sidebar::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    #hospital-list-sidebar::-webkit-scrollbar-thumb {
-        background: #ff8502;
-        border-radius: 10px;
-    }
-
-    .sidebar-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-    }
-
-    .sidebar-logo {
-        width: 20px;
-        height: auto;
-        border-radius: 50%;
-        background-color: #333;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        transition: background-color 0.3s ease;
-        /* margin: 0 10px; */
-    }
-
-    #close-sidebar {
-        background-color: #333;
-        color: #fff;
-        border: none;
-        border-radius: 50%;
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        transition: background-color 0.3s ease;
-        margin: 0 10px;
-    }
-
-    #close-sidebar:hover {
-        background-color: #555;
-    }
-
-    #close-sidebar i {
-        font-size: 12px;
-    }
-
-    .theme-toggle-btn {
-        background-color: #333;
-        color: #fff;
-        border: none;
-        border-radius: 50%;
-        width: 20px;
-        height: 20px;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        transition: background-color 0.3s ease;
-    }
-
-    .theme-toggle-btn:hover {
-        background-color: #555;
-    }
-
-    .dark-text,
-    .dark-text h2,
-    .dark-text p.count-display {
-        color: #333 !important;
-    }
-
-    .custom-marker {
-        background-repeat: no-repeat;
-        background-position: center;
-        cursor: default;
-    }
-
-    #home-logo {
-        position: fixed;
-        top: 20px;
-        left: 1px;
-        z-index: 20;
-        width: 80px;
-        cursor: pointer;
-        transition: opacity 0.3s ease;
-    }
-
-    #home-logo img {
-        display: block;
-        width: 140%;
-        height: auto;
-        filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.8));
-    }
-
-    /* sidebar styles */
-    #hospital-list-sidebar {
-        position: absolute;
-        top: 100px;
-        left: 0;
-        width: 260px;
-        max-height: 400px;
-        background: linear-gradient(145deg, #0f2844, #1c3a5c);
-        border-radius: 12px;
-        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4);
-        padding: 20px;
-        overflow-y: auto;
-        z-index: 10;
-        color: white;
-        transition: max-height 0.3s ease-in-out;
-    }
-
-    .sidebar-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-    }
-
-    .button-group {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-
-    /* Round button styling */
-    .round-button {
-        background-color: #333;
-        color: #fff;
-        border: none;
-        border-radius: 50%;
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        transition: background-color 0.3s ease;
-    }
-
-    .round-button:hover {
-        background-color: #555;
-    }
-
-    .sidebar-logo {
-        width: 20px;
-        height: auto;
-        border-radius: 50%;
-        background-color: #333;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        margin-right: 10px;
-    }
-
-    /* collapsed sidebar */
-    #hospital-list-sidebar.collapsed {
-        max-height: 50px;
-        overflow: hidden;
-        padding: 10px;
-        transition: max-height 0.3s ease-in-out;
-    }
-
-    /* Hide content in the collapsed state */
-    #hospital-list-sidebar.collapsed h2,
-    #hospital-list-sidebar.collapsed ul,
-    #hospital-list-sidebar.collapsed .count-display {
-        display: none;
-    }
-
-    #hospital-list-sidebar.collapsed .sidebar-header {
-        justify-content: flex-start;
-    }
-
-    /* Highlight the sidebar while dragging */
-    .hospital-list-sidebar.dragging {
-        cursor: grab;
-        opacity: 0.9;
-        transition: opacity 0.1s ease;
-    }
-
-    .mapboxgl-ctrl-geocoder {
-        width: 30% !important;
-        max-width: none !important;
-        font-size: 13px;
-    }
-
-    .mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--button {
-        position: absolute;
-        /* left: 100px; */
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 16px;
-        color: #333;
-        background: none;
-        border: none;
-        cursor: pointer;
-    }
-
-    #geocoder-container {
-        display: inline-block;
-        width: 250px;
-        margin-left: 10px;
-        position: relative;
-    }
-
-    .mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--button {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 16px;
-        color: #333;
-        background: none;
-        border: none;
-        cursor: pointer;
-    }
-
-    #toggle-geocoder {
-        width: 30px;
-        height: 30px;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        font-weight: bold;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        transition: all 0.3s ease-in-out;
-        border: 0.5px solid #ff8502;
-    }
-
-    /* Responsive Styles */
-
-    @media (max-width: 768px) {
-        #hospital-list-sidebar {
-            width: 80%;
-            left: 7.5%;
-            max-height: 60vh;
-            padding: 15px;
-            position: fixed;
-            bottom: 0;
-            overflow-y: auto;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        #hospital-list-sidebar h2 {
-            font-size: 1.2rem;
-        }
-
-        #hospital-list-sidebar p.count-display {
-            font-size: 0.9rem;
-        }
-
-        #hospital-list li {
-            font-size: 0.85rem;
-        }
-
-        #close-sidebar {
-            padding: 5px;
-            font-size: 0.85rem;
-        }
-
-        .sidebar-header {
-            justify-content: space-evenly;
-        }
-
-        #container {
-            flex-direction: column;
-        }
-
-        button {
-            font-size: 12px;
-            padding: 6px 0;
-        }
-
-        #home-logo {
-            width: 60px;
-        }
-
-        #hospital-list-sidebar.collapsed {
-            max-height: 40px;
-        }
-
-        .round-button {
-            width: 18px;
-            height: 18px;
-        }
-
-        .mapboxgl-ctrl-geocoder {
-            width: 50% !important;
-            max-width: none !important;
-            margin: 10px auto;
-            font-size: 14px;
-        }
-
-        #geocoder-container {
-            width: 200px;
-            margin-left: 5px;
-        }
-
-        .mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--input {
-            font-size: 12px;
-        }
-    }
-
-    @media (max-width: 480px) {
-        #hospital-list-sidebar {
-            width: 30%;
-            left: 5%;
-            max-height: 50vh;
-            padding: 10px;
-            bottom: 0;
-        }
-
-        #hospital-list li {
-            font-size: 0.8rem;
-            padding: 5px;
-        }
-
-        #hospital-list-sidebar h2 {
-            font-size: 1rem;
-        }
-
-        #hospital-list-sidebar p.count-display {
-            font-size: 0.8rem;
-        }
-
-        #close-sidebar {
-            padding: 4px;
-            font-size: 0.8rem;
-        }
-
-        #close-sidebar,
-        .theme-toggle-btn {
-            width: 30px;
-            height: 30px;
-        }
-
-        button {
-            margin: 5px 0;
-        }
-
-        #hospital-list li {
-            font-size: 12px;
-            padding: 5px;
-        }
-
-        #home-logo {
-            width: 40px;
-        }
-
-        #hospital-list-sidebar.minimized {
-            width: 30px;
-        }
-
-        .mapboxgl-ctrl-geocoder {
-            width: 90% !important;
-            font-size: 12px;
-        }
-
-        #geocoder-container {
-            width: 150px;
-            margin-left: 2px;
-        }
-
-        #toggle-geocoder {
-            width: 30px;
-            height: 30px;
-            font-size: 14px;
-        }
-
-        .mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--input {
-            font-size: 11px;
-        }
-    }
-</style>
-
 </head>
 
 <body>
@@ -596,13 +47,14 @@
     <div class="mapbox-button-group">
         <button id="fly-to-uk">UK</button>
         <button id="fly-to-usa">USA</button>
-        <button id="fit-to-uk">Fit UK</button>
+        <!-- <button id="fly-to-canada">Canada</button> -->
+        <!-- <button id="fly-to-aruba">Aruba</button> -->
+        <!-- <button id="fit-to-uk">Fit UK</button> -->
         <button id="fit-to-usa">Fit USA</button>
         <button id="reset-view">
             <i class="fas fa-sync-alt"></i>
         </button>
 
-        <!-- Geocoder field and toggle button -->
         <div id="geocoder-container" style="display: none;"></div>
         <button id="toggle-geocoder">
             <i class="fas fa-search"></i>
@@ -636,16 +88,6 @@
                 duration: 3000,
                 easing: (t) => t * (2 - t)
             });
-
-            // search. geocoder instance and add it to the map
-            // const geocoder = new MapboxGeocoder({
-            //     accessToken: mapboxgl.accessToken,
-            //     mapboxgl: mapboxgl
-            // });
-
-            // map.addControl(geocoder, 'bottom-right');
-
-            // Toggle the geocoder visibility
 
             const geocoderToggle = document.getElementById("toggle-geocoder");
             const geocoderContainer = document.getElementById("geocoder-container");
@@ -693,6 +135,174 @@
                     data: '/data/us-states.geojson',
                     promoteId: 'id'
                 });
+
+                // Add data sources for UK, Canada, and Aruba regions
+
+                // Add the UK regions data source
+                map.addSource('uk-regions', {
+                    type: 'geojson',
+                    data: '/data/uk-regions.geojson',
+                    promoteId: 'id'
+                });
+
+                // Add the Canada regions data source
+                map.addSource('canada-regions', {
+                    type: 'geojson',
+                    data: '/data/canada-regions.geojson',
+                    promoteId: 'id'
+                });
+
+                // Add the Aruba region data source
+                map.addSource('aruba-region', {
+                    type: 'geojson',
+                    data: '/data/aruba-region.geojson',
+                    promoteId: 'id'
+                });
+
+                // Function to add a region layer with both fill and line layers
+                function addRegionLayer(sourceName) {
+                    // Fill layer for region
+                    map.addLayer({
+                        id: `${sourceName}-fill`,
+                        type: 'fill',
+                        source: sourceName,
+                        paint: {
+                            'fill-color': [
+                                'case',
+                                ['boolean', ['feature-state', 'hover'], false], '#05aaff', // Hover color
+                                ['boolean', ['feature-state', 'selected'], false], '#05aaff', // Selected color
+                                '#d3d3d3'  // Default color
+                            ],
+                            'fill-opacity': 0.5
+                        }
+                    });
+
+                    // Line layer for region border
+                    map.addLayer({
+                        id: `${sourceName}-line-hover`,
+                        type: 'line',
+                        source: sourceName,
+                        paint: {
+                            'line-color': '#FFFFFF',
+                            'line-width': [
+                                'case',
+                                ['boolean', ['feature-state', 'hover'], false],
+                                2,
+                                0.6
+                            ]
+                        }
+                    });
+                }
+
+                // Add region layers for each data source
+                addRegionLayer('uk-regions');
+                addRegionLayer('canada-regions');
+                addRegionLayer('aruba-region');
+
+                // Ensure each region layer is set up with this function, e.g.:
+                setRegionClickEvent('canada-regions', 'id', 'name');
+                setRegionClickEvent('uk-regions', 'id', 'name');
+                setRegionClickEvent('aruba-region', 'id', 'name');
+
+                function populateSidebar(regionId, regionName, facilities) {
+                    console.log(`Populating sidebar for region: ${regionName} (ID: ${regionId})`);
+
+                    const sidebar = document.getElementById('hospital-list-sidebar');
+                    const list = document.getElementById('hospital-list');
+                    list.innerHTML = '';
+
+                    // Update sidebar title with the region name
+                    const title = sidebar.querySelector('h2');
+                    title.innerText = `Facilities Using Goliath's Solutions in ${regionName}`;
+
+                    // Remove any existing count display
+                    const existingCountDisplay = sidebar.querySelector('.count-display');
+                    if (existingCountDisplay) existingCountDisplay.remove();
+
+                    const regionHospitals = facilities.filter(hospital => {
+                        const { location } = hospital;
+
+                        // Check for specific Canadian region or Nunavut
+                        return (
+                            (location.includes(regionName) || location.includes(regionId))
+                        );
+                    });
+
+                    console.log("Region Hospitals:", regionHospitals);
+
+                    console.log(`Found ${regionHospitals.length} hospitals in ${regionName}.`);
+
+                    // Display facility count
+                    const countDisplay = document.createElement('p');
+                    countDisplay.classList.add('count-display');
+                    countDisplay.innerHTML = `Total Facilities: <span style="color: #ff8502;">${regionHospitals.length}</span>`;
+                    countDisplay.style.fontWeight = 'bold';
+                    countDisplay.style.color = '#FFFFFF';
+                    countDisplay.style.marginTop = '10px';
+                    list.before(countDisplay);
+
+                    // Populate sidebar list with hospitals
+                    regionHospitals.forEach(hospital => {
+                        const listItem = document.createElement('li');
+
+                        let ehrLogo;
+                        switch (hospital.ehr_system) {
+                            case 'Cerner':
+                                ehrLogo = '<img src="./img/cerner-logo.png" alt="Cerner logo" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%;">';
+                                break;
+                            case 'Epic':
+                                ehrLogo = '<img src="./img/epic-logo.png" alt="Epic logo" style="width: 20px; height: 18px; vertical-align: middle; margin-right: 5px;">';
+                                break;
+                            case 'Meditech':
+                                ehrLogo = '<img src="./img/meditech-logo.png" alt="Meditech logo" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%;">';
+                                break;
+                            default:
+                                ehrLogo = '';
+                                break;
+                        }
+
+                        listItem.innerHTML = `
+            <i class="fas fa-hospital-symbol"></i> 
+            <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
+                ${hospital.hospital_name}
+            </strong><br>
+            ${hospital.parent_company ? `Parent Company: ${hospital.parent_company}<br>` : ""}
+            ${hospital.location}<br>
+            EHR System: ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}
+        `;
+
+                        listItem.querySelector('.clickable-hospital').addEventListener('click', () => {
+                            map.flyTo({
+                                center: [hospital.longitude, hospital.latitude],
+                                zoom: 12,
+                                pitch: 45,
+                                bearing: 0,
+                                essential: true
+                            });
+                        });
+
+                        list.appendChild(listItem);
+                    });
+
+                    // Display the sidebar only if there is data
+                    sidebar.style.display = regionHospitals.length > 0 ? 'block' : 'none';
+                }
+
+                // Function to add region click events for non-USA regions
+                function setRegionClickEvent(regionSource, regionIdProp, regionNameProp) {
+                    map.on('click', `${regionSource}-fill`, (e) => {
+                        const clickedRegionId = e.features[0].properties[regionIdProp];
+                        const regionName = e.features[0].properties[regionNameProp];
+                        console.log(`Region clicked: ${regionName} (ID: ${clickedRegionId})`);
+
+                        // Fetch facilities data and populate sidebar
+                        fetch('./data/facilities.json')
+                            .then(response => response.json())
+                            .then(facilities => populateSidebar(clickedRegionId, regionName, facilities))
+                            .catch(error => console.error('Error loading facilities data:', error));
+                    });
+                }
+
 
                 map.addLayer({
                     id: 'us-states-fill',
@@ -775,14 +385,16 @@
                     .then(facilities => {
                         // Generating a unique list of states with facilities
                         facilities.forEach(facility => {
-                            const state = facility.location.split(', ')[1];
-                            statesWithFacilities.add(state);
+                            //     const state = facility.location.split(', ')[1];
+                            //     statesWithFacilities.add(state);
+                            // });
+
+                            const stateOrRegion = facility.location.split(', ')[1]; // Splits to find the region
+                            statesWithFacilities.add(stateOrRegion);
                         });
 
+
                         // Add markers for each facility
-                        // const markers = facilities.map(({ ehr_system, hospital_name, location, hospital_address, longitude, latitude, color }) => {
-                        //     const popup = new mapboxgl.Popup({ offset: 15, closeButton: false })
-                        //         .setHTML(`<strong>${hospital_name}</strong><br>${location}<br>EHR System: ${ehr_system}<br>Address: ${hospital_address}`);
 
                         let markers = facilities.map(({ ehr_system, hospital_name, location, hospital_address, longitude, latitude, parent_company }) => {
                             let popupContent = `
@@ -816,16 +428,6 @@
                                 .setLngLat([longitude, latitude])
                                 .setPopup(popup)
                                 .addTo(map);
-
-                            // // Event listeners for hover to show/hide popup
-                            // marker.getElement().addEventListener('mouseenter', () => popup.addTo(map));
-                            // marker.getElement().addEventListener('mouseleave', () => popup.remove());
-
-                            // // Additional event listener for touch devices (show popup on tap)
-                            // marker.getElement().addEventListener('click', (e) => {
-                            //     e.stopPropagation(); // Prevent sidebar from opening
-                            //     popup.addTo(map);
-                            // });
 
                             // Apply specific hover behavior based on the hospital name
                             if (hospital_name !== "CommonSpirit Health Headquarters") {
@@ -1037,7 +639,7 @@
                                             break;
                                         case 'Epic':
                                             // ehrLogo = '<img src="./img/epic-logo.png" alt="Epic logo" style="width: 20px; height: 18px; vertical-align: middle; margin-right: 5px;">';
-                                            ehrLogo = `<img src="./img/epic-logo.png" alt="Epic logo" style="width: 20px; height: 18px; vertical-align: middle; margin-right: 5px;">`; // Logo only, no text
+                                            ehrLogo = `<img src="./img/epic-logo.png" alt="Epic logo" style="width: 20px; height: 18px; vertical-align: middle; margin-right: 5px;">`;
                                             break;
                                         case 'Meditech':
                                             ehrLogo = '<img src="./img/meditech-logo.png" alt="Meditech logo" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%;">';
@@ -1047,25 +649,6 @@
                                             break;
                                     }
 
-                                    // Display hospital name, EHR system with logo, and location details
-                                    //                                     listItem.innerHTML = `
-                                    //     <i class="fas fa-hospital-symbol"></i> 
-                                    //     <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
-                                    //         ${hospital.hospital_name}
-                                    //     </strong><br>
-                                    //     ${hospital.location}<br>
-                                    //     EHR System: ${ehrLogo}${hospital.ehr_system}
-                                    // `;
-
-                                    //                                     listItem.innerHTML = `
-                                    //     <i class="fas fa-hospital-symbol"></i> 
-                                    //     <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
-                                    //         ${hospital.hospital_name}
-                                    //     </strong><br>
-                                    //     ${hospital.parent_company ? `Parent Company: ${hospital.parent_company}<br>` : ""}
-                                    //     ${hospital.location}<br>
-                                    //     EHR System: ${ehrLogo}${hospital.ehr_system}
-                                    // `;
 
                                     listItem.innerHTML = `
     <i class="fas fa-hospital-symbol"></i> 
@@ -1076,8 +659,6 @@
     ${hospital.location}<br>
     EHR System: ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}
 `;
-
-
 
                                     // Add a special note if this is the CommonSpirit Health Headquarters
                                     if (hospital.hospital_name === "CommonSpirit Health Headquarters") {
@@ -1096,15 +677,12 @@
                                         });
                                     });
 
-                                    // // Set background color based on the EHR system
-                                    // listItem.style.backgroundColor = hospital.ehr_system === 'SystemA' ? '#ff8502' : '#0f2844';
-
                                     list.appendChild(listItem);
                                 });
 
-                                sidebar.style.display = 'block'; // Show sidebar only if there is data
+                                sidebar.style.display = 'block';
                             } else {
-                                sidebar.style.display = 'none'; // Hide sidebar if no facilities
+                                sidebar.style.display = 'none';
                             }
 
                         });
@@ -1165,6 +743,8 @@
                 }
                 document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
 
+                // Fly-to buttons for navigating regions
+
                 document.getElementById("fly-to-uk").addEventListener("click", () => {
                     map.flyTo({ center: [360.242386, 51.633362], zoom: 4, pitch: 45 });
                 });
@@ -1173,12 +753,20 @@
                     map.flyTo({ center: [-101.714859, 39.710884], zoom: 4, pitch: 45 });
                 });
 
-                document.getElementById("fit-to-uk").addEventListener("click", () => {
-                    map.fitBounds([
-                        [355.216141, 56.551914],
-                        [357.263718, 51.059092]
-                    ]);
-                });
+                // document.getElementById("fly-to-canada").addEventListener("click", () => {
+                //     map.flyTo({ center: [-106.3468, 56.1304], zoom: 3, pitch: 45 });
+                // });
+
+                // document.getElementById("fly-to-aruba").addEventListener("click", () => {
+                //     map.flyTo({ center: [-70.027, 12.5246], zoom: 10, pitch: 45 });
+                // });
+
+                // document.getElementById("fit-to-uk").addEventListener("click", () => {
+                //     map.fitBounds([
+                //         [355.216141, 56.551914],
+                //         [357.263718, 51.059092]
+                //     ]);
+                // });
 
                 document.getElementById("fit-to-usa").addEventListener("click", () => {
                     map.fitBounds([
