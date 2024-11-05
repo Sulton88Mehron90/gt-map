@@ -1146,7 +1146,6 @@
         "scale": 0.6,
         "parent_company": "Einstein Healthcare Network"
     },
-
     {
         "ehr_system": "Cerner-ITWorks",
         "hospital_name": "Fort HealthCare",
@@ -1159,91 +1158,90 @@
         "scale": 0.6,
         "parent_company": "Fort HealthCare, Inc."
     },
-        {
-            "ehr_system": "Meditech",
-            "hospital_name": "Betsy Johnson Hospital",
-            "hospital_count": 1,
-            "location": "Dunn, NC, USA",
-            "hospital_address": "800 Tilghman Dr, Dunn, NC 28334, United States",
-            "latitude": 35.3182,
-            "longitude": -78.6163,
-            "color": "#57fa7d",
-            "scale": 0.6,
-            "parent_company": "Harnett Health"
-        },
-        {
-            "ehr_system": "Meditech",
-            "hospital_name": "Central Harnett Hospital",
-            "hospital_count": 1,
-            "location": "Lillington, NC, USA",
-            "hospital_address": "215 Brightwater Dr, Lillington, NC 27546, United States",
-            "latitude": 35.3964,
-            "longitude": -78.8227,
-            "color": "#57fa7d",
-            "scale": 0.6,
-            "parent_company": "Harnett Health"
-        },
-        {
-            "ehr_system": "Meditech",
-            "hospital_name": "Harnett Health Med First Primary & Urgent Care",
-            "hospital_count": 1,
-            "location": "Dunn, NC, USA",
-            "hospital_address": "803 Tilghman Dr, Dunn, NC 28334, United States",
-            "latitude": 35.3184,
-            "longitude": -78.6159,
-            "color": "#57fa7d",
-            "scale": 0.6,
-            "parent_company": "Harnett Health"
-        },
-        {
-            "ehr_system": "Meditech",
-            "hospital_name": "Harnett Health Angier Medical Services",
-            "hospital_count": 1,
-            "location": "Angier, NC, USA",
-            "hospital_address": "84 Medical Dr, Angier, NC 27501, United States",
-            "latitude": 35.5078,
-            "longitude": -78.7361,
-            "color": "#57fa7d",
-            "scale": 0.6,
-            "parent_company": "Harnett Health"
-        },
-        {
-            "ehr_system": "Meditech",
-            "hospital_name": "Harnett Health Buies Creek Medical Center",
-            "hospital_count": 1,
-            "location": "Buies Creek, NC, USA",
-            "hospital_address": "112 Hillcrest Dr, Buies Creek, NC 27506, United States",
-            "latitude": 35.4106,
-            "longitude": -78.7413,
-            "color": "#57fa7d",
-            "scale": 0.6,
-            "parent_company": "Harnett Health"
-        },
-        {
-            "ehr_system": "Meditech",
-            "hospital_name": "Harnett Health Coats Medical Services",
-            "hospital_count": 1,
-            "location": "Coats, NC, USA",
-            "hospital_address": "25 N Johnson St, Coats, NC 27521, United States",
-            "latitude": 35.4076,
-            "longitude": -78.6739,
-            "color": "#57fa7d",
-            "scale": 0.6,
-            "parent_company": "Harnett Health"
-        },
-        {
-            "ehr_system": "Meditech",
-            "hospital_name": "Harnett Health Benson Area Medical Center",
-            "hospital_count": 1,
-            "location": "Benson, NC, USA",
-            "hospital_address": "3333 NC-242 N, Benson, NC 27504, United States",
-            "latitude": 35.3799,
-            "longitude": -78.5467,
-            "color": "#57fa7d",
-            "scale": 0.6,
-            "parent_company": "Harnett Health"
-        },
-    
+    {
+        "ehr_system": "Meditech",
+        "hospital_name": "Betsy Johnson Hospital",
+        "hospital_count": 1,
+        "location": "Dunn, NC, USA",
+        "hospital_address": "800 Tilghman Dr, Dunn, NC 28334, United States",
+        "latitude": 35.3182,
+        "longitude": -78.6163,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Harnett Health"
+    },
+    {
+        "ehr_system": "Meditech",
+        "hospital_name": "Central Harnett Hospital",
+        "hospital_count": 1,
+        "location": "Lillington, NC, USA",
+        "hospital_address": "215 Brightwater Dr, Lillington, NC 27546, United States",
+        "latitude": 35.3964,
+        "longitude": -78.8227,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Harnett Health"
+    },
+    {
+        "ehr_system": "Meditech",
+        "hospital_name": "Harnett Health Med First Primary & Urgent Care",
+        "hospital_count": 1,
+        "location": "Dunn, NC, USA",
+        "hospital_address": "803 Tilghman Dr, Dunn, NC 28334, United States",
+        "latitude": 35.3184,
+        "longitude": -78.6159,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Harnett Health"
+    },
+    {
+        "ehr_system": "Meditech",
+        "hospital_name": "Harnett Health Angier Medical Services",
+        "hospital_count": 1,
+        "location": "Angier, NC, USA",
+        "hospital_address": "84 Medical Dr, Angier, NC 27501, United States",
+        "latitude": 35.5078,
+        "longitude": -78.7361,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Harnett Health"
+    },
+    {
+        "ehr_system": "Meditech",
+        "hospital_name": "Harnett Health Buies Creek Medical Center",
+        "hospital_count": 1,
+        "location": "Buies Creek, NC, USA",
+        "hospital_address": "112 Hillcrest Dr, Buies Creek, NC 27506, United States",
+        "latitude": 35.4106,
+        "longitude": -78.7413,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Harnett Health"
+    },
+    {
+        "ehr_system": "Meditech",
+        "hospital_name": "Harnett Health Coats Medical Services",
+        "hospital_count": 1,
+        "location": "Coats, NC, USA",
+        "hospital_address": "25 N Johnson St, Coats, NC 27521, United States",
+        "latitude": 35.4076,
+        "longitude": -78.6739,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Harnett Health"
+    },
+    {
+        "ehr_system": "Meditech",
+        "hospital_name": "Harnett Health Benson Area Medical Center",
+        "hospital_count": 1,
+        "location": "Benson, NC, USA",
+        "hospital_address": "3333 NC-242 N, Benson, NC 27504, United States",
+        "latitude": 35.3799,
+        "longitude": -78.5467,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Harnett Health"
+    },
     {
         "ehr_system": "Cerner",
         "hospital_name": "Medical Center Hospital",
@@ -1256,7 +1254,6 @@
         "scale": 0.6,
         "parent_company": "Ector County Hospital District"
     },
-
     {
         "ehr_system": "Epic",
         "hospital_name": "Tift Regional Medical Center",
@@ -1269,9 +1266,8 @@
         "scale": 0.6,
         "parent_company": "Southwell Health"
     },
-
     {
-        "ehr_system": "na", 
+        "ehr_system": "na",
         "hospital_name": "Esse Health",
         "hospital_count": 1,
         "location": "St. Louis, Missouri, USA",
@@ -1282,7 +1278,6 @@
         "scale": 0.6,
         "parent_company": "Esse Health"
     },
-
     {
         "ehr_system": "na",
         "hospital_name": "University of Louisville School of Dentistry",
@@ -1295,9 +1290,8 @@
         "scale": 0.6,
         "parent_company": "University of Louisville"
     },
-    
     {
-        "ehr_system": "na", 
+        "ehr_system": "na",
         "hospital_name": "California Department of Public Health",
         "hospital_count": 1,
         "location": "Sacramento, California, USA",
@@ -1308,9 +1302,8 @@
         "scale": 0.6,
         "parent_company": "State of California"
     },
-    
     {
-        "ehr_system": "na", 
+        "ehr_system": "na",
         "hospital_name": "Exeter Hospital",
         "hospital_count": 1,
         "location": "Exeter, New Hampshire, USA",
@@ -1321,7 +1314,6 @@
         "scale": 0.6,
         "parent_company": "Exeter Health Resources"
     },
-    
     {
         "ehr_system": "Meditech",
         "hospital_name": "Alder Hey Children's Hospital",
@@ -1334,7 +1326,6 @@
         "scale": 0.6,
         "parent_company": "Alder Hey Children's NHS Foundation Trust"
     },
-
     {
         "ehr_system": "Meditech",
         "hospital_name": "Liverpool Women's Hospital",
@@ -1347,7 +1338,6 @@
         "scale": 0.6,
         "parent_company": "Liverpool Women's NHS Foundation Trust"
     },
-
     {
         "ehr_system": "Meditech",
         "hospital_name": "The Clatterbridge Cancer Centre",
@@ -1360,7 +1350,6 @@
         "scale": 0.6,
         "parent_company": "The Clatterbridge Cancer Centre NHS Foundation Trust"
     },
-
     {
         "ehr_system": "Meditech",
         "hospital_name": "Sault Area Hospital",
@@ -1373,7 +1362,54 @@
         "scale": 0.6,
         "parent_company": "Sault Area Hospital Group"
     },
-
+    {
+        "ehr_system": "Meditech",
+        "hospital_name": "Nunavut Department of Health",
+        "hospital_count": 1,
+        "location": "Iqaluit, Nunavut, Canada",
+        "hospital_address": "Building 1091, Iqaluit, NU X0A 0H0, Canada",
+        "latitude": 63.7467,
+        "longitude": -68.5167,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Government of Nunavut"
+    },
+    {
+        "ehr_system": "Meditech",
+        "hospital_name": "Queensway Carleton Hospital",
+        "hospital_count": 1,
+        "location": "Ottawa, Ontario, Canada",
+        "hospital_address": "3045 Baseline Rd, Ottawa, ON K2H 8P4, Canada",
+        "latitude": 45.3483,
+        "longitude": -75.8057,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Queensway Carleton Hospital"
+    },
+    {
+        "ehr_system": "Meditech",
+        "hospital_name": "Royal Victoria Regional Health Centre",
+        "hospital_count": 1,
+        "location": "Barrie, Ontario, Canada",
+        "hospital_address": "201 Georgian Dr, Barrie, ON L4M 6M2, Canada",
+        "latitude": 44.4137,
+        "longitude": -79.6567,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Royal Victoria Regional Health Centre"
+    },
+    {
+        "ehr_system": "Meditech",
+        "hospital_name": "Southlake Regional Health Centre",
+        "hospital_count": 1,
+        "location": "Newmarket, Ontario, Canada",
+        "hospital_address": "596 Davis Dr, Newmarket, ON L3Y 2P9, Canada",
+        "latitude": 44.0604,
+        "longitude": -79.4557,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Southlake Regional Health Centre"
+    },
     {
         "ehr_system": "Meditech",
         "hospital_name": "Department of Public Health Aruba",
@@ -1386,7 +1422,4 @@
         "scale": 0.6,
         "parent_company": "Government of Aruba"
     }
-    
-
-    
 ]

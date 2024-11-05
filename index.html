@@ -280,7 +280,7 @@
         filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.8));
     }
 
-    /* Default sidebar styles */
+    /* sidebar styles */
     #hospital-list-sidebar {
         position: absolute;
         top: 100px;
@@ -339,7 +339,7 @@
         margin-right: 10px;
     }
 
-    /* Styles for the collapsed sidebar */
+    /* collapsed sidebar */
     #hospital-list-sidebar.collapsed {
         max-height: 50px;
         overflow: hidden;
@@ -563,7 +563,6 @@
             font-size: 11px;
         }
     }
-
 </style>
 
 </head>
@@ -589,7 +588,7 @@
                 </button> -->
             </div>
         </div>
-        <h2>Current Locations Using Goliath’s Solutions</h2>
+        <h2>Current Locations Using Goliath's Solutions</h2>
         <ul id="hospital-list"></ul>
     </div>
 
@@ -658,7 +657,7 @@
                 // Toggle geocoder visibility
                 if (geocoderContainer.style.display === "none") {
                     geocoderContainer.style.display = "block";
-                    geocoderToggle.style.display = "none"; 
+                    geocoderToggle.style.display = "none";
 
                     if (!geocoder) {
                         geocoder = new MapboxGeocoder({
@@ -669,7 +668,7 @@
                     }
                 } else {
                     geocoderContainer.style.display = "none";
-                    geocoderToggle.style.display = "flex"; 
+                    geocoderToggle.style.display = "flex";
                 }
             });
 
@@ -677,7 +676,7 @@
             document.addEventListener("click", (event) => {
                 if (!geocoderContainer.contains(event.target) && event.target !== geocoderToggle) {
                     geocoderContainer.style.display = "none";
-                    geocoderToggle.style.display = "flex"; 
+                    geocoderToggle.style.display = "flex";
                 }
             });
 
@@ -788,21 +787,17 @@
                         let markers = facilities.map(({ ehr_system, hospital_name, location, hospital_address, longitude, latitude, parent_company }) => {
                             let popupContent = `
         <strong>${hospital_name}</strong><br>
-        ${location}<br>
+        <strong style="color: #05aaff">${location}</strong><br>
         ${parent_company ? `Parent Company: ${parent_company}<br>` : ""}
-        EHR System: ${ehr_system}<br>
+        EHR System: <strong style="color: #0f2844">${ehr_system}</strong><br>
         Address: ${hospital_address}
     `;
 
-                            // Add a special note if this is the CommonSpirit Health Headquarters
-                            // if (hospital_name === "CommonSpirit Health Headquarters") {
-                            //     popupContent += `<br><strong style="color: red;">Note:</strong> CommonSpirit Health operates over 140 hospitals across 21 states. 
-                            //     <a href="https://www.commonspirit.org/" target="_blank" style="color: red;">Visit Website</a>`;
-                            // }
+                            // "note" If this is the CommonSpirit Health Headquarters
 
                             if (hospital_name === "CommonSpirit Health Headquarters") {
-                                popupContent += `<br><strong style="color: #ff8502;">Note:</strong> CommonSpirit Health operates over 140 hospitals across 21 states. 
-        <a href="https://www.commonspirit.org/" target="_blank" style="color: #06b4fd;">Visit Website</a>`;
+                                popupContent += `<br><strong style="color: #ff8502">Note:</strong> CommonSpirit Health operates over 140 hospitals across 21 states. 
+        <a href="https://www.commonspirit.org/" target="_blank" style="color: #06b4fd">Visit Website</a>`;
                             }
 
                             const popup = new mapboxgl.Popup({ offset: 15, closeButton: false })
@@ -906,6 +901,7 @@
                                     'step',
                                     ['get', 'point_count'],
                                     '#ff8502',  // Small clusters (dark blue)
+                                    // '#b31919',  // Small clusters (red) 
                                     10, ' #0f2844'  // Medium and large clusters (orange)
                                 ],
                                 'circle-radius': [
@@ -1061,17 +1057,17 @@
                                     //     EHR System: ${ehrLogo}${hospital.ehr_system}
                                     // `;
 
-//                                     listItem.innerHTML = `
-//     <i class="fas fa-hospital-symbol"></i> 
-//     <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
-//         ${hospital.hospital_name}
-//     </strong><br>
-//     ${hospital.parent_company ? `Parent Company: ${hospital.parent_company}<br>` : ""}
-//     ${hospital.location}<br>
-//     EHR System: ${ehrLogo}${hospital.ehr_system}
-// `;
+                                    //                                     listItem.innerHTML = `
+                                    //     <i class="fas fa-hospital-symbol"></i> 
+                                    //     <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
+                                    //         ${hospital.hospital_name}
+                                    //     </strong><br>
+                                    //     ${hospital.parent_company ? `Parent Company: ${hospital.parent_company}<br>` : ""}
+                                    //     ${hospital.location}<br>
+                                    //     EHR System: ${ehrLogo}${hospital.ehr_system}
+                                    // `;
 
-listItem.innerHTML = `
+                                    listItem.innerHTML = `
     <i class="fas fa-hospital-symbol"></i> 
     <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
         ${hospital.hospital_name}
