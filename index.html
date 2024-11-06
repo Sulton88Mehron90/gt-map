@@ -55,16 +55,6 @@
         <button id="reset-view">
             <i class="fas fa-sync-alt"></i>
         </button>
-
-        <!-- <button id="fly-to-uk">UK</button>
-        <button id="fly-to-usa">USA</button> -->
-        <!-- <button id="fly-to-canada">Canada</button> -->
-        <!-- <button id="fly-to-aruba">Aruba</button> -->
-        <!-- <button id="fit-to-uk">Fit UK</button> -->
-        <!-- <button id="fit-to-usa">Fit USA</button>
-        <button id="reset-view">
-            <i class="fas fa-sync-alt"></i>
-        </button> -->
         <div id="geocoder-container" style="display: none;"></div>
         <button id="toggle-geocoder">
             <i class="fas fa-search"></i>
@@ -748,28 +738,27 @@
                 document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
 
                 // Fly-to buttons for navigating regions
-
                 document.getElementById("fly-to-uk").addEventListener("click", () => {
                     map.flyTo({ center: [360.242386, 51.633362], zoom: 4, pitch: 45 });
                 });
-
-
                 document.getElementById("fly-to-canada").addEventListener("click", () => {
                     map.flyTo({
-                        center: [-106.3468, 56.1304], 
-                        zoom: 4,                       
-                        pitch: 30                
+                        center: [-106.3468, 56.1304],
+                        zoom: 4,
+                        pitch: 30
                     });
+
+                    // document.getElementById("fit-to-canada").addEventListener("click", () => {
+                    //     map.fitBounds([
+                    //         [-140.99778, 41.675105],
+                    //         [-52.648099, 83.23324]
+                    //     ]);
+                    // });
+
                 });
-
-
-                // document.getElementById("fit-to-canada").addEventListener("click", () => {
-                //     map.fitBounds([
-                //         [-140.99778, 41.675105],
-                //         [-52.648099, 83.23324]
-                //     ]);
-                // });
-
+                document.getElementById("fly-to-usa").addEventListener("click", () => {
+                    map.flyTo({ center: [-101.714859, 39.710884], zoom: 4, pitch: 45 });
+                });
 
                 document.getElementById("fit-to-usa").addEventListener("click", () => {
                     map.fitBounds([
