@@ -1267,7 +1267,7 @@
         "parent_company": "Southwell Health"
     },
     {
-        "ehr_system": "na",
+        "ehr_system": "Meditech",
         "hospital_name": "Esse Health",
         "hospital_count": 1,
         "location": "St. Louis, Missouri, USA",
@@ -1279,7 +1279,7 @@
         "parent_company": "Esse Health"
     },
     {
-        "ehr_system": "na",
+        "ehr_system": "Meditech",
         "hospital_name": "University of Louisville School of Dentistry",
         "hospital_count": 1,
         "location": "Louisville, Kentucky, USA",
@@ -1291,7 +1291,7 @@
         "parent_company": "University of Louisville"
     },
     {
-        "ehr_system": "na",
+        "ehr_system": "Meditech",
         "hospital_name": "California Department of Public Health",
         "hospital_count": 1,
         "location": "Sacramento, California, USA",
@@ -1303,7 +1303,7 @@
         "parent_company": "State of California"
     },
     {
-        "ehr_system": "na",
+        "ehr_system": "Meditech",
         "hospital_name": "Exeter Hospital",
         "hospital_count": 1,
         "location": "Exeter, New Hampshire, USA",

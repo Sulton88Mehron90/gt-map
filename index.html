@@ -43,25 +43,33 @@
         <ul id="hospital-list"></ul>
     </div>
 
-
     <div class="mapbox-button-group">
-        <button id="fly-to-uk">UK</button>
-        <button id="fly-to-usa">USA</button>
-        <!-- <button id="fly-to-canada">Canada</button> -->
-        <!-- <button id="fly-to-aruba">Aruba</button> -->
-        <!-- <button id="fit-to-uk">Fit UK</button> -->
-        <button id="fit-to-usa">Fit USA</button>
+
+
+        <button id="fly-to-usa" class="fly-to-button fly-to-usa"></button>
+        <button id="fly-to-canada" class="fly-to-button fly-to-canada"></button>
+        <button id="fly-to-uk" class="fly-to-button fly-to-uk"></button>
+        <button id="fly-to-aruba" class="fly-to-button fly-to-aruba"></button>
+        <button id="fit-to-usa" class="fit-to-button fit-to-usa"></button>
         <button id="reset-view">
             <i class="fas fa-sync-alt"></i>
         </button>
 
+        <!-- <button id="fly-to-uk">UK</button>
+        <button id="fly-to-usa">USA</button> -->
+        <!-- <button id="fly-to-canada">Canada</button> -->
+        <!-- <button id="fly-to-aruba">Aruba</button> -->
+        <!-- <button id="fit-to-uk">Fit UK</button> -->
+        <!-- <button id="fit-to-usa">Fit USA</button>
+        <button id="reset-view">
+            <i class="fas fa-sync-alt"></i>
+        </button> -->
         <div id="geocoder-container" style="display: none;"></div>
         <button id="toggle-geocoder">
             <i class="fas fa-search"></i>
         </button>
+
     </div>
-
-
     <div id="map"></div>
 
     <script>
@@ -84,7 +92,7 @@
 
             map.easeTo({
                 center: [-119.0187, 35.3733],
-                zoom: 5,
+                zoom: 4,
                 duration: 3000,
                 easing: (t) => t * (2 - t)
             });
@@ -266,9 +274,9 @@
             <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
                 ${hospital.hospital_name}
             </strong><br>
-            ${hospital.parent_company ? `Parent Company: ${hospital.parent_company}<br>` : ""}
+            ${hospital.parent_company ? `<strong>Parent Company:</strong> ${hospital.parent_company}<br>` : ""}
             ${hospital.location}<br>
-            EHR System: ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}
+            <strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}
         `;
 
                         listItem.querySelector('.clickable-hospital').addEventListener('click', () => {
@@ -649,16 +657,16 @@
                                             break;
                                     }
 
-
                                     listItem.innerHTML = `
     <i class="fas fa-hospital-symbol"></i> 
     <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
         ${hospital.hospital_name}
     </strong><br>
-    ${hospital.parent_company ? `Parent Company: ${hospital.parent_company}<br>` : ""}
+    ${hospital.parent_company ? `<strong>Parent Company:</strong> ${hospital.parent_company}<br>` : ""}
     ${hospital.location}<br>
-    EHR System: ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}
+    <strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}
 `;
+
 
                                     // Add a special note if this is the CommonSpirit Health Headquarters
                                     if (hospital.hospital_name === "CommonSpirit Health Headquarters") {
@@ -753,13 +761,13 @@
                     map.flyTo({ center: [-101.714859, 39.710884], zoom: 4, pitch: 45 });
                 });
 
-                // document.getElementById("fly-to-canada").addEventListener("click", () => {
-                //     map.flyTo({ center: [-106.3468, 56.1304], zoom: 3, pitch: 45 });
-                // });
+                document.getElementById("fly-to-canada").addEventListener("click", () => {
+                    map.flyTo({ center: [-106.3468, 56.1304], zoom: 3, pitch: 45 });
+                });
 
-                // document.getElementById("fly-to-aruba").addEventListener("click", () => {
-                //     map.flyTo({ center: [-70.027, 12.5246], zoom: 10, pitch: 45 });
-                // });
+                document.getElementById("fly-to-aruba").addEventListener("click", () => {
+                    map.flyTo({ center: [-70.027, 12.5246], zoom: 5, pitch: 45 });
+                });
 
                 // document.getElementById("fit-to-uk").addEventListener("click", () => {
                 //     map.fitBounds([
@@ -823,6 +831,7 @@
                 // });
 
                 // Function to toggle sidebar based on screen size and hover state
+
                 function toggleSidebarOnHover(show) {
                     if (window.innerWidth <= 480) {
                         sidebar.style.display = show ? 'block' : 'none';
