@@ -48,6 +48,7 @@
 
         <button id="fly-to-usa" class="fly-to-button fly-to-usa"></button>
         <button id="fly-to-canada" class="fly-to-button fly-to-canada"></button>
+        <!-- <button id="fit-to-canada" class="fit-to-button fit-to-canada"></button> -->
         <button id="fly-to-uk" class="fly-to-button fly-to-uk"></button>
         <button id="fly-to-aruba" class="fly-to-button fly-to-aruba"></button>
         <button id="fit-to-usa" class="fit-to-button fit-to-usa"></button>
@@ -393,14 +394,10 @@
                     .then(facilities => {
                         // Generating a unique list of states with facilities
                         facilities.forEach(facility => {
-                            //     const state = facility.location.split(', ')[1];
-                            //     statesWithFacilities.add(state);
-                            // });
-
-                            const stateOrRegion = facility.location.split(', ')[1]; // Splits to find the region
+                      
+                            const stateOrRegion = facility.location.split(', ')[1]; 
                             statesWithFacilities.add(stateOrRegion);
                         });
-
 
                         // Add markers for each facility
 
@@ -667,7 +664,6 @@
     <strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}
 `;
 
-
                                     // Add a special note if this is the CommonSpirit Health Headquarters
                                     if (hospital.hospital_name === "CommonSpirit Health Headquarters") {
                                         listItem.innerHTML += `<br><strong style="color: #ff8502;">Note:</strong> CommonSpirit Health operates over 140 hospitals across 21 states. 
@@ -762,25 +758,30 @@
                 });
 
                 document.getElementById("fly-to-canada").addEventListener("click", () => {
-                    map.flyTo({ center: [-106.3468, 56.1304], zoom: 3, pitch: 45 });
+                    map.flyTo({
+                        center: [-106.3468, 39.710884],
+                        zoom: 8,
+                        pitch: 30
+                    });
                 });
 
-                document.getElementById("fly-to-aruba").addEventListener("click", () => {
-                    map.flyTo({ center: [-70.027, 12.5246], zoom: 5, pitch: 45 });
-                });
-
-                // document.getElementById("fit-to-uk").addEventListener("click", () => {
+                // document.getElementById("fit-to-canada").addEventListener("click", () => {
                 //     map.fitBounds([
-                //         [355.216141, 56.551914],
-                //         [357.263718, 51.059092]
+                //         [-140.99778, 41.675105],
+                //         [-52.648099, 83.23324]
                 //     ]);
                 // });
+
 
                 document.getElementById("fit-to-usa").addEventListener("click", () => {
                     map.fitBounds([
                         [-165.031128, 65.476793],
                         [-81.131287, 26.876143]
                     ]);
+                });
+
+                document.getElementById("fly-to-aruba").addEventListener("click", () => {
+                    map.flyTo({ center: [-70.027, 12.5246], zoom: 5, pitch: 45 });
                 });
 
                 // Reset view button on the right side (outside the sidebar)

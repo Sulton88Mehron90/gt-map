@@ -114,6 +114,12 @@
     padding-right: 6px;
 }
 
+.mapbox-button-group .fit-to-canada {
+    background-image: url('./img/canada_flag.png');
+    background-position: left center;
+    padding-right: 6px;
+}
+
 .mapbox-button-group .fly-to-aruba {
     background-image: url('./img/Aruba_flag.png');
     background-position: left center;
