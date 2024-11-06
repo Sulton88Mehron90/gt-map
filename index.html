@@ -753,17 +753,15 @@
                     map.flyTo({ center: [360.242386, 51.633362], zoom: 4, pitch: 45 });
                 });
 
-                document.getElementById("fly-to-usa").addEventListener("click", () => {
-                    map.flyTo({ center: [-101.714859, 39.710884], zoom: 4, pitch: 45 });
-                });
 
                 document.getElementById("fly-to-canada").addEventListener("click", () => {
                     map.flyTo({
-                        center: [-106.3468, 39.710884],
-                        zoom: 8,
-                        pitch: 30
+                        center: [-106.3468, 56.1304], 
+                        zoom: 4,                       
+                        pitch: 30                
                     });
                 });
+
 
                 // document.getElementById("fit-to-canada").addEventListener("click", () => {
                 //     map.fitBounds([
