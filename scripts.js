@@ -260,29 +260,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
 
-
-        map.addLayer({
-            id: 'us-states-fill',
-            type: 'fill',
-            source: 'us-states',
-            paint: {
-                'fill-color': [
-                    'case',
-                    ['boolean', ['feature-state', 'hover'], false], '#05aaff', // Hover color
-                    ['boolean', ['feature-state', 'selected'], false], '#05aaff', // Click color
-                    [
-                        'match', ['get', 'id'],
-                        'CA', '#d3d3d3', // Default color per state
-                        'TX', '#d3d3d3',
-                        'NY', '#d3d3d3',
-                        'FL', '#d3d3d3',
-                        '#d3d3d3'  // Default color for non-target states
-                    ]
-                ],
-                'fill-opacity': 0.5
-            }
-        });
-
         // Hover outline on target states
         map.addLayer({
             id: 'us-states-line-hover',
@@ -418,6 +395,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // Initial call to set visibility based on the starting zoom level
                 toggleMarkers();
+
+
+                map.addLayer({
+                    id: 'us-states-fill',
+                    type: 'fill',
+                    source: 'us-states',
+                    paint: {
+                        'fill-color': [
+                            'case',
+                            // Check if the state is hovered and in the statesWithFacilities set
+                            [
+                                'all',
+                                ['boolean', ['feature-state', 'hover'], false],
+                                ['in', ['get', 'id'], ['literal', Array.from(statesWithFacilities)]]
+                            ],
+                            '#05aaff', // Hover color for states with facilities
+                
+                            // Selected color if a state with facilities is clicked
+                            ['boolean', ['feature-state', 'selected'], false], '#05aaff',
+                
+                            '#d3d3d3' // Default color for states without facilities
+                        ],
+                        'fill-opacity': 0.5
+                    }
+                });
+                
 
                 // Set up cluster source for hospitals
                 map.addSource('hospitals', {
@@ -640,6 +643,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
 
             })
+            
 
             .catch(error => {
                 console.error('Error loading facilities data:', error);
