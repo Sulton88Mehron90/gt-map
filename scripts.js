@@ -737,26 +737,28 @@ document.addEventListener("DOMContentLoaded", () => {
         // Initialize drag variables
         let isDragging = false;
         let startX, startY, initialLeft, initialTop;
-        let dragThreshold = 5; 
+        const dragThreshold = 5;
+        const header = sidebar.querySelector(".sidebar-header");
 
-        // Function to start drag (works for both touch and mouse)
         function startDrag(e) {
             startX = e.touches ? e.touches[0].clientX : e.clientX;
             startY = e.touches ? e.touches[0].clientY : e.clientY;
-
             const rect = sidebar.getBoundingClientRect();
             initialLeft = rect.left;
             initialTop = rect.top;
-
             sidebar.classList.add("dragging");
-            isDragging = false; // Reset dragging status at the start
+            isDragging = false;
+
+  
+            document.addEventListener("mousemove", handleDrag);
+            document.addEventListener("mouseup", endDrag);
+            document.addEventListener("touchmove", handleDrag, { passive: false });
+            document.addEventListener("touchend", endDrag);
         }
 
-        // Function to handle drag (works for both touchmove and mousemove)
         function handleDrag(e) {
             const currentX = e.touches ? e.touches[0].clientX : e.clientX;
             const currentY = e.touches ? e.touches[0].clientY : e.clientY;
-
             const dx = currentX - startX;
             const dy = currentY - startY;
 
@@ -766,31 +768,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (isDragging) {
                 e.preventDefault();
-
                 sidebar.style.left = `${Math.min(Math.max(0, initialLeft + dx), window.innerWidth - sidebar.offsetWidth)}px`;
                 sidebar.style.top = `${Math.min(Math.max(0, initialTop + dy), window.innerHeight - sidebar.offsetHeight)}px`;
             }
         }
 
-        function endDrag(e) {
+        function endDrag() {
             if (!isDragging) {
-                e.target.click();
+                header.click();
             }
             isDragging = false;
             sidebar.classList.remove("dragging");
+
+            document.removeEventListener("mousemove", handleDrag);
+            document.removeEventListener("mouseup", endDrag);
+            document.removeEventListener("touchmove", handleDrag);
+            document.removeEventListener("touchend", endDrag);
         }
-        
-        const header = sidebar.querySelector(".sidebar-header");
 
-        // Mouse events
         header.addEventListener("mousedown", startDrag);
-        document.addEventListener("mousemove", handleDrag);
-        document.addEventListener("mouseup", endDrag);
-
-        // Touch events for mobile devices
         header.addEventListener("touchstart", startDrag, { passive: false });
-        document.addEventListener("touchmove", handleDrag, { passive: false });
-        document.addEventListener("touchend", endDrag);
 
         // const toggleThemeButton = document.getElementById("toggle-theme");
 
