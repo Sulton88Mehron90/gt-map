@@ -734,40 +734,63 @@ document.addEventListener("DOMContentLoaded", () => {
             map.flyTo({ center: INITIAL_CENTER, zoom: INITIAL_ZOOM, pitch: 0 });
         });
 
+        // Initialize drag variables
         let isDragging = false;
-        let offsetX, offsetY;
+        let startX, startY, initialLeft, initialTop;
+        let dragThreshold = 5; 
 
-        sidebar.addEventListener("mousedown", (e) => {
-            isDragging = true;
-            offsetX = e.clientX - sidebar.offsetLeft;
-            offsetY = e.clientY - sidebar.offsetTop;
+        // Function to start drag (works for both touch and mouse)
+        function startDrag(e) {
+            startX = e.touches ? e.touches[0].clientX : e.clientX;
+            startY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            const rect = sidebar.getBoundingClientRect();
+            initialLeft = rect.left;
+            initialTop = rect.top;
+
             sidebar.classList.add("dragging");
-        });
+            isDragging = false; // Reset dragging status at the start
+        }
 
-        document.addEventListener("mousemove", (e) => {
-            if (isDragging) {
-                sidebar.style.left = `${e.clientX - offsetX}px`;
-                sidebar.style.top = `${e.clientY - offsetY}px`;
+        // Function to handle drag (works for both touchmove and mousemove)
+        function handleDrag(e) {
+            const currentX = e.touches ? e.touches[0].clientX : e.clientX;
+            const currentY = e.touches ? e.touches[0].clientY : e.clientY;
+
+            const dx = currentX - startX;
+            const dy = currentY - startY;
+
+            if (!isDragging && Math.abs(dx) + Math.abs(dy) > dragThreshold) {
+                isDragging = true;
             }
-        });
 
-        document.addEventListener("mouseup", () => {
+            if (isDragging) {
+                e.preventDefault();
+
+                sidebar.style.left = `${Math.min(Math.max(0, initialLeft + dx), window.innerWidth - sidebar.offsetWidth)}px`;
+                sidebar.style.top = `${Math.min(Math.max(0, initialTop + dy), window.innerHeight - sidebar.offsetHeight)}px`;
+            }
+        }
+
+        function endDrag(e) {
+            if (!isDragging) {
+                e.target.click();
+            }
             isDragging = false;
             sidebar.classList.remove("dragging");
-            constrainToViewport(sidebar);
-        });
-
-        function constrainToViewport(element) {
-            const rect = element.getBoundingClientRect();
-            const windowWidth = window.innerWidth;
-            const windowHeight = window.innerHeight;
-
-            // Constrain the sidebar within the viewport bounds
-            if (rect.left < 0) element.style.left = "0px";
-            if (rect.top < 0) element.style.top = "0px";
-            if (rect.right > windowWidth) element.style.left = `${windowWidth - rect.width}px`;
-            if (rect.bottom > windowHeight) element.style.top = `${windowHeight - rect.height}px`;
         }
+        
+        const header = sidebar.querySelector(".sidebar-header");
+
+        // Mouse events
+        header.addEventListener("mousedown", startDrag);
+        document.addEventListener("mousemove", handleDrag);
+        document.addEventListener("mouseup", endDrag);
+
+        // Touch events for mobile devices
+        header.addEventListener("touchstart", startDrag, { passive: false });
+        document.addEventListener("touchmove", handleDrag, { passive: false });
+        document.addEventListener("touchend", endDrag);
 
         // const toggleThemeButton = document.getElementById("toggle-theme");
 
