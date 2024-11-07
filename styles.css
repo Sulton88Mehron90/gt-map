@@ -431,6 +431,13 @@
         border: 0.5px solid #ff8502;
     } */
 
+    /* Simulate hover for touch by applying similar styling on active/focus */
+#map:active .hoverable-element, 
+#map .hoverable-element:focus {
+    outline: 2px solid #FFFFFF; 
+}
+
+
     /* Responsive Styles */
 
     @media (max-width: 768px) {
@@ -490,6 +497,14 @@
     }
 
     @media (max-width: 480px) {
+
+        @media (max-width: 480px) {
+            #map {
+                width: 100vw;
+                height: calc(100vh - 40px); 
+            }
+        }
+        
         #hospital-list-sidebar {
             width: 30%;
             left: 5%;
