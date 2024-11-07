@@ -95,50 +95,80 @@ document.addEventListener("DOMContentLoaded", () => {
             promoteId: 'id'
         });
 
-        // Function to add a region layer with both fill and line layers
-        function addRegionLayer(sourceName) {
-            
+        // Add region layers for each data source
 
-            map.addLayer({
-                id: `${sourceName}-fill`,
-                type: 'fill',
-                source: sourceName,
-                paint: {
-                    'fill-color': [
-                        'match',
-                        ['get', 'region'],
-                        'USA', '#ff0000',
-                        'UK', '#0000ff',
-                        'Canada', '#00ff00',
-                        'Aruba', '#ffff00',
-                        '#d3d3d3' // Default color
-                    ],
-                    'fill-opacity': 0.4
-                }
-            });
+function addRegionLayer(sourceName, fillColor = '#ff0000') {
+    map.addLayer({
+        id: `${sourceName}-fill`,
+        type: 'fill',
+        source: sourceName,
+        paint: {
+            'fill-color': fillColor,
+            'fill-opacity': 0.4
+        }
+    });
 
+    map.addLayer({
+        id: `${sourceName}-line-hover`,
+        type: 'line',
+        source: sourceName,
+        paint: {
+            'line-color': '#FFFFFF',
+            'line-width': [
+                'case',
+                ['boolean', ['feature-state', 'hover'], false],
+                2,
+                0.6
+            ]
+        }
+    });
 
-            // Line layer for region border
-            map.addLayer({
-                id: `${sourceName}-line-hover`,
-                type: 'line',
-                source: sourceName,
-                paint: {
-                    'line-color': '#FFFFFF',
-                    'line-width': [
-                        'case',
-                        ['boolean', ['feature-state', 'hover'], false],
-                        2,
-                        0.6
-                    ]
-                }
-            });
+    // Add hover and click event handlers for each region layer (as before)
+    let hoveredRegionId = null;
+    let selectedRegionId = null;
+
+    // Hover effect
+    map.on('mousemove', `${sourceName}-fill`, (e) => {
+        if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
+            map.setFeatureState({ source: sourceName, id: hoveredRegionId }, { hover: false });
+        }
+        hoveredRegionId = e.features[0].id;
+
+        // Only set hover if it’s not the selected region
+        if (hoveredRegionId !== selectedRegionId) {
+            map.setFeatureState({ source: sourceName, id: hoveredRegionId }, { hover: true });
+        }
+    });
+
+    map.on('mouseleave', `${sourceName}-fill`, () => {
+        if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
+            map.setFeatureState({ source: sourceName, id: hoveredRegionId }, { hover: false });
+        }
+        hoveredRegionId = null;
+    });
+
+    // Click effect
+    map.on('click', `${sourceName}-fill`, (e) => {
+        if (selectedRegionId !== null) {
+            map.setFeatureState({ source: sourceName, id: selectedRegionId }, { selected: false });
         }
 
-        // Add region layers for each data source
-        addRegionLayer('uk-regions');
-        addRegionLayer('canada-regions');
-        addRegionLayer('aruba-region');
+        selectedRegionId = e.features[0].id;
+        map.setFeatureState({ source: sourceName, id: selectedRegionId }, { selected: true });
+
+        const regionId = e.features[0].properties.id;
+        const regionName = e.features[0].properties.name;
+        fetch('./data/facilities.json')
+            .then(response => response.json())
+            .then(facilities => populateSidebar(regionId, regionName, facilities))
+            .catch(error => console.error('Error loading facilities data:', error));
+    });
+}
+
+        // Example usage with different colors for each region
+        addRegionLayer('uk-regions', '#0000ff');
+        addRegionLayer('canada-regions', '#00ff00');
+        addRegionLayer('aruba-region', '#ffff00');
 
         // Ensure each region layer is set up with this function, e.g.:
         setRegionClickEvent('canada-regions', 'id', 'name');
