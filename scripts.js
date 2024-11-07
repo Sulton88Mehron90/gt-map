@@ -97,21 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Function to add a region layer with both fill and line layers
         function addRegionLayer(sourceName) {
-            // Fill layer for region
-            // map.addLayer({
-            //     id: `${sourceName}-fill`,
-            //     type: 'fill',
-            //     source: sourceName,
-            //     paint: {
-            //         'fill-color': [
-            //             'case',
-            //             ['boolean', ['feature-state', 'hover'], false], '#05aaff', // Hover color
-            //             ['boolean', ['feature-state', 'selected'], false], '#05aaff', // Selected color
-            //             '#d3d3d3'  // Default color
-            //         ],
-            //         'fill-opacity': 0.5
-            //     }
-            // });
+            
 
             map.addLayer({
                 id: `${sourceName}-fill`,
@@ -159,49 +145,48 @@ document.addEventListener("DOMContentLoaded", () => {
         setRegionClickEvent('uk-regions', 'id', 'name');
         setRegionClickEvent('aruba-region', 'id', 'name');
 
+
         function populateSidebar(regionId, regionName, facilities) {
             console.log(`Populating sidebar for region: ${regionName} (ID: ${regionId})`);
-
+        
             const sidebar = document.getElementById('hospital-list-sidebar');
             const list = document.getElementById('hospital-list');
             list.innerHTML = '';
-
+        
             // Update sidebar title with the region name
             const title = sidebar.querySelector('h2');
             title.innerText = `Facilities Using Goliath's Solutions in ${regionName}`;
-
+        
             // Remove any existing count display
             const existingCountDisplay = sidebar.querySelector('.count-display');
             if (existingCountDisplay) existingCountDisplay.remove();
-
-            // const regionHospitals = facilities.filter(hospital => {
-            //     const { location } = hospital;
-
-            //     // Check for specific Canadian region or Nunavut
-            //     return (
-            //         (location.includes(regionName) || location.includes(regionId))
-            //     );
-            // });
-
-            const regionHospitals = facilities.filter(hospital => hospital.location.includes(regionName) || hospital.region_id === regionId);
-
-            console.log("Region Hospitals:", regionHospitals);
-
-            console.log(`Found ${regionHospitals.length} hospitals in ${regionName}.`);
-
-            // Display facility count
+        
+            // Filter facilities by region
+            const regionHospitals = facilities.filter(hospital => 
+                hospital.location.includes(regionName) || hospital.region_id === regionId
+            );
+        
+            // Calculate total facility count, accounting for multi-hospital entries
+            const totalHospitalCount = regionHospitals.reduce((sum, hospital) => 
+                sum + (hospital.hospital_count || 1), 0
+            );
+        
+            console.log(`Found ${regionHospitals.length} hospitals in ${regionName} with a total of ${totalHospitalCount} facilities.`);
+        
+            // Display total facility count in the sidebar
             const countDisplay = document.createElement('p');
             countDisplay.classList.add('count-display');
-            countDisplay.innerHTML = `Total Facilities: <span style="color: #ff8502;">${regionHospitals.length}</span>`;
+            countDisplay.innerHTML = `Total Facilities: <span style="color: #ff8502;">${totalHospitalCount}</span>`;
             countDisplay.style.fontWeight = 'bold';
             countDisplay.style.color = '#FFFFFF';
             countDisplay.style.marginTop = '10px';
             list.before(countDisplay);
-
+        
             // Populate sidebar list with hospitals
             regionHospitals.forEach(hospital => {
                 const listItem = document.createElement('li');
-
+        
+                // Select the appropriate EHR logo based on the ehr_system value
                 let ehrLogo;
                 switch (hospital.ehr_system) {
                     case 'Cerner':
@@ -217,17 +202,19 @@ document.addEventListener("DOMContentLoaded", () => {
                         ehrLogo = '';
                         break;
                 }
-
+        
                 listItem.innerHTML = `
-            <i class="fas fa-hospital-symbol"></i> 
-            <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
-                ${hospital.hospital_name}
-            </strong><br>
-            ${hospital.parent_company ? `<strong>Parent Company:</strong> ${hospital.parent_company}<br>` : ""}
-            ${hospital.location}<br>
-            <strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}
-        `;
-
+                    <i class="fas fa-hospital-symbol"></i> 
+                    <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
+                        ${hospital.hospital_name}
+                    </strong><br>
+                    ${hospital.parent_company ? `<strong>Parent Company:</strong> ${hospital.parent_company}<br>` : ""}
+                    ${hospital.location}<br>
+                    <strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system || ""}
+                    <strong>Hospital Count:</strong> ${hospital.hospital_count || 1}<br>
+                `;
+        
+                // Add fly-to map functionality on click
                 listItem.querySelector('.clickable-hospital').addEventListener('click', () => {
                     map.flyTo({
                         center: [hospital.longitude, hospital.latitude],
@@ -237,28 +224,43 @@ document.addEventListener("DOMContentLoaded", () => {
                         essential: true
                     });
                 });
-
+        
                 list.appendChild(listItem);
             });
-
-            // Display the sidebar only if there is data
+        
+            // Display the sidebar only if there are hospitals to show
             sidebar.style.display = regionHospitals.length > 0 ? 'block' : 'none';
         }
-
-        // Function to add region click events for non-USA regions
+        
+        
         function setRegionClickEvent(regionSource, regionIdProp, regionNameProp) {
             map.on('click', `${regionSource}-fill`, (e) => {
+                // Capture the clicked region's ID and name properties from the geoJSON data
                 const clickedRegionId = e.features[0].properties[regionIdProp];
                 const regionName = e.features[0].properties[regionNameProp];
                 console.log(`Region clicked: ${regionName} (ID: ${clickedRegionId})`);
-
-                // Fetch facilities data and populate sidebar
+        
+                // Fetch facilities data and pass it to populateSidebar for the clicked region
                 fetch('./data/facilities.json')
-                    .then(response => response.json())
-                    .then(facilities => populateSidebar(clickedRegionId, regionName, facilities))
-                    .catch(error => console.error('Error loading facilities data:', error));
+                    .then(response => {
+                        if (!response.ok) throw new Error("Network response was not ok");
+                        return response.json();
+                    })
+                    .then(facilities => {
+                        // Pass the region data to populateSidebar
+                        populateSidebar(clickedRegionId, regionName, facilities);
+                    })
+                    .catch(error => {
+                        console.error('Error loading facilities data:', error);
+                        const errorMessage = document.getElementById('error-message');
+                        if (errorMessage) {
+                            errorMessage.style.display = 'block';
+                            errorMessage.innerText = 'Failed to load facility data. Please try again later.';
+                        }
+                    });
             });
         }
+        
 
         // Hover outline on target states
         map.addLayer({
@@ -326,13 +328,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // Add markers for each facility
 
-                let markers = facilities.map(({ ehr_system, hospital_name, location, hospital_address, longitude, latitude, parent_company }) => {
+                let markers = facilities.map(({ ehr_system, hospital_name, location, hospital_address, longitude, latitude, parent_company, hospital_count  }) => {
                     let popupContent = `
         <strong>${hospital_name}</strong><br>
         <strong style="color: #05aaff">${location}</strong><br>
         ${parent_company ? `Parent Company: ${parent_company}<br>` : ""}
         EHR System: <strong style="color: #0f2844">${ehr_system}</strong><br>
-        Address: ${hospital_address}
+        Address: ${hospital_address}<br>
+        Hospital Count: <strong>${hospital_count}</strong>
     `;
 
                     // "note" If this is the CommonSpirit Health Headquarters
@@ -374,6 +377,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     return marker;
                 });
+
+
+                
 
                 // Toggle marker visibility based on zoom level
 
@@ -420,7 +426,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         'fill-opacity': 0.5
                     }
                 });
-                
 
                 // Set up cluster source for hospitals
                 map.addSource('hospitals', {
@@ -573,10 +578,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     const existingCountDisplay = sidebar.querySelector('.count-display');
                     if (existingCountDisplay) existingCountDisplay.remove();
 
+                    // Calculate the total facility count for the clicked state
+const totalFacilityCount = stateHospitals.reduce((sum, hospital) => sum + (hospital.hospital_count || 1), 0);
+
+
                     // Display facility count
                     const countDisplay = document.createElement('p');
                     countDisplay.classList.add('count-display');
-                    countDisplay.innerHTML = `Total Facilities: <span style="color: #ff8502;">${stateHospitals.length}</span>`;
+                    // countDisplay.innerHTML = `Total Facilities: <span style="color: #ff8502;">${stateHospitals.length}</span>`;
+
+                    // Update the sidebar count display to show the actual number of facilities
+                    countDisplay.innerHTML = `Total Facilities: <span style="color: #ff8502;">${totalFacilityCount}</span>`;
                     countDisplay.style.fontWeight = 'bold';
                     countDisplay.style.color = '#FFFFFF';
                     countDisplay.style.marginTop = '10px';
@@ -613,6 +625,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ${hospital.parent_company ? `<strong>Parent Company:</strong> ${hospital.parent_company}<br>` : ""}
     ${hospital.location}<br>
     <strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}
+    <strong>Hospital Count:</strong> ${hospital.hospital_count}<br>
 `;
 
                             // Add a special note if this is the CommonSpirit Health Headquarters

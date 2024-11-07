@@ -728,7 +728,7 @@
     {
         "ehr_system": "Cerner",
         "hospital_name": "CommonSpirit Health Headquarters",
-        "hospital_count": 1,
+        "hospital_count": 140,
         "location": "Chicago, IL",
         "hospital_address": "444 W. Lake Street, Suite 2500, Chicago, IL 60606",
         "latitude": 41.8865,
@@ -1338,6 +1338,18 @@
         "scale": 0.6,
         "parent_company": "Liverpool Women's NHS Foundation Trust"
     },
+    {
+        "ehr_system": "Cerner-ITWorks",
+        "hospital_name": "Glens Falls Hospital",
+        "hospital_count": 28,
+        "location": "Glens Falls, NY",
+        "hospital_address": "100 Park Street, Glens Falls, NY 12801",
+        "latitude": 43.3104,
+        "longitude": -73.6455,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Glens Falls Health Systems"
+      },
     {
         "ehr_system": "Meditech",
         "hospital_name": "The Clatterbridge Cancer Centre",
