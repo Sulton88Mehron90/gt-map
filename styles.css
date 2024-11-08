@@ -312,6 +312,19 @@
         cursor: default;
     }
 
+    /* Regular hover effect for desktop */
+    .custom-marker:hover,
+    .custom-marker.hover-effect { 
+        transform: scale(1.2); 
+        z-index: 2;
+    }
+
+    .mapboxgl-map .hovered {
+        fill: #05aaff;
+        fill-opacity: 0.5;
+    }
+    
+    
     #home-logo {
         position: fixed;
         top: 20px;
@@ -413,7 +426,7 @@
         opacity: 0.9;
         transition: opacity 0.1s ease;
     }
-/* 
+
     #toggle-geocoder {
         width: 30px;
         height: 30px;
@@ -429,14 +442,13 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         transition: all 0.3s ease-in-out;
         border: 0.5px solid #ff8502;
-    } */
+    }
 
-    /* Simulate hover for touch by applying similar styling on active/focus */
-#map:active .hoverable-element, 
+/* Simulate hover for touch by applying similar styling on active/focus */
+/* #map:active .hoverable-element, 
 #map .hoverable-element:focus {
     outline: 2px solid #FFFFFF; 
-}
-
+} */
 
     /* Responsive Styles */
 

@@ -4,6 +4,14 @@ import { loadFacilitiesData } from './dataLoader.js';
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
+// Define hover effect functions once
+function addHoverEffect(marker) {
+    marker.classList.add('hover-effect');
+}
+function removeHoverEffect(marker) {
+    marker.classList.remove('hover-effect');
+}   
+
 // Initialize the map after the DOM is fully loaded
 document.addEventListener("DOMContentLoaded", () => {
     const sidebar = document.getElementById("hospital-list-sidebar");
@@ -114,8 +122,6 @@ document.addEventListener("click", (event) => {
             promoteId: 'id'
         });
 
-        // Add data sources for UK, Canada, and Aruba regions
-
         map.addSource('uk-regions', {
             type: 'geojson',
             data: '/data/uk-regions.geojson',
@@ -139,6 +145,8 @@ document.addEventListener("click", (event) => {
         const regionsWithFacilities = new Set();
         const statesWithFacilities = new Set();
 
+
+
 async function loadFacilitiesData() {
     if (cachedFacilitiesData) {
         return cachedFacilitiesData;
@@ -157,18 +165,34 @@ async function loadFacilitiesData() {
         loadFacilitiesData().then(facilities => {
             facilitiesData = facilities;
 
-            // Populate `regionsWithFacilities` and `statesWithFacilities` sets
-            facilities.forEach(facility => {
-                const regionId = facility.region_id;
-                if (regionId) {
-                    regionsWithFacilities.add(regionId);
-                }
+            // // Populate `regionsWithFacilities` and `statesWithFacilities` sets
+            // facilities.forEach(facility => {
+            //     const regionId = facility.region_id;
+            //     if (regionId) {
+            //         regionsWithFacilities.add(regionId);
+            //     }
 
-                const stateOrRegion = facility.location.split(', ')[1];
-                if (stateOrRegion) {
-                    statesWithFacilities.add(stateOrRegion);
-                }
-            });
+            //     const stateOrRegion = facility.location.split(', ')[1];
+            //     if (stateOrRegion) {
+            //         statesWithFacilities.add(stateOrRegion);
+            //     }
+            // });
+
+     
+    facilities.forEach(facility => {
+        const regionId = facility.region_id ? facility.region_id.toUpperCase() : null;
+        if (regionId) {
+            regionsWithFacilities.add(regionId);
+        }
+
+        const stateOrRegion = facility.location.split(', ')[1];
+        if (stateOrRegion) {
+            statesWithFacilities.add(stateOrRegion);
+        }
+    });
+
+            // Add this line to print regionsWithFacilities to the console
+    console.log("regionsWithFacilities:", Array.from(regionsWithFacilities));
 
             // Initialize region layers for each non-USA region
             addRegionLayerWithBehavior('uk-regions', regionsWithFacilities, '#d3d3d3', '#05aaff');
@@ -187,32 +211,55 @@ async function loadFacilitiesData() {
             let selectedRegionId = null;
 
             // Define the fill layer with conditional colors based on state
-            map.addLayer({
-                id: `${sourceName}-fill`,
-                type: 'fill',
-                source: sourceName,
-                paint: {
-                    'fill-color': [
-                        'case',
-                        // Selected color for regions with facilities
-                        ['boolean', ['feature-state', 'selected'], false],
-                        selectedColor,
+            // map.addLayer({
+            //     id: `${sourceName}-fill`,
+            //     type: 'fill',
+            //     source: sourceName,
+            //     paint: {
+            //         'fill-color': [
+            //             'case',
+            //             // Selected color for regions with facilities
+            //             ['boolean', ['feature-state', 'selected'], false],
+            //             selectedColor,
 
-                        // Hover color for regions with facilities
-                        ['all', ['boolean', ['feature-state', 'hover'], false],
-                            ['in', ['get', 'id'], ['literal', Array.from(regionsWithFacilities)]]],
-                        hoverColor,
+            //             // Hover color for regions with facilities
+            //             // ['all', ['boolean', ['feature-state', 'hover'], false],
+            //             //     ['in', ['get', 'id'], ['literal', Array.from(regionsWithFacilities)]]],
+            //             ['boolean', ['feature-state', 'hover'], false],
+            //             hoverColor,
 
-                        // Default color for non-facility regions
-                        defaultColor
-                    ],
-                    'fill-opacity': 0.5
-                }
-            });
+            //             // Default color for non-facility regions
+            //             defaultColor
+            //         ],
+            //         'fill-opacity': 0.5
+            //     }
+            // });
+
+            // Simplified fill-color condition to check if hover works without regionsWithFacilities
+map.addLayer({
+    id: `${sourceName}-fill`,
+    type: 'fill',
+    source: sourceName,
+    paint: {
+        'fill-color': [
+            'case',
+            // Selected color
+            ['boolean', ['feature-state', 'selected'], false],
+            selectedColor,
+            // Hover color without regionsWithFacilities condition
+            ['boolean', ['feature-state', 'hover'], false],
+            hoverColor,
+            // Default color
+            defaultColor
+        ],
+        'fill-opacity': 0.5
+    }
+});
 
             // Hover behavior for regions with facilities on desktop devices
             map.on('mousemove', `${sourceName}-fill`, (e) => {
                 const regionId = e.features[0].id;
+                console.log(`Hovering over region ID: ${regionId} on ${sourceName}`); // Debug  
                 if (!regionsWithFacilities.has(regionId)) return;
 
                 // Reset hover state for the previously hovered region if not selected
@@ -237,6 +284,7 @@ async function loadFacilitiesData() {
             // Touch behavior for hover effect on mobile devices
             map.on('touchstart', `${sourceName}-fill`, (e) => {
                 const regionId = e.features[0].id;
+                console.log(`Touch hover on region ID: ${regionId} on ${sourceName}`); // Debug
 
                 // Only apply hover to regions with facilities on touch devices
                 if (!regionsWithFacilities.has(regionId)) return;
@@ -686,6 +734,8 @@ async function loadFacilitiesData() {
 
                     return marker;
                 });
+
+                
 
                 //     // Hover outline on target USA states. might need to refactor.
                 //     map.addLayer({
@@ -1158,16 +1208,22 @@ async function loadFacilitiesData() {
 
         header.addEventListener("mousedown", startDrag);
         header.addEventListener("touchstart", startDrag, { passive: false });
+    
 
         function toggleSidebarOnHover(show) {
             if (window.innerWidth <= 480) {
                 sidebar.style.display = show ? 'block' : 'none';
             }
         }
+        
+// Event listeners for hover on sidebar
+sidebar.addEventListener('mouseenter', () => toggleSidebarOnHover(true));
+sidebar.addEventListener('mouseleave', () => toggleSidebarOnHover(false));
 
-        // Add event listeners for hover on the sidebar
-        sidebar.addEventListener('mouseenter', () => toggleSidebarOnHover(true));
-        sidebar.addEventListener('mouseleave', () => toggleSidebarOnHover(false));
+// Add touch events for mobile devices
+sidebar.addEventListener('touchstart', () => toggleSidebarOnHover(true));
+sidebar.addEventListener('touchend', () => toggleSidebarOnHover(false));
+
 
         // Close sidebar when the close button is clicked
         document.getElementById("close-sidebar").addEventListener('click', () => {

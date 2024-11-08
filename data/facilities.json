@@ -1312,7 +1312,8 @@
         "longitude": -70.9495,
         "color": "#57fa7d",
         "scale": 0.6,
-        "parent_company": "Exeter Health Resources"
+        "parent_company": "Exeter Health Resources",
+        "region_id": "NH"
     },
     {
         "ehr_system": "Meditech",
@@ -1324,7 +1325,8 @@
         "longitude": -2.9056,
         "color": "#57fa7d",
         "scale": 0.6,
-        "parent_company": "Alder Hey Children's NHS Foundation Trust"
+        "parent_company": "Alder Hey Children's NHS Foundation Trust",
+        "region_id": "ENG"
     },
     {
         "ehr_system": "Meditech",
@@ -1336,7 +1338,8 @@
         "longitude": -2.9608,
         "color": "#57fa7d",
         "scale": 0.6,
-        "parent_company": "Liverpool Women's NHS Foundation Trust"
+        "parent_company": "Liverpool Women's NHS Foundation Trust",
+        "region_id": "ENG"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -1348,7 +1351,8 @@
         "longitude": -73.6455,
         "color": "#57fa7d",
         "scale": 0.6,
-        "parent_company": "Glens Falls Health Systems"
+        "parent_company": "Glens Falls Health Systems",
+        "region_id": "NY"
       },
     {
         "ehr_system": "Meditech",
@@ -1360,7 +1364,8 @@
         "longitude": -3.0132,
         "color": "#57fa7d",
         "scale": 0.6,
-        "parent_company": "The Clatterbridge Cancer Centre NHS Foundation Trust"
+        "parent_company": "The Clatterbridge Cancer Centre NHS Foundation Trust",
+        "region_id": "ENG"
     },
     {
         "ehr_system": "Meditech",
@@ -1372,7 +1377,8 @@
         "longitude": -84.3353,
         "color": "#57fa7d",
         "scale": 0.6,
-        "parent_company": "Sault Area Hospital Group"
+        "parent_company": "Sault Area Hospital Group",
+        "region_id": "ON"
     },
     {
         "ehr_system": "Meditech",
@@ -1384,7 +1390,8 @@
         "longitude": -68.5167,
         "color": "#57fa7d",
         "scale": 0.6,
-        "parent_company": "Government of Nunavut"
+        "parent_company": "Government of Nunavut",
+        "region_id": "NU"
     },
     {
         "ehr_system": "Meditech",
@@ -1396,7 +1403,8 @@
         "longitude": -75.8057,
         "color": "#57fa7d",
         "scale": 0.6,
-        "parent_company": "Queensway Carleton Hospital"
+        "parent_company": "Queensway Carleton Hospital",
+        "region_id": "ON"
     },
     {
         "ehr_system": "Meditech",
@@ -1408,7 +1416,8 @@
         "longitude": -79.6567,
         "color": "#57fa7d",
         "scale": 0.6,
-        "parent_company": "Royal Victoria Regional Health Centre"
+        "parent_company": "Royal Victoria Regional Health Centre",
+        "region_id": "ON"
     },
     {
         "ehr_system": "Meditech",
@@ -1420,7 +1429,8 @@
         "longitude": -79.4557,
         "color": "#57fa7d",
         "scale": 0.6,
-        "parent_company": "Southlake Regional Health Centre"
+        "parent_company": "Southlake Regional Health Centre",
+        "region_id": "ON"
     },
     {
         "ehr_system": "Meditech",
@@ -1432,6 +1442,7 @@
         "longitude": -70.027,
         "color": "#57fa7d",
         "scale": 0.6,
-        "parent_company": "Government of Aruba"
+        "parent_company": "Government of Aruba",
+        "region_id": "AW"
     }
 ]
