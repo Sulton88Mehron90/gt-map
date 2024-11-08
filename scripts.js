@@ -519,7 +519,7 @@ ${hospital.hospital_name}
 </strong><br>
 ${hospital.parent_company ? `<strong>Parent Company:</strong> ${hospital.parent_company}<br>` : ""}
 ${hospital.location}<br>
-<strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}
+<strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}<br>
 <strong>Hospital Count:</strong> ${hospital.hospital_count}<br>
 `;
 
