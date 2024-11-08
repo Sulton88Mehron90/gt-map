@@ -8,7 +8,8 @@
         "longitude": -119.0187,
         "latitude": 35.3733,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Adventist Health"
     },
     {
         "ehr_system": "Cerner",
@@ -19,7 +20,8 @@
         "longitude": -122.6264,
         "latitude": 38.9579,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Adventist Health"
     },
     {
         "ehr_system": "Cerner",
@@ -30,7 +32,8 @@
         "longitude": -118.2256,
         "latitude": 34.1561,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Adventist Health"
     },
     {
         "ehr_system": "Cerner",
@@ -41,7 +44,8 @@
         "longitude": -119.6457,
         "latitude": 36.3274,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Adventist Health"
     },
     {
         "ehr_system": "Cerner",
@@ -52,7 +56,8 @@
         "longitude": -121.2874,
         "latitude": 38.1217,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Adventist Health"
     },
     {
         "ehr_system": "Cerner",
@@ -63,7 +68,8 @@
         "longitude": -119.4500,
         "latitude": 36.5975,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Adventist Health"
     },
     {
         "ehr_system": "Cerner",
@@ -74,7 +80,8 @@
         "longitude": -121.5914,
         "latitude": 39.1431,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Adventist Health"
     },
     {
         "ehr_system": "Cerner",
@@ -85,7 +92,8 @@
         "longitude": -118.7205,
         "latitude": 34.2794,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Adventist Health"
     },
     {
         "ehr_system": "Cerner",
@@ -96,7 +104,8 @@
         "longitude": -120.3662,
         "latitude": 37.9806,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Adventist Health"
     },
     {
         "ehr_system": "Cerner",
@@ -107,7 +116,8 @@
         "longitude": -122.4712,
         "latitude": 38.5064,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Adventist Health"
     },
     {
         "ehr_system": "Cerner",
@@ -118,7 +128,8 @@
         "longitude": -118.4390,
         "latitude": 35.1264,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Adventist Health"
     },
     {
         "ehr_system": "Cerner",
@@ -129,7 +140,8 @@
         "longitude": -119.3473,
         "latitude": 36.2077,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Adventist Health"
     },
     {
         "ehr_system": "Cerner",
@@ -140,7 +152,8 @@
         "longitude": -123.2078,
         "latitude": 39.1502,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Adventist Health"
     },
     {
         "ehr_system": "Cerner",
@@ -151,7 +164,8 @@
         "longitude": -122.2316,
         "latitude": 38.1214,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Adventist Health"
     },
     {
         "ehr_system": "Cerner",
@@ -162,7 +176,8 @@
         "longitude": -118.2114,
         "latitude": 34.0494,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Adventist Health"
     },
     {
         "ehr_system": "Cerner",
@@ -173,7 +188,8 @@
         "longitude": -121.6211,
         "latitude": 39.7596,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Adventist Health"
     },
     {
         "ehr_system": "Cerner",
@@ -184,7 +200,8 @@
         "longitude": -123.8056,
         "latitude": 39.4447,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Adventist Health"
     },
     {
         "ehr_system": "Cerner",
@@ -195,7 +212,8 @@
         "longitude": -119.2460,
         "latitude": 35.7689,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Adventist Health"
     },
     {
         "ehr_system": "Cerner",
@@ -206,7 +224,8 @@
         "longitude": -123.3371,
         "latitude": 39.4094,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Adventist Health"
     },
     {
         "ehr_system": "Cerner",
@@ -217,7 +236,8 @@
         "longitude": -120.6054,
         "latitude": 37.3515,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Adventist Health"
     },
     {
         "ehr_system": "Cerner",
@@ -228,7 +248,8 @@
         "latitude": 34.6868,
         "longitude": -118.1542,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Antelope Valley Healthcare District"
     },
     {
         "ehr_system": "Cerner",
@@ -238,8 +259,7 @@
         "hospital_address": "1925 Pacific Ave, Atlantic City, NJ 08401",
         "latitude": 39.3617,
         "longitude": -74.4325,
-        "color": "#57fa7d",
-        "scale": 0.6
+        "parent_company": "AtlantiCare"
     },
     {
         "ehr_system": "Cerner",
@@ -249,8 +269,7 @@
         "hospital_address": "65 W Jimmie Leeds Rd, Pomona, NJ 08240",
         "latitude": 39.4918,
         "longitude": -74.5328,
-        "color": "#57fa7d",
-        "scale": 0.6
+        "parent_company": "AtlantiCare"
     },
     {
         "ehr_system": "Cerner",
@@ -260,8 +279,7 @@
         "hospital_address": "2500 English Creek Ave, Egg Harbor Township, NJ 08234",
         "latitude": 39.3986,
         "longitude": -74.6089,
-        "color": "#57fa7d",
-        "scale": 0.6
+        "parent_company": "AtlantiCare"
     },
     {
         "ehr_system": "Cerner",
@@ -271,97 +289,9 @@
         "hospital_address": "2110 English Creek Ave, Egg Harbor Township, NJ 08234",
         "latitude": 39.4064,
         "longitude": -74.6103,
-        "color": "#57fa7d",
-        "scale": 0.6
+        "parent_company": "AtlantiCare"
     },
-    {
-        "ehr_system": "Cerner ITWorks",
-        "hospital_name": "Baptist Hospital of Miami",
-        "hospital_count": 1,
-        "location": "Miami, FL",
-        "hospital_address": "8900 N Kendall Dr, Miami, FL 33176",
-        "latitude": 25.6867,
-        "longitude": -80.3132,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner ITWorks",
-        "hospital_name": "South Miami Hospital",
-        "hospital_count": 1,
-        "location": "South Miami, FL",
-        "hospital_address": "6200 SW 73rd St, South Miami, FL 33143",
-        "latitude": 25.7043,
-        "longitude": -80.2906,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner ITWorks",
-        "hospital_name": "Doctors Hospital",
-        "hospital_count": 1,
-        "location": "Coral Gables, FL",
-        "hospital_address": "5000 University Dr, Coral Gables, FL 33146",
-        "latitude": 25.7213,
-        "longitude": -80.2762,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner ITWorks",
-        "hospital_name": "Homestead Hospital",
-        "hospital_count": 1,
-        "location": "Homestead, FL",
-        "hospital_address": "975 Baptist Way, Homestead, FL 33033",
-        "latitude": 25.4808,
-        "longitude": -80.4472,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner ITWorks",
-        "hospital_name": "Mariners Hospital",
-        "hospital_count": 1,
-        "location": "Tavernier, FL",
-        "hospital_address": "91500 Overseas Hwy, Tavernier, FL 33070",
-        "latitude": 25.0084,
-        "longitude": -80.5257,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner ITWorks",
-        "hospital_name": "West Kendall Baptist Hospital",
-        "hospital_count": 1,
-        "location": "Miami, FL",
-        "hospital_address": "9555 SW 162nd Ave, Miami, FL 33196",
-        "latitude": 25.6761,
-        "longitude": -80.4582,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner ITWorks",
-        "hospital_name": "Boca Raton Regional Hospital",
-        "hospital_count": 1,
-        "location": "Boca Raton, FL",
-        "hospital_address": "800 Meadows Rd, Boca Raton, FL 33486",
-        "latitude": 26.3539,
-        "longitude": -80.1032,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner ITWorks",
-        "hospital_name": "Bethesda Hospital East",
-        "hospital_count": 1,
-        "location": "Boynton Beach, FL",
-        "hospital_address": "2815 S Seacrest Blvd, Boynton Beach, FL 33435",
-        "latitude": 26.5057,
-        "longitude": -80.0657,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
+    
     {
         "ehr_system": "Cerner ITWorks",
         "hospital_name": "Beloit Memorial Hospital",
@@ -371,7 +301,8 @@
         "latitude": 42.5452,
         "longitude": -89.0638,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Beloit Health System"
     },
     {
         "ehr_system": "Cerner ITWorks",
@@ -382,7 +313,8 @@
         "latitude": 44.0774,
         "longitude": -70.1723,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Central Maine Healthcare"
     },
     {
         "ehr_system": "Cerner ITWorks",
@@ -393,7 +325,8 @@
         "latitude": 44.0548,
         "longitude": -70.7137,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Central Maine Healthcare"
     },
     {
         "ehr_system": "Cerner ITWorks",
@@ -404,327 +337,394 @@
         "latitude": 44.5586,
         "longitude": -70.5447,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "Central Maine Healthcare"
     },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Baptist Hospital of Miami",
-        "hospital_count": 1,
-        "location": "Miami, FL",
-        "hospital_address": "8900 N Kendall Dr, Miami, FL 33176",
-        "latitude": 25.6867,
-        "longitude": -80.3132,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "South Miami Hospital",
-        "hospital_count": 1,
-        "location": "South Miami, FL",
-        "hospital_address": "6200 SW 73rd St, South Miami, FL 33143",
-        "latitude": 25.7043,
-        "longitude": -80.2906,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Doctors Hospital",
-        "hospital_count": 1,
-        "location": "Coral Gables, FL",
-        "hospital_address": "5000 University Dr, Coral Gables, FL 33146",
-        "latitude": 25.7213,
-        "longitude": -80.2762,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Homestead Hospital",
-        "hospital_count": 1,
-        "location": "Homestead, FL",
-        "hospital_address": "975 Baptist Way, Homestead, FL 33033",
-        "latitude": 25.4808,
-        "longitude": -80.4472,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Mariners Hospital",
-        "hospital_count": 1,
-        "location": "Tavernier, FL",
-        "hospital_address": "91500 Overseas Hwy, Tavernier, FL 33070",
-        "latitude": 25.0084,
-        "longitude": -80.5257,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "West Kendall Baptist Hospital",
-        "hospital_count": 1,
-        "location": "Miami, FL",
-        "hospital_address": "9555 SW 162nd Ave, Miami, FL 33196",
-        "latitude": 25.6761,
-        "longitude": -80.4582,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Boca Raton Regional Hospital",
-        "hospital_count": 1,
-        "location": "Boca Raton, FL",
-        "hospital_address": "800 Meadows Rd, Boca Raton, FL 33486",
-        "latitude": 26.3539,
-        "longitude": -80.1032,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Bethesda Hospital East",
-        "hospital_count": 1,
-        "location": "Boynton Beach, FL",
-        "hospital_address": "2815 S Seacrest Blvd, Boynton Beach, FL 33435",
-        "latitude": 26.5057,
-        "longitude": -80.0657,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Bethesda Hospital West",
-        "hospital_count": 1,
-        "location": "Boynton Beach, FL",
-        "hospital_address": "9655 W Boynton Beach Blvd, Boynton Beach, FL 33472",
-        "latitude": 26.5284,
-        "longitude": -80.1923,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "CGH Medical Center",
-        "hospital_count": 2,
-        "location": "Sterling, IL",
-        "hospital_address": "100 E Le Fevre Rd, Sterling, IL 61081",
-        "latitude": 41.8051,
-        "longitude": -89.7057,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "W.W. Hastings Hospital",
-        "hospital_count": 1,
-        "location": "Tahlequah, OK",
-        "hospital_address": "100 S Bliss Ave, Tahlequah, OK 74464",
-        "latitude": 35.9179,
-        "longitude": -94.9667,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "A-Mo Health Center",
-        "hospital_count": 1,
-        "location": "Salina, OK",
-        "hospital_address": "900 N Owen Walters Blvd, Salina, OK 74365",
-        "latitude": 36.2970,
-        "longitude": -95.1520,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Redbird Smith Health Center",
-        "hospital_count": 1,
-        "location": "Sallisaw, OK",
-        "hospital_address": "301 J.T. Stites Blvd, Sallisaw, OK 74955",
-        "latitude": 35.4591,
-        "longitude": -94.8026,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Three Rivers Health Center",
-        "hospital_count": 1,
-        "location": "Muskogee, OK",
-        "hospital_address": "1001 S 41st St E, Muskogee, OK 74403",
-        "latitude": 35.7363,
-        "longitude": -95.3436,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Vinita Health Center",
-        "hospital_count": 1,
-        "location": "Vinita, OK",
-        "hospital_address": "27371 S 4410 Rd, Vinita, OK 74301",
-        "latitude": 36.6557,
-        "longitude": -95.1545,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Sam Hider Health Center",
-        "hospital_count": 1,
-        "location": "Jay, OK",
-        "hospital_address": "859 E Melton Dr, Jay, OK 74346",
-        "latitude": 36.4293,
-        "longitude": -94.7994,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Wilma P. Mankiller Health Center",
-        "hospital_count": 1,
-        "location": "Stilwell, OK",
-        "hospital_address": "471688 OK-51, Stilwell, OK 74960",
-        "latitude": 35.8147,
-        "longitude": -94.6305,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Cooweescoowee Health Center",
-        "hospital_count": 1,
-        "location": "Ochelata, OK",
-        "hospital_address": "395200 W 2900 Rd, Ochelata, OK 74051",
-        "latitude": 36.5296,
-        "longitude": -95.9750,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Cherokee Nation Outpatient Health Center",
-        "hospital_count": 1,
-        "location": "Tahlequah, OK",
-        "hospital_address": "19600 E Ross St, Tahlequah, OK 74464",
-        "latitude": 35.9148,
-        "longitude": -94.9746,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Children's National Medical Center - Main Hospital",
-        "hospital_count": 1,
-        "location": "Washington, DC",
-        "hospital_address": "111 Michigan Avenue, NW, Washington, DC 20010",
-        "latitude": 38.9296,
-        "longitude": -77.0146,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Children’s National Health Center - Anacostia",
-        "hospital_count": 1,
-        "location": "Washington, DC",
-        "hospital_address": "Good Hope Road SE, Washington, DC",
-        "latitude": 38.8667,
-        "longitude": -76.9902,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Children's National Health Center - Adams Morgan",
-        "hospital_count": 1,
-        "location": "Washington, DC",
-        "hospital_address": "Columbia Road NW, Washington, DC",
-        "latitude": 38.9213,
-        "longitude": -77.0430,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Children's National Emergency Department at United Medical Center",
-        "hospital_count": 1,
-        "location": "Washington, DC",
-        "hospital_address": "1310 Southern Ave SE, Washington, DC 20032",
-        "latitude": 38.8375,
-        "longitude": -76.9869,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Prince George’s County Outpatient Center",
-        "hospital_count": 1,
-        "location": "Lanham, MD",
-        "hospital_address": "2900 North Campus Way, Lanham, MD 20706",
-        "latitude": 38.9667,
-        "longitude": -76.8392,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Children's National Health Center - Montgomery County",
-        "hospital_count": 1,
-        "location": "Rockville, MD",
-        "hospital_address": "15245 Shady Grove Rd, Rockville, MD 20850",
-        "latitude": 39.1018,
-        "longitude": -77.2003,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Children's National Pediatric Specialists of Virginia",
-        "hospital_count": 1,
-        "location": "Fairfax, VA",
-        "hospital_address": "3023 Hamaker Ct, Fairfax, VA 22031",
-        "latitude": 38.8672,
-        "longitude": -77.2310,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Children's National Health Center - Friendship Heights",
-        "hospital_count": 1,
-        "location": "Washington, DC",
-        "hospital_address": "5028 Wisconsin Ave NW, Washington, DC 20016",
-        "latitude": 38.9547,
-        "longitude": -77.0833,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Children's National Health Center - Laurel Lakes",
-        "hospital_count": 1,
-        "location": "Laurel, MD",
-        "hospital_address": "13922 Baltimore Ave, Laurel, MD 20707",
-        "latitude": 39.0853,
-        "longitude": -76.8783,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Children's National Health Center - Frederick",
-        "hospital_count": 1,
-        "location": "Frederick, MD",
-        "hospital_address": "5900 Frederick Crossing Lane, Frederick, MD 21704",
-        "latitude": 39.3917,
-        "longitude": -77.4160,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
+        {
+            "ehr_system": "Cerner ITWorks",
+            "hospital_name": "Baptist Hospital of Miami",
+            "hospital_count": 1,
+            "location": "Miami, FL",
+            "hospital_address": "8900 N Kendall Dr, Miami, FL 33176",
+            "latitude": 25.6867,
+            "longitude": -80.3132,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Baptist Health South Florida"
+        },
+        {
+            "ehr_system": "Cerner ITWorks",
+            "hospital_name": "South Miami Hospital",
+            "hospital_count": 1,
+            "location": "South Miami, FL",
+            "hospital_address": "6200 SW 73rd St, South Miami, FL 33143",
+            "latitude": 25.7043,
+            "longitude": -80.2906,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Baptist Health South Florida"
+        },
+        {
+            "ehr_system": "Cerner ITWorks",
+            "hospital_name": "Doctors Hospital",
+            "hospital_count": 1,
+            "location": "Coral Gables, FL",
+            "hospital_address": "5000 University Dr, Coral Gables, FL 33146",
+            "latitude": 25.7213,
+            "longitude": -80.2762,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Baptist Health South Florida"
+        },
+        {
+            "ehr_system": "Cerner ITWorks",
+            "hospital_name": "Homestead Hospital",
+            "hospital_count": 1,
+            "location": "Homestead, FL",
+            "hospital_address": "975 Baptist Way, Homestead, FL 33033",
+            "latitude": 25.4808,
+            "longitude": -80.4472,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Baptist Health South Florida"
+        },
+        {
+            "ehr_system": "Cerner ITWorks",
+            "hospital_name": "Mariners Hospital",
+            "hospital_count": 1,
+            "location": "Tavernier, FL",
+            "hospital_address": "91500 Overseas Hwy, Tavernier, FL 33070",
+            "latitude": 25.0084,
+            "longitude": -80.5257,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Baptist Health South Florida"
+        },
+        {
+            "ehr_system": "Cerner ITWorks",
+            "hospital_name": "West Kendall Baptist Hospital",
+            "hospital_count": 1,
+            "location": "Miami, FL",
+            "hospital_address": "9555 SW 162nd Ave, Miami, FL 33196",
+            "latitude": 25.6761,
+            "longitude": -80.4582,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Baptist Health South Florida"
+        },
+        {
+            "ehr_system": "Cerner ITWorks",
+            "hospital_name": "Boca Raton Regional Hospital",
+            "hospital_count": 1,
+            "location": "Boca Raton, FL",
+            "hospital_address": "800 Meadows Rd, Boca Raton, FL 33486",
+            "latitude": 26.3539,
+            "longitude": -80.1032,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Baptist Health South Florida"
+        },
+        {
+            "ehr_system": "Cerner ITWorks",
+            "hospital_name": "Bethesda Hospital East",
+            "hospital_count": 1,
+            "location": "Boynton Beach, FL",
+            "hospital_address": "2815 S Seacrest Blvd, Boynton Beach, FL 33435",
+            "latitude": 26.5057,
+            "longitude": -80.0657,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Baptist Health South Florida"
+        },
+        {
+            "ehr_system": "Cerner ITWorks",
+            "hospital_name": "Bethesda Hospital West",
+            "hospital_count": 1,
+            "location": "Boynton Beach, FL",
+            "hospital_address": "9655 W Boynton Beach Blvd, Boynton Beach, FL 33472",
+            "latitude": 26.5284,
+            "longitude": -80.1923,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Baptist Health South Florida"
+        },
+        {
+            "ehr_system": "Cerner ITWorks",
+            "hospital_name": "Miami Cancer Institute",
+            "hospital_count": 1,
+            "location": "Miami, FL",
+            "hospital_address": "8900 N Kendall Dr, Miami, FL 33176",
+            "latitude": 25.6867,
+            "longitude": -80.3132,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Baptist Health South Florida"
+        },
+        {
+            "ehr_system": "Cerner ITWorks",
+            "hospital_name": "Baptist Children’s Hospital",
+            "hospital_count": 1,
+            "location": "Miami, FL",
+            "hospital_address": "8900 N Kendall Dr, Miami, FL 33176",
+            "latitude": 25.6867,
+            "longitude": -80.3132,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Baptist Health South Florida"
+        },
+        {
+            "ehr_system": "Cerner ITWorks",
+            "hospital_name": "Boca Raton Regional Hospital Lynn Cancer Institute",
+            "hospital_count": 1,
+            "location": "Boca Raton, FL",
+            "hospital_address": "701 NW 13th St, Boca Raton, FL 33486",
+            "latitude": 26.3587,
+            "longitude": -80.1016,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Baptist Health South Florida"
+        },
+        {
+            "ehr_system": "Cerner",
+            "hospital_name": "CGH Medical Center",
+            "hospital_count": 2,
+            "location": "Sterling, IL",
+            "hospital_address": "100 E Le Fevre Rd, Sterling, IL 61081",
+            "latitude": 41.8051,
+            "longitude": -89.7057,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "CGH Medical Center"
+        },
+            {
+                "ehr_system": "Cerner",
+                "hospital_name": "W.W. Hastings Hospital",
+                "hospital_count": 2,
+                "location": "Tahlequah, OK",
+                "hospital_address": "100 S Bliss Ave, Tahlequah, OK 74464",
+                "latitude": 35.9179,
+                "longitude": -94.9667,
+                "color": "#57fa7d",
+                "scale": 0.6,
+                "parent_company": "Cherokee Nation Health Services"
+            },
+            {
+                "ehr_system": "Cerner",
+                "hospital_name": "A-Mo Health Center",
+                "hospital_count": 1,
+                "location": "Salina, OK",
+                "hospital_address": "900 N Owen Walters Blvd, Salina, OK 74365",
+                "latitude": 36.2970,
+                "longitude": -95.1520,
+                "color": "#57fa7d",
+                "scale": 0.6,
+                "parent_company": "Cherokee Nation Health Services"
+            },
+            {
+                "ehr_system": "Cerner",
+                "hospital_name": "Redbird Smith Health Center",
+                "hospital_count": 1,
+                "location": "Sallisaw, OK",
+                "hospital_address": "301 J.T. Stites Blvd, Sallisaw, OK 74955",
+                "latitude": 35.4591,
+                "longitude": -94.8026,
+                "color": "#57fa7d",
+                "scale": 0.6,
+                "parent_company": "Cherokee Nation Health Services"
+            },
+            {
+                "ehr_system": "Cerner",
+                "hospital_name": "Three Rivers Health Center",
+                "hospital_count": 1,
+                "location": "Muskogee, OK",
+                "hospital_address": "1001 S 41st St E, Muskogee, OK 74403",
+                "latitude": 35.7363,
+                "longitude": -95.3436,
+                "color": "#57fa7d",
+                "scale": 0.6,
+                "parent_company": "Cherokee Nation Health Services"
+            },
+            {
+                "ehr_system": "Cerner",
+                "hospital_name": "Vinita Health Center",
+                "hospital_count": 1,
+                "location": "Vinita, OK",
+                "hospital_address": "27371 S 4410 Rd, Vinita, OK 74301",
+                "latitude": 36.6557,
+                "longitude": -95.1545,
+                "color": "#57fa7d",
+                "scale": 0.6,
+                "parent_company": "Cherokee Nation Health Services"
+            },
+            {
+                "ehr_system": "Cerner",
+                "hospital_name": "Sam Hider Health Center",
+                "hospital_count": 1,
+                "location": "Jay, OK",
+                "hospital_address": "859 E Melton Dr, Jay, OK 74346",
+                "latitude": 36.4293,
+                "longitude": -94.7994,
+                "color": "#57fa7d",
+                "scale": 0.6,
+                "parent_company": "Cherokee Nation Health Services"
+            },
+            {
+                "ehr_system": "Cerner",
+                "hospital_name": "Wilma P. Mankiller Health Center",
+                "hospital_count": 1,
+                "location": "Stilwell, OK",
+                "hospital_address": "471688 OK-51, Stilwell, OK 74960",
+                "latitude": 35.8147,
+                "longitude": -94.6305,
+                "color": "#57fa7d",
+                "scale": 0.6,
+                "parent_company": "Cherokee Nation Health Services"
+            },
+            {
+                "ehr_system": "Cerner",
+                "hospital_name": "Cooweescoowee Health Center",
+                "hospital_count": 1,
+                "location": "Ochelata, OK",
+                "hospital_address": "395200 W 2900 Rd, Ochelata, OK 74051",
+                "latitude": 36.5296,
+                "longitude": -95.9750,
+                "color": "#57fa7d",
+                "scale": 0.6,
+                "parent_company": "Cherokee Nation Health Services"
+            },
+            {
+                "ehr_system": "Cerner",
+                "hospital_name": "Cherokee Nation Outpatient Health Center",
+                "hospital_count": 1,
+                "location": "Tahlequah, OK",
+                "hospital_address": "19600 E Ross St, Tahlequah, OK 74464",
+                "latitude": 35.9148,
+                "longitude": -94.9746,
+                "color": "#57fa7d",
+                "scale": 0.6,
+                "parent_company": "Cherokee Nation Health Services"
+            },
+                {
+                    "ehr_system": "Cerner",
+                    "hospital_name": "Children's National Medical Center - Main Hospital",
+                    "hospital_count": 1,
+                    "location": "Washington, DC",
+                    "hospital_address": "111 Michigan Avenue, NW, Washington, DC 20010",
+                    "latitude": 38.9296,
+                    "longitude": -77.0146,
+                    "color": "#57fa7d",
+                    "scale": 0.6,
+                    "parent_company": "Children's National Health System"
+                },
+                {
+                    "ehr_system": "Cerner",
+                    "hospital_name": "Children's National Health Center - Anacostia",
+                    "hospital_count": 1,
+                    "location": "Washington, DC",
+                    "hospital_address": "Good Hope Road SE, Washington, DC",
+                    "latitude": 38.8667,
+                    "longitude": -76.9902,
+                    "color": "#57fa7d",
+                    "scale": 0.6,
+                    "parent_company": "Children's National Health System"
+                },
+                {
+                    "ehr_system": "Cerner",
+                    "hospital_name": "Children's National Health Center - Adams Morgan",
+                    "hospital_count": 1,
+                    "location": "Washington, DC",
+                    "hospital_address": "Columbia Road NW, Washington, DC",
+                    "latitude": 38.9213,
+                    "longitude": -77.0430,
+                    "color": "#57fa7d",
+                    "scale": 0.6,
+                    "parent_company": "Children's National Health System"
+                },
+                {
+                    "ehr_system": "Cerner",
+                    "hospital_name": "Children's National Emergency Department at United Medical Center",
+                    "hospital_count": 1,
+                    "location": "Washington, DC",
+                    "hospital_address": "1310 Southern Ave SE, Washington, DC 20032",
+                    "latitude": 38.8375,
+                    "longitude": -76.9869,
+                    "color": "#57fa7d",
+                    "scale": 0.6,
+                    "parent_company": "Children's National Health System"
+                },
+                {
+                    "ehr_system": "Cerner",
+                    "hospital_name": "Prince George's County Outpatient Center",
+                    "hospital_count": 1,
+                    "location": "Lanham, MD",
+                    "hospital_address": "2900 North Campus Way, Lanham, MD 20706",
+                    "latitude": 38.9667,
+                    "longitude": -76.8392,
+                    "color": "#57fa7d",
+                    "scale": 0.6,
+                    "parent_company": "Children's National Health System"
+                },
+                {
+                    "ehr_system": "Cerner",
+                    "hospital_name": "Children's National Health Center - Montgomery County",
+                    "hospital_count": 1,
+                    "location": "Rockville, MD",
+                    "hospital_address": "15245 Shady Grove Rd, Rockville, MD 20850",
+                    "latitude": 39.1018,
+                    "longitude": -77.2003,
+                    "color": "#57fa7d",
+                    "scale": 0.6,
+                    "parent_company": "Children's National Health System"
+                },
+                {
+                    "ehr_system": "Cerner",
+                    "hospital_name": "Children's National Pediatric Specialists of Virginia",
+                    "hospital_count": 1,
+                    "location": "Fairfax, VA",
+                    "hospital_address": "3023 Hamaker Ct, Fairfax, VA 22031",
+                    "latitude": 38.8672,
+                    "longitude": -77.2310,
+                    "color": "#57fa7d",
+                    "scale": 0.6,
+                    "parent_company": "Children's National Health System"
+                },
+                {
+                    "ehr_system": "Cerner",
+                    "hospital_name": "Children's National Health Center - Friendship Heights",
+                    "hospital_count": 1,
+                    "location": "Washington, DC",
+                    "hospital_address": "5028 Wisconsin Ave NW, Washington, DC 20016",
+                    "latitude": 38.9547,
+                    "longitude": -77.0833,
+                    "color": "#57fa7d",
+                    "scale": 0.6,
+                    "parent_company": "Children's National Health System"
+                },
+                {
+                    "ehr_system": "Cerner",
+                    "hospital_name": "Children's National Health Center - Laurel Lakes",
+                    "hospital_count": 1,
+                    "location": "Laurel, MD",
+                    "hospital_address": "13922 Baltimore Ave, Laurel, MD 20707",
+                    "latitude": 39.0853,
+                    "longitude": -76.8783,
+                    "color": "#57fa7d",
+                    "scale": 0.6,
+                    "parent_company": "Children's National Health System"
+                },
+                {
+                    "ehr_system": "Cerner",
+                    "hospital_name": "Childrens National Health Center - Frederick",
+                    "hospital_count": 1,
+                    "location": "Frederick, MD",
+                    "hospital_address": "5900 Frederick Crossing Lane, Frederick, MD 21704",
+                    "latitude": 39.3917,
+                    "longitude": -77.4160,
+                    "color": "#57fa7d",
+                    "scale": 0.6,
+                    "parent_company": "Children's National Health System"
+                },
+  
     {
         "ehr_system": "Cerner",
         "hospital_name": "CommonSpirit Health Headquarters",
@@ -734,7 +734,8 @@
         "latitude": 41.8865,
         "longitude": -87.6380,
         "color": "#57fa7d",
-        "scale": 0.6
+        "scale": 0.6,
+        "parent_company": "CommonSpirit Health"
     },
     {
         "ehr_system": "Cerner",
@@ -880,130 +881,140 @@
         "scale": 0.6,
         "parent_company": "CommonSpirit Health"
     },
-    {
-        "ehr_system": "Epic",
-        "hospital_name": "CHI Franciscan St. Joseph Medical Center",
-        "hospital_count": 1,
-        "location": "Tacoma, WA",
-        "hospital_address": "1717 S J St, Tacoma, WA 98405",
-        "latitude": 47.2426,
-        "longitude": -122.4572,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "CommonSpirit Health"
-    },
+        {
+            "ehr_system": "Epic",
+            "hospital_name": "CHI Franciscan St. Joseph Medical Center",
+            "hospital_count": 1,
+            "location": "Tacoma, WA",
+            "hospital_address": "1717 S J St, Tacoma, WA 98405",
+            "latitude": 47.2426,
+            "longitude": -122.4572,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "CommonSpirit Health"
+        },
+        {
+            "ehr_system": "Cerner",
+            "hospital_name": "Fort Sanders Regional Medical Center",
+            "hospital_count": 1,
+            "location": "Knoxville, TN",
+            "hospital_address": "1901 Clinch Avenue, Knoxville, TN 37916",
+            "latitude": 35.9585,
+            "longitude": -83.9339,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Covenant Health"
+        },
+        {
+            "ehr_system": "Cerner",
+            "hospital_name": "Parkwest Medical Center",
+            "hospital_count": 1,
+            "location": "Knoxville, TN",
+            "hospital_address": "9352 Park West Boulevard, Knoxville, TN 37923",
+            "latitude": 35.9249,
+            "longitude": -84.0948,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Covenant Health"
+        },
+        {
+            "ehr_system": "Cerner",
+            "hospital_name": "Methodist Medical Center of Oak Ridge",
+            "hospital_count": 1,
+            "location": "Oak Ridge, TN",
+            "hospital_address": "990 Oak Ridge Turnpike, Oak Ridge, TN 37830",
+            "latitude": 36.0126,
+            "longitude": -84.2665,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Covenant Health"
+        },
+        {
+            "ehr_system": "Cerner",
+            "hospital_name": "LeConte Medical Center",
+            "hospital_count": 1,
+            "location": "Sevierville, TN",
+            "hospital_address": "742 Middle Creek Road, Sevierville, TN 37862",
+            "latitude": 35.8478,
+            "longitude": -83.5662,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Covenant Health"
+        },
+        {
+            "ehr_system": "Cerner",
+            "hospital_name": "Cumberland Medical Center",
+            "hospital_count": 1,
+            "location": "Crossville, TN",
+            "hospital_address": "421 South Main Street, Crossville, TN 38555",
+            "latitude": 35.9467,
+            "longitude": -85.0250,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Covenant Health"
+        },
+        {
+            "ehr_system": "Cerner",
+            "hospital_name": "Morristown-Hamblen Healthcare System",
+            "hospital_count": 1,
+            "location": "Morristown, TN",
+            "hospital_address": "908 West Fourth North Street, Morristown, TN 37814",
+            "latitude": 36.2182,
+            "longitude": -83.3069,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Covenant Health"
+        },
+        {
+            "ehr_system": "Cerner",
+            "hospital_name": "Roane Medical Center",
+            "hospital_count": 1,
+            "location": "Harriman, TN",
+            "hospital_address": "8045 Roane Medical Center Drive, Harriman, TN 37748",
+            "latitude": 35.9320,
+            "longitude": -84.5431,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Covenant Health"
+        },
+        {
+            "ehr_system": "Cerner",
+            "hospital_name": "Claiborne Medical Center",
+            "hospital_count": 1,
+            "location": "Tazewell, TN",
+            "hospital_address": "1850 Old Knoxville Road, Tazewell, TN 37879",
+            "latitude": 36.4402,
+            "longitude": -83.5861,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Covenant Health"
+        },
+        {
+            "ehr_system": "Cerner",
+            "hospital_name": "Fort Loudoun Medical Center",
+            "hospital_count": 1,
+            "location": "Lenoir City, TN",
+            "hospital_address": "550 Fort Loudoun Medical Center Drive, Lenoir City, TN 37772",
+            "latitude": 35.7971,
+            "longitude": -84.2659,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Covenant Health"
+        },
+        {
+            "ehr_system": "Cerner",
+            "hospital_name": "Thompson Cancer Survival Center",
+            "hospital_count": 1,
+            "location": "Knoxville, TN",
+            "hospital_address": "1915 White Avenue, Knoxville, TN 37916",
+            "latitude": 35.9576,
+            "longitude": -83.9337,
+            "color": "#57fa7d",
+            "scale": 0.6,
+            "parent_company": "Covenant Health"
+        },    
     {
         "ehr_system": "Cerner",
-        "hospital_name": "Fort Sanders Regional Medical Center",
-        "hospital_count": 1,
-        "location": "Knoxville, TN",
-        "hospital_address": "1901 Clinch Avenue, Knoxville, TN 37916",
-        "latitude": 35.9585,
-        "longitude": -83.9339,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Parkwest Medical Center",
-        "hospital_count": 1,
-        "location": "Knoxville, TN",
-        "hospital_address": "9352 Park West Boulevard, Knoxville, TN 37923",
-        "latitude": 35.9249,
-        "longitude": -84.0948,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Methodist Medical Center of Oak Ridge",
-        "hospital_count": 1,
-        "location": "Oak Ridge, TN",
-        "hospital_address": "990 Oak Ridge Turnpike, Oak Ridge, TN 37830",
-        "latitude": 36.0126,
-        "longitude": -84.2665,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "LeConte Medical Center",
-        "hospital_count": 1,
-        "location": "Sevierville, TN",
-        "hospital_address": "742 Middle Creek Road, Sevierville, TN 37862",
-        "latitude": 35.8478,
-        "longitude": -83.5662,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Cumberland Medical Center",
-        "hospital_count": 1,
-        "location": "Crossville, TN",
-        "hospital_address": "421 South Main Street, Crossville, TN 38555",
-        "latitude": 35.9467,
-        "longitude": -85.0250,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Morristown-Hamblen Healthcare System",
-        "hospital_count": 1,
-        "location": "Morristown, TN",
-        "hospital_address": "908 West Fourth North Street, Morristown, TN 37814",
-        "latitude": 36.2182,
-        "longitude": -83.3069,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Roane Medical Center",
-        "hospital_count": 1,
-        "location": "Harriman, TN",
-        "hospital_address": "8045 Roane Medical Center Drive, Harriman, TN 37748",
-        "latitude": 35.9320,
-        "longitude": -84.5431,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Claiborne Medical Center",
-        "hospital_count": 1,
-        "location": "Tazewell, TN",
-        "hospital_address": "1850 Old Knoxville Road, Tazewell, TN 37879",
-        "latitude": 36.4402,
-        "longitude": -83.5861,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Fort Loudoun Medical Center",
-        "hospital_count": 1,
-        "location": "Lenoir City, TN",
-        "hospital_address": "550 Fort Loudoun Medical Center Drive, Lenoir City, TN 37772",
-        "latitude": 35.7971,
-        "longitude": -84.2659,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Thompson Cancer Survival Center",
-        "hospital_count": 1,
-        "location": "Knoxville, TN",
-        "hospital_address": "1915 White Avenue, Knoxville, TN 37916",
-        "latitude": 35.9576,
-        "longitude": -83.9337,
-        "color": "#57fa7d",
-        "scale": 0.6
-    },
-    {
-        "ehr_system": "Epic",
         "hospital_name": "Children's Hospital Los Angeles (CHLA)",
         "hospital_count": 1,
         "location": "Los Angeles, CA",
@@ -1027,7 +1038,7 @@
         "parent_company": "Shriners Hospitals for Children"
     },
     {
-        "ehr_system": "Epic",
+        "ehr_system": "Cerner",
         "hospital_name": "Miller Children's & Women's Hospital",
         "hospital_count": 1,
         "location": "Long Beach, CA",
@@ -1039,7 +1050,7 @@
         "parent_company": "MemorialCare Health System"
     },
     {
-        "ehr_system": "Epic",
+        "ehr_system": "Cerner",
         "hospital_name": "CHOC Children's Hospital",
         "hospital_count": 1,
         "location": "Orange, CA",
@@ -1051,7 +1062,7 @@
         "parent_company": "Children's Hospital of Orange County"
     },
     {
-        "ehr_system": "Epic",
+        "ehr_system": "Cerner",
         "hospital_name": "Kaiser Permanente Los Angeles Medical Center",
         "hospital_count": 1,
         "location": "Los Angeles, CA",
@@ -1063,7 +1074,7 @@
         "parent_company": "Kaiser Permanente"
     },
     {
-        "ehr_system": "Epic",
+        "ehr_system": "Cerner",
         "hospital_name": "Loma Linda University Children's Hospital",
         "hospital_count": 1,
         "location": "Loma Linda, CA",
@@ -1075,7 +1086,7 @@
         "parent_company": "Loma Linda University Health"
     },
     {
-        "ehr_system": "Epic",
+        "ehr_system": "Cerner",
         "hospital_name": "Mattel Children's Hospital UCLA",
         "hospital_count": 1,
         "location": "Los Angeles, CA",
@@ -1087,7 +1098,7 @@
         "parent_company": "UCLA Health"
     },
     {
-        "ehr_system": "Epic",
+        "ehr_system": "Cerner",
         "hospital_name": "Cedars-Sinai Guerin Children's",
         "hospital_count": 1,
         "location": "Los Angeles, CA",
@@ -1255,7 +1266,7 @@
         "parent_company": "Ector County Hospital District"
     },
     {
-        "ehr_system": "Epic",
+        "ehr_system": "Cerner",
         "hospital_name": "Tift Regional Medical Center",
         "hospital_count": 1,
         "location": "Tifton, GA",
@@ -1353,7 +1364,7 @@
         "scale": 0.6,
         "parent_company": "Glens Falls Health Systems",
         "region_id": "NY"
-      },
+    },
     {
         "ehr_system": "Meditech",
         "hospital_name": "The Clatterbridge Cancer Centre",

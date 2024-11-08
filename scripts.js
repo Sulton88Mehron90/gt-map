@@ -228,7 +228,7 @@ if (hospital_name === "CommonSpirit Health Headquarters") {
             return marker;
         });
 
-            // Hover outline on target USA states. might need to refactor.
+            // Hover outline on target USA states. might need to Refactor.
             map.addLayer({
                 id: 'us-states-line-hover',
                 type: 'line',
