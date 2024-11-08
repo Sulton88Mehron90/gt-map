@@ -1,5 +1,3 @@
-// dataLoader.js
-
 // Global cache for facilities data
 let cachedFacilitiesData = null;
 

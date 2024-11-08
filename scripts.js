@@ -26,38 +26,79 @@ document.addEventListener("DOMContentLoaded", () => {
         easing: (t) => t * (2 - t)
     });
 
-    const geocoderToggle = document.getElementById("toggle-geocoder");
-    const geocoderContainer = document.getElementById("geocoder-container");
-    let geocoder;
+    function debounce(func, delay) {
+        let timeout;
+        return function (...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), delay);
+        };
+    }
 
-    geocoderToggle.addEventListener("click", (e) => {
-        e.stopPropagation();
+const geocoderToggle = document.getElementById("toggle-geocoder");
+const geocoderContainer = document.getElementById("geocoder-container");
+let geocoder;
 
-        // Toggle geocoder visibility
-        if (geocoderContainer.style.display === "none") {
-            geocoderContainer.style.display = "block";
-            geocoderToggle.style.display = "none";
+// Define debounced toggle function
+const debouncedGeocoderToggle = debounce(() => {
+    geocoderContainer.style.display = geocoderContainer.style.display === "none" ? "block" : "none";
+    geocoderToggle.style.display = geocoderContainer.style.display === "none" ? "flex" : "none";
 
-            if (!geocoder) {
-                geocoder = new MapboxGeocoder({
-                    accessToken: mapboxgl.accessToken,
-                    mapboxgl: mapboxgl,
-                });
-                geocoderContainer.appendChild(geocoder.onAdd(map));
-            }
-        } else {
-            geocoderContainer.style.display = "none";
-            geocoderToggle.style.display = "flex";
-        }
-    });
+    // Initializing geocoder only when container is displayed
+    if (!geocoder && geocoderContainer.style.display === "block") {
+        geocoder = new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl,
+        });
+        geocoderContainer.appendChild(geocoder.onAdd(map));
+    }
+}, 300);
 
-    // Hide geocoder and show toggle button when clicking outside
-    document.addEventListener("click", (event) => {
-        if (!geocoderContainer.contains(event.target) && event.target !== geocoderToggle) {
-            geocoderContainer.style.display = "none";
-            geocoderToggle.style.display = "flex";
-        }
-    });
+// debounced event listener
+geocoderToggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    debouncedGeocoderToggle();
+});
+
+// Hide geocoder and show toggle button when clicking outside
+document.addEventListener("click", (event) => {
+    if (!geocoderContainer.contains(event.target) && event.target !== geocoderToggle) {
+        geocoderContainer.style.display = "none";
+        geocoderToggle.style.display = "flex";
+    }
+});
+
+    // const geocoderToggle = document.getElementById("toggle-geocoder");
+    // const geocoderContainer = document.getElementById("geocoder-container");
+    // let geocoder;
+
+    // geocoderToggle.addEventListener("click", (e) => {
+    //     e.stopPropagation();
+
+    //     // Toggle geocoder visibility
+    //     if (geocoderContainer.style.display === "none") {
+    //         geocoderContainer.style.display = "block";
+    //         geocoderToggle.style.display = "none";
+
+    //         if (!geocoder) {
+    //             geocoder = new MapboxGeocoder({
+    //                 accessToken: mapboxgl.accessToken,
+    //                 mapboxgl: mapboxgl,
+    //             });
+    //             geocoderContainer.appendChild(geocoder.onAdd(map));
+    //         }
+    //     } else {
+    //         geocoderContainer.style.display = "none";
+    //         geocoderToggle.style.display = "flex";
+    //     }
+    // });
+
+    // // Hide geocoder and show toggle button when clicking outside
+    // document.addEventListener("click", (event) => {
+    //     if (!geocoderContainer.contains(event.target) && event.target !== geocoderToggle) {
+    //         geocoderContainer.style.display = "none";
+    //         geocoderToggle.style.display = "flex";
+    //     }
+    // });
 
     // Event listeners to handle resize and ensure map fits container
     window.addEventListener("load", () => map.resize());
@@ -93,396 +134,412 @@ document.addEventListener("DOMContentLoaded", () => {
             promoteId: 'id'
         });
 
-let facilitiesData = [];
-const regionsWithFacilities = new Set();
-const statesWithFacilities = new Set();
+        let facilitiesData = [];
+        let cachedFacilitiesData = null;
+        const regionsWithFacilities = new Set();
+        const statesWithFacilities = new Set();
 
-loadFacilitiesData().then(facilities => {
-    facilitiesData = facilities; 
-
-    // Populate `regionsWithFacilities` and `statesWithFacilities` sets
-    facilities.forEach(facility => {
-        const regionId = facility.region_id;
-        if (regionId) {
-            regionsWithFacilities.add(regionId);
-        }
-
-        const stateOrRegion = facility.location.split(', ')[1];
-        if (stateOrRegion) {
-            statesWithFacilities.add(stateOrRegion);
-        }
-    });
-
-    // Initialize region layers for each non-USA region
-    addRegionLayerWithBehavior('uk-regions', regionsWithFacilities, '#d3d3d3', '#05aaff');
-    addRegionLayerWithBehavior('canada-regions', regionsWithFacilities, '#d3d3d3', '#05aaff');
-    addRegionLayerWithBehavior('aruba-region', regionsWithFacilities, '#d3d3d3', '#05aaff');
-
-    // Initialize US-specific layers and markers
-    // initializeUSMapLayersAndMarkers(facilities);
-})
-.catch(error => console.error('Error loading facilities data:', error));
-
-// Function to add region layer with behavior, using the preloaded `regionsWithFacilities`
-
-function addRegionLayerWithBehavior(sourceName, regionsWithFacilities, defaultColor = '#d3d3d3', hoverColor = 'red', selectedColor = 'blue') {
-    let hoveredRegionId = null;
-    let selectedRegionId = null;
-
-    // Define the fill layer with conditional colors based on state
-    map.addLayer({
-        id: `${sourceName}-fill`,
-        type: 'fill',
-        source: sourceName,
-        paint: {
-            'fill-color': [
-                'case',
-                // Selected color for regions with facilities
-                ['boolean', ['feature-state', 'selected'], false],
-                selectedColor,
-
-                // Hover color for regions with facilities
-                ['all', ['boolean', ['feature-state', 'hover'], false],
-                 ['in', ['get', 'id'], ['literal', Array.from(regionsWithFacilities)]]],
-                hoverColor,
-
-                // Default color for non-facility regions
-                defaultColor
-            ],
-            'fill-opacity': 0.5
-        }
-    });
-
-    // Hover behavior for regions with facilities on desktop devices
-    map.on('mousemove', `${sourceName}-fill`, (e) => {
-        const regionId = e.features[0].id;
-        if (!regionsWithFacilities.has(regionId)) return;
-
-        // Reset hover state for the previously hovered region if not selected
-        if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
-            map.setFeatureState({ source: sourceName, id: hoveredRegionId }, { hover: false });
-        }
-
-        hoveredRegionId = regionId;
-        if (hoveredRegionId !== selectedRegionId) {
-            map.setFeatureState({ source: sourceName, id: hoveredRegionId }, { hover: true });
-        }
-    });
-
-    // Remove hover effect when the mouse leaves the region on desktop devices
-    map.on('mouseleave', `${sourceName}-fill`, () => {
-        if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
-            map.setFeatureState({ source: sourceName, id: hoveredRegionId }, { hover: false });
-        }
-        hoveredRegionId = null;
-    });
-
-    // Touch behavior for hover effect on mobile devices
-    map.on('touchstart', `${sourceName}-fill`, (e) => {
-        const regionId = e.features[0].id;
-
-        // Only apply hover to regions with facilities on touch devices
-        if (!regionsWithFacilities.has(regionId)) return;
-
-        // Reset previous hover state on touch
-        if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
-            map.setFeatureState({ source: sourceName, id: hoveredRegionId }, { hover: false });
-        }
-
-        // Set the new hover state
-        hoveredRegionId = regionId;
-        if (hoveredRegionId !== selectedRegionId) {
-            map.setFeatureState({ source: sourceName, id: hoveredRegionId }, { hover: true });
-        }
-    });
-
-    // Click event for selecting a region on both desktop and mobile
-    map.on('click', `${sourceName}-fill`, (e) => {
-        const regionId = e.features[0].id;
-        if (!regionsWithFacilities.has(regionId)) return;
-
-        // Deselect the previously selected region
-        if (selectedRegionId !== null) {
-            map.setFeatureState({ source: sourceName, id: selectedRegionId }, { selected: false });
-        }
-
-        // Set the new selected region
-        selectedRegionId = regionId;
-        map.setFeatureState({ source: sourceName, id: selectedRegionId }, { selected: true });
-
-        // Remove hover state if it's the selected region
-        if (hoveredRegionId === selectedRegionId) {
-            map.setFeatureState({ source: sourceName, id: hoveredRegionId }, { hover: false });
-            hoveredRegionId = null;
-        }
-    });
+async function loadFacilitiesData() {
+    if (cachedFacilitiesData) {
+        return cachedFacilitiesData;
+    }
+    try {
+        const response = await fetch('/data/facilities.json');
+        const data = await response.json();
+        cachedFacilitiesData = data; // Cache the data after loading it once
+        return cachedFacilitiesData;
+    } catch (error) {
+        console.error('Error loading facilities data:', error);
+        throw error; // Allow the calling function to handle the error
+    }
 }
 
-setRegionClickEvent('canada-regions', 'id', 'name');
-setRegionClickEvent('uk-regions', 'id', 'name');
-setRegionClickEvent('aruba-region', 'id', 'name');
+        loadFacilitiesData().then(facilities => {
+            facilitiesData = facilities;
 
-// function initializeUSMapLayersAndMarkers(facilities) {
-//     // Set to store states with facilities
-//     const statesWithFacilities = new Set();
+            // Populate `regionsWithFacilities` and `statesWithFacilities` sets
+            facilities.forEach(facility => {
+                const regionId = facility.region_id;
+                if (regionId) {
+                    regionsWithFacilities.add(regionId);
+                }
 
-//     // Generating a unique list of states with facilities
-//     facilities.forEach(facility => {
-//         const stateOrRegion = facility.location.split(', ')[1];
-//         statesWithFacilities.add(stateOrRegion);
-//     });
+                const stateOrRegion = facility.location.split(', ')[1];
+                if (stateOrRegion) {
+                    statesWithFacilities.add(stateOrRegion);
+                }
+            });
 
-//     // Add markers for each facility
-//     let markers = facilities.map(({ ehr_system, hospital_name, location, hospital_address, longitude, latitude, parent_company, hospital_count }) => {
-//         let popupContent = `
-//             <strong>${hospital_name}</strong><br>
-//             <strong style="color: #05aaff">${location}</strong><br>
-//             ${parent_company ? `Parent Company: ${parent_company}<br>` : ""}
-//             EHR System: <strong style="color: #0f2844">${ehr_system}</strong><br>
-//             Address: ${hospital_address}<br>
-//             Hospital Count: <strong>${hospital_count}</strong>
-//         `;
+            // Initialize region layers for each non-USA region
+            addRegionLayerWithBehavior('uk-regions', regionsWithFacilities, '#d3d3d3', '#05aaff');
+            addRegionLayerWithBehavior('canada-regions', regionsWithFacilities, '#d3d3d3', '#05aaff');
+            addRegionLayerWithBehavior('aruba-region', regionsWithFacilities, '#d3d3d3', '#05aaff');
 
-//         if (hospital_name === "CommonSpirit Health Headquarters") {
-//             popupContent += `<br><strong style="color: #ff8502">Note:</strong> CommonSpirit Health operates over 140 hospitals across 21 states. 
-//             <a href="https://www.commonspirit.org/" target="_blank" style="color: #06b4fd">Visit Website</a>`;
-//         }
+            // Initialize US-specific layers and markers
+            // initializeUSMapLayersAndMarkers(facilities);
+        })
+            .catch(error => console.error('Error loading facilities data:', error));
 
-//         const popup = new mapboxgl.Popup({ offset: 15, closeButton: false })
-//             .setHTML(popupContent);
+        // Function to add region layer with behavior, using the preloaded `regionsWithFacilities`
 
-//         const markerElement = document.createElement('div');
-//         markerElement.className = 'custom-marker';
-//         markerElement.style.backgroundImage = `url(${logoUrl})`;
-//         markerElement.style.width = '20px';
-//         markerElement.style.height = '20px';
-//         markerElement.style.borderRadius = '50%';
-//         markerElement.style.backgroundSize = 'cover';
+        function addRegionLayerWithBehavior(sourceName, regionsWithFacilities, defaultColor = '#d3d3d3', hoverColor = 'red', selectedColor = 'blue') {
+            let hoveredRegionId = null;
+            let selectedRegionId = null;
 
-//         const marker = new mapboxgl.Marker(markerElement)
-//             .setLngLat([longitude, latitude])
-//             .setPopup(popup)
-//             .addTo(map);
+            // Define the fill layer with conditional colors based on state
+            map.addLayer({
+                id: `${sourceName}-fill`,
+                type: 'fill',
+                source: sourceName,
+                paint: {
+                    'fill-color': [
+                        'case',
+                        // Selected color for regions with facilities
+                        ['boolean', ['feature-state', 'selected'], false],
+                        selectedColor,
 
-//         if (hospital_name !== "CommonSpirit Health Headquarters") {
-//             marker.getElement().addEventListener('mouseenter', () => popup.addTo(map));
-//             marker.getElement().addEventListener('mouseleave', () => popup.remove());
-//         } else {
-//             marker.getElement().addEventListener('click', (e) => {
-//                 e.stopPropagation();
-//                 popup.addTo(map);
-//             });
-//         }
+                        // Hover color for regions with facilities
+                        ['all', ['boolean', ['feature-state', 'hover'], false],
+                            ['in', ['get', 'id'], ['literal', Array.from(regionsWithFacilities)]]],
+                        hoverColor,
 
-//         return marker;
-//     });
+                        // Default color for non-facility regions
+                        defaultColor
+                    ],
+                    'fill-opacity': 0.5
+                }
+            });
 
-//     // Hover outline for USA states
-//     map.addLayer({
-//         id: 'us-states-line-hover',
-//         type: 'line',
-//         source: 'us-states',
-//         paint: {
-//             'line-color': '#FFFFFF',
-//             'line-width': [
-//                 'case',
-//                 ['boolean', ['feature-state', 'hover'], false],
-//                 2,
-//                 0.6
-//             ]
-//         }
-//     });
+            // Hover behavior for regions with facilities on desktop devices
+            map.on('mousemove', `${sourceName}-fill`, (e) => {
+                const regionId = e.features[0].id;
+                if (!regionsWithFacilities.has(regionId)) return;
 
-//     map.on('mousemove', 'us-states-fill', (e) => {
-//         if (hoveredStateId !== null && hoveredStateId !== selectedStateId) {
-//             map.setFeatureState({ source: 'us-states', id: hoveredStateId }, { hover: false });
-//         }
-//         hoveredStateId = e.features[0].id;
-//         if (hoveredStateId !== selectedStateId) {
-//             map.setFeatureState({ source: 'us-states', id: hoveredStateId }, { hover: true });
-//         }
-//     });
+                // Reset hover state for the previously hovered region if not selected
+                if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
+                    map.setFeatureState({ source: sourceName, id: hoveredRegionId }, { hover: false });
+                }
 
-//     map.on('mouseleave', 'us-states-fill', () => {
-//         if (hoveredStateId !== null && hoveredStateId !== selectedStateId) {
-//             map.setFeatureState({ source: 'us-states', id: hoveredStateId }, { hover: false });
-//         }
-//         hoveredStateId = null;
-//     });
+                hoveredRegionId = regionId;
+                if (hoveredRegionId !== selectedRegionId) {
+                    map.setFeatureState({ source: sourceName, id: hoveredRegionId }, { hover: true });
+                }
+            });
 
-//     map.on('click', 'us-states-fill', (e) => {
-//         if (selectedStateId !== null) {
-//             map.setFeatureState({ source: 'us-states', id: selectedStateId }, { selected: false });
-//         }
-//         selectedStateId = e.features[0].id;
-//         map.setFeatureState({ source: 'us-states', id: selectedStateId }, { selected: true });
-//     });
+            // Remove hover effect when the mouse leaves the region on desktop devices
+            map.on('mouseleave', `${sourceName}-fill`, () => {
+                if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
+                    map.setFeatureState({ source: sourceName, id: hoveredRegionId }, { hover: false });
+                }
+                hoveredRegionId = null;
+            });
 
-//     map.addLayer({
-//         id: 'us-states-fill',
-//         type: 'fill',
-//         source: 'us-states',
-//         paint: {
-//             'fill-color': [
-//                 'case',
-//                 [
-//                     'all',
-//                     ['boolean', ['feature-state', 'hover'], false],
-//                     ['in', ['get', 'id'], ['literal', Array.from(statesWithFacilities)]]
-//                 ],
-//                 '#05aaff',
-//                 ['boolean', ['feature-state', 'selected'], false], '#05aaff',
-//                 '#d3d3d3'
-//             ],
-//             'fill-opacity': 0.5
-//         }
-//     });
+            // Touch behavior for hover effect on mobile devices
+            map.on('touchstart', `${sourceName}-fill`, (e) => {
+                const regionId = e.features[0].id;
 
-//     function toggleMarkers() {
-//         const zoomLevel = map.getZoom();
-//         const minZoomToShowMarkers = 4;
+                // Only apply hover to regions with facilities on touch devices
+                if (!regionsWithFacilities.has(regionId)) return;
 
-//         markers.forEach(marker => {
-//             if (zoomLevel >= minZoomToShowMarkers && !marker._map) {
-//                 marker.addTo(map);
-//             } else if (zoomLevel < minZoomToShowMarkers && marker._map) {
-//                 marker.remove();
-//             }
-//         });
-//     }
+                // Reset previous hover state on touch
+                if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
+                    map.setFeatureState({ source: sourceName, id: hoveredRegionId }, { hover: false });
+                }
 
-//     map.on('zoomend', toggleMarkers);
-//     toggleMarkers();
+                // Set the new hover state
+                hoveredRegionId = regionId;
+                if (hoveredRegionId !== selectedRegionId) {
+                    map.setFeatureState({ source: sourceName, id: hoveredRegionId }, { hover: true });
+                }
+            });
 
-//     map.addSource('hospitals', {
-//         type: 'geojson',
-//         data: {
-//             type: 'FeatureCollection',
-//             features: facilities.map(facility => ({
-//                 type: 'Feature',
-//                 properties: {
-//                     hospital_name: facility.hospital_name,
-//                     location: facility.location,
-//                     ehr_system: facility.ehr_system,
-//                     hospital_address: facility.hospital_address,
-//                     hospital_parent_company: facility.parent_company,
-//                     hospital_hospital_count: facility.hospital_count,
-//                 },
-//                 geometry: {
-//                     type: 'Point',
-//                     coordinates: [facility.longitude, facility.latitude],
-//                 }
-//             })),
-//         },
-//         cluster: true,
-//         clusterMaxZoom: 14,
-//         clusterRadius: 80,
-//     });
+            // Click event for selecting a region on both desktop and mobile
+            map.on('click', `${sourceName}-fill`, (e) => {
+                const regionId = e.features[0].id;
+                if (!regionsWithFacilities.has(regionId)) return;
 
-//     map.addLayer({
-//         id: 'clusters',
-//         type: 'circle',
-//         source: 'hospitals',
-//         filter: ['has', 'point_count'],
-//         paint: {
-//             'circle-color': [
-//                 'step',
-//                 ['get', 'point_count'],
-//                 '#ff8502',
-//                 10, '#0f2844'
-//             ],
-//             'circle-radius': [
-//                 'step',
-//                 ['get', 'point_count'],
-//                 10,
-//                 20, 15,
-//                 50, 20
-//             ],
-//             'circle-stroke-width': 1,
-//             'circle-stroke-color': '#0f2844'
-//         }
-//     });
+                // Deselect the previously selected region
+                if (selectedRegionId !== null) {
+                    map.setFeatureState({ source: sourceName, id: selectedRegionId }, { selected: false });
+                }
 
-//     map.addLayer({
-//         id: 'cluster-count',
-//         type: 'symbol',
-//         source: 'hospitals',
-//         filter: ['has', 'point_count'],
-//         layout: {
-//             'text-field': '{point_count_abbreviated}',
-//             'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-//             'text-size': 14,
-//             'text-anchor': 'center',
-//         },
-//         paint: {
-//             'text-color': '#FFFFFF',
-//         },
-//     });
+                // Set the new selected region
+                selectedRegionId = regionId;
+                map.setFeatureState({ source: sourceName, id: selectedRegionId }, { selected: true });
 
-//     map.addLayer({
-//         id: 'unclustered-point',
-//         type: 'circle',
-//         source: 'hospitals',
-//         filter: ['!', ['has', 'point_count']],
-//         paint: {
-//             'circle-color': '#11b4da',
-//             'circle-radius': 3,
-//         },
-//     });
+                // Remove hover state if it's the selected region
+                if (hoveredRegionId === selectedRegionId) {
+                    map.setFeatureState({ source: sourceName, id: hoveredRegionId }, { hover: false });
+                    hoveredRegionId = null;
+                }
+            });
+        }
 
-//     map.on('zoom', () => {
-//         map.setLayoutProperty('unclustered-point', 'visibility', map.getZoom() >= 6 ? 'visible' : 'none');
-//     });
+        setRegionClickEvent('canada-regions', 'id', 'name');
+        setRegionClickEvent('uk-regions', 'id', 'name');
+        setRegionClickEvent('aruba-region', 'id', 'name');
 
-//     map.on('click', 'unclustered-point', (e) => {
-//         const coordinates = e.features[0].geometry.coordinates.slice();
-//         const { hospital_name, location, ehr_system, hospital_address } = e.features[0].properties;
+        // function initializeUSMapLayersAndMarkers(facilities) {
+        //     // Set to store states with facilities
+        //     const statesWithFacilities = new Set();
 
-//         new mapboxgl.Popup()
-//             .setLngLat(coordinates)
-//             .setHTML(`<strong>${hospital_name}</strong><br>${location}<br>EHR System: ${ehr_system}<br>Address: ${hospital_address}`)
-//             .addTo(map);
-//     });
+        //     // Generating a unique list of states with facilities
+        //     facilities.forEach(facility => {
+        //         const stateOrRegion = facility.location.split(', ')[1];
+        //         statesWithFacilities.add(stateOrRegion);
+        //     });
 
-//     map.on('click', 'clusters', (e) => {
-//         const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
-//         const clusterId = features[0].properties.cluster_id;
-//         map.getSource('hospitals').getClusterExpansionZoom(clusterId, (err, zoom) => {
-//             if (err) return;
-//             map.easeTo({
-//                 center: features[0].geometry.coordinates,
-//                 zoom: zoom,
-//             });
-//         });
-//     });
-// }
+        //     // Add markers for each facility
+        //     let markers = facilities.map(({ ehr_system, hospital_name, location, hospital_address, longitude, latitude, parent_company, hospital_count }) => {
+        //         let popupContent = `
+        //             <strong>${hospital_name}</strong><br>
+        //             <strong style="color: #05aaff">${location}</strong><br>
+        //             ${parent_company ? `Parent Company: ${parent_company}<br>` : ""}
+        //             EHR System: <strong style="color: #0f2844">${ehr_system}</strong><br>
+        //             Address: ${hospital_address}<br>
+        //             Hospital Count: <strong>${hospital_count}</strong>
+        //         `;
+
+        //         if (hospital_name === "CommonSpirit Health Headquarters") {
+        //             popupContent += `<br><strong style="color: #ff8502">Note:</strong> CommonSpirit Health operates over 140 hospitals across 21 states. 
+        //             <a href="https://www.commonspirit.org/" target="_blank" style="color: #06b4fd">Visit Website</a>`;
+        //         }
+
+        //         const popup = new mapboxgl.Popup({ offset: 15, closeButton: false })
+        //             .setHTML(popupContent);
+
+        //         const markerElement = document.createElement('div');
+        //         markerElement.className = 'custom-marker';
+        //         markerElement.style.backgroundImage = `url(${logoUrl})`;
+        //         markerElement.style.width = '20px';
+        //         markerElement.style.height = '20px';
+        //         markerElement.style.borderRadius = '50%';
+        //         markerElement.style.backgroundSize = 'cover';
+
+        //         const marker = new mapboxgl.Marker(markerElement)
+        //             .setLngLat([longitude, latitude])
+        //             .setPopup(popup)
+        //             .addTo(map);
+
+        //         if (hospital_name !== "CommonSpirit Health Headquarters") {
+        //             marker.getElement().addEventListener('mouseenter', () => popup.addTo(map));
+        //             marker.getElement().addEventListener('mouseleave', () => popup.remove());
+        //         } else {
+        //             marker.getElement().addEventListener('click', (e) => {
+        //                 e.stopPropagation();
+        //                 popup.addTo(map);
+        //             });
+        //         }
+
+        //         return marker;
+        //     });
+
+        //     // Hover outline for USA states
+        //     map.addLayer({
+        //         id: 'us-states-line-hover',
+        //         type: 'line',
+        //         source: 'us-states',
+        //         paint: {
+        //             'line-color': '#FFFFFF',
+        //             'line-width': [
+        //                 'case',
+        //                 ['boolean', ['feature-state', 'hover'], false],
+        //                 2,
+        //                 0.6
+        //             ]
+        //         }
+        //     });
+
+        //     map.on('mousemove', 'us-states-fill', (e) => {
+        //         if (hoveredStateId !== null && hoveredStateId !== selectedStateId) {
+        //             map.setFeatureState({ source: 'us-states', id: hoveredStateId }, { hover: false });
+        //         }
+        //         hoveredStateId = e.features[0].id;
+        //         if (hoveredStateId !== selectedStateId) {
+        //             map.setFeatureState({ source: 'us-states', id: hoveredStateId }, { hover: true });
+        //         }
+        //     });
+
+        //     map.on('mouseleave', 'us-states-fill', () => {
+        //         if (hoveredStateId !== null && hoveredStateId !== selectedStateId) {
+        //             map.setFeatureState({ source: 'us-states', id: hoveredStateId }, { hover: false });
+        //         }
+        //         hoveredStateId = null;
+        //     });
+
+        //     map.on('click', 'us-states-fill', (e) => {
+        //         if (selectedStateId !== null) {
+        //             map.setFeatureState({ source: 'us-states', id: selectedStateId }, { selected: false });
+        //         }
+        //         selectedStateId = e.features[0].id;
+        //         map.setFeatureState({ source: 'us-states', id: selectedStateId }, { selected: true });
+        //     });
+
+        //     map.addLayer({
+        //         id: 'us-states-fill',
+        //         type: 'fill',
+        //         source: 'us-states',
+        //         paint: {
+        //             'fill-color': [
+        //                 'case',
+        //                 [
+        //                     'all',
+        //                     ['boolean', ['feature-state', 'hover'], false],
+        //                     ['in', ['get', 'id'], ['literal', Array.from(statesWithFacilities)]]
+        //                 ],
+        //                 '#05aaff',
+        //                 ['boolean', ['feature-state', 'selected'], false], '#05aaff',
+        //                 '#d3d3d3'
+        //             ],
+        //             'fill-opacity': 0.5
+        //         }
+        //     });
+
+        //     function toggleMarkers() {
+        //         const zoomLevel = map.getZoom();
+        //         const minZoomToShowMarkers = 4;
+
+        //         markers.forEach(marker => {
+        //             if (zoomLevel >= minZoomToShowMarkers && !marker._map) {
+        //                 marker.addTo(map);
+        //             } else if (zoomLevel < minZoomToShowMarkers && marker._map) {
+        //                 marker.remove();
+        //             }
+        //         });
+        //     }
+
+        //     map.on('zoomend', toggleMarkers);
+        //     toggleMarkers();
+
+        //     map.addSource('hospitals', {
+        //         type: 'geojson',
+        //         data: {
+        //             type: 'FeatureCollection',
+        //             features: facilities.map(facility => ({
+        //                 type: 'Feature',
+        //                 properties: {
+        //                     hospital_name: facility.hospital_name,
+        //                     location: facility.location,
+        //                     ehr_system: facility.ehr_system,
+        //                     hospital_address: facility.hospital_address,
+        //                     hospital_parent_company: facility.parent_company,
+        //                     hospital_hospital_count: facility.hospital_count,
+        //                 },
+        //                 geometry: {
+        //                     type: 'Point',
+        //                     coordinates: [facility.longitude, facility.latitude],
+        //                 }
+        //             })),
+        //         },
+        //         cluster: true,
+        //         clusterMaxZoom: 14,
+        //         clusterRadius: 80,
+        //     });
+
+        //     map.addLayer({
+        //         id: 'clusters',
+        //         type: 'circle',
+        //         source: 'hospitals',
+        //         filter: ['has', 'point_count'],
+        //         paint: {
+        //             'circle-color': [
+        //                 'step',
+        //                 ['get', 'point_count'],
+        //                 '#ff8502',
+        //                 10, '#0f2844'
+        //             ],
+        //             'circle-radius': [
+        //                 'step',
+        //                 ['get', 'point_count'],
+        //                 10,
+        //                 20, 15,
+        //                 50, 20
+        //             ],
+        //             'circle-stroke-width': 1,
+        //             'circle-stroke-color': '#0f2844'
+        //         }
+        //     });
+
+        //     map.addLayer({
+        //         id: 'cluster-count',
+        //         type: 'symbol',
+        //         source: 'hospitals',
+        //         filter: ['has', 'point_count'],
+        //         layout: {
+        //             'text-field': '{point_count_abbreviated}',
+        //             'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+        //             'text-size': 14,
+        //             'text-anchor': 'center',
+        //         },
+        //         paint: {
+        //             'text-color': '#FFFFFF',
+        //         },
+        //     });
+
+        //     map.addLayer({
+        //         id: 'unclustered-point',
+        //         type: 'circle',
+        //         source: 'hospitals',
+        //         filter: ['!', ['has', 'point_count']],
+        //         paint: {
+        //             'circle-color': '#11b4da',
+        //             'circle-radius': 3,
+        //         },
+        //     });
+
+        //     map.on('zoom', () => {
+        //         map.setLayoutProperty('unclustered-point', 'visibility', map.getZoom() >= 6 ? 'visible' : 'none');
+        //     });
+
+        //     map.on('click', 'unclustered-point', (e) => {
+        //         const coordinates = e.features[0].geometry.coordinates.slice();
+        //         const { hospital_name, location, ehr_system, hospital_address } = e.features[0].properties;
+
+        //         new mapboxgl.Popup()
+        //             .setLngLat(coordinates)
+        //             .setHTML(`<strong>${hospital_name}</strong><br>${location}<br>EHR System: ${ehr_system}<br>Address: ${hospital_address}`)
+        //             .addTo(map);
+        //     });
+
+        //     map.on('click', 'clusters', (e) => {
+        //         const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+        //         const clusterId = features[0].properties.cluster_id;
+        //         map.getSource('hospitals').getClusterExpansionZoom(clusterId, (err, zoom) => {
+        //             if (err) return;
+        //             map.easeTo({
+        //                 center: features[0].geometry.coordinates,
+        //                 zoom: zoom,
+        //             });
+        //         });
+        //     });
+        // }
         function populateSidebar(regionId, regionName, facilities) {
             console.log(`Populating sidebar for region: ${regionName} (ID: ${regionId})`);
-        
+
             const sidebar = document.getElementById('hospital-list-sidebar');
             const list = document.getElementById('hospital-list');
             list.innerHTML = '';
-        
+
             // Update sidebar title with the region name
             const title = sidebar.querySelector('h2');
             title.innerText = `Facilities Using Goliath's Solutions in ${regionName}`;
-        
+
             // Remove any existing count display
             const existingCountDisplay = sidebar.querySelector('.count-display');
             if (existingCountDisplay) existingCountDisplay.remove();
-        
+
             // Filter facilities by region
-            const regionHospitals = facilities.filter(hospital => 
+            const regionHospitals = facilities.filter(hospital =>
                 hospital.location.includes(regionName) || hospital.region_id === regionId
             );
-        
+
             // Calculate total facility count, accounting for multi-hospital entries
-            const totalHospitalCount = regionHospitals.reduce((sum, hospital) => 
+            const totalHospitalCount = regionHospitals.reduce((sum, hospital) =>
                 sum + (hospital.hospital_count || 1), 0
             );
-        
+
             console.log(`Found ${regionHospitals.length} hospitals in ${regionName} with a total of ${totalHospitalCount} facilities.`);
-        
+
             // Display total facility count in the sidebar
             const countDisplay = document.createElement('p');
             countDisplay.classList.add('count-display');
@@ -491,11 +548,11 @@ setRegionClickEvent('aruba-region', 'id', 'name');
             countDisplay.style.color = '#FFFFFF';
             countDisplay.style.marginTop = '10px';
             list.before(countDisplay);
-        
+
             // Populate sidebar list with hospitals
             regionHospitals.forEach(hospital => {
                 const listItem = document.createElement('li');
-        
+
                 // Select the appropriate EHR logo based on the ehr_system value
                 let ehrLogo;
                 switch (hospital.ehr_system) {
@@ -512,7 +569,7 @@ setRegionClickEvent('aruba-region', 'id', 'name');
                         ehrLogo = '';
                         break;
                 }
-        
+
                 listItem.innerHTML = `
                     <i class="fas fa-hospital-symbol"></i> 
                     <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
@@ -523,7 +580,7 @@ setRegionClickEvent('aruba-region', 'id', 'name');
                     <strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system || ""}
                     <strong>Hospital Count:</strong> ${hospital.hospital_count || 1}<br>
                 `;
-        
+
                 // Add fly-to map functionality on click
                 listItem.querySelector('.clickable-hospital').addEventListener('click', () => {
                     map.flyTo({
@@ -534,21 +591,21 @@ setRegionClickEvent('aruba-region', 'id', 'name');
                         essential: true
                     });
                 });
-        
+
                 list.appendChild(listItem);
             });
-        
+
             // Display the sidebar only if there are hospitals to show
             sidebar.style.display = regionHospitals.length > 0 ? 'block' : 'none';
         }
-        
+
         function setRegionClickEvent(regionSource, regionIdProp, regionNameProp) {
             map.on('click', `${regionSource}-fill`, (e) => {
                 // Capture the clicked region's ID and name properties from the geoJSON data
                 const clickedRegionId = e.features[0].properties[regionIdProp];
                 const regionName = e.features[0].properties[regionNameProp];
                 console.log(`Region clicked: ${regionName} (ID: ${clickedRegionId})`);
-        
+
                 // Use cached data or load facilities data once if not already loaded
                 loadFacilitiesData()
                     .then(facilities => {
@@ -572,7 +629,7 @@ setRegionClickEvent('aruba-region', 'id', 'name');
 
         loadFacilitiesData()
             .then(facilities => {
-              
+                // Generate a unique list of states with facilities
                 facilities.forEach(facility => {
                     const stateOrRegion = facility.location.split(', ')[1];
                     statesWithFacilities.add(stateOrRegion);
@@ -630,56 +687,55 @@ setRegionClickEvent('aruba-region', 'id', 'name');
                     return marker;
                 });
 
-    
-    //     // Hover outline on target USA states. might need to refactor.
-    //     map.addLayer({
-    //         id: 'us-states-line-hover',
-    //         type: 'line',
-    //         source: 'us-states',
-    //         paint: {
-    //             'line-color': '#FFFFFF',
-    //             'line-width': [
-    //                 'case',
-    //                 ['boolean', ['feature-state', 'hover'], false],
-    //                 2,
-    //                 0.6
-    //             ]
-    //         }
-    //     });
+                //     // Hover outline on target USA states. might need to refactor.
+                //     map.addLayer({
+                //         id: 'us-states-line-hover',
+                //         type: 'line',
+                //         source: 'us-states',
+                //         paint: {
+                //             'line-color': '#FFFFFF',
+                //             'line-width': [
+                //                 'case',
+                //                 ['boolean', ['feature-state', 'hover'], false],
+                //                 2,
+                //                 0.6
+                //             ]
+                //         }
+                //     });
 
-    //     // Hover effect
-    //     map.on('mousemove', 'us-states-fill', (e) => {
-    //         if (hoveredStateId !== null && hoveredStateId !== selectedStateId) {
-    //             map.setFeatureState({ source: 'us-states', id: hoveredStateId }, { hover: false });
-    //         }
-    //         hoveredStateId = e.features[0].id;
+                //     // Hover effect
+                //     map.on('mousemove', 'us-states-fill', (e) => {
+                //         if (hoveredStateId !== null && hoveredStateId !== selectedStateId) {
+                //             map.setFeatureState({ source: 'us-states', id: hoveredStateId }, { hover: false });
+                //         }
+                //         hoveredStateId = e.features[0].id;
 
-    //         // Only set hover if it’s not the selected state
-    //         if (hoveredStateId !== selectedStateId) {
-    //             map.setFeatureState({ source: 'us-states', id: hoveredStateId }, { hover: true });
-    //         }
-    //     });
+                //         // Only set hover if it’s not the selected state
+                //         if (hoveredStateId !== selectedStateId) {
+                //             map.setFeatureState({ source: 'us-states', id: hoveredStateId }, { hover: true });
+                //         }
+                //     });
 
-    //     map.on('mouseleave', 'us-states-fill', () => {
-    //         // Reset hover only if the state isn’t selected
-    //         if (hoveredStateId !== null && hoveredStateId !== selectedStateId) {
-    //             map.setFeatureState({ source: 'us-states', id: hoveredStateId }, { hover: false });
-    //         }
-    //         hoveredStateId = null;
-    //     });
+                //     map.on('mouseleave', 'us-states-fill', () => {
+                //         // Reset hover only if the state isn’t selected
+                //         if (hoveredStateId !== null && hoveredStateId !== selectedStateId) {
+                //             map.setFeatureState({ source: 'us-states', id: hoveredStateId }, { hover: false });
+                //         }
+                //         hoveredStateId = null;
+                //     });
 
-    //    // Click effect
-    //     map.on('click', 'us-states-fill', (e) => {
-    //         // To remove selected color from previous state if it exists
-    //         if (selectedStateId !== null) {
-    //             map.setFeatureState({ source: 'us-states', id: selectedStateId }, { selected: false });
-    //         }
+                //    // Click effect
+                //     map.on('click', 'us-states-fill', (e) => {
+                //         // To remove selected color from previous state if it exists
+                //         if (selectedStateId !== null) {
+                //             map.setFeatureState({ source: 'us-states', id: selectedStateId }, { selected: false });
+                //         }
 
-    //         selectedStateId = e.features[0].id;
-    //         map.setFeatureState({ source: 'us-states', id: selectedStateId }, { selected: true });
-    //     });
-    
-                
+                //         selectedStateId = e.features[0].id;
+                //         map.setFeatureState({ source: 'us-states', id: selectedStateId }, { selected: true });
+                //     });
+
+
                 map.addLayer({
                     id: 'us-states-fill',
                     type: 'fill',
@@ -694,10 +750,10 @@ setRegionClickEvent('aruba-region', 'id', 'name');
                                 ['in', ['get', 'id'], ['literal', Array.from(statesWithFacilities)]]
                             ],
                             '#05aaff', // Hover color for states with facilities
-                
+
                             // Selected color if a state with facilities is clicked
                             ['boolean', ['feature-state', 'selected'], false], '#05aaff',
-                
+
                             '#d3d3d3' // Default color for states without facilities
                         ],
                         'fill-opacity': 0.5
@@ -877,7 +933,8 @@ setRegionClickEvent('aruba-region', 'id', 'name');
                     if (existingCountDisplay) existingCountDisplay.remove();
 
                     // Calculate the total facility count for the clicked state
-const totalFacilityCount = stateHospitals.reduce((sum, hospital) => sum + (hospital.hospital_count || 1), 0);
+                    const totalFacilityCount = stateHospitals.reduce((sum, hospital) => sum + (hospital.hospital_count || 1), 0);
+
 
                     // Display facility count
                     const countDisplay = document.createElement('p');
@@ -890,6 +947,7 @@ const totalFacilityCount = stateHospitals.reduce((sum, hospital) => sum + (hospi
                     countDisplay.style.color = '#FFFFFF';
                     countDisplay.style.marginTop = '10px';
                     list.before(countDisplay);
+
 
                     if (stateHospitals.length > 0) {
                         stateHospitals.forEach(hospital => {
@@ -952,7 +1010,7 @@ const totalFacilityCount = stateHospitals.reduce((sum, hospital) => sum + (hospi
                 });
 
             })
-            
+
             .catch(error => {
                 console.error('Error loading facilities data:', error);
                 const errorMessage = document.getElementById('error-message');
@@ -1061,7 +1119,7 @@ const totalFacilityCount = stateHospitals.reduce((sum, hospital) => sum + (hospi
             sidebar.classList.add("dragging");
             isDragging = false;
 
-  
+
             document.addEventListener("mousemove", handleDrag);
             document.addEventListener("mouseup", endDrag);
             document.addEventListener("touchmove", handleDrag, { passive: false });
