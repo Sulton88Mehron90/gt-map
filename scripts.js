@@ -88,13 +88,16 @@ document.addEventListener("DOMContentLoaded", () => {
             data: '/data/us-states.geojson',
             promoteId: 'id'
         });
-
         map.addSource('uk-regions', {
             type: 'geojson',
             data: '/data/uk-regions.geojson',
             promoteId: 'id'
         });
-
+        map.addSource('italy-regions', {
+            type: 'geojson',
+            data: '/data/italy-regions.geojson',
+            promoteId: 'id'
+        });
         map.addSource('canada-regions', {
             type: 'geojson',
             data: '/data/canada-regions.geojson',
@@ -170,12 +173,14 @@ loadFacilitiesData()
 console.log("regionsWithFacilities:", Array.from(regionsWithFacilities));
 
 // region layers for each non-USA region
-addRegionLayerWithBehavior('uk-regions', regionsWithFacilities, '#d3d3d3', '#05aaff');
-addRegionLayerWithBehavior('canada-regions', regionsWithFacilities, '#d3d3d3', '#05aaff');
-addRegionLayerWithBehavior('aruba-region', regionsWithFacilities, '#d3d3d3', '#05aaff');
+addRegionLayerWithBehavior('uk-regions', regionsWithFacilities, '#d3d3d3', '#00247D');
+addRegionLayerWithBehavior('italy-regions', regionsWithFacilities, '#d3d3d3', '#CD212A');
+addRegionLayerWithBehavior('canada-regions', regionsWithFacilities, '#d3d3d3', '#FF0000');
+addRegionLayerWithBehavior('aruba-region', regionsWithFacilities, '#d3d3d3', '#FDB913');
 
 setRegionClickEvent('canada-regions', 'id', 'name');
 setRegionClickEvent('uk-regions', 'id', 'name');
+setRegionClickEvent('italy-regions', 'id', 'name');
 setRegionClickEvent('aruba-region', 'id', 'name');
 
 // Add markers for each facility
@@ -565,7 +570,7 @@ let selectedRegionId = null;
 
     // / Function to clear selection and hover when the sidebar is closed
     function clearRegionSelection() {
-        const sources = ['us-states', 'uk-regions', 'canada-regions', 'aruba-region'];
+        const sources = ['us-states', 'uk-regions','italy-regions','canada-regions', 'aruba-region'];
         
         sources.forEach((sourceName) => {
             if (hoveredRegionId !== null) {

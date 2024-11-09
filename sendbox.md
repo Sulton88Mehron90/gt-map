@@ -896,3 +896,46 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 });
+
+
+The main colors of the United States flag, along with their hex codes, are:
+
+Old Glory Blue: #3C3B6E (the blue background behind the stars)
+White: #FFFFFF (the stars and alternating white stripes)
+Old Glory Red: #B22234 (the red stripes)
+These colors symbolize vigilance and perseverance (blue), purity and innocence (white), and valor and bravery (red).
+
+The main colors of Aruba's flag, along with their hex codes, are:
+
+Light Blue: #0092D1 (representing the sky and the sea around Aruba)
+Yellow: #FDB913 (representing Aruba's abundance of sunshine)
+White: #FFFFFF (the white outlines, symbolizing peace and honesty)
+Red: #EF3340 (the star, symbolizing Aruba's unique position and the red soil)
+The flag prominently features a red star with a white outline on a light blue background with two narrow yellow horizontal stripes.
+
+The main colors of Canada’s national flag, along with their hex codes, are:
+
+Red: #FF0000
+White: #FFFFFF
+The red symbolizes strength and bravery, and the white represents peace and honesty, featuring the distinctive red maple leaf in the center.
+
+The main colors of the United Kingdom's Union Jack flag, along with their hex codes, are:
+
+Dark Blue: #00247D
+Red: #CF142B
+White: #FFFFFF
+These colors represent the combined flags of England, Scotland, and Ireland, which together form the iconic Union Jack.
+
+The hex codes for Italy's national colors are:
+
+Green: #008C45
+White: #FFFFFF
+Red: #CD212A
+These colors together form the Italian tricolor flag and are widely recognized as symbols of the nation.
+
+Italy’s main colors, prominently seen in its national flag, are:
+
+Green – Symbolizing hope and the country's lush landscapes.
+White – Representing peace and the snowy Alps.
+Red – Signifying courage and the bloodshed for Italy's independence and unification.
+These colors are widely used in Italian cultural, sports, and government symbols, with green, white, and red also known as the Tricolore.
