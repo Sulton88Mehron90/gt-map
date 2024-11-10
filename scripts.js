@@ -649,24 +649,6 @@ ${hospital.location}<br>
         let hoveredRegionId = null;
         let selectedRegionId = null;
 
-        // / Function to clear selection and hover when the sidebar is closed
-        function clearRegionSelection() {
-            const sources = ['us-states', 'uk-regions', 'italy-regions', 'canada-regions', 'aruba-region'];
-
-            sources.forEach((sourceName) => {
-                if (hoveredRegionId !== null) {
-                    map.setFeatureState({ source: sourceName, id: hoveredRegionId }, { hover: false });
-                    hoveredRegionId = null;
-                }
-                if (selectedRegionId !== null) {
-                    map.setFeatureState({ source: sourceName, id: selectedRegionId }, { selected: false });
-                    selectedRegionId = null;
-                }
-            });
-
-            console.log('Cleared selection and hover for all sources');
-        }
-
         function populateSidebar(regionId, regionName, facilities) {
             console.log(`Populating sidebar for region: ${regionName} (ID: ${regionId})`);
 
