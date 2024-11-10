@@ -47,7 +47,8 @@
             "type": "Feature",
             "properties": {
                 "id": "IT_Motta",
-                "name": "Via Padre Leonardo Bello, 3, Motta di Livenza TV"
+                "name": "Via Padre Leonardo Bello, 3, Motta di Livenza TV",
+                "description": "Address point in Italy"
             },
             "geometry": {
                 "type": "Point",
