@@ -1,68 +1,154 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    color: #333;
+    overflow: hidden;
+}
 
-    html,
-    body {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        font-family: Arial, sans-serif;
-        color: #333;
-        overflow: hidden;
-    }
+#map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
 
-    #map {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 1;
-    }
+.mapboxgl-ctrl-top-right {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
 
-    .mapboxgl-ctrl-top-right {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-    }
+.mapbox-button-group {
+    position: absolute;
+    top: 180px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    z-index: 10;
+}
 
-    .mapbox-button-group {
-        position: absolute;
-        top: 180px;
-        right: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        gap: 0px;
-        z-index: 10;
-    }
+/* reset and search */
+.mapbox-button-group button {
+    color: #ffff;
+    border: none;
+    border-radius: 8px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease-in-out;
+    border: 0.5px solid #ff8502;
+}
 
-    .mapbox-button-group button {
-        color: #ffff;
-        border: none;
-        border-radius: 8px;
-        width: 30px;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 11px;
-        cursor: pointer;
-        font-weight: bold;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        transition: all 0.3s ease-in-out;
-        border: 0.5px solid #ff8502;
-    }
+button {
+    /* width: 100%; */
+    padding: 8px 0;
+    margin: 1px 0;
+    background-color: #0f2844;
+    /* color: white; */
+    /* border: none; */
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
 
-    /* .mapbox-button-group button:hover {
-        transform: scale(1.1);
-        background: linear-gradient(145deg, #ff4343, #b31919); */
-        /* background: linear-gradient(145deg, #ffa849, #ff8502);
-        background: linear-gradient(145deg, #ff8502, #ff8502);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
-    } */
+button:hover {
+    /* background-color: #45a049; */
+    background: linear-gradient(145deg, #ff8502, #ff8502);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Flip Button Container */
+.flip-button {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    perspective: 800px;
+    cursor: pointer;
+    text-align: center;
+}
+
+/* Front and Back Styles */
+.flip-button .flip-front {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: transform 0.6s;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border: 0.5px solid #ff8502;
+    color: #fff;
+    transform: rotateX(0deg);
+    backface-visibility: hidden;
+}
+
+.flip-button .flip-back {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: transform 0.6s;
+    font-size: 9px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border: 0.5px solid #ff8502;
+    color: white;
+    background-color: #0f2844;
+    transform: rotateX(180deg);
+    backface-visibility: hidden;
+}
+
+/* Flip Effect - Vertical Flip */
+.flip-button .flip-front {
+    transform: rotateX(0deg);
+    backface-visibility: hidden;
+}
+
+/* Style for the back side with text */
+.flip-button .flip-back {
+    transform: rotateX(180deg);
+    backface-visibility: hidden;
+    background-color: #0f2844;
+    font-size: 12px;
+}
+
+/* Flip animation on hover */
+.flip-button:hover .flip-front {
+    transform: rotateX(-180deg);
+}
+
+.flip-button:hover .flip-back {
+    transform: rotateX(0deg);
+}
 
 /* General Fly-To and Fit-To Button Styles */
-.mapbox-button-group .fly-to-button,
-.mapbox-button-group .fit-to-button {
+/* .mapbox-button-group .fly-to-button, */
+.mapbox-button-group .fit-to-button,
+.mapbox-button-group .flip-front {
     border: none;
     border-radius: 8px;
     width: 30px;
@@ -78,7 +164,7 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    color: transparent; 
+    color: transparent;
 }
 
 /* Hover Effect */
@@ -89,23 +175,38 @@
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
 
+/* Flip Effect on Hover */
+.flip-button:hover .flip-front {
+    transform: rotateX(-180deg);
+}
+
+.flip-button:hover .flip-back {
+    transform: rotateX(0deg);
+}
+
 /* Specific Backgrounds for Each Button */
-.mapbox-button-group .fly-to-uk {
+.mapbox-button-group #fly-to-uk .flip-front {
     background-image: url('./img/UK_flag.png');
     background-position: left center;
-    padding-right: 5px;
+    /* padding-right: 5px; */
 }
 
-.mapbox-button-group .fly-to-canada {
+.mapbox-button-group #fly-to-canada .flip-front {
     background-image: url('./img/canada_flag.png');
     background-position: left center;
-    padding-right: 5px;
+    /* padding-right: 5px; */
 }
 
-.mapbox-button-group .fly-to-usa {
+.mapbox-button-group #fly-to-usa .flip-front {
     background-image: url('./img/USA_flag.png');
     background-position: left center;
-    padding-right: 6px;
+    /* padding-right: 6px; */
+}
+
+.mapbox-button-group #fly-to-italy .flip-front {
+    background-image: url('./img/italy_flag.png');
+    background-position: left center;
+    /* padding-right: 6px; */
 }
 
 .mapbox-button-group .fit-to-usa {
@@ -114,320 +215,290 @@
     padding-right: 6px;
 }
 
-.mapbox-button-group .fit-to-canada {
+/* .mapbox-button-group .fit-to-canada {
     background-image: url('./img/canada_flag.png');
     background-position: left center;
     padding-right: 6px;
-}
+} */
 
-.mapbox-button-group .fly-to-aruba {
-    background-image: url('./img/Aruba_flag.png');
+.mapbox-button-group #fly-to-aruba .flip-front {
+    background-image: url('./img/aruba_flag.png');
     background-position: left center;
-    padding-right: 7px;
+    /* padding-right: 7px; */
 }
 
-    #container {
-        display: flex;
-        flex-direction: row-reverse;
-        height: 100%;
-        z-index: 5;
-    }
+#hospital-list-sidebar {
+    font-family: 'Open Sans', sans-serif;
+    position: absolute;
+    left: 20px;
+    top: 100px;
+    width: 260px;
+    height: 100%;
+    max-height: 400px;
+    background: linear-gradient(145deg, #0f2844, #1c3a5c);
+    border-radius: 12px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4);
+    padding: 20px;
+    overflow-y: auto;
+    z-index: 10;
+    color: white;
+    cursor: grab;
+    transition: transform 0.3s ease-in-out;
+}
 
-    button {
-        width: 100%;
-        padding: 8px 0;
-        margin: 10px 0;
-        /* background-color:#4CAF50;
-        background-color:#ff8502; */
-        background-color: #0f2844;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
+#hospital-list-sidebar:hover {
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+}
 
-    button:hover {
-        /* background-color: #45a049; */
-        background: linear-gradient(145deg, #ff8502, #ff8502);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
-    }
+#hospital-list-sidebar.hidden {
+    transform: translateX(-100%);
+}
 
-    #hospital-list-sidebar {
-        font-family: 'Open Sans', sans-serif;
-        position: absolute;
-        left: 20px;
-        top: 100px;
-        width: 260px;
-        height: 100%;
-        max-height: 400px;
-        background: linear-gradient(145deg, #0f2844, #1c3a5c);
-        border-radius: 12px;
-        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4);
-        padding: 20px;
-        overflow-y: auto;
-        z-index: 10;
-        color: white;
-        cursor: grab;
-        transition: transform 0.3s ease-in-out;
-    }
+#hospital-list-sidebar h2 {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    text-align: center;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 8px;
+    letter-spacing: 0.5px;
+}
 
-    #hospital-list-sidebar:hover {
-        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
-    }
+#hospital-list-sidebar p.count-display {
+    font-size: 1rem;
+    color: #f5eaea;
+    text-align: center;
+    font-weight: 500;
+    margin: 10px 0;
+}
 
-    #hospital-list-sidebar.hidden {
-        transform: translateX(-100%);
-    }
+#hospital-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.9rem;
+}
 
-    #hospital-list-sidebar h2 {
-        font-family: 'Open Sans', sans-serif;
-        font-size: 1.4rem;
-        font-weight: 600;
-        color: #ffffff;
-        margin-top: 5px;
-        margin-bottom: 10px;
-        text-align: center;
-        border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-        padding-bottom: 8px;
-        letter-spacing: 0.5px;
-    }
+#hospital-list li {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    line-height: 1.4;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, transform 0.2s;
+}
 
-    #hospital-list-sidebar p.count-display {
-        font-size: 1rem;
-        color: #f5eaea;
-        text-align: center;
-        font-weight: 500;
-        margin: 10px 0;
-    }
+#hospital-list li:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.02);
+}
 
-    #hospital-list {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-        font-size: 0.9rem;
-    }
+#hospital-list-sidebar.collapsed {
+    width: 50px;
+    overflow: hidden;
+    transition: width 0.3s;
+}
 
-    #hospital-list li {
-        margin: 10px 0;
-        padding: 10px;
-        background-color: rgba(255, 255, 255, 0.15);
-        border-radius: 8px;
-        line-height: 1.4;
-        font-size: 0.95rem;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-        transition: background-color 0.3s, transform 0.2s;
-    }
+#hospital-list-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
 
-    #hospital-list li:hover {
-        background-color: rgba(255, 255, 255, 0.2);
-        transform: scale(1.02);
-    }
+#hospital-list-sidebar::-webkit-scrollbar-thumb {
+    background: #ff8502;
+    border-radius: 10px;
+}
 
-    #hospital-list-sidebar.collapsed {
-        width: 50px;
-        overflow: hidden;
-        transition: width 0.3s;
-    }
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
 
-    #hospital-list-sidebar::-webkit-scrollbar {
-        width: 6px;
-    }
+.sidebar-logo {
+    width: 20px;
+    height: auto;
+    border-radius: 50%;
+    background-color: #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease;
+}
 
-    #hospital-list-sidebar::-webkit-scrollbar-thumb {
-        background: #ff8502;
-        border-radius: 10px;
-    }
+#close-sidebar {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease;
+    margin: 0 10px;
+}
 
-    .sidebar-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-    }
+#close-sidebar:hover {
+    background-color: #555;
+}
 
-    .sidebar-logo {
-        width: 20px;
-        height: auto;
-        border-radius: 50%;
-        background-color: #333;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        transition: background-color 0.3s ease;
-        /* margin: 0 10px; */
-    }
+#close-sidebar i {
+    font-size: 12px;
+}
 
-    #close-sidebar {
-        background-color: #333;
-        color: #fff;
-        border: none;
-        border-radius: 50%;
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        transition: background-color 0.3s ease;
-        margin: 0 10px;
-    }
+.theme-toggle-btn {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease;
+}
 
-    #close-sidebar:hover {
-        background-color: #555;
-    }
+.theme-toggle-btn:hover {
+    background-color: #555;
+}
 
-    #close-sidebar i {
-        font-size: 12px;
-    }
+.dark-text,
+.dark-text h2,
+.dark-text p.count-display {
+    color: #333 !important;
+}
 
-    .theme-toggle-btn {
-        background-color: #333;
-        color: #fff;
-        border: none;
-        border-radius: 50%;
-        width: 20px;
-        height: 20px;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        transition: background-color 0.3s ease;
-    }
+.custom-marker {
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: default;
+}
 
-    .theme-toggle-btn:hover {
-        background-color: #555;
-    }
+/* Regular hover effect for desktop */
+.custom-marker:hover,
+.custom-marker.hover-effect {
+    transform: scale(1.2);
+    z-index: 2;
+}
 
-    .dark-text,
-    .dark-text h2,
-    .dark-text p.count-display {
-        color: #333 !important;
-    }
+.mapboxgl-map .hovered {
+    fill: #05aaff;
+    fill-opacity: 0.5;
+}
 
-    .custom-marker {
-        background-repeat: no-repeat;
-        background-position: center;
-        cursor: default;
-    }
+#home-logo {
+    position: fixed;
+    top: 20px;
+    left: 1px;
+    z-index: 20;
+    width: 80px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
 
-    /* Regular hover effect for desktop */
-    .custom-marker:hover,
-    .custom-marker.hover-effect { 
-        transform: scale(1.2); 
-        z-index: 2;
-    }
+#home-logo img {
+    display: block;
+    width: 140%;
+    height: auto;
+    filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.8));
+}
 
-    .mapboxgl-map .hovered {
-        fill: #05aaff;
-        fill-opacity: 0.5;
-    }
-    
-    
-    #home-logo {
-        position: fixed;
-        top: 20px;
-        left: 1px;
-        z-index: 20;
-        width: 80px;
-        cursor: pointer;
-        transition: opacity 0.3s ease;
-    }
+/* sidebar styles */
+#hospital-list-sidebar {
+    position: absolute;
+    top: 100px;
+    left: 0;
+    width: 260px;
+    max-height: 400px;
+    background: linear-gradient(145deg, #0f2844, #1c3a5c);
+    border-radius: 12px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4);
+    padding: 20px;
+    overflow-y: auto;
+    z-index: 10;
+    color: white;
+    transition: max-height 0.3s ease-in-out;
+}
 
-    #home-logo img {
-        display: block;
-        width: 140%;
-        height: auto;
-        filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.8));
-    }
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
 
-    /* sidebar styles */
-    #hospital-list-sidebar {
-        position: absolute;
-        top: 100px;
-        left: 0;
-        width: 260px;
-        max-height: 400px;
-        background: linear-gradient(145deg, #0f2844, #1c3a5c);
-        border-radius: 12px;
-        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4);
-        padding: 20px;
-        overflow-y: auto;
-        z-index: 10;
-        color: white;
-        transition: max-height 0.3s ease-in-out;
-    }
+.button-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
 
-    .sidebar-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-    }
+/* Round button styling */
+.round-button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease;
+}
 
-    .button-group {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
+.round-button:hover {
+    background-color: #555;
+}
 
-    /* Round button styling */
-    .round-button {
-        background-color: #333;
-        color: #fff;
-        border: none;
-        border-radius: 50%;
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        transition: background-color 0.3s ease;
-    }
+.sidebar-logo {
+    width: 20px;
+    height: auto;
+    border-radius: 50%;
+    background-color: #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    margin-right: 10px;
+}
 
-    .round-button:hover {
-        background-color: #555;
-    }
+/* collapsed sidebar */
+#hospital-list-sidebar.collapsed {
+    max-height: 50px;
+    overflow: hidden;
+    padding: 10px;
+    transition: max-height 0.3s ease-in-out;
+}
 
-    .sidebar-logo {
-        width: 20px;
-        height: auto;
-        border-radius: 50%;
-        background-color: #333;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        margin-right: 10px;
-    }
+/* Hide content in the collapsed state */
+#hospital-list-sidebar.collapsed h2,
+#hospital-list-sidebar.collapsed ul,
+#hospital-list-sidebar.collapsed .count-display {
+    display: none;
+}
 
-    /* collapsed sidebar */
-    #hospital-list-sidebar.collapsed {
-        max-height: 50px;
-        overflow: hidden;
-        padding: 10px;
-        transition: max-height 0.3s ease-in-out;
-    }
+#hospital-list-sidebar.collapsed .sidebar-header {
+    justify-content: flex-start;
+}
 
-    /* Hide content in the collapsed state */
-    #hospital-list-sidebar.collapsed h2,
-    #hospital-list-sidebar.collapsed ul,
-    #hospital-list-sidebar.collapsed .count-display {
-        display: none;
-    }
+/* Highlight the sidebar while dragging */
+.hospital-list-sidebar.dragging {
+    cursor: grab;
+    opacity: 0.9;
+    transition: opacity 0.1s ease;
+}
 
-    #hospital-list-sidebar.collapsed .sidebar-header {
-        justify-content: flex-start;
-    }
-
-    /* Highlight the sidebar while dragging */
-    .hospital-list-sidebar.dragging {
-        cursor: grab;
-        opacity: 0.9;
-        transition: opacity 0.1s ease;
-    }
-
-    #toggle-geocoder {
+/* #toggle-geocoder {
         width: 30px;
         height: 30px;
         color: white;
@@ -442,7 +513,7 @@
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         transition: all 0.3s ease-in-out;
         border: 0.5px solid #ff8502;
-    }
+    } */
 
 /* Simulate hover for touch by applying similar styling on active/focus */
 /* #map:active .hoverable-element, 
@@ -450,119 +521,119 @@
     outline: 2px solid #FFFFFF; 
 } */
 
-    /* Responsive Styles */
+/* Responsive Styles */
 
-    @media (max-width: 768px) {
-        #hospital-list-sidebar {
-            width: 80%;
-            left: 7.5%;
-            max-height: 60vh;
-            padding: 15px;
-            position: fixed;
-            bottom: 0;
-            overflow-y: auto;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        #hospital-list-sidebar h2 {
-            font-size: 1.2rem;
-        }
-
-        #hospital-list-sidebar p.count-display {
-            font-size: 0.9rem;
-        }
-
-        #hospital-list li {
-            font-size: 0.85rem;
-        }
-
-        #close-sidebar {
-            padding: 5px;
-            font-size: 0.85rem;
-        }
-
-        .sidebar-header {
-            justify-content: space-evenly;
-        }
-
-        #container {
-            flex-direction: column;
-        }
-
-        button {
-            font-size: 12px;
-            padding: 6px 0;
-        }
-
-        #home-logo {
-            width: 60px;
-        }
-
-        #hospital-list-sidebar.collapsed {
-            max-height: 40px;
-        }
-
-        .round-button {
-            width: 18px;
-            height: 18px;
-        }
+@media (max-width: 768px) {
+    #hospital-list-sidebar {
+        width: 80%;
+        left: 7.5%;
+        max-height: 60vh;
+        padding: 15px;
+        position: fixed;
+        bottom: 0;
+        overflow-y: auto;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
+
+    #hospital-list-sidebar h2 {
+        font-size: 1.2rem;
+    }
+
+    #hospital-list-sidebar p.count-display {
+        font-size: 0.9rem;
+    }
+
+    #hospital-list li {
+        font-size: 0.85rem;
+    }
+
+    #close-sidebar {
+        padding: 5px;
+        font-size: 0.85rem;
+    }
+
+    .sidebar-header {
+        justify-content: space-evenly;
+    }
+
+    #container {
+        flex-direction: column;
+    }
+
+    button {
+        font-size: 12px;
+        padding: 6px 0;
+    }
+
+    #home-logo {
+        width: 60px;
+    }
+
+    #hospital-list-sidebar.collapsed {
+        max-height: 40px;
+    }
+
+    .round-button {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+@media (max-width: 480px) {
 
     @media (max-width: 480px) {
-
-        @media (max-width: 480px) {
-            #map {
-                width: 100vw;
-                height: calc(100vh - 40px); 
-            }
-        }
-        
-        #hospital-list-sidebar {
-            width: 30%;
-            left: 5%;
-            max-height: 50vh;
-            padding: 10px;
-            bottom: 0;
-        }
-
-        #hospital-list li {
-            font-size: 0.8rem;
-            padding: 5px;
-        }
-
-        #hospital-list-sidebar h2 {
-            font-size: 1rem;
-        }
-
-        #hospital-list-sidebar p.count-display {
-            font-size: 0.8rem;
-        }
-
-        #close-sidebar {
-            padding: 4px;
-            font-size: 0.8rem;
-        }
-
-        #close-sidebar,
-        .theme-toggle-btn {
-            width: 30px;
-            height: 30px;
-        }
-
-        button {
-            margin: 5px 0;
-        }
-
-        #hospital-list li {
-            font-size: 12px;
-            padding: 5px;
-        }
-
-        #home-logo {
-            width: 40px;
-        }
-
-        #hospital-list-sidebar.minimized {
-            width: 30px;
+        #map {
+            width: 100vw;
+            height: calc(100vh - 40px);
         }
     }
+
+    #hospital-list-sidebar {
+        width: 30%;
+        left: 5%;
+        max-height: 50vh;
+        padding: 10px;
+        bottom: 0;
+    }
+
+    #hospital-list li {
+        font-size: 0.8rem;
+        padding: 5px;
+    }
+
+    #hospital-list-sidebar h2 {
+        font-size: 1rem;
+    }
+
+    #hospital-list-sidebar p.count-display {
+        font-size: 0.8rem;
+    }
+
+    #close-sidebar {
+        padding: 4px;
+        font-size: 0.8rem;
+    }
+
+    #close-sidebar,
+    .theme-toggle-btn {
+        width: 30px;
+        height: 30px;
+    }
+
+    button {
+        margin: 5px 0;
+    }
+
+    #hospital-list li {
+        font-size: 12px;
+        padding: 5px;
+    }
+
+    #home-logo {
+        width: 40px;
+    }
+
+    #hospital-list-sidebar.minimized {
+        width: 30px;
+    }
+}

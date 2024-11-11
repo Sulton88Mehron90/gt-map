@@ -930,7 +930,7 @@ The hex codes for Italy's national colors are:
 
 Green: #008C45
 White: #FFFFFF
-Red: #CD212A
+Red: #CD212A, #f50101
 These colors together form the Italian tricolor flag and are widely recognized as symbols of the nation.
 
 Italy’s main colors, prominently seen in its national flag, are:

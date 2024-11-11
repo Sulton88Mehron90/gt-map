@@ -806,8 +806,14 @@ ${hospital.location}<br>
         document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
 
         // Fly-to buttons for navigating regions
+        document.getElementById("fly-to-usa").addEventListener("click", () => {
+            map.flyTo({ center: [-101.714859, 39.710884], zoom: 4, pitch: 45 });
+        });
         document.getElementById("fly-to-uk").addEventListener("click", () => {
             map.flyTo({ center: [360.242386, 51.633362], zoom: 4, pitch: 45 });
+        });
+        document.getElementById("fly-to-italy").addEventListener("click", () => {
+            map.flyTo({ center: [12.563553,42.798676], zoom: 4, pitch: 45 });
         });
         document.getElementById("fly-to-canada").addEventListener("click", () => {
             map.flyTo({
@@ -816,27 +822,21 @@ ${hospital.location}<br>
                 pitch: 30
             });
 
-            // document.getElementById("fit-to-italy").addEventListener("click", () => {
+            // document.getElementById("fit-to-canad").addEventListener("click", () => {
             //     map.fitBounds([
             //         [-140.99778, 41.675105],
             //         [-52.648099, 83.23324]
             //     ]);
             // });
-
+        document.getElementById("fly-to-aruba").addEventListener("click", () => {
+            map.flyTo({ center: [-70.027, 12.5246], zoom: 5, pitch: 45 });
         });
-        document.getElementById("fly-to-usa").addEventListener("click", () => {
-            map.flyTo({ center: [-101.714859, 39.710884], zoom: 4, pitch: 45 });
         });
-
         document.getElementById("fit-to-usa").addEventListener("click", () => {
             map.fitBounds([
                 [-165.031128, 65.476793],
                 [-81.131287, 26.876143]
             ]);
-        });
-
-        document.getElementById("fly-to-aruba").addEventListener("click", () => {
-            map.flyTo({ center: [-70.027, 12.5246], zoom: 5, pitch: 45 });
         });
 
         // Reset view button on the right side (outside the sidebar)
