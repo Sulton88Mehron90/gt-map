@@ -169,8 +169,10 @@ button:hover {
 
 /* Hover Effect */
 .mapbox-button-group .fly-to-button:hover,
-.mapbox-button-group .fit-to-button:hover {
-    transform: scale(1.1);
+.mapbox-button-group .fit-to-button:hover,
+.mapbox-button-group #reset-view:hover,
+.mapbox-button-group #toggle-geocoder:hover {
+    transform: scale(1.2);
     background-color: #0f2844;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
@@ -188,24 +190,28 @@ button:hover {
 .mapbox-button-group #fly-to-uk .flip-front {
     background-image: url('./img/UK_flag.png');
     background-position: left center;
+    background-color: #0f2844;
     /* padding-right: 5px; */
 }
 
 .mapbox-button-group #fly-to-canada .flip-front {
     background-image: url('./img/canada_flag.png');
     background-position: left center;
+    background-color: #0f2844;
     /* padding-right: 5px; */
 }
 
 .mapbox-button-group #fly-to-usa .flip-front {
     background-image: url('./img/USA_flag.png');
     background-position: left center;
+    background-color: #0f2844;
     /* padding-right: 6px; */
 }
 
 .mapbox-button-group #fly-to-italy .flip-front {
     background-image: url('./img/italy_flag.png');
     background-position: left center;
+    background-color: #0f2844;
     /* padding-right: 6px; */
 }
 
@@ -213,6 +219,7 @@ button:hover {
     background-image: url('./img/fit_usa.png');
     background-position: left center;
     padding-right: 6px;
+    background-color: #0f2844;
 }
 
 /* .mapbox-button-group .fit-to-canada {
@@ -225,7 +232,10 @@ button:hover {
     background-image: url('./img/aruba_flag.png');
     background-position: left center;
     /* padding-right: 7px; */
+    background-color: #0f2844;
 }
+
+/* sidebar */
 
 #hospital-list-sidebar {
     font-family: 'Open Sans', sans-serif;
