@@ -19,3 +19,48 @@ export function loadFacilitiesData() {
             }
         });
 }
+
+// Cache objects for each GeoJSON file
+let cachedUSStates = null;
+let cachedUKRegions = null;
+let cachedItalyRegions = null;
+let cachedCanadaRegions = null;
+let cachedArubaRegion = null;
+
+async function loadGeoJSON(filePath, cache) {
+    if (cache) return cache;
+    try {
+        const response = await fetch(filePath);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error(`Error loading GeoJSON file from ${filePath}:`, error);
+        throw error;
+    }
+}
+
+// Exported functions to load each specific GeoJSON file
+export async function loadUSStates() {
+    cachedUSStates = await loadGeoJSON('/data/us-states.geojson', cachedUSStates);
+    return cachedUSStates;
+}
+
+export async function loadUKRegions() {
+    cachedUKRegions = await loadGeoJSON('/data/uk-regions.geojson', cachedUKRegions);
+    return cachedUKRegions;
+}
+
+export async function loadItalyRegions() {
+    cachedItalyRegions = await loadGeoJSON('/data/italy-regions.geojson', cachedItalyRegions);
+    return cachedItalyRegions;
+}
+
+export async function loadCanadaRegions() {
+    cachedCanadaRegions = await loadGeoJSON('/data/canada-regions.geojson', cachedCanadaRegions);
+    return cachedCanadaRegions;
+}
+
+export async function loadArubaRegion() {
+    cachedArubaRegion = await loadGeoJSON('/data/aruba-region.geojson', cachedArubaRegion);
+    return cachedArubaRegion;
+}
