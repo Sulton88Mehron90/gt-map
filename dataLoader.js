@@ -19,39 +19,3 @@ export function loadFacilitiesData() {
             }
         });
 }
-
-
-// dataLoader.js
-
-// let cachedFacilitiesData = null;
-// let cachedRegionsData = {};
-
-// export async function loadFacilitiesData() {
-//     if (cachedFacilitiesData) {
-//         return cachedFacilitiesData;
-//     }
-//     try {
-//         const response = await fetch('/data/facilities.json');
-//         const data = await response.json();
-//         cachedFacilitiesData = data; // Cache after loading once
-//         return cachedFacilitiesData;
-//     } catch (error) {
-//         console.error('Error loading facilities data:', error);
-//         throw error;
-//     }
-// }
-
-// export async function loadRegionData(region) {
-//     if (cachedRegionsData[region]) {
-//         return cachedRegionsData[region];
-//     }
-//     try {
-//         const response = await fetch(`/data/${region}.geojson`);
-//         const data = await response.json();
-//         cachedRegionsData[region] = data; // Cache each region individually
-//         return cachedRegionsData[region];
-//     } catch (error) {
-//         console.error(`Error loading ${region} data:`, error);
-//         throw error;
-//     }
-// }

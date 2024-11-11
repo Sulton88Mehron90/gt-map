@@ -12,6 +12,10 @@ function removeHoverEffect(marker) {
     marker.classList.remove('hover-effect');
 }
 
+ // Define the clearRegionSelection function
+ let hoveredRegionId = null;
+ let selectedRegionId = null;
+
 // Initialize the map after the DOM is fully loaded
 document.addEventListener("DOMContentLoaded", () => {
     const sidebar = document.getElementById("hospital-list-sidebar");
@@ -111,30 +115,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         let facilitiesData = [];
-        let cachedFacilitiesData = null;
         const regionsWithFacilities = new Set();
         const statesWithFacilities = new Set();
-
-        async function loadFacilitiesData() {
-            if (cachedFacilitiesData) {
-                return cachedFacilitiesData;
-            }
-            try {
-                const response = await fetch('/data/facilities.json');
-                const data = await response.json();
-                cachedFacilitiesData = data; // Cache the data after loading it once
-                return cachedFacilitiesData;
-            } catch (error) {
-                console.error('Error loading facilities data:', error);
-                throw error;
-            }
-        }
-
         let hoveredStateId = null;
         let selectedStateId = null;
         const logoUrl = './img/gtLogo.png';
 
-        loadFacilitiesData()
+// Call the imported loadFacilitiesData function
+loadFacilitiesData()
             .then(facilities => {
 
                 // Populate regionsWithFacilities and statesWithFacilities sets
@@ -149,9 +137,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         statesWithFacilities.add(stateOrRegion);
                     }
                 });
-
-                console.log("regionsWithFacilities:", Array.from(regionsWithFacilities));
-
 
                 facilitiesData = facilities;
 
@@ -256,9 +241,10 @@ Hospital Count: <strong>${hospital_count}</strong>
                 addHoverOutlineLayer(map, 'italy-regions-line-hover', 'italy-regions');
                 addHoverOutlineLayer(map, 'uk-regions-line-hover', 'uk-regions');
 
-                function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities, hoverColor = '#05aaff', selectedColor = '#005bbb') {
-                    let hoveredRegionId = null;
-                    let selectedRegionId = null;
+                function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities, 
+                    // hoverColor = '#05aaff', 
+                    // selectedColor = '#005bbb'
+                ) {
 
                     // Check if the device supports touch
                     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -642,12 +628,7 @@ ${hospital.location}<br>
                 const errorMessage = document.getElementById('error-message');
                 errorMessage.style.display = 'block';
                 errorMessage.innerText = 'Failed to load facility data. Please try again later.';
-
             });
-
-        // Define the clearRegionSelection function
-        let hoveredRegionId = null;
-        let selectedRegionId = null;
 
         function populateSidebar(regionId, regionName, facilities) {
             console.log(`Populating sidebar for region: ${regionName} (ID: ${regionId})`);
@@ -813,7 +794,7 @@ ${hospital.location}<br>
             map.flyTo({ center: [360.242386, 51.633362], zoom: 4, pitch: 45 });
         });
         document.getElementById("fly-to-italy").addEventListener("click", () => {
-            map.flyTo({ center: [12.563553,42.798676], zoom: 4, pitch: 45 });
+            map.flyTo({ center: [12.563553, 42.798676], zoom: 4, pitch: 45 });
         });
         document.getElementById("fly-to-canada").addEventListener("click", () => {
             map.flyTo({
@@ -828,10 +809,12 @@ ${hospital.location}<br>
             //         [-52.648099, 83.23324]
             //     ]);
             // });
-        document.getElementById("fly-to-aruba").addEventListener("click", () => {
-            map.flyTo({ center: [-70.027, 12.5246], zoom: 5, pitch: 45 });
+
+            document.getElementById("fly-to-aruba").addEventListener("click", () => {
+                map.flyTo({ center: [-70.027, 12.5246], zoom: 6, pitch: 45 });
+            });
         });
-        });
+
         document.getElementById("fit-to-usa").addEventListener("click", () => {
             map.fitBounds([
                 [-165.031128, 65.476793],
@@ -839,7 +822,7 @@ ${hospital.location}<br>
             ]);
         });
 
-        // Reset view button on the right side (outside the sidebar)
+        // Reset view button on the right side
         document.getElementById("reset-view").addEventListener("click", () => {
             map.flyTo({ center: INITIAL_CENTER, zoom: INITIAL_ZOOM, pitch: 0 });
         });
