@@ -716,29 +716,40 @@ ${hospital.location}<br>
             sidebar.style.display = regionHospitals.length > 0 ? 'block' : 'none';
         }
 
+        /**
+ * Sets up a click event for a specified region layer.
+ * On click, fetches and displays facility data in the sidebar for the clicked region.
+ * @param {string} regionSource - The source layer ID for the map region.
+ * @param {string} regionIdProp - The property name in geoJSON data that represents the region ID.
+ * @param {string} regionNameProp - The property name in geoJSON data that represents the region name.
+ */
         function setRegionClickEvent(regionSource, regionIdProp, regionNameProp) {
             map.on('click', `${regionSource}-fill`, (e) => {
                 // Capture the clicked region's ID and name properties from the geoJSON data
                 const clickedRegionId = e.features[0].properties[regionIdProp];
                 const regionName = e.features[0].properties[regionNameProp];
                 console.log(`Region clicked: ${regionName} (ID: ${clickedRegionId})`);
-
-                // Use cached data or load facilities data once if not already loaded
+        
+                // Call loadFacilitiesData and handle the response
                 loadFacilitiesData()
                     .then(facilities => {
                         // Pass the region data to populateSidebar
                         populateSidebar(clickedRegionId, regionName, facilities);
                     })
-                    .catch(error => {
-                        console.error('Error loading facilities data:', error);
-                        const errorMessage = document.getElementById('error-message');
-                        if (errorMessage) {
-                            errorMessage.style.display = 'block';
-                            errorMessage.innerText = 'Failed to load facility data. Please try again later.';
-                        }
-                    });
+                    .catch(displayErrorMessage);
             });
-        };
+        }
+        
+        // Define a centralized error message handler
+        function displayErrorMessage(error) {
+            console.error('Error loading facilities data:', error);
+            const errorMessage = document.getElementById('error-message');
+            if (errorMessage) {
+                errorMessage.style.display = 'block';
+                errorMessage.innerText = 'Failed to load facility data. Please try again later.';
+            }
+        }
+
 
         map.addControl(new mapboxgl.NavigationControl());
         // map.addControl(new mapboxgl.NavigationControl({ position: 'top-left' }));
