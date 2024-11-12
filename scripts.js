@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function addDataSource(map, sourceName, dataPromise, errorMessage) {
         if (map.getSource(sourceName)) {
             console.log(`${sourceName} already exists. Skipping addition.`);
-            return; // If the source already exists, do nothing.
+            return; 
         }
 
         dataPromise
