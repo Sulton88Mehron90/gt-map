@@ -1,7 +1,7 @@
 // Global cache for facilities data
 let cachedFacilitiesData = null;
 
-// Fetch the facility data once and store it
+// Fetch the facilities data once and store it in cache
 export function loadFacilitiesData() {
     if (cachedFacilitiesData) return Promise.resolve(cachedFacilitiesData);
     return fetch('./data/facilities.json')
@@ -20,47 +20,40 @@ export function loadFacilitiesData() {
         });
 }
 
-// Cache objects for each GeoJSON file
-let cachedUSStates = null;
-let cachedUKRegions = null;
-let cachedItalyRegions = null;
-let cachedCanadaRegions = null;
-let cachedArubaRegion = null;
+// Centralized cache to hold all loaded GeoJSON data
+const geoJSONCache = {};
 
-async function loadGeoJSON(filePath, cache) {
-    if (cache) return cache;
+// Define file paths for each region in a central object
+const geoJSONPaths = {
+    usStates: '/data/us-states.geojson',
+    ukRegions: '/data/uk-regions.geojson',
+    italyRegions: '/data/italy-regions.geojson',
+    canadaRegions: '/data/canada-regions.geojson',
+    arubaRegion: '/data/aruba-region.geojson'
+};
+
+// Generalized function to load and cache GeoJSON data for any region
+async function loadGeoJSON(regionKey) {
+    // Return cached data if it already exists
+    if (geoJSONCache[regionKey]) return geoJSONCache[regionKey];
+
+    // Fetch and cache the GeoJSON data if not cached yet
     try {
-        const response = await fetch(filePath);
+        const response = await fetch(geoJSONPaths[regionKey]);
+        if (!response.ok) throw new Error(`Failed to load GeoJSON for ${regionKey}`);
+        
         const data = await response.json();
+        geoJSONCache[regionKey] = data; // Cache the data
         return data;
     } catch (error) {
-        console.error(`Error loading GeoJSON file from ${filePath}:`, error);
-        throw error;
+        console.error(`Error loading GeoJSON for ${regionKey}:`, error);
+        throw error; // Re-throw the error for upstream handling
     }
 }
 
-// Exported functions to load each specific GeoJSON file
-export async function loadUSStates() {
-    cachedUSStates = await loadGeoJSON('/data/us-states.geojson', cachedUSStates);
-    return cachedUSStates;
-}
-
-export async function loadUKRegions() {
-    cachedUKRegions = await loadGeoJSON('/data/uk-regions.geojson', cachedUKRegions);
-    return cachedUKRegions;
-}
-
-export async function loadItalyRegions() {
-    cachedItalyRegions = await loadGeoJSON('/data/italy-regions.geojson', cachedItalyRegions);
-    return cachedItalyRegions;
-}
-
-export async function loadCanadaRegions() {
-    cachedCanadaRegions = await loadGeoJSON('/data/canada-regions.geojson', cachedCanadaRegions);
-    return cachedCanadaRegions;
-}
-
-export async function loadArubaRegion() {
-    cachedArubaRegion = await loadGeoJSON('/data/aruba-region.geojson', cachedArubaRegion);
-    return cachedArubaRegion;
-}
+// Exported functions for each specific region, with lazy loading
+export const loadUSStates = () => loadGeoJSON('usStates');
+export const loadUKRegions = () => loadGeoJSON('ukRegions');
+export const loadItalyRegions = () => loadGeoJSON('italyRegions');
+export const loadCanadaRegions = () => loadGeoJSON('canadaRegions');
+export const loadArubaRegion = () => loadGeoJSON('arubaRegion');

@@ -2,13 +2,15 @@
 //Imports and Mapbox Token Initialization
 import { MAPBOX_TOKEN } from './config.js';
 import { loadFacilitiesData } from './dataLoader.js';
-import { loadUSStates, loadUKRegions, loadItalyRegions, loadCanadaRegions, loadArubaRegion } from './dataLoader.js';
+// import { 
+//     loadUSStates, 
+//     loadUKRegions, 
+//     loadItalyRegions, 
+//     loadCanadaRegions, 
+//     loadArubaRegion 
+// } from './dataLoader.js';
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
-
-// Define clearRegionSelection Variables
-let hoveredRegionId = null;
-let selectedRegionId = null;
 
 // Map Initialization on DOMContentLoaded
 document.addEventListener("DOMContentLoaded", () => {
@@ -23,31 +25,6 @@ document.addEventListener("DOMContentLoaded", () => {
         zoom: INITIAL_ZOOM,
         center: INITIAL_CENTER,
     });
-
-    function addDataSource(map, sourceName, dataPromise, errorMessage) {
-        if (map.getSource(sourceName)) {
-            console.log(`${sourceName} already exists. Skipping addition.`);
-            return;
-        }
-
-        dataPromise
-            .then(data => {
-                map.addSource(sourceName, {
-                    type: 'geojson',
-                    data: data,
-                    promoteId: 'id',
-                });
-                console.log(`${sourceName} loaded successfully.`);
-            })
-            .catch(error => {
-                console.error(`${errorMessage}:`, error);
-                const errorMessageElement = document.getElementById("error-message");
-                if (errorMessageElement) {
-                    errorMessageElement.style.display = "block";
-                    errorMessageElement.innerText = errorMessage;
-                }
-            });
-    }
 
     //Map Animation on Load
     map.easeTo({
@@ -104,58 +81,26 @@ document.addEventListener("DOMContentLoaded", () => {
     map.on("load", () => setTimeout(() => map.resize(), 100));
     window.addEventListener("resize", () => map.resize());
 
+// Function to add geoJSON data sources to the map
+function addGeoJSONSource(map, sourceId, filePath, promoteId) {
+    map.addSource(sourceId, {
+        type: 'geojson',
+        data: filePath,
+        promoteId: promoteId
+    });
+}
+
     //Map Load Event and Fog Setting
     map.on('load', () => {
         map.setFog({});
 
-        // //Loading Regional Data and Adding Sources
-        // loadUSStates().then(usStatesData => {
-        //     map.addSource('us-states', {
-        //         type: 'geojson',
-        //         data: usStatesData,
-        //         promoteId: 'id'
-        //     });
-        // }).catch(error => console.error("Error loading US states data:", error));
-
-        // loadUKRegions().then(ukRegionsData => {
-        //     map.addSource('uk-regions', {
-        //         type: 'geojson',
-        //         data: ukRegionsData,
-        //         promoteId: 'id'
-        //     });
-        // }).catch(error => console.error("Error loading UK regions data:", error));
-
-        // loadItalyRegions().then(italyRegionsData => {
-        //     map.addSource('italy-regions', {
-        //         type: 'geojson',
-        //         data: italyRegionsData,
-        //         promoteId: 'id'
-        //     });
-        // }).catch(error => console.error("Error loading Italy regions data:", error));
-
-        // loadCanadaRegions().then(canadaRegionsData => {
-        //     map.addSource('canada-regions', {
-        //         type: 'geojson',
-        //         data: canadaRegionsData,
-        //         promoteId: 'id'
-        //     });
-        // }).catch(error => console.error("Error loading Canada regions data:", error));
-
-        // loadArubaRegion().then(arubaRegionData => {
-        //     map.addSource('aruba-region', {
-        //         type: 'geojson',
-        //         data: arubaRegionData,
-        //         promoteId: 'id'
-        //     });
-        // }).catch(error => console.error("Error loading Aruba region data:", error));
-
-        // Use addDataSource to load regional data
-        addDataSource(map, 'us-states', loadUSStates(), 'Error loading US states data.');
-        addDataSource(map, 'uk-regions', loadUKRegions(), 'Error loading UK regions data.');
-        addDataSource(map, 'italy-regions', loadItalyRegions(), 'Error loading Italy regions data.');
-        addDataSource(map, 'canada-regions', loadCanadaRegions(), 'Error loading Canada regions data.');
-        addDataSource(map, 'aruba-region', loadArubaRegion(), 'Error loading Aruba region data.');
-
+    // Use the addGeoJSONSource function to add each region's data source
+    addGeoJSONSource(map, 'us-states', '/data/us-states.geojson', 'id');
+    addGeoJSONSource(map, 'uk-regions', '/data/uk-regions.geojson', 'id');
+    addGeoJSONSource(map, 'canada-regions', '/data/canada-regions.geojson', 'id');
+    addGeoJSONSource(map, 'aruba-region', '/data/aruba-region.geojson', 'id');
+    addGeoJSONSource(map, 'italy-regions', '/data/italy-regions.geojson', 'id');
+    
         //Initialize Facilities Data and Set Variables
         let facilitiesData = [];
         const regionsWithFacilities = new Set();
@@ -292,8 +237,6 @@ Hospital Count: <strong>${hospital_count}</strong>
                     });
                 }
 
-
-                // Usage for different regions
                 // Usage for different regions
                 addRegionLayer(map, 'us-states', 'us-states', regionsWithFacilities);
                 addRegionLayer(map, 'canada-regions', 'canada-regions', regionsWithFacilities);
