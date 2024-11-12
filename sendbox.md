@@ -1044,3 +1044,93 @@ These colors are widely used in Italian cultural, sports, and government symbols
 </body>
 
 </html>
+
+//golden function.
+The sidebar is closed.
+Another region is clicked, showing a different list in the sidebar.
+A click occurs outside any selectable region.
+
+  function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities, hoverColor = '#05aaff', selectedColor = '#005bbb') {
+                    let hoveredRegionId = null;
+                    let selectedRegionId = null;
+                
+                    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+                    const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
+                
+                    // Apply hover effect only to regions with facilities
+                    const applyHover = (regionId) => {
+                        if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
+                            map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
+                        }
+                        hoveredRegionId = regionId;
+                        if (hoveredRegionId !== selectedRegionId) {
+                            map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: true });
+                        }
+                    };
+                
+                    const clearHover = () => {
+                        if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
+                            map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
+                        }
+                        hoveredRegionId = null;
+                    };
+                
+                    // Hover behavior for touch and non-touch devices
+                    map.on(hoverEvent, layerId, (e) => {
+                        const regionId = e.features[0].id;
+                        if (regionsWithFacilities.has(regionId)) {
+                            applyHover(regionId);
+                        }
+                    });
+                
+                    if (!isTouchDevice) {
+                        map.on('mouseleave', layerId, clearHover);
+                    } else {
+                        map.on('touchend', layerId, clearHover);
+                        map.on('touchcancel', layerId, clearHover);
+                    }
+                
+                    // Click event to select region and update sidebar, clearing any previous selection
+                    map.on('click', layerId, (e) => {
+                        const regionId = e.features[0].id;
+                
+                        // Only proceed if the region has facilities
+                        if (regionsWithFacilities.has(regionId)) {
+                            clearRegionSelection(); // Clear any existing selection before applying the new one
+                
+                            // Set the new selected region
+                            selectedRegionId = regionId;
+                            map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: true });
+                
+                            // Update the sidebar content for the new region
+                            updateSidebarForRegion(regionId);
+                        }
+                    });
+                
+                    // Clear selection when clicking outside any region
+                    map.on('click', (e) => {
+                        const features = map.queryRenderedFeatures(e.point, { layers: [layerId] });
+                        if (features.length === 0) {
+                            clearRegionSelection();
+                        }
+                    });
+                
+                    // Clear selection and hover when the sidebar is closed
+                    function clearRegionSelection() {
+                        clearHover(); // Clear any hover effect
+                        if (selectedRegionId !== null) {
+                            map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: false });
+                            selectedRegionId = null;
+                        }
+                    }
+                
+                    // Attach the clear function to the sidebar close event
+                    document.getElementById('close-sidebar').addEventListener('click', clearRegionSelection);
+                
+                    // Placeholder function to update sidebar content based on region selection
+                    function updateSidebarForRegion(regionId) {
+                        // Implement logic to show content for the selected region in the sidebar
+                    }
+                }
+                
+                

@@ -198,11 +198,11 @@ addDataSource(map, 'aruba-region', loadArubaRegion(), 'Error loading Aruba regio
                 console.log("regionsWithFacilities:", Array.from(regionsWithFacilities));
 
                 // Add interactions for each region
-                addRegionInteractions(map, 'us-states-fill', 'us-states', regionsWithFacilities);
-                addRegionInteractions(map, 'canada-regions-fill', 'canada-regions', regionsWithFacilities);
-                addRegionInteractions(map, 'aruba-region-fill', 'aruba-region', regionsWithFacilities);
-                addRegionInteractions(map, 'italy-regions-fill', 'italy-regions', regionsWithFacilities);
-                addRegionInteractions(map, 'uk-regions-fill', 'uk-regions', regionsWithFacilities);
+                // addRegionInteractions(map, 'us-states-fill', 'us-states', regionsWithFacilities);
+                // addRegionInteractions(map, 'canada-regions-fill', 'canada-regions', regionsWithFacilities);
+                // addRegionInteractions(map, 'aruba-region-fill', 'aruba-region', regionsWithFacilities);
+                // addRegionInteractions(map, 'italy-regions-fill', 'italy-regions', regionsWithFacilities);
+                // addRegionInteractions(map, 'uk-regions-fill', 'uk-regions', regionsWithFacilities);
 
                 // Set region click events for the sidebar
                 setRegionClickEvent('canada-regions', 'id', 'name');
@@ -323,16 +323,16 @@ Hospital Count: <strong>${hospital_count}</strong>
                 addRegionInteractions(map, 'italy-regions-fill', 'italy-regions', regionsWithFacilities);
                 addRegionInteractions(map, 'uk-regions-fill', 'uk-regions', regionsWithFacilities);
 
+                
+               
                 function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities, hoverColor = '#05aaff', selectedColor = '#005bbb') {
-
-                    // Check if the device supports touch
+                    let hoveredRegionId = null;
+                    let selectedRegionId = null;
+                
                     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-
-                    // Define hover effect for touch and non-touch devices
                     const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
-                    const endHoverEvent = isTouchDevice ? 'touchend' : 'mouseleave';
-
-                    // Apply hover effect
+                
+                    // Apply hover effect only to regions with facilities
                     const applyHover = (regionId) => {
                         if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
                             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
@@ -342,80 +342,73 @@ Hospital Count: <strong>${hospital_count}</strong>
                             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: true });
                         }
                     };
-
-                    // Clear hover effect
+                
                     const clearHover = () => {
                         if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
                             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
                         }
                         hoveredRegionId = null;
                     };
-
-                    // Add hover event
+                
+                    // Hover behavior for touch and non-touch devices
                     map.on(hoverEvent, layerId, (e) => {
                         const regionId = e.features[0].id;
-
-                        // Only apply hover to regions with facilities
                         if (regionsWithFacilities.has(regionId)) {
                             applyHover(regionId);
                         }
                     });
-
-                    // Clear hover for non-touch devices on mouse leave
+                
                     if (!isTouchDevice) {
                         map.on('mouseleave', layerId, clearHover);
-                    }
-
-                    // For touch devices, also clear hover on `touchend` and `touchcancel`
-                    if (isTouchDevice) {
+                    } else {
                         map.on('touchend', layerId, clearHover);
                         map.on('touchcancel', layerId, clearHover);
                     }
-
-                    // Click effect
+                
+                    // Click event to select region and update sidebar, clearing any previous selection
                     map.on('click', layerId, (e) => {
                         const regionId = e.features[0].id;
-
-                        // Only allow selection on regions with facilities
+                
+                        // Only proceed if the region has facilities
                         if (regionsWithFacilities.has(regionId)) {
-                            if (selectedRegionId !== null) {
-                                map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: false });
-                            }
+                            clearRegionSelection(); // Clear any existing selection before applying the new one
+                
+                            // Set the new selected region
                             selectedRegionId = regionId;
                             map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: true });
-
-                            // Remove hover state if it's the selected region
-                            if (hoveredRegionId === selectedRegionId) {
-                                clearHover();
-                            }
+                
+                            // Update the sidebar content for the new region
+                            updateSidebarForRegion(regionId);
                         }
                     });
-
-                    // Clear selection on outside click
+                
+                    // Clear selection when clicking outside any region
                     map.on('click', (e) => {
                         const features = map.queryRenderedFeatures(e.point, { layers: [layerId] });
-
-                        // If no region is clicked, clear the selection
-                        if (features.length === 0 && selectedRegionId !== null) {
+                        if (features.length === 0) {
                             clearRegionSelection();
                         }
                     });
-
-                    // Clear selection and hover when the sidebar closes
+                
+                    // Clear selection and hover when the sidebar is closed
                     function clearRegionSelection() {
-                        clearHover();
+                        clearHover(); // Clear any hover effect
                         if (selectedRegionId !== null) {
                             map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: false });
                             selectedRegionId = null;
                         }
                     }
-
-                    // Attach `clearRegionSelection` to sidebar close event
+                
+                    // Attach the clear function to the sidebar close event
                     document.getElementById('close-sidebar').addEventListener('click', clearRegionSelection);
+                
+                    // Placeholder function to update sidebar content based on region selection
+                    function updateSidebarForRegion(regionId) {
+                        // Implement logic to show content for the selected region in the sidebar
+                    }
                 }
-
-              
-                // Toggle marker visibility based on zoom level
+                
+               
                 function toggleMarkers() {
                     const zoomLevel = map.getZoom();
                     const minZoomToShowMarkers = 4;
