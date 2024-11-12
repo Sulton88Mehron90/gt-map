@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function addDataSource(map, sourceName, dataPromise, errorMessage) {
         if (map.getSource(sourceName)) {
             console.log(`${sourceName} already exists. Skipping addition.`);
-            return; 
+            return;
         }
 
         dataPromise
@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     errorMessageElement.innerText = errorMessage;
                 }
             });
-    }    
+    }
 
     //Map Animation on Load
     map.easeTo({
@@ -149,18 +149,18 @@ document.addEventListener("DOMContentLoaded", () => {
         //     });
         // }).catch(error => console.error("Error loading Aruba region data:", error));
 
-// Use addDataSource to load regional data
-addDataSource(map, 'us-states', loadUSStates(), 'Error loading US states data.');
-addDataSource(map, 'uk-regions', loadUKRegions(), 'Error loading UK regions data.');
-addDataSource(map, 'italy-regions', loadItalyRegions(), 'Error loading Italy regions data.');
-addDataSource(map, 'canada-regions', loadCanadaRegions(), 'Error loading Canada regions data.');
-addDataSource(map, 'aruba-region', loadArubaRegion(), 'Error loading Aruba region data.');
+        // Use addDataSource to load regional data
+        addDataSource(map, 'us-states', loadUSStates(), 'Error loading US states data.');
+        addDataSource(map, 'uk-regions', loadUKRegions(), 'Error loading UK regions data.');
+        addDataSource(map, 'italy-regions', loadItalyRegions(), 'Error loading Italy regions data.');
+        addDataSource(map, 'canada-regions', loadCanadaRegions(), 'Error loading Canada regions data.');
+        addDataSource(map, 'aruba-region', loadArubaRegion(), 'Error loading Aruba region data.');
 
         //Initialize Facilities Data and Set Variables
         let facilitiesData = [];
         const regionsWithFacilities = new Set();
         const statesWithFacilities = new Set();
-        let hoveredStateId = null;
+        // let hoveredStateId = null;
         let selectedStateId = null;
         const logoUrl = './img/gtLogo.png';
 
@@ -183,26 +183,8 @@ addDataSource(map, 'aruba-region', loadArubaRegion(), 'Error loading Aruba regio
 
                 facilitiesData = facilities;
 
-                facilities.forEach(facility => {
-                    const regionId = facility.region_id ? facility.region_id.toUpperCase() : null;
-                    if (regionId) {
-                        regionsWithFacilities.add(regionId);
-                    }
-
-                    const stateOrRegion = facility.location.split(', ')[1];
-                    if (stateOrRegion) {
-                        statesWithFacilities.add(stateOrRegion);
-                    }
-                });
-
                 console.log("regionsWithFacilities:", Array.from(regionsWithFacilities));
 
-                // Add interactions for each region
-                // addRegionInteractions(map, 'us-states-fill', 'us-states', regionsWithFacilities);
-                // addRegionInteractions(map, 'canada-regions-fill', 'canada-regions', regionsWithFacilities);
-                // addRegionInteractions(map, 'aruba-region-fill', 'aruba-region', regionsWithFacilities);
-                // addRegionInteractions(map, 'italy-regions-fill', 'italy-regions', regionsWithFacilities);
-                // addRegionInteractions(map, 'uk-regions-fill', 'uk-regions', regionsWithFacilities);
 
                 // Set region click events for the sidebar
                 setRegionClickEvent('canada-regions', 'id', 'name');
@@ -284,137 +266,56 @@ Hospital Count: <strong>${hospital_count}</strong>
                 addHoverOutlineLayer(map, 'italy-regions-line-hover', 'italy-regions');
                 addHoverOutlineLayer(map, 'uk-regions-line-hover', 'uk-regions');
 
-// show regions and states
-                function addRegionLayer(map, regionId, regionSource) {
+                // show regions and states
+                function addRegionLayer(map, layerId, sourceId, regionsWithFacilities) {
+                    const hoverColor = '#05aaff';
+                    const selectedColor = '#ff8502';
+
                     map.addLayer({
-                        id: `${regionId}-fill`,
+                        id: `${layerId}-fill`,
                         type: 'fill',
-                        source: regionSource,
+                        source: sourceId,
                         paint: {
                             'fill-color': [
                                 'case',
-                                // Check if the region is hovered and in the regionsWithFacilities set
-                                [
-                                    'all',
-                                    ['boolean', ['feature-state', 'hover'], false],
-                                    ['in', ['get', 'id'], ['literal', Array.from(regionsWithFacilities)]]
-                                ],
-                                '#05aaff', // Hover color for regions with facilities
+                                // Apply selected color only if the region is in regionsWithFacilities and selected
+                                ['all', ['boolean', ['feature-state', 'selected'], false], ['in', ['get', 'id'], ['literal', Array.from(regionsWithFacilities)]]], selectedColor,
 
-                                // Selected color if a region with facilities is clicked
-                                ['boolean', ['feature-state', 'selected'], false], '#05aaff',
+                                // Apply hover color only if the region is in regionsWithFacilities and hovered
+                                ['all', ['boolean', ['feature-state', 'hover'], false], ['in', ['get', 'id'], ['literal', Array.from(regionsWithFacilities)]]], hoverColor,
 
-                                '#d3d3d3' // Default color for regions without facilities
+                                // Default color for regions without facilities
+                                '#d3d3d3'
                             ],
                             'fill-opacity': 0.5
                         }
                     });
                 }
 
+
                 // Usage for different regions
-                addRegionLayer(map, 'us-states', 'us-states');
-                addRegionLayer(map, 'canada-regions', 'canada-regions');
-                addRegionLayer(map, 'aruba-region', 'aruba-region');
-                addRegionLayer(map, 'italy-regions', 'italy-regions');
-                addRegionLayer(map, 'uk-regions', 'uk-regions');
+                // Usage for different regions
+                addRegionLayer(map, 'us-states', 'us-states', regionsWithFacilities);
+                addRegionLayer(map, 'canada-regions', 'canada-regions', regionsWithFacilities);
+                addRegionLayer(map, 'aruba-region', 'aruba-region', regionsWithFacilities);
+                addRegionLayer(map, 'italy-regions', 'italy-regions', regionsWithFacilities);
+                addRegionLayer(map, 'uk-regions', 'uk-regions', regionsWithFacilities);
+
+
                 addRegionInteractions(map, 'us-states-fill', 'us-states', regionsWithFacilities);
                 addRegionInteractions(map, 'canada-regions-fill', 'canada-regions', regionsWithFacilities);
                 addRegionInteractions(map, 'aruba-region-fill', 'aruba-region', regionsWithFacilities);
                 addRegionInteractions(map, 'italy-regions-fill', 'italy-regions', regionsWithFacilities);
                 addRegionInteractions(map, 'uk-regions-fill', 'uk-regions', regionsWithFacilities);
 
-                
-               
-                // function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities, hoverColor = '#05aaff', selectedColor = '#005bbb') {
-                //     let hoveredRegionId = null;
-                //     let selectedRegionId = null;
-                
-                //     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-                //     const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
-                
-                //     // Apply hover effect only to regions with facilities
-                //     const applyHover = (regionId) => {
-                //         if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
-                //             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
-                //         }
-                //         hoveredRegionId = regionId;
-                //         if (hoveredRegionId !== selectedRegionId) {
-                //             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: true });
-                //         }
-                //     };
-                
-                //     const clearHover = () => {
-                //         if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
-                //             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
-                //         }
-                //         hoveredRegionId = null;
-                //     };
-                
-                //     // Hover behavior for touch and non-touch devices
-                //     map.on(hoverEvent, layerId, (e) => {
-                //         const regionId = e.features[0].id;
-                //         if (regionsWithFacilities.has(regionId)) {
-                //             applyHover(regionId);
-                //         }
-                //     });
-                
-                //     if (!isTouchDevice) {
-                //         map.on('mouseleave', layerId, clearHover);
-                //     } else {
-                //         map.on('touchend', layerId, clearHover);
-                //         map.on('touchcancel', layerId, clearHover);
-                //     }
-                
-                //     // Click event to select region and update sidebar, clearing any previous selection
-                //     map.on('click', layerId, (e) => {
-                //         const regionId = e.features[0].id;
-                
-                //         // Only proceed if the region has facilities
-                //         if (regionsWithFacilities.has(regionId)) {
-                //             clearRegionSelection(); // Clear any existing selection before applying the new one
-                
-                //             // Set the new selected region
-                //             selectedRegionId = regionId;
-                //             map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: true });
-                
-                //             // Update the sidebar content for the new region
-                //             updateSidebarForRegion(regionId);
-                //         }
-                //     });
-                
-                //     // Clear selection when clicking outside any region
-                //     map.on('click', (e) => {
-                //         const features = map.queryRenderedFeatures(e.point, { layers: [layerId] });
-                //         if (features.length === 0) {
-                //             clearRegionSelection();
-                //         }
-                //     });
-                
-                //     // Clear selection and hover when the sidebar is closed
-                //     function clearRegionSelection() {
-                //         clearHover(); // Clear any hover effect
-                //         if (selectedRegionId !== null) {
-                //             map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: false });
-                //             selectedRegionId = null;
-                //         }
-                //     }
-                
-                //     // Attach the clear function to the sidebar close event
-                //     document.getElementById('close-sidebar').addEventListener('click', clearRegionSelection);
-                
-                //     // Placeholder function to update sidebar content based on region selection
-                //     function updateSidebarForRegion(regionId) {
-                //         // Implement logic to show content for the selected region in the sidebar
-                //     }
-                // }
-                
-                function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities, hoverColor = '#05aaff', selectedColor = '#005bbb') {
+
+                function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
                     let hoveredRegionId = null;
                     let selectedRegionId = null;
-                
+
                     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
                     const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
-                
+
                     // Apply hover effect only to regions with facilities
                     const applyHover = (regionId) => {
                         if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
@@ -425,19 +326,19 @@ Hospital Count: <strong>${hospital_count}</strong>
                             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: true });
                         }
                     };
-                
+
                     const clearHover = () => {
                         if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
                             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
                         }
                         hoveredRegionId = null;
                     };
-                
+
                     // Tap-to-Hover functionality for touch devices
                     if (isTouchDevice) {
                         map.on('touchstart', layerId, (e) => {
                             const regionId = e.features[0].id;
-                
+
                             if (regionsWithFacilities.has(regionId)) {
                                 if (hoveredRegionId === regionId) {
                                     // If already hovered, treat it as a click
@@ -448,11 +349,11 @@ Hospital Count: <strong>${hospital_count}</strong>
                                 }
                             }
                         });
-                
+
                         map.on('touchend', layerId, clearHover);
                         map.on('touchcancel', layerId, clearHover);
                     }
-                
+
                     // Regular hover for non-touch devices
                     map.on(hoverEvent, layerId, (e) => {
                         const regionId = e.features[0].id;
@@ -460,23 +361,23 @@ Hospital Count: <strong>${hospital_count}</strong>
                             applyHover(regionId);
                         }
                     });
-                
+
                     // Clear hover effect on mouse leave for non-touch devices
                     if (!isTouchDevice) {
                         map.on('mouseleave', layerId, clearHover);
                     }
-                
+
                     // Function to select a region
                     function selectRegion(regionId) {
                         clearRegionSelection(); // Clear previous selection
-                
+
                         selectedRegionId = regionId;
                         map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: true });
-                
+
                         // Update sidebar for the new selection
                         updateSidebarForRegion(regionId);
                     }
-                
+
                     // Handle selection on click
                     map.on('click', layerId, (e) => {
                         const regionId = e.features[0].id;
@@ -484,7 +385,7 @@ Hospital Count: <strong>${hospital_count}</strong>
                             selectRegion(regionId);
                         }
                     });
-                
+
                     // Clear selection when clicking outside
                     map.on('click', (e) => {
                         const features = map.queryRenderedFeatures(e.point, { layers: [layerId] });
@@ -492,7 +393,7 @@ Hospital Count: <strong>${hospital_count}</strong>
                             clearRegionSelection();
                         }
                     });
-                
+
                     // Clear selection and hover states when the sidebar is closed
                     function clearRegionSelection() {
                         clearHover();
@@ -501,16 +402,17 @@ Hospital Count: <strong>${hospital_count}</strong>
                             selectedRegionId = null;
                         }
                     }
-                
+
                     // Attach clear function to sidebar close
                     document.getElementById('close-sidebar').addEventListener('click', clearRegionSelection);
-                
+
                     // Placeholder function to update sidebar content based on region selection
                     function updateSidebarForRegion(regionId) {
                         // Logic to show content for the selected region in the sidebar
                     }
                 }
-                     
+
+
 
                 function toggleMarkers() {
                     const zoomLevel = map.getZoom();
@@ -853,13 +755,13 @@ ${hospital.location}<br>
             sidebar.style.display = regionHospitals.length > 0 ? 'block' : 'none';
         }
 
-        /**
- * Sets up a click event for a specified region layer.
- * On click, fetches and displays facility data in the sidebar for the clicked region.
- * @param {string} regionSource - The source layer ID for the map region.
- * @param {string} regionIdProp - The property name in geoJSON data that represents the region ID.
- * @param {string} regionNameProp - The property name in geoJSON data that represents the region name.
- */
+
+        //Sets up a click event for a specified region layer.
+        //On click, fetches and displays facility data in the sidebar for the clicked region.
+        //@param {string} regionSource - The source layer ID for the map region.
+        //@param {string} regionIdProp - The property name in geoJSON data that represents the region ID.
+        //@param {string} regionNameProp - The property name in geoJSON data that represents the region name.
+
         function setRegionClickEvent(regionSource, regionIdProp, regionNameProp) {
             map.on('click', `${regionSource}-fill`, (e) => {
                 // Capture the clicked region's ID and name properties from the geoJSON data
@@ -886,7 +788,6 @@ ${hospital.location}<br>
                 errorMessage.innerText = 'Failed to load facility data. Please try again later.';
             }
         }
-
 
         map.addControl(new mapboxgl.NavigationControl());
         // map.addControl(new mapboxgl.NavigationControl({ position: 'top-left' }));
@@ -936,35 +837,6 @@ ${hospital.location}<br>
 
 
         // Fly-to buttons for navigating regions
-
-        // document.getElementById("fly-to-usa").addEventListener("click", () => {
-        //     map.flyTo({ center: [-101.714859, 39.710884], zoom: 4, pitch: 45 });
-        // });
-        // document.getElementById("fly-to-uk").addEventListener("click", () => {
-        //     map.flyTo({ center: [360.242386, 51.633362], zoom: 4, pitch: 45 });
-        // });
-        // document.getElementById("fly-to-italy").addEventListener("click", () => {
-        //     map.flyTo({ center: [12.563553, 42.798676], zoom: 4, pitch: 45 });
-        // });
-        // document.getElementById("fly-to-canada").addEventListener("click", () => {
-        //     map.flyTo({
-        //         center: [-106.3468, 56.1304],
-        //         zoom: 4,
-        //         pitch: 30
-        //     });
-
-        //     // document.getElementById("fit-to-canad").addEventListener("click", () => {
-        //     //     map.fitBounds([
-        //     //         [-140.99778, 41.675105],
-        //     //         [-52.648099, 83.23324]
-        //     //     ]);
-        //     // });
-
-        //     document.getElementById("fly-to-aruba").addEventListener("click", () => {
-        //         map.flyTo({ center: [-70.027, 12.5246], zoom: 6, pitch: 45 });
-        //     });
-        // });
-
         document.getElementById("fit-to-usa").addEventListener("click", () => {
             map.fitBounds([
                 [-165.031128, 65.476793],

@@ -1046,9 +1046,9 @@ These colors are widely used in Italian cultural, sports, and government symbols
 </html>
 
 //golden function.
-The sidebar is closed.
-Another region is clicked, showing a different list in the sidebar.
-A click occurs outside any selectable region.
+//The sidebar is closed.
+//Another region is clicked, showing a different list in the sidebar.
+//A click occurs outside any selectable region.
 
   function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities, hoverColor = '#05aaff', selectedColor = '#005bbb') {
                     let hoveredRegionId = null;
@@ -1133,4 +1133,28 @@ A click occurs outside any selectable region.
                     }
                 }
                 
-                
+                         // function addRegionLayer(map, regionId, regionSource) {
+                //     map.addLayer({
+                //         id: `${regionId}-fill`,
+                //         type: 'fill',
+                //         source: regionSource,
+                //         paint: {
+                //             'fill-color': [
+                //                 'case',
+                //                 // Check if the region is hovered and in the regionsWithFacilities set
+                //                 [
+                //                     'all',
+                //                     ['boolean', ['feature-state', 'hover'], false],
+                //                     ['in', ['get', 'id'], ['literal', Array.from(regionsWithFacilities)]]
+                //                 ],
+                //                 '#05aaff', // Hover color for regions with facilities
+
+                //                 // Selected color if a region with facilities is clicked
+                //                 ['boolean', ['feature-state', 'selected'], false], '#05aaff',
+
+                //                 '#d3d3d3' // Default color for regions without facilities
+                //             ],
+                //             'fill-opacity': 0.5
+                //         }
+                //     });
+                // }       
