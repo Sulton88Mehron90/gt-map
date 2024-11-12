@@ -1,18 +1,16 @@
 
+//Imports and Mapbox Token Initialization
 import { MAPBOX_TOKEN } from './config.js';
 import { loadFacilitiesData } from './dataLoader.js';
+import { loadUSStates, loadUKRegions, loadItalyRegions, loadCanadaRegions, loadArubaRegion } from './dataLoader.js';
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
-// Define hover effect functions once
-function addHoverEffect(marker) {
-    marker.classList.add('hover-effect');
-}
-function removeHoverEffect(marker) {
-    marker.classList.remove('hover-effect');
-}
+// Define clearRegionSelection Variables
+let hoveredRegionId = null;
+let selectedRegionId = null;
 
-// Initialize the map after the DOM is fully loaded
+// Map Initialization on DOMContentLoaded
 document.addEventListener("DOMContentLoaded", () => {
     const sidebar = document.getElementById("hospital-list-sidebar");
     const INITIAL_CENTER = [-119.0187, 35.3733];
@@ -21,12 +19,37 @@ document.addEventListener("DOMContentLoaded", () => {
     const map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/light-v11',
-        // style: 'mapbox://styles/mapbox/streets-v12',
         projection: 'globe',
         zoom: INITIAL_ZOOM,
         center: INITIAL_CENTER,
     });
 
+    function addDataSource(map, sourceName, dataPromise, errorMessage) {
+        if (map.getSource(sourceName)) {
+            console.log(`${sourceName} already exists. Skipping addition.`);
+            return; // If the source already exists, do nothing.
+        }
+
+        dataPromise
+            .then(data => {
+                map.addSource(sourceName, {
+                    type: 'geojson',
+                    data: data,
+                    promoteId: 'id',
+                });
+                console.log(`${sourceName} loaded successfully.`);
+            })
+            .catch(error => {
+                console.error(`${errorMessage}:`, error);
+                const errorMessageElement = document.getElementById("error-message");
+                if (errorMessageElement) {
+                    errorMessageElement.style.display = "block";
+                    errorMessageElement.innerText = errorMessage;
+                }
+            });
+    }    
+
+    //Map Animation on Load
     map.easeTo({
         center: [-119.0187, 35.3733],
         zoom: 4,
@@ -34,6 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
         easing: (t) => t * (2 - t)
     });
 
+    //Debounce Function Definition
     function debounce(func, delay) {
         let timeout;
         return function (...args) {
@@ -41,12 +65,12 @@ document.addEventListener("DOMContentLoaded", () => {
             timeout = setTimeout(() => func.apply(this, args), delay);
         };
     }
-
+    //Geocoder Toggle Setup
     const geocoderToggle = document.getElementById("toggle-geocoder");
     const geocoderContainer = document.getElementById("geocoder-container");
     let geocoder;
 
-    // Define debounced toggle function
+    //Define debounced toggle function
     const debouncedGeocoderToggle = debounce(() => {
         geocoderContainer.style.display = geocoderContainer.style.display === "none" ? "block" : "none";
         geocoderToggle.style.display = geocoderContainer.style.display === "none" ? "flex" : "none";
@@ -61,13 +85,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }, 300);
 
-    // debounced event listener
+    //Event Listener for Geocoder Toggle   
     geocoderToggle.addEventListener("click", (e) => {
         e.stopPropagation();
         debouncedGeocoderToggle();
     });
 
-    // Hide geocoder and show toggle button when clicking outside
+    //Outside Click Detection for Geocoder
     document.addEventListener("click", (event) => {
         if (!geocoderContainer.contains(event.target) && event.target !== geocoderToggle) {
             geocoderContainer.style.display = "none";
@@ -75,65 +99,72 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Event listeners to handle resize and ensure map fits container
+    //Map Resize on Load and Window Resize
     window.addEventListener("load", () => map.resize());
     map.on("load", () => setTimeout(() => map.resize(), 100));
     window.addEventListener("resize", () => map.resize());
 
+    //Map Load Event and Fog Setting
     map.on('load', () => {
         map.setFog({});
 
-        map.addSource('us-states', {
-            type: 'geojson',
-            data: '/data/us-states.geojson',
-            promoteId: 'id'
-        });
-        map.addSource('uk-regions', {
-            type: 'geojson',
-            data: '/data/uk-regions.geojson',
-            promoteId: 'id'
-        });
-        map.addSource('italy-regions', {
-            type: 'geojson',
-            data: '/data/italy-regions.geojson',
-            promoteId: 'id'
-        });
-        map.addSource('canada-regions', {
-            type: 'geojson',
-            data: '/data/canada-regions.geojson',
-            promoteId: 'id'
-        });
+        // //Loading Regional Data and Adding Sources
+        // loadUSStates().then(usStatesData => {
+        //     map.addSource('us-states', {
+        //         type: 'geojson',
+        //         data: usStatesData,
+        //         promoteId: 'id'
+        //     });
+        // }).catch(error => console.error("Error loading US states data:", error));
 
-        map.addSource('aruba-region', {
-            type: 'geojson',
-            data: '/data/aruba-region.geojson',
-            promoteId: 'id'
-        });
+        // loadUKRegions().then(ukRegionsData => {
+        //     map.addSource('uk-regions', {
+        //         type: 'geojson',
+        //         data: ukRegionsData,
+        //         promoteId: 'id'
+        //     });
+        // }).catch(error => console.error("Error loading UK regions data:", error));
 
+        // loadItalyRegions().then(italyRegionsData => {
+        //     map.addSource('italy-regions', {
+        //         type: 'geojson',
+        //         data: italyRegionsData,
+        //         promoteId: 'id'
+        //     });
+        // }).catch(error => console.error("Error loading Italy regions data:", error));
+
+        // loadCanadaRegions().then(canadaRegionsData => {
+        //     map.addSource('canada-regions', {
+        //         type: 'geojson',
+        //         data: canadaRegionsData,
+        //         promoteId: 'id'
+        //     });
+        // }).catch(error => console.error("Error loading Canada regions data:", error));
+
+        // loadArubaRegion().then(arubaRegionData => {
+        //     map.addSource('aruba-region', {
+        //         type: 'geojson',
+        //         data: arubaRegionData,
+        //         promoteId: 'id'
+        //     });
+        // }).catch(error => console.error("Error loading Aruba region data:", error));
+
+// Use addDataSource to load regional data
+addDataSource(map, 'us-states', loadUSStates(), 'Error loading US states data.');
+addDataSource(map, 'uk-regions', loadUKRegions(), 'Error loading UK regions data.');
+addDataSource(map, 'italy-regions', loadItalyRegions(), 'Error loading Italy regions data.');
+addDataSource(map, 'canada-regions', loadCanadaRegions(), 'Error loading Canada regions data.');
+addDataSource(map, 'aruba-region', loadArubaRegion(), 'Error loading Aruba region data.');
+
+        //Initialize Facilities Data and Set Variables
         let facilitiesData = [];
-        let cachedFacilitiesData = null;
         const regionsWithFacilities = new Set();
         const statesWithFacilities = new Set();
-
-        async function loadFacilitiesData() {
-            if (cachedFacilitiesData) {
-                return cachedFacilitiesData;
-            }
-            try {
-                const response = await fetch('/data/facilities.json');
-                const data = await response.json();
-                cachedFacilitiesData = data; // Cache the data after loading it once
-                return cachedFacilitiesData;
-            } catch (error) {
-                console.error('Error loading facilities data:', error);
-                throw error;
-            }
-        }
-
         let hoveredStateId = null;
         let selectedStateId = null;
         const logoUrl = './img/gtLogo.png';
 
+        // Call the imported loadFacilitiesData function
         loadFacilitiesData()
             .then(facilities => {
 
@@ -149,9 +180,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         statesWithFacilities.add(stateOrRegion);
                     }
                 });
-
-                console.log("regionsWithFacilities:", Array.from(regionsWithFacilities));
-
 
                 facilitiesData = facilities;
 
@@ -231,7 +259,7 @@ Hospital Count: <strong>${hospital_count}</strong>
 
                     return marker;
                 });
-
+                // show borders
                 function addHoverOutlineLayer(map, layerId, sourceId) {
                     map.addLayer({
                         id: layerId,
@@ -256,9 +284,46 @@ Hospital Count: <strong>${hospital_count}</strong>
                 addHoverOutlineLayer(map, 'italy-regions-line-hover', 'italy-regions');
                 addHoverOutlineLayer(map, 'uk-regions-line-hover', 'uk-regions');
 
+// show regions and states
+                function addRegionLayer(map, regionId, regionSource) {
+                    map.addLayer({
+                        id: `${regionId}-fill`,
+                        type: 'fill',
+                        source: regionSource,
+                        paint: {
+                            'fill-color': [
+                                'case',
+                                // Check if the region is hovered and in the regionsWithFacilities set
+                                [
+                                    'all',
+                                    ['boolean', ['feature-state', 'hover'], false],
+                                    ['in', ['get', 'id'], ['literal', Array.from(regionsWithFacilities)]]
+                                ],
+                                '#05aaff', // Hover color for regions with facilities
+
+                                // Selected color if a region with facilities is clicked
+                                ['boolean', ['feature-state', 'selected'], false], '#05aaff',
+
+                                '#d3d3d3' // Default color for regions without facilities
+                            ],
+                            'fill-opacity': 0.5
+                        }
+                    });
+                }
+
+                // Usage for different regions
+                addRegionLayer(map, 'us-states', 'us-states');
+                addRegionLayer(map, 'canada-regions', 'canada-regions');
+                addRegionLayer(map, 'aruba-region', 'aruba-region');
+                addRegionLayer(map, 'italy-regions', 'italy-regions');
+                addRegionLayer(map, 'uk-regions', 'uk-regions');
+                addRegionInteractions(map, 'us-states-fill', 'us-states', regionsWithFacilities);
+                addRegionInteractions(map, 'canada-regions-fill', 'canada-regions', regionsWithFacilities);
+                addRegionInteractions(map, 'aruba-region-fill', 'aruba-region', regionsWithFacilities);
+                addRegionInteractions(map, 'italy-regions-fill', 'italy-regions', regionsWithFacilities);
+                addRegionInteractions(map, 'uk-regions-fill', 'uk-regions', regionsWithFacilities);
+
                 function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities, hoverColor = '#05aaff', selectedColor = '#005bbb') {
-                    let hoveredRegionId = null;
-                    let selectedRegionId = null;
 
                     // Check if the device supports touch
                     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -349,45 +414,7 @@ Hospital Count: <strong>${hospital_count}</strong>
                     document.getElementById('close-sidebar').addEventListener('click', clearRegionSelection);
                 }
 
-
-                function addRegionLayer(map, regionId, regionSource) {
-                    map.addLayer({
-                        id: `${regionId}-fill`,
-                        type: 'fill',
-                        source: regionSource,
-                        paint: {
-                            'fill-color': [
-                                'case',
-                                // Check if the region is hovered and in the regionsWithFacilities set
-                                [
-                                    'all',
-                                    ['boolean', ['feature-state', 'hover'], false],
-                                    ['in', ['get', 'id'], ['literal', Array.from(regionsWithFacilities)]]
-                                ],
-                                '#05aaff', // Hover color for regions with facilities
-
-                                // Selected color if a region with facilities is clicked
-                                ['boolean', ['feature-state', 'selected'], false], '#05aaff',
-
-                                '#d3d3d3' // Default color for regions without facilities
-                            ],
-                            'fill-opacity': 0.5
-                        }
-                    });
-                }
-
-                // Usage for different regions
-                addRegionLayer(map, 'us-states', 'us-states');
-                addRegionLayer(map, 'canada-regions', 'canada-regions');
-                addRegionLayer(map, 'aruba-region', 'aruba-region');
-                addRegionLayer(map, 'italy-regions', 'italy-regions');
-                addRegionLayer(map, 'uk-regions', 'uk-regions');
-                addRegionInteractions(map, 'us-states-fill', 'us-states', regionsWithFacilities);
-                addRegionInteractions(map, 'canada-regions-fill', 'canada-regions', regionsWithFacilities);
-                addRegionInteractions(map, 'aruba-region-fill', 'aruba-region', regionsWithFacilities);
-                addRegionInteractions(map, 'italy-regions-fill', 'italy-regions', regionsWithFacilities);
-                addRegionInteractions(map, 'uk-regions-fill', 'uk-regions', regionsWithFacilities);
-
+              
                 // Toggle marker visibility based on zoom level
                 function toggleMarkers() {
                     const zoomLevel = map.getZoom();
@@ -642,12 +669,7 @@ ${hospital.location}<br>
                 const errorMessage = document.getElementById('error-message');
                 errorMessage.style.display = 'block';
                 errorMessage.innerText = 'Failed to load facility data. Please try again later.';
-
             });
-
-        // Define the clearRegionSelection function
-        let hoveredRegionId = null;
-        let selectedRegionId = null;
 
         function populateSidebar(regionId, regionName, facilities) {
             console.log(`Populating sidebar for region: ${regionName} (ID: ${regionId})`);
@@ -735,6 +757,13 @@ ${hospital.location}<br>
             sidebar.style.display = regionHospitals.length > 0 ? 'block' : 'none';
         }
 
+        /**
+ * Sets up a click event for a specified region layer.
+ * On click, fetches and displays facility data in the sidebar for the clicked region.
+ * @param {string} regionSource - The source layer ID for the map region.
+ * @param {string} regionIdProp - The property name in geoJSON data that represents the region ID.
+ * @param {string} regionNameProp - The property name in geoJSON data that represents the region name.
+ */
         function setRegionClickEvent(regionSource, regionIdProp, regionNameProp) {
             map.on('click', `${regionSource}-fill`, (e) => {
                 // Capture the clicked region's ID and name properties from the geoJSON data
@@ -742,22 +771,26 @@ ${hospital.location}<br>
                 const regionName = e.features[0].properties[regionNameProp];
                 console.log(`Region clicked: ${regionName} (ID: ${clickedRegionId})`);
 
-                // Use cached data or load facilities data once if not already loaded
+                // Call loadFacilitiesData and handle the response
                 loadFacilitiesData()
                     .then(facilities => {
                         // Pass the region data to populateSidebar
                         populateSidebar(clickedRegionId, regionName, facilities);
                     })
-                    .catch(error => {
-                        console.error('Error loading facilities data:', error);
-                        const errorMessage = document.getElementById('error-message');
-                        if (errorMessage) {
-                            errorMessage.style.display = 'block';
-                            errorMessage.innerText = 'Failed to load facility data. Please try again later.';
-                        }
-                    });
+                    .catch(displayErrorMessage);
             });
-        };
+        }
+
+        // Define a centralized error message handler
+        function displayErrorMessage(error) {
+            console.error('Error loading facilities data:', error);
+            const errorMessage = document.getElementById('error-message');
+            if (errorMessage) {
+                errorMessage.style.display = 'block';
+                errorMessage.innerText = 'Failed to load facility data. Please try again later.';
+            }
+        }
+
 
         map.addControl(new mapboxgl.NavigationControl());
         // map.addControl(new mapboxgl.NavigationControl({ position: 'top-left' }));
@@ -805,33 +838,37 @@ ${hospital.location}<br>
         }
         document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
 
-        // Fly-to buttons for navigating regions
-        document.getElementById("fly-to-usa").addEventListener("click", () => {
-            map.flyTo({ center: [-101.714859, 39.710884], zoom: 4, pitch: 45 });
-        });
-        document.getElementById("fly-to-uk").addEventListener("click", () => {
-            map.flyTo({ center: [360.242386, 51.633362], zoom: 4, pitch: 45 });
-        });
-        document.getElementById("fly-to-italy").addEventListener("click", () => {
-            map.flyTo({ center: [12.563553,42.798676], zoom: 4, pitch: 45 });
-        });
-        document.getElementById("fly-to-canada").addEventListener("click", () => {
-            map.flyTo({
-                center: [-106.3468, 56.1304],
-                zoom: 4,
-                pitch: 30
-            });
 
-            // document.getElementById("fit-to-canad").addEventListener("click", () => {
-            //     map.fitBounds([
-            //         [-140.99778, 41.675105],
-            //         [-52.648099, 83.23324]
-            //     ]);
-            // });
-        document.getElementById("fly-to-aruba").addEventListener("click", () => {
-            map.flyTo({ center: [-70.027, 12.5246], zoom: 5, pitch: 45 });
-        });
-        });
+        // Fly-to buttons for navigating regions
+
+        // document.getElementById("fly-to-usa").addEventListener("click", () => {
+        //     map.flyTo({ center: [-101.714859, 39.710884], zoom: 4, pitch: 45 });
+        // });
+        // document.getElementById("fly-to-uk").addEventListener("click", () => {
+        //     map.flyTo({ center: [360.242386, 51.633362], zoom: 4, pitch: 45 });
+        // });
+        // document.getElementById("fly-to-italy").addEventListener("click", () => {
+        //     map.flyTo({ center: [12.563553, 42.798676], zoom: 4, pitch: 45 });
+        // });
+        // document.getElementById("fly-to-canada").addEventListener("click", () => {
+        //     map.flyTo({
+        //         center: [-106.3468, 56.1304],
+        //         zoom: 4,
+        //         pitch: 30
+        //     });
+
+        //     // document.getElementById("fit-to-canad").addEventListener("click", () => {
+        //     //     map.fitBounds([
+        //     //         [-140.99778, 41.675105],
+        //     //         [-52.648099, 83.23324]
+        //     //     ]);
+        //     // });
+
+        //     document.getElementById("fly-to-aruba").addEventListener("click", () => {
+        //         map.flyTo({ center: [-70.027, 12.5246], zoom: 6, pitch: 45 });
+        //     });
+        // });
+
         document.getElementById("fit-to-usa").addEventListener("click", () => {
             map.fitBounds([
                 [-165.031128, 65.476793],
@@ -839,17 +876,39 @@ ${hospital.location}<br>
             ]);
         });
 
-        // Reset view button on the right side (outside the sidebar)
+        // Reset view button on the right side
         document.getElementById("reset-view").addEventListener("click", () => {
             map.flyTo({ center: INITIAL_CENTER, zoom: INITIAL_ZOOM, pitch: 0 });
         });
 
-        // Initialize drag variables
+        const regions = {
+            usa: { center: [-101.714859, 39.710884], zoom: 4, pitch: 45 },
+            uk: { center: [360.242386, 51.633362], zoom: 4, pitch: 45 },
+            italy: { center: [12.563553, 42.798676], zoom: 4, pitch: 45 },
+            canada: { center: [-106.3468, 56.1304], zoom: 4, pitch: 30 },
+            aruba: { center: [-70.027, 12.5246], zoom: 6, pitch: 45 }
+        };
+
+        function flyToRegion(region) {
+            const { center, zoom, pitch } = regions[region];
+            map.flyTo({ center, zoom, pitch });
+        }
+
+        //Attaching event listeners
+        document.getElementById("fly-to-usa").addEventListener("click", () => flyToRegion('usa'));
+        document.getElementById("fly-to-uk").addEventListener("click", () => flyToRegion('uk'));
+        document.getElementById("fly-to-italy").addEventListener("click", () => flyToRegion('italy'));
+        document.getElementById("fly-to-canada").addEventListener("click", () => flyToRegion('canada'));
+        document.getElementById("fly-to-aruba").addEventListener("click", () => flyToRegion('aruba'));
+
+
+        //Drag Initialization and Threshold Handling
         let isDragging = false;
         let startX, startY, initialLeft, initialTop;
         const dragThreshold = 5;
         const header = sidebar.querySelector(".sidebar-header");
 
+        //Start Drag Function
         function startDrag(e) {
             startX = e.touches ? e.touches[0].clientX : e.clientX;
             startY = e.touches ? e.touches[0].clientY : e.clientY;
@@ -866,6 +925,7 @@ ${hospital.location}<br>
             document.addEventListener("touchend", endDrag);
         }
 
+        //Drag Handling and Boundary Checking
         function handleDrag(e) {
             const currentX = e.touches ? e.touches[0].clientX : e.clientX;
             const currentY = e.touches ? e.touches[0].clientY : e.clientY;
@@ -882,7 +942,7 @@ ${hospital.location}<br>
                 sidebar.style.top = `${Math.min(Math.max(0, initialTop + dy), window.innerHeight - sidebar.offsetHeight)}px`;
             }
         }
-
+        //End Drag and Click Handling
         function endDrag() {
             if (!isDragging) {
                 header.click();
@@ -899,13 +959,13 @@ ${hospital.location}<br>
         header.addEventListener("mousedown", startDrag);
         header.addEventListener("touchstart", startDrag, { passive: false });
 
-
+        //Toggle Sidebar on Hover for Mobile Devices
         function toggleSidebarOnHover(show) {
             if (window.innerWidth <= 480) {
                 sidebar.style.display = show ? 'block' : 'none';
             }
         }
-
+        //Sidebar Visibility with Touch and Hover Events
         // Event listeners for hover on sidebar
         sidebar.addEventListener('mouseenter', () => toggleSidebarOnHover(true));
         sidebar.addEventListener('mouseleave', () => toggleSidebarOnHover(false));
@@ -913,7 +973,6 @@ ${hospital.location}<br>
         // Add touch events for mobile devices
         sidebar.addEventListener('touchstart', () => toggleSidebarOnHover(true));
         sidebar.addEventListener('touchend', () => toggleSidebarOnHover(false));
-
 
         // Close sidebar when the close button is clicked
         document.getElementById("close-sidebar").addEventListener('click', () => {

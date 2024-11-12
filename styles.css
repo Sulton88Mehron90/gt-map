@@ -7,7 +7,7 @@ body {
     color: #333;
     overflow: hidden;
 }
-
+/* Map and Layout */
 #map {
     position: absolute;
     top: 0;
@@ -23,6 +23,7 @@ body {
     right: 10px;
 }
 
+/* Map Control Positioning */
 .mapbox-button-group {
     position: absolute;
     top: 180px;
@@ -146,7 +147,7 @@ button:hover {
 }
 
 /* General Fly-To and Fit-To Button Styles */
-/* .mapbox-button-group .fly-to-button, */
+.mapbox-button-group .fly-to-button,
 .mapbox-button-group .fit-to-button,
 .mapbox-button-group .flip-front {
     border: none;
@@ -526,10 +527,10 @@ button:hover {
     } */
 
 /* Simulate hover for touch by applying similar styling on active/focus */
-/* #map:active .hoverable-element, 
+#map:active .hoverable-element, 
 #map .hoverable-element:focus {
     outline: 2px solid #FFFFFF; 
-} */
+}
 
 /* Responsive Styles */
 
