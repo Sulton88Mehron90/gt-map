@@ -7,7 +7,7 @@ body {
     color: #333;
     overflow: hidden;
 }
-
+/* Map and Layout */
 #map {
     position: absolute;
     top: 0;
@@ -23,6 +23,7 @@ body {
     right: 10px;
 }
 
+/* Map Control Positioning */
 .mapbox-button-group {
     position: absolute;
     top: 180px;

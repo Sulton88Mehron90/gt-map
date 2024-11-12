@@ -946,14 +946,6 @@ import { loadFacilitiesData } from './dataLoader.js';
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
-// Define hover effect functions once
-function addHoverEffect(marker) {
-    marker.classList.add('hover-effect');
-}
-function removeHoverEffect(marker) {
-    marker.classList.remove('hover-effect');
-}
-
  // Define the clearRegionSelection function
  let hoveredRegionId = null;
  let selectedRegionId = null;

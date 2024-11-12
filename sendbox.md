@@ -939,3 +939,108 @@ Green – Symbolizing hope and the country's lush landscapes.
 White – Representing peace and the snowy Alps.
 Red – Signifying courage and the bloodshed for Italy's independence and unification.
 These colors are widely used in Italian cultural, sports, and government symbols, with green, white, and red also known as the Tricolore.
+
+
+//below has A11 but need refactoring.
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Goliath Technologies Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="icon" href="./img/gtLogo.png" type="image/png">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js"></script>
+    <script
+        src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet"
+        href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.css"
+        type="text/css">
+</head>
+
+<body>
+
+    <div id="error-message" style="display: none; color: red; text-align: center; margin-top: 10px;"></div>
+
+    <div id="hospital-list-sidebar" style="display: none;" role="complementary" aria-label="Hospital Locations Sidebar">
+        <div class="sidebar-header">
+            <a href="https://goliathtechnologies.com/" target="_blank" id="home-logo" aria-label="Goliath Technologies Homepage">
+                <img src="./img/gtLogo.png" alt="Goliath Technologies Logo">
+            </a>            
+            <div class="button-group">
+                <button id="minimize-sidebar" aria-label="Minimize Sidebar" class="round-button">
+                    <i class="fas fa-chevron-up" aria-hidden="true"></i>
+                </button>
+                <button id="close-sidebar" aria-label="Close Sidebar" class="round-button">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+        <h2>Current Locations Using Goliath's Solutions</h2>
+        <ul id="hospital-list"></ul>
+    </div>
+    
+    <div id="map" role="application" aria-label="Interactive Map Displaying Locations"></div>
+    
+
+    <div class="mapbox-button-group">
+        <!-- <button id="fly-to-usa" class="fly-to-button fly-to-usa"></button> -->
+        <div class="flip-button" id="fly-to-usa" role="button" aria-label="Fly to USA">
+            <span class="flip-front"></span>
+            <span class="flip-back">USA</span>
+        </div>
+
+        <!-- <button id="fly-to-uk" class="fly-to-button fly-to-uk"></button> -->
+        <div class="flip-button" id="fly-to-uk" role="button" aria-label="Fly to UK">
+            <span class="flip-front"></span>
+            <span class="flip-back">UK</span>
+        </div>
+
+        <!-- <button id="fly-to-italy" class="fly-to-button fly-to-italy"></button> -->
+        <div class="flip-button" id="fly-to-italy" role="button" aria-label="Fly to Italy">
+            <span class="flip-front"></span>
+            <span class="flip-back">ITLY</span>
+        </div>
+
+        <!-- <button id="fly-to-canada" class="fly-to-button fly-to-canada"></button> -->
+        <div class="flip-button" id="fly-to-canada" role="button" aria-label="Fly to Canada">
+            <span class="flip-front"></span>
+            <span class="flip-back">CAN</span>
+        </div>
+
+        <!-- <button id="fly-to-aruba" class="fly-to-button fly-to-aruba"></button> -->
+        <div class="flip-button" id="fly-to-aruba" role="button" aria-label="Fly to Aruba">
+            <span class="flip-front"></span>
+            <span class="flip-back">ARB</span>
+        </div>
+
+        <button id="fit-to-usa" class="fit-to-button fit-to-usa" aria-label="Fit to USA View"></button>
+
+<button id="reset-view" aria-label="Reset Map View">
+    <i class="fas fa-sync-alt" aria-hidden="true"></i>
+</button>
+
+<button id="toggle-geocoder" aria-label="Search Location">
+    <i class="fas fa-search" aria-hidden="true"></i>
+</button>
+
+    </div>
+
+    <!-- Map container -->
+    //<div id="map"></div>
+
+
+    <a href="https://goliathtechnologies.com/" target="_blank" id="home-logo">
+        <img src="./img/goliath-logo.png" alt="Goliath Technologies Logo">
+    </a>
+
+    <!-- <script type="module" src="refactor.js"></script> -->
+    <script type="module" src="scripts.js"></script>
+</body>
+
+</html>
