@@ -105,7 +105,6 @@ function addGeoJSONSource(map, sourceId, filePath, promoteId) {
         let facilitiesData = [];
         const regionsWithFacilities = new Set();
         const statesWithFacilities = new Set();
-        // let hoveredStateId = null;
         let selectedStateId = null;
         const logoUrl = './img/gtLogo.png';
 

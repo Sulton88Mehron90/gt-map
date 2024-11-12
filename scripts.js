@@ -2,29 +2,22 @@
 //Imports and Mapbox Token Initialization
 import { MAPBOX_TOKEN } from './config.js';
 import { loadFacilitiesData } from './dataLoader.js';
-// import { 
-//     loadUSStates, 
-//     loadUKRegions, 
-//     loadItalyRegions, 
-//     loadCanadaRegions, 
-//     loadArubaRegion 
-// } from './dataLoader.js';
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
 // Map Initialization on DOMContentLoaded
 document.addEventListener("DOMContentLoaded", () => {
-    const sidebar = document.getElementById("hospital-list-sidebar");
-    const INITIAL_CENTER = [-119.0187, 35.3733];
-    const INITIAL_ZOOM = 1;
-
-    const map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/light-v11',
-        projection: 'globe',
-        zoom: INITIAL_ZOOM,
-        center: INITIAL_CENTER,
-    });
+       const sidebar = document.getElementById("hospital-list-sidebar");
+       const backToTopButton = document.getElementById('back-to-top-button');
+       const INITIAL_CENTER = [-119.0187, 35.3733];
+       const INITIAL_ZOOM = 1;
+       const map = new mapboxgl.Map({
+           container: 'map',
+           style: 'mapbox://styles/mapbox/light-v11',
+           projection: 'globe',
+           zoom: INITIAL_ZOOM,
+           center: INITIAL_CENTER,
+       });
 
     //Map Animation on Load
     map.easeTo({
@@ -32,6 +25,41 @@ document.addEventListener("DOMContentLoaded", () => {
         zoom: 4,
         duration: 3000,
         easing: (t) => t * (2 - t)
+    });
+
+    if (!sidebar) {
+        console.error("Sidebar element not found!");
+    }
+    if (!backToTopButton) {
+        console.error("Back to Top button not found!");
+    }
+
+    // Observer to watch for changes in sidebar content and toggle button accordingly
+    const observer = new MutationObserver(toggleBackToTopButton);
+    observer.observe(sidebar, { childList: true, subtree: true });
+
+    // Toggle the "Back to Top" button based on sidebar scroll height
+    function toggleBackToTopButton() {
+        if (sidebar.scrollHeight > sidebar.clientHeight) {
+            backToTopButton.style.display = 'block';
+            console.log('Button shown'); // Debugging line
+        } else {
+            backToTopButton.style.display = 'none';
+            console.log('Button hidden'); // Debugging line
+        }
+    }
+
+    // Call toggle function on load, scroll, and resize
+    toggleBackToTopButton(); // Initial check
+    window.addEventListener('resize', toggleBackToTopButton);
+    sidebar.addEventListener('scroll', toggleBackToTopButton);
+
+    // Scroll to top functionality
+    backToTopButton.addEventListener('click', () => {
+        sidebar.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
     });
 
     //Debounce Function Definition
@@ -81,31 +109,30 @@ document.addEventListener("DOMContentLoaded", () => {
     map.on("load", () => setTimeout(() => map.resize(), 100));
     window.addEventListener("resize", () => map.resize());
 
-// Function to add geoJSON data sources to the map
-function addGeoJSONSource(map, sourceId, filePath, promoteId) {
-    map.addSource(sourceId, {
-        type: 'geojson',
-        data: filePath,
-        promoteId: promoteId
-    });
-}
+    // Function to add geoJSON data sources to the map
+    function addGeoJSONSource(map, sourceId, filePath, promoteId) {
+        map.addSource(sourceId, {
+            type: 'geojson',
+            data: filePath,
+            promoteId: promoteId
+        });
+    }
 
     //Map Load Event and Fog Setting
     map.on('load', () => {
         map.setFog({});
 
-    // Use the addGeoJSONSource function to add each region's data source
-    addGeoJSONSource(map, 'us-states', '/data/us-states.geojson', 'id');
-    addGeoJSONSource(map, 'uk-regions', '/data/uk-regions.geojson', 'id');
-    addGeoJSONSource(map, 'canada-regions', '/data/canada-regions.geojson', 'id');
-    addGeoJSONSource(map, 'aruba-region', '/data/aruba-region.geojson', 'id');
-    addGeoJSONSource(map, 'italy-regions', '/data/italy-regions.geojson', 'id');
-    
+        // Use the addGeoJSONSource function to add each region's data source
+        addGeoJSONSource(map, 'us-states', '/data/us-states.geojson', 'id');
+        addGeoJSONSource(map, 'uk-regions', '/data/uk-regions.geojson', 'id');
+        addGeoJSONSource(map, 'canada-regions', '/data/canada-regions.geojson', 'id');
+        addGeoJSONSource(map, 'aruba-region', '/data/aruba-region.geojson', 'id');
+        addGeoJSONSource(map, 'italy-regions', '/data/italy-regions.geojson', 'id');
+
         //Initialize Facilities Data and Set Variables
         let facilitiesData = [];
         const regionsWithFacilities = new Set();
         const statesWithFacilities = new Set();
-        // let hoveredStateId = null;
         let selectedStateId = null;
         const logoUrl = './img/gtLogo.png';
 
@@ -697,7 +724,6 @@ ${hospital.location}<br>
             // Display the sidebar only if there are hospitals to show
             sidebar.style.display = regionHospitals.length > 0 ? 'block' : 'none';
         }
-
 
         //Sets up a click event for a specified region layer.
         //On click, fetches and displays facility data in the sidebar for the clicked region.
