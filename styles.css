@@ -92,10 +92,8 @@ button:hover {
     justify-content: center;
     border-radius: 8px;
     transition: transform 0.6s;
-    background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     border: 0.5px solid #ff8502;
     color: #fff;
     transform: rotateX(0deg);
@@ -112,10 +110,8 @@ button:hover {
     border-radius: 8px;
     transition: transform 0.6s;
     font-size: 9px;
-    background-size: cover; 
     background-position: center;
     background-repeat: no-repeat;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     border: 0.5px solid #ff8502;
     color: white;
     background-color: #0f2844;
@@ -236,7 +232,7 @@ button:hover {
     background-color: #0f2844;
 }
 
-/* sidebar 11111*/
+/* sidebar 1*/
 
 #hospital-list-sidebar {
     font-family: 'Open Sans', sans-serif;
@@ -255,7 +251,8 @@ button:hover {
     z-index: 10;
     color: white;
     cursor: grab;
-    transition: transform 0.3s ease-in-out;
+    /* transition: transform 0.3s ease-in-out; */
+    transition: width 0.3s ease-in-out, max-height 0.3s ease-in-out;
     overflow-x: hidden;
 }
 
@@ -272,7 +269,7 @@ button:hover {
     font-size: 1.3rem;
     font-weight: 600;
     color: #ffffff;
-    /* margin-top: 6px; */
+    margin-top: 6px;
     margin-bottom: 10px;
     text-align: center;
     border-bottom: 2px solid rgba(255, 255, 255, 0.2);
@@ -487,6 +484,13 @@ button:hover {
     display: none !important;
 }
 
+#hospital-list-sidebar.dragging {
+    opacity: 0.8;
+    outline: 2px dashed #ff8502; 
+    transition: opacity 0.1s ease, outline 0.1s ease;
+}
+
+
 hospital-list-sidebar.collapsed #close-sidebar {
     display: flex; 
     position: relative;
@@ -499,13 +503,6 @@ hospital-list-sidebar.collapsed #close-sidebar {
     display: none !important;
 } */
 
-/* Highlight the sidebar while dragging */
-.hospital-list-sidebar.dragging {
-    cursor: grab;
-    opacity: 0.9;
-    transition: opacity 0.1s ease;
-}
-
 #back-to-top-button {
     margin: 10px auto;
     display: block;
@@ -513,6 +510,9 @@ hospital-list-sidebar.collapsed #close-sidebar {
     display: none; 
     opacity: 1;
     transition: opacity 0.3s ease;
+    position: sticky;
+    bottom: 10px; 
+    opacity: 0.8; 
 }
 
 #back-to-top-button i {
@@ -550,6 +550,13 @@ hospital-list-sidebar.collapsed #close-sidebar {
     cursor: grabbing;
 }
 
+
+#close-sidebar,
+.theme-toggle-btn,
+.round-button {
+    outline: none;
+    /* tabindex: 0; */
+}
 
 /* 
 #sidebar-resizer {
