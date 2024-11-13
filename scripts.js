@@ -6,13 +6,16 @@ mapboxgl.accessToken = MAPBOX_TOKEN;
 
 // Map Initialization on DOMContentLoaded
 document.addEventListener("DOMContentLoaded", () => {
-const sidebar = document.getElementById("hospital-list-sidebar");
-sidebar.addEventListener('click', (event) => {
-    event.stopPropagation(); 
-});
+    const sidebar = document.getElementById("hospital-list-sidebar");
+    const sidebarHeader = document.querySelector(".sidebar-header");
+    const backToTopButton = document.getElementById('back-to-top-button');
+    // const minimizeButton = document.getElementById('minimize-sidebar');
+
+    sidebar.addEventListener('click', (event) => {
+        event.stopPropagation();
+    });
     const gtLogo = document.querySelector('.sidebar-logo');
     const backButton = document.createElement('button');
-    const backToTopButton = document.getElementById('back-to-top-button');
     const INITIAL_CENTER = [-119.0187, 35.3733];
     const INITIAL_ZOOM = 1;
     const map = new mapboxgl.Map({
@@ -31,6 +34,7 @@ sidebar.addEventListener('click', (event) => {
         easing: (t) => t * (2 - t)
     });
 
+    // Check if elements are found
     if (!sidebar) {
         console.error("Sidebar element not found!");
     }
@@ -38,25 +42,38 @@ sidebar.addEventListener('click', (event) => {
         console.error("Back to Top button not found!");
     }
 
-    // Observer to watch for changes in sidebar content and toggle button accordingly
-    const observer = new MutationObserver(toggleBackToTopButton);
-    observer.observe(sidebar, { childList: true, subtree: true });
-
-    // Toggle the "Back to Top" button based on sidebar scroll height
+    // Function to toggle the back-to-top button visibility
     function toggleBackToTopButton() {
-        if (sidebar.scrollHeight > sidebar.clientHeight) {
+        if (sidebar.scrollHeight > sidebar.clientHeight && !sidebar.classList.contains('collapsed')) {
             backToTopButton.style.display = 'block';
-            console.log('Button shown'); // Debugging line
         } else {
             backToTopButton.style.display = 'none';
-            console.log('Button hidden'); // Debugging line
         }
     }
 
-    // Call toggle function on load, scroll, and resize
-    toggleBackToTopButton(); // Initial check
-    window.addEventListener('resize', toggleBackToTopButton);
-    sidebar.addEventListener('scroll', toggleBackToTopButton);
+    // Observer to monitor sidebar content changes for the back-to-top button
+    const observer = new MutationObserver(toggleBackToTopButton);
+    observer.observe(sidebar, { childList: true, subtree: true });
+
+    // Event listener for back-to-top button scroll
+    backToTopButton.addEventListener('click', () => {
+        sidebar.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    document.getElementById('minimize-sidebar').addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        toggleBackToTopButton();
+
+        // Update the minimize icon based on sidebar state
+        const minimizeIcon = document.getElementById('minimize-sidebar').querySelector('i');
+        if (sidebar.classList.contains('collapsed')) {
+            minimizeIcon.classList.remove('fa-chevron-up');
+            minimizeIcon.classList.add('fa-chevron-down');
+        } else {
+            minimizeIcon.classList.remove('fa-chevron-down');
+            minimizeIcon.classList.add('fa-chevron-up');
+        }
+    });
 
     // Scroll to top functionality
     backToTopButton.addEventListener('click', () => {
@@ -110,7 +127,8 @@ sidebar.addEventListener('click', (event) => {
     });
 
     let sessionStartingView = null;
-    let previousRegionView = null;
+    // let previousRegionView = null;
+
     // Configure the "Back" button
     backButton.id = 'back-button';
     backButton.classList.add('round-button');
@@ -122,22 +140,21 @@ sidebar.addEventListener('click', (event) => {
         if (sessionStartingView) {
             const isMobile = window.innerWidth <= 780;
             const zoomLevel = isMobile ? sessionStartingView.zoom - 1 : sessionStartingView.zoom;
-    
+
             map.flyTo({
                 center: sessionStartingView.center,
                 zoom: zoomLevel,
                 pitch: sessionStartingView.pitch,
                 bearing: sessionStartingView.bearing
             });
-    
+
             backButton.style.display = 'none';
             gtLogo.style.display = 'block';
-            sessionStartingView = null; 
+            sessionStartingView = null;
         }
     }
-    
+
     backButton.addEventListener('click', resetToSessionView);
-    
 
     //Map Resize on Load and Window Resize
     window.addEventListener("load", () => map.resize());
@@ -171,11 +188,11 @@ sidebar.addEventListener('click', (event) => {
         let selectedStateId = null;
         const logoUrl = './img/gtLogo.png';
 
-        // Call the imported loadFacilitiesData function
+        // imported loadFacilitiesData function
         loadFacilitiesData()
             .then(facilities => {
 
-                // Populate regionsWithFacilities and statesWithFacilities sets
+                // regionsWithFacilities and statesWithFacilities sets
                 facilities.forEach(facility => {
                     const regionId = facility.region_id ? facility.region_id.toUpperCase() : null;
                     if (regionId) {
@@ -192,14 +209,14 @@ sidebar.addEventListener('click', (event) => {
 
                 console.log("regionsWithFacilities:", Array.from(regionsWithFacilities));
 
-                // Set region click events for the sidebar
+                // region click events for the sidebar
                 setRegionClickEvent('canada-regions', 'id', 'name');
                 setRegionClickEvent('uk-regions', 'id', 'name');
                 setRegionClickEvent('italy-regions', 'id', 'name');
                 setRegionClickEvent('aruba-region', 'id', 'name');
                 setRegionClickEvent('us-states', 'id', 'name');
 
-                // Add markers for each facility
+                // markers for each facility
                 let markers = facilities.map(({ ehr_system, hospital_name, location, hospital_address, longitude, latitude, parent_company, hospital_count }) => {
                     let popupContent = `
 <strong>${hospital_name}</strong><br>
@@ -736,33 +753,33 @@ ${hospital.location}<br>
                 `;
 
                 // Add fly-to functionality and show Back button on click
-                    listItem.querySelector('.clickable-hospital').addEventListener('click', () => {
-    if (!sessionStartingView) {
-        sessionStartingView = {
-            center: map.getCenter(),
-            zoom: map.getZoom(),
-            pitch: map.getPitch(),
-            bearing: map.getBearing()
-        };
-    }
+                listItem.querySelector('.clickable-hospital').addEventListener('click', () => {
+                    if (!sessionStartingView) {
+                        sessionStartingView = {
+                            center: map.getCenter(),
+                            zoom: map.getZoom(),
+                            pitch: map.getPitch(),
+                            bearing: map.getBearing()
+                        };
+                    }
 
-    // Hide GT logo, show back button, and fly to selected facility location
-    gtLogo.style.display = 'none';
-    backButton.style.display = 'block';
+                    // Hide GT logo, show back button, and fly to selected facility location
+                    gtLogo.style.display = 'none';
+                    backButton.style.display = 'block';
 
-                        // Set a mobile-friendly zoom level
-    const isMobile = window.innerWidth <= 780;
-    const zoomLevel = isMobile ? 10 : 12; 
+                    // Set a mobile-friendly zoom level
+                    const isMobile = window.innerWidth <= 780;
+                    const zoomLevel = isMobile ? 10 : 12;
 
-                        // Fly to the selected facility location
-                        map.flyTo({
-                            center: [hospital.longitude, hospital.latitude],
-                            zoom: 12,
-                            pitch: 45,
-                            bearing: 0,
-                            essential: true
-                        });
+                    // Fly to the selected facility location
+                    map.flyTo({
+                        center: [hospital.longitude, hospital.latitude],
+                        zoom: 12,
+                        pitch: 45,
+                        bearing: 0,
+                        essential: true
                     });
+                });
 
                 list.appendChild(listItem);
             });
@@ -884,14 +901,12 @@ ${hospital.location}<br>
         document.getElementById("fly-to-canada").addEventListener("click", () => flyToRegion('canada'));
         document.getElementById("fly-to-aruba").addEventListener("click", () => flyToRegion('aruba'));
 
-
-        //Drag Initialization and Threshold Handling
+        // Drag Initialization and Threshold Handling
         let isDragging = false;
         let startX, startY, initialLeft, initialTop;
         const dragThreshold = 5;
-        const header = sidebar.querySelector(".sidebar-header");
 
-        //Start Drag Function
+        // Start Drag Function
         function startDrag(e) {
             startX = e.touches ? e.touches[0].clientX : e.clientX;
             startY = e.touches ? e.touches[0].clientY : e.clientY;
@@ -899,8 +914,9 @@ ${hospital.location}<br>
             initialLeft = rect.left;
             initialTop = rect.top;
             sidebar.classList.add("dragging");
-            isDragging = false;
+            sidebarHeader.classList.add("grabbing");
 
+            isDragging = false;
 
             document.addEventListener("mousemove", handleDrag);
             document.addEventListener("mouseup", endDrag);
@@ -908,7 +924,7 @@ ${hospital.location}<br>
             document.addEventListener("touchend", endDrag);
         }
 
-        //Drag Handling and Boundary Checking
+        // Drag Handling Function
         function handleDrag(e) {
             const currentX = e.touches ? e.touches[0].clientX : e.clientX;
             const currentY = e.touches ? e.touches[0].clientY : e.clientY;
@@ -925,14 +941,12 @@ ${hospital.location}<br>
                 sidebar.style.top = `${Math.min(Math.max(0, initialTop + dy), window.innerHeight - sidebar.offsetHeight)}px`;
             }
         }
-        
-        //End Drag and Click Handling
+
+        // End Drag Function
         function endDrag() {
-            if (!isDragging) {
-                header.click();
-            }
             isDragging = false;
             sidebar.classList.remove("dragging");
+            sidebarHeader.classList.remove("grabbing");
 
             document.removeEventListener("mousemove", handleDrag);
             document.removeEventListener("mouseup", endDrag);
@@ -940,8 +954,9 @@ ${hospital.location}<br>
             document.removeEventListener("touchend", endDrag);
         }
 
-        header.addEventListener("mousedown", startDrag);
-        header.addEventListener("touchstart", startDrag, { passive: false });
+        // Attach Event Listeners
+        sidebarHeader.addEventListener("mousedown", startDrag);
+        sidebarHeader.addEventListener("touchstart", startDrag, { passive: false });
 
         //Toggle Sidebar on Hover for Mobile Devices
         function toggleSidebarOnHover(show) {
@@ -964,21 +979,6 @@ ${hospital.location}<br>
             sidebar.style.display = 'none';
         });
 
-    });
-
-    document.getElementById('minimize-sidebar').addEventListener('click', () => {
-        const sidebar = document.getElementById('hospital-list-sidebar');
-        sidebar.classList.toggle('collapsed');
-
-        // Icon for minimize button based on the sidebar state
-        const minimizeIcon = document.getElementById('minimize-sidebar').querySelector('i');
-        if (sidebar.classList.contains('collapsed')) {
-            minimizeIcon.classList.remove('fa-chevron-up');
-            minimizeIcon.classList.add('fa-chevron-down');
-        } else {
-            minimizeIcon.classList.remove('fa-chevron-down');
-            minimizeIcon.classList.add('fa-chevron-up');
-        }
     });
 
 });
