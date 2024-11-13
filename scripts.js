@@ -16,22 +16,53 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     const gtLogo = document.querySelector('.sidebar-logo');
     const backButton = document.createElement('button');
+   
+    //set the initial view of Mapbox globe
     const INITIAL_CENTER = [-119.0187, 35.3733];
     const INITIAL_ZOOM = 1;
+
     const map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/light-v11',
         projection: 'globe',
-        zoom: INITIAL_ZOOM,
-        center: INITIAL_CENTER,
+        zoom: INITIAL_ZOOM,  
+        center: INITIAL_CENTER, 
     });
+ 
+    // Adding navigation controls
+    map.addControl(new mapboxgl.NavigationControl());
+    // map.addControl(new mapboxgl.NavigationControl({ position: 'top-left' }));
+    // map.scrollZoom.disable();
 
-    //Map Animation on Load
-    map.easeTo({
-        center: [-119.0187, 35.3733],
-        zoom: 4,
-        duration: 3000,
-        easing: (t) => t * (2 - t)
+    // Variables for user interaction detection
+    let userInteracting = false;
+    
+    // spin the globe smoothly when zoomed out
+    function spinGlobe() {
+        if (!userInteracting && map.getZoom() < 5) {
+            const center = map.getCenter();
+            center.lng -= 360 / 240;
+            map.easeTo({ center, duration: 1000, easing: (n) => n });
+        }
+    }
+
+    // Event listeners for user interaction
+    map.on('mousedown', () => userInteracting = true);
+    map.on('dragstart', () => userInteracting = true);
+    map.on('moveend', () => spinGlobe());
+    
+    // Start the globe spinning animation
+    spinGlobe();
+
+    // Map Animation on Load to set the globe to your preferred size and center
+    map.on('load', () => {
+        map.easeTo({
+            center: [-119.0187, 35.3733],  // initial center 
+            // zoom: 0,  // initial zoom level
+            zoom: 1,
+            duration: 3000,  // Duration of the animation
+            easing: (t) => t * (2 - t)  // Smooth easing function
+        });
     });
 
     // Check if elements are found
@@ -816,23 +847,23 @@ ${hospital.location}<br>
             }
         }
 
-        map.addControl(new mapboxgl.NavigationControl());
-        // map.addControl(new mapboxgl.NavigationControl({ position: 'top-left' }));
-        // map.scrollZoom.disable();
+        // map.addControl(new mapboxgl.NavigationControl());
+        // // map.addControl(new mapboxgl.NavigationControl({ position: 'top-left' }));
+        // // map.scrollZoom.disable();
 
-        let userInteracting = false;
-        function spinGlobe() {
-            if (!userInteracting && map.getZoom() < 5) {
-                const center = map.getCenter();
-                center.lng -= 360 / 240;
-                map.easeTo({ center, duration: 1000, easing: (n) => n });
-            }
-        }
+        // let userInteracting = false;
+        // function spinGlobe() {
+        //     if (!userInteracting && map.getZoom() < 5) {
+        //         const center = map.getCenter();
+        //         center.lng -= 360 / 240;
+        //         map.easeTo({ center, duration: 1000, easing: (n) => n });
+        //     }
+        // }
 
-        map.on('mousedown', () => userInteracting = true);
-        map.on('dragstart', () => userInteracting = true);
-        map.on('moveend', () => spinGlobe());
-        spinGlobe();
+        // map.on('mousedown', () => userInteracting = true);
+        // map.on('dragstart', () => userInteracting = true);
+        // map.on('moveend', () => spinGlobe());
+        // spinGlobe();
 
         let hoveredPolygonId = null;
         map.on('mousemove', 'us-states-fill', (e) => {
@@ -936,6 +967,7 @@ ${hospital.location}<br>
                 sidebar.style.top = `${Math.min(Math.max(0, initialTop + dy), window.innerHeight - sidebar.offsetHeight)}px`;
             }
         }
+
 
         // End Drag Function
         function endDrag() {
