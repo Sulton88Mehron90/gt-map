@@ -51,12 +51,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Observer to monitor sidebar content changes for the back-to-top button
-    const observer = new MutationObserver(toggleBackToTopButton);
-    observer.observe(sidebar, { childList: true, subtree: true });
+// Observer to monitor sidebar content changes for the back-to-top button
+const observer = new MutationObserver(toggleBackToTopButton);
+observer.observe(sidebar, { childList: true, subtree: true });
 
     // Event listener for back-to-top button scroll
-    backToTopButton.addEventListener('click', () => {
+    backToTopButton.addEventListener('click', () => {   
         sidebar.scrollTo({ top: 0, behavior: "smooth" });
     });
 
@@ -73,14 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
             minimizeIcon.classList.remove('fa-chevron-down');
             minimizeIcon.classList.add('fa-chevron-up');
         }
-    });
-
-    // Scroll to top functionality
-    backToTopButton.addEventListener('click', () => {
-        sidebar.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
     });
 
     //Debounce Function Definition
@@ -102,20 +94,23 @@ document.addEventListener("DOMContentLoaded", () => {
         geocoderContainer.style.display = geocoderContainer.style.display === "none" ? "block" : "none";
         geocoderToggle.style.display = geocoderContainer.style.display === "none" ? "flex" : "none";
 
-        // Initializing geocoder only when container is displayed
-        if (!geocoder && geocoderContainer.style.display === "block") {
-            geocoder = new MapboxGeocoder({
-                accessToken: mapboxgl.accessToken,
-                mapboxgl: mapboxgl,
-            });
-            geocoderContainer.appendChild(geocoder.onAdd(map));
-        }
-    }, 300);
+       // Initialize geocoder only when container is displayed
+    if (!geocoder && geocoderContainer.style.display === "block") {
+        geocoder = new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl,
+        });
+        geocoderContainer.appendChild(geocoder.onAdd(map));
+    } else if (geocoderContainer.style.display === "none" && geocoder) {
+        geocoder.onRemove();
+        geocoder = null;
+    }
+}, 300);
 
     //Event Listener for Geocoder Toggle   
     geocoderToggle.addEventListener("click", (e) => {
         e.stopPropagation();
-        debouncedGeocoderToggle();
+        debouncedGeocoderToggle();  
     });
 
     //Outside Click Detection for Geocoder
@@ -415,13 +410,24 @@ Hospital Count: <strong>${hospital_count}</strong>
                     });
 
                     // Clear selection and hover states when the sidebar is closed
+                    // function clearRegionSelection() {
+                    //     clearHover();
+                    //     if (selectedRegionId !== null) {
+                    //         map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: false });
+                    //         selectedRegionId = null;
+                    //     }
+                    // }
+
                     function clearRegionSelection() {
-                        clearHover();
+                        if (hoveredRegionId !== selectedRegionId) {
+                            clearHover();
+                        }
                         if (selectedRegionId !== null) {
                             map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: false });
                             selectedRegionId = null;
                         }
                     }
+                    
 
                     // Attach clear function to sidebar close
                     document.getElementById('close-sidebar').addEventListener('click', clearRegionSelection);
@@ -654,17 +660,6 @@ ${hospital.location}<br>
                                 listItem.innerHTML += `<br><strong style="color: #ff8502;">Note:</strong> CommonSpirit Health operates over 140 hospitals across 21 states. 
 <a href="https://www.commonspirit.org/" target="_blank" style="color: #06b4fd;">Visit Website</a>`;
                             }
-
-                            // Fly to the hospital location on the map when the name is clicked
-                            listItem.querySelector('.clickable-hospital').addEventListener('click', () => {
-                                map.flyTo({
-                                    center: [hospital.longitude, hospital.latitude],
-                                    zoom: 12,
-                                    pitch: 45,
-                                    bearing: 0,
-                                    essential: true
-                                });
-                            });
 
                             list.appendChild(listItem);
                         });

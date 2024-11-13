@@ -75,14 +75,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Scroll to top functionality
-    backToTopButton.addEventListener('click', () => {
-        sidebar.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-    });
-
     //Debounce Function Definition
     function debounce(func, delay) {
         let timeout;
@@ -654,17 +646,6 @@ ${hospital.location}<br>
                                 listItem.innerHTML += `<br><strong style="color: #ff8502;">Note:</strong> CommonSpirit Health operates over 140 hospitals across 21 states. 
 <a href="https://www.commonspirit.org/" target="_blank" style="color: #06b4fd;">Visit Website</a>`;
                             }
-
-                            // Fly to the hospital location on the map when the name is clicked
-                            listItem.querySelector('.clickable-hospital').addEventListener('click', () => {
-                                map.flyTo({
-                                    center: [hospital.longitude, hospital.latitude],
-                                    zoom: 12,
-                                    pitch: 45,
-                                    bearing: 0,
-                                    essential: true
-                                });
-                            });
 
                             list.appendChild(listItem);
                         });
