@@ -1,4 +1,3 @@
-
 //Imports and Mapbox Token Initialization
 import { MAPBOX_TOKEN } from './config.js';
 import { loadFacilitiesData } from './dataLoader.js';
@@ -7,17 +6,22 @@ mapboxgl.accessToken = MAPBOX_TOKEN;
 
 // Map Initialization on DOMContentLoaded
 document.addEventListener("DOMContentLoaded", () => {
-       const sidebar = document.getElementById("hospital-list-sidebar");
-       const backToTopButton = document.getElementById('back-to-top-button');
-       const INITIAL_CENTER = [-119.0187, 35.3733];
-       const INITIAL_ZOOM = 1;
-       const map = new mapboxgl.Map({
-           container: 'map',
-           style: 'mapbox://styles/mapbox/light-v11',
-           projection: 'globe',
-           zoom: INITIAL_ZOOM,
-           center: INITIAL_CENTER,
-       });
+const sidebar = document.getElementById("hospital-list-sidebar");
+sidebar.addEventListener('click', (event) => {
+    event.stopPropagation(); 
+});
+    const gtLogo = document.querySelector('.sidebar-logo');
+    const backButton = document.createElement('button');
+    const backToTopButton = document.getElementById('back-to-top-button');
+    const INITIAL_CENTER = [-119.0187, 35.3733];
+    const INITIAL_ZOOM = 1;
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/light-v11',
+        projection: 'globe',
+        zoom: INITIAL_ZOOM,
+        center: INITIAL_CENTER,
+    });
 
     //Map Animation on Load
     map.easeTo({
@@ -70,6 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
             timeout = setTimeout(() => func.apply(this, args), delay);
         };
     }
+
     //Geocoder Toggle Setup
     const geocoderToggle = document.getElementById("toggle-geocoder");
     const geocoderContainer = document.getElementById("geocoder-container");
@@ -103,6 +108,36 @@ document.addEventListener("DOMContentLoaded", () => {
             geocoderToggle.style.display = "flex";
         }
     });
+
+    let sessionStartingView = null;
+    let previousRegionView = null;
+    // Configure the "Back" button
+    backButton.id = 'back-button';
+    backButton.classList.add('round-button');
+    backButton.innerHTML = '<i class="fas fa-arrow-left"></i>';
+    backButton.style.display = 'none';
+    document.querySelector('.sidebar-header').appendChild(backButton);
+
+    function resetToSessionView() {
+        if (sessionStartingView) {
+            const isMobile = window.innerWidth <= 780;
+            const zoomLevel = isMobile ? sessionStartingView.zoom - 1 : sessionStartingView.zoom;
+    
+            map.flyTo({
+                center: sessionStartingView.center,
+                zoom: zoomLevel,
+                pitch: sessionStartingView.pitch,
+                bearing: sessionStartingView.bearing
+            });
+    
+            backButton.style.display = 'none';
+            gtLogo.style.display = 'block';
+            sessionStartingView = null; 
+        }
+    }
+    
+    backButton.addEventListener('click', resetToSessionView);
+    
 
     //Map Resize on Load and Window Resize
     window.addEventListener("load", () => map.resize());
@@ -157,12 +192,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 console.log("regionsWithFacilities:", Array.from(regionsWithFacilities));
 
-
                 // Set region click events for the sidebar
                 setRegionClickEvent('canada-regions', 'id', 'name');
                 setRegionClickEvent('uk-regions', 'id', 'name');
                 setRegionClickEvent('italy-regions', 'id', 'name');
                 setRegionClickEvent('aruba-region', 'id', 'name');
+                setRegionClickEvent('us-states', 'id', 'name');
 
                 // Add markers for each facility
                 let markers = facilities.map(({ ehr_system, hospital_name, location, hospital_address, longitude, latitude, parent_company, hospital_count }) => {
@@ -174,7 +209,6 @@ EHR System: <strong style="color: #0f2844">${ehr_system}</strong><br>
 Address: ${hospital_address}<br>
 Hospital Count: <strong>${hospital_count}</strong>
 `;
-
                     // "note" If this is the CommonSpirit Health Headquarters
                     if (hospital_name === "CommonSpirit Health Headquarters") {
                         popupContent += `<br><strong style="color: #ff8502">Note:</strong> CommonSpirit Health operates over 140 hospitals across 21 states. 
@@ -270,7 +304,6 @@ Hospital Count: <strong>${hospital_count}</strong>
                 addRegionLayer(map, 'aruba-region', 'aruba-region', regionsWithFacilities);
                 addRegionLayer(map, 'italy-regions', 'italy-regions', regionsWithFacilities);
                 addRegionLayer(map, 'uk-regions', 'uk-regions', regionsWithFacilities);
-
 
                 addRegionInteractions(map, 'us-states-fill', 'us-states', regionsWithFacilities);
                 addRegionInteractions(map, 'canada-regions-fill', 'canada-regions', regionsWithFacilities);
@@ -381,8 +414,6 @@ Hospital Count: <strong>${hospital_count}</strong>
                         // Logic to show content for the selected region in the sidebar
                     }
                 }
-
-
 
                 function toggleMarkers() {
                     const zoomLevel = map.getZoom();
@@ -557,7 +588,6 @@ Hospital Count: <strong>${hospital_count}</strong>
                     // Calculate the total facility count for the clicked state
                     const totalFacilityCount = stateHospitals.reduce((sum, hospital) => sum + (hospital.hospital_count || 1), 0);
 
-
                     // Display facility count
                     const countDisplay = document.createElement('p');
                     countDisplay.classList.add('count-display');
@@ -570,7 +600,6 @@ Hospital Count: <strong>${hospital_count}</strong>
                     countDisplay.style.marginTop = '10px';
                     list.before(countDisplay);
 
-
                     if (stateHospitals.length > 0) {
                         stateHospitals.forEach(hospital => {
                             const listItem = document.createElement('li');
@@ -582,7 +611,6 @@ Hospital Count: <strong>${hospital_count}</strong>
                                     ehrLogo = '<img src="./img/cerner-logo.png" alt="Cerner logo" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%;">';
                                     break;
                                 case 'Epic':
-                                    // ehrLogo = '<img src="./img/epic-logo.png" alt="Epic logo" style="width: 20px; height: 18px; vertical-align: middle; margin-right: 5px;">';
                                     ehrLogo = `<img src="./img/epic-logo.png" alt="Epic logo" style="width: 20px; height: 18px; vertical-align: middle; margin-right: 5px;">`;
                                     break;
                                 case 'Meditech':
@@ -707,16 +735,34 @@ ${hospital.location}<br>
                     <strong>Hospital Count:</strong> ${hospital.hospital_count || 1}<br>
                 `;
 
-                // Add fly-to map functionality on click
-                listItem.querySelector('.clickable-hospital').addEventListener('click', () => {
-                    map.flyTo({
-                        center: [hospital.longitude, hospital.latitude],
-                        zoom: 12,
-                        pitch: 45,
-                        bearing: 0,
-                        essential: true
+                // Add fly-to functionality and show Back button on click
+                    listItem.querySelector('.clickable-hospital').addEventListener('click', () => {
+    if (!sessionStartingView) {
+        sessionStartingView = {
+            center: map.getCenter(),
+            zoom: map.getZoom(),
+            pitch: map.getPitch(),
+            bearing: map.getBearing()
+        };
+    }
+
+    // Hide GT logo, show back button, and fly to selected facility location
+    gtLogo.style.display = 'none';
+    backButton.style.display = 'block';
+
+                        // Set a mobile-friendly zoom level
+    const isMobile = window.innerWidth <= 780;
+    const zoomLevel = isMobile ? 10 : 12; 
+
+                        // Fly to the selected facility location
+                        map.flyTo({
+                            center: [hospital.longitude, hospital.latitude],
+                            zoom: 12,
+                            pitch: 45,
+                            bearing: 0,
+                            essential: true
+                        });
                     });
-                });
 
                 list.appendChild(listItem);
             });
@@ -879,6 +925,7 @@ ${hospital.location}<br>
                 sidebar.style.top = `${Math.min(Math.max(0, initialTop + dy), window.innerHeight - sidebar.offsetHeight)}px`;
             }
         }
+        
         //End Drag and Click Handling
         function endDrag() {
             if (!isDragging) {
@@ -902,6 +949,7 @@ ${hospital.location}<br>
                 sidebar.style.display = show ? 'block' : 'none';
             }
         }
+
         //Sidebar Visibility with Touch and Hover Events
         // Event listeners for hover on sidebar
         sidebar.addEventListener('mouseenter', () => toggleSidebarOnHover(true));

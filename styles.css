@@ -506,6 +506,8 @@ button:hover {
 #hospital-list-sidebar {
     overflow-y: auto;
     max-height: 400px;
+    width: 300px; 
+    max-height: 600px; 
 }
 
 /* Highlight the sidebar while dragging */
@@ -535,6 +537,19 @@ button:hover {
     display: block; 
     opacity: 1;
 }
+
+#back-button {
+    display: none;
+    position: absolute;
+}
+
+#back-button i {
+    margin-top: -1px; 
+    position: relative;
+    top: -5px; 
+    padding-bottom: 0; 
+}
+
 /* 
 #sidebar-resizer {
     width: 15px;
@@ -626,6 +641,22 @@ button:hover {
     .round-button {
         width: 18px;
         height: 18px;
+    }
+    
+    #back-button {
+        display: block;
+        font-size: 0.8rem;
+        padding: 5px 10px;
+        bottom: 15px;
+        left: 10px;
+    }
+
+    .sidebar-logo {
+        display: none; 
+    }
+
+    #hospital-list-sidebar.collapsed {
+        width: 100%; 
     }
 }
 
