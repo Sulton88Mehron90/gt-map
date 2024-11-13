@@ -57,13 +57,91 @@ document.addEventListener("DOMContentLoaded", () => {
     // Map Animation on Load to set the globe to your preferred size and center
     map.on('load', () => {
         map.easeTo({
-            center: [-119.0187, 35.3733],  // initial center 
+            center: [-119.0187, 35.3733],
+            center: [-75.4265, 40.0428], 
             // zoom: 0,  // initial zoom level
             zoom: 1,
             duration: 3000,  // Duration of the animation
             easing: (t) => t * (2 - t)  // Smooth easing function
         });
     });
+
+///
+
+let hasInteracted = false;
+let isInitialRotation = true;  
+
+// Define GT logo markers for specified countries
+const countries = [
+    { name: 'USA', lngLat: [-75.4265, 40.0428] },
+    { name: 'UK', lngLat: [-0.1276, 51.5074] },
+    { name: 'Aruba', lngLat: [-69.9683, 12.5211] },
+    { name: 'Canada', lngLat: [-106.3468, 56.1304] },
+    { name: 'Italy', lngLat: [12.5674, 41.8719] },
+];
+
+// Initialize GT logo markers, making them initially visible
+const gtLogoMarkers = countries.map(country => {
+    const logoElement = document.createElement('div');
+    logoElement.className = 'company-logo';
+    logoElement.style.backgroundImage = 'url(./img/gtLogo.png)';
+    const marker = new mapboxgl.Marker(logoElement, {
+        rotationAlignment: 'map',
+        offset: [0, -10],
+    }).setLngLat(country.lngLat).addTo(map);
+
+    // Set GT logos to visible on load
+    marker.getElement().style.visibility = 'visible';
+    return marker;
+});
+
+// Utility function to safely set layer visibility if the layer exists
+function setLayerVisibility(layerId, visibility) {
+    if (map.getLayer(layerId)) {
+        map.setLayoutProperty(layerId, 'visibility', visibility);
+    }
+}
+
+// Hide clusters initially on load
+map.on('load', () => {
+    if (!hasInteracted) {
+        // Explicitly hide clusters initially as GT logos are visible
+        setLayerVisibility('clusters', 'none');
+        setLayerVisibility('cluster-count', 'none');
+        setLayerVisibility('unclustered-point', 'none');
+        
+        // Ensure GT logos are visible on load
+        gtLogoMarkers.forEach(marker => {
+            marker.getElement().style.visibility = 'visible';
+        });
+    }
+});
+
+// Function to handle first interaction, hiding GT logos and showing clusters
+function onFirstInteraction() {
+    if (!hasInteracted) {
+        hasInteracted = true;
+        isInitialRotation = false;  // End initial rotation state
+
+        // Hide GT logos after the first interaction
+        gtLogoMarkers.forEach(marker => {
+            marker.getElement().style.visibility = 'hidden';
+        });
+
+        // Show clusters to follow their existing functionality
+        setLayerVisibility('clusters', 'visible');
+        setLayerVisibility('cluster-count', 'visible');
+        setLayerVisibility('unclustered-point', 'visible');
+    }
+}
+
+// Attach event listeners for first interaction to trigger onFirstInteraction only once
+map.on('mousedown', onFirstInteraction);
+map.on('zoom', onFirstInteraction);
+map.on('drag', onFirstInteraction);
+
+
+///
 
     // Check if elements are found
     if (!sidebar) {
@@ -511,91 +589,91 @@ Hospital Count: <strong>${hospital_count}</strong>
                     },
                     cluster: true,
                     clusterMaxZoom: 14,// To increase this value to reduce unclustered points at higher zoom levels
-                    clusterRadius: 80,// To increase radius to group more points together in clusters
-                });
+                        clusterRadius: 80,// To increase radius to group more points together in clusters
+                    });
 
-                // Cluster layer with Goliath Technologies colors and outline for better visibility
-                map.addLayer({
-                    id: 'clusters',
-                    type: 'circle',
-                    source: 'hospitals',
-                    filter: ['has', 'point_count'],
-                    paint: {
-                        'circle-color': [
-                            'step',
-                            ['get', 'point_count'],
-                            '#ff8502',  // Small clusters (dark blue)
-                            // '#b31919',  // Small clusters (red) 
-                            10, ' #0f2844'  // Medium and large clusters (orange)
-                        ],
-                        'circle-radius': [
-                            'step',
-                            ['get', 'point_count'],
-                            10,   // Small clusters
-                            20, 15, // Medium clusters
-                            50, 20 // Large clusters (reduced size)
-                        ],
-                        'circle-stroke-width': 1, // Add a thin outline
-                        'circle-stroke-color': '#0f2844' // Dark blue outline for consistency
-                    }
-                });
+                    // Cluster layer with Goliath Technologies colors and outline for better visibility
+                    map.addLayer({
+                        id: 'clusters',
+                        type: 'circle',
+                        source: 'hospitals',
+                        filter: ['has', 'point_count'],
+                        paint: {
+                            'circle-color': [
+                                'step',
+                                ['get', 'point_count'],
+                                '#ff8502',  // Small clusters (dark blue)
+                                // '#b31919',  // Small clusters (red) 
+                                10, ' #0f2844'  // Medium and large clusters (orange)
+                            ],
+                            'circle-radius': [
+                                'step',
+                                ['get', 'point_count'],
+                                10,   // Small clusters
+                                20, 15, // Medium clusters
+                                50, 20 // Large clusters (reduced size)
+                            ],
+                            'circle-stroke-width': 1, // Add a thin outline
+                            'circle-stroke-color': '#0f2844' // Dark blue outline for consistency
+                        }
+                    });
 
-                // Cluster count layer
-                map.addLayer({
-                    id: 'cluster-count',
-                    type: 'symbol',
-                    source: 'hospitals',
-                    filter: ['has', 'point_count'],
-                    layout: {
-                        'text-field': '{point_count_abbreviated}',
-                        'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-                        'text-size': 14,
-                        'text-anchor': 'center',
-                    },
-                    paint: {
-                        'text-color': '#FFFFFF',
-                    },
-                });
+                    // Cluster count layer
+                    map.addLayer({
+                        id: 'cluster-count',
+                        type: 'symbol',
+                        source: 'hospitals',
+                        filter: ['has', 'point_count'],
+                        layout: {
+                            'text-field': '{point_count_abbreviated}',
+                            'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                            'text-size': 14,
+                            'text-anchor': 'center',
+                        },
+                        paint: {
+                            'text-color': '#FFFFFF',
+                        },
+                    });
 
-                // Unclustered point layer
-                map.addLayer({
-                    id: 'unclustered-point',
-                    type: 'circle',
-                    source: 'hospitals',
-                    filter: ['!', ['has', 'point_count']],
-                    paint: {
-                        'circle-color': '#11b4da',
-                        'circle-radius': 3,
-                    },
-                });
+                    // Unclustered point layer
+                    map.addLayer({
+                        id: 'unclustered-point',
+                        type: 'circle',
+                        source: 'hospitals',
+                        filter: ['!', ['has', 'point_count']],
+                        paint: {
+                            'circle-color': '#11b4da',
+                            'circle-radius': 3,
+                        },
+                    });
 
-                map.on('zoom', () => {
-                    map.setLayoutProperty('unclustered-point', 'visibility', map.getZoom() >= 6 ? 'visible' : 'none');
-                });
+                    map.on('zoom', () => {
+                        map.setLayoutProperty('unclustered-point', 'visibility', map.getZoom() >= 6 ? 'visible' : 'none');
+                    });
 
-                // Click event to show facility information in popup
-                map.on('click', 'unclustered-point', (e) => {
-                    const coordinates = e.features[0].geometry.coordinates.slice();
-                    const { hospital_name, location, ehr_system, hospital_address } = e.features[0].properties;
+                    // Click event to show facility information in popup
+                    map.on('click', 'unclustered-point', (e) => {
+                        const coordinates = e.features[0].geometry.coordinates.slice();
+                        const { hospital_name, location, ehr_system, hospital_address } = e.features[0].properties;
 
-                    new mapboxgl.Popup()
-                        .setLngLat(coordinates)
-                        .setHTML(`<strong>${hospital_name}</strong><br>${location}<br>EHR System: ${ehr_system}<br>Address: ${hospital_address}`)
-                        .addTo(map);
-                });
+                        new mapboxgl.Popup()
+                            .setLngLat(coordinates)
+                            .setHTML(`<strong>${hospital_name}</strong><br>${location}<br>EHR System: ${ehr_system}<br>Address: ${hospital_address}`)
+                            .addTo(map);
+                    });
 
-                // Cluster click event for expanding zoom level
-                map.on('click', 'clusters', (e) => {
-                    const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
-                    const clusterId = features[0].properties.cluster_id;
-                    map.getSource('hospitals').getClusterExpansionZoom(clusterId, (err, zoom) => {
-                        if (err) return;
-                        map.easeTo({
-                            center: features[0].geometry.coordinates,
-                            zoom: zoom,
+                    // Cluster click event for expanding zoom level
+                    map.on('click', 'clusters', (e) => {
+                        const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+                        const clusterId = features[0].properties.cluster_id;
+                        map.getSource('hospitals').getClusterExpansionZoom(clusterId, (err, zoom) => {
+                            if (err) return;
+                            map.easeTo({
+                                center: features[0].geometry.coordinates,
+                                zoom: zoom,
+                            });
                         });
                     });
-                });
 
                 // Click event on state to display sidebar list of facilities
                 map.on('click', 'us-states-fill', (e) => {
@@ -967,8 +1045,7 @@ ${hospital.location}<br>
                 sidebar.style.top = `${Math.min(Math.max(0, initialTop + dy), window.innerHeight - sidebar.offsetHeight)}px`;
             }
         }
-
-
+        
         // End Drag Function
         function endDrag() {
             isDragging = false;

@@ -1158,3 +1158,99 @@ These colors are widely used in Italian cultural, sports, and government symbols
                 //         }
                 //     });
                 // }       
+
+
+
+
+                november 13
+
+                // Track if the user has interacted with the map
+let hasInteracted = false;
+let isInitialRotation = true;  // New flag to manage initial rotation
+
+// Define GT logo markers for specified countries
+const countries = [
+    { name: 'USA', lngLat: [-75.4265, 40.0428] },
+    { name: 'UK', lngLat: [-0.1276, 51.5074] },
+    { name: 'Aruba', lngLat: [-69.9683, 12.5211] },
+    { name: 'Canada', lngLat: [-106.3468, 56.1304] },
+    { name: 'Italy', lngLat: [12.5674, 41.8719] },
+];
+
+// Initialize GT logo markers, making them initially visible
+const gtLogoMarkers = countries.map(country => {
+    const logoElement = document.createElement('div');
+    logoElement.className = 'company-logo';
+    logoElement.style.backgroundImage = 'url(./img/gtLogo.png)';
+    const marker = new mapboxgl.Marker(logoElement, {
+        rotationAlignment: 'map',
+        offset: [0, -10],
+    }).setLngLat(country.lngLat).addTo(map);
+
+    // Show GT logos initially on page load
+    marker.getElement().style.visibility = 'visible';
+    return marker;
+});
+
+// Utility function to safely set layer visibility if the layer exists
+function setLayerVisibility(layerId, visibility) {
+    if (map.getLayer(layerId)) {
+        map.setLayoutProperty(layerId, 'visibility', visibility);
+    }
+}
+
+// Hide clusters during initial load
+map.on('load', () => {
+    setLayerVisibility('clusters', 'none');
+    setLayerVisibility('cluster-count', 'none');
+    setLayerVisibility('unclustered-point', 'none');
+});
+
+// Function to hide GT logos and make clusters visible after user interaction
+function onFirstInteraction() {
+    if (!hasInteracted) {
+        hasInteracted = true;
+        isInitialRotation = false;  // End initial rotation state
+        
+        // Hide GT logos after the first interaction
+        gtLogoMarkers.forEach(marker => {
+            const element = marker.getElement();
+            element.style.visibility = 'hidden';
+        });
+
+        // Show clusters and allow them to follow existing functionality
+        setLayerVisibility('clusters', 'visible');
+        setLayerVisibility('cluster-count', 'visible');
+        setLayerVisibility('unclustered-point', 'visible');
+    }
+}
+
+// Initial rotation: Hide clusters while rotating, show GT logos
+map.on('move', () => {
+    if (isInitialRotation && !hasInteracted) {
+        // Hide clusters during initial rotation
+        setLayerVisibility('clusters', 'none');
+        setLayerVisibility('cluster-count', 'none');
+        setLayerVisibility('unclustered-point', 'none');
+
+        // Ensure GT logos are visible
+        gtLogoMarkers.forEach(marker => {
+            const element = marker.getElement();
+            element.style.visibility = 'visible';
+        });
+    }
+});
+
+map.on('moveend', () => {
+    if (isInitialRotation && !hasInteracted) {
+        // Re-hide clusters after initial rotation
+        setLayerVisibility('clusters', 'none');
+        setLayerVisibility('cluster-count', 'none');
+        setLayerVisibility('unclustered-point', 'none');
+    }
+});
+
+// Attach interaction event listeners to trigger onFirstInteraction only once
+map.on('mousedown', onFirstInteraction);
+map.on('zoom', onFirstInteraction);
+map.on('drag', onFirstInteraction);
