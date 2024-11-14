@@ -14,10 +14,7 @@ body {
     bottom: 0;
     width: 100%;
     height: 100%;
-    z-index: 1;
-    /* position: relative;
-    width: 100%;                
-    height: 100vh;                    */
+    z-index: 1;               
     background-color: #f4f4f4;  
 }
 
@@ -58,12 +55,9 @@ body {
 }
 
 button {
-    /* width: 100%; */
     padding: 8px 0;
     margin: 1px 0;
     background-color: #0f2844;
-    /* color: white; */
-    /* border: none; */
     border-radius: 4px;
     font-size: 14px;
     cursor: pointer;
@@ -75,6 +69,13 @@ button:hover {
     background: linear-gradient(145deg, #ff8502, #ff8502);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
+
+/* .mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--icon {
+    top: 0px;
+   margin: -2px;
+   position: relative;
+} */
+
 
 /* Flip Button Container */
 .flip-button {
@@ -503,10 +504,6 @@ hospital-list-sidebar.collapsed #close-sidebar {
     margin-right: 5px;
 }
 
-/* #hospital-list-sidebar.collapsed #back-to-top-button {
-    display: none !important;
-} */
-
 #back-to-top-button {
     margin: 10px auto;
     display: block;
@@ -547,7 +544,6 @@ hospital-list-sidebar.collapsed #close-sidebar {
     cursor: grab;
     display: flex;
     align-items: center;
-    /* padding: 10px; */
 }
 
 .sidebar-header.grabbing {
@@ -573,37 +569,6 @@ hospital-list-sidebar.collapsed #close-sidebar {
     border-radius: 3px;
 } */
 
-
-/* #toggle-geocoder {
-        width: 30px;
-        height: 30px;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        font-weight: bold;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        transition: all 0.3s ease-in-out;
-        border: 0.5px solid #ff8502;
-    } */
-
-/* Keyframes for bounce and rotation animation */
-/* @keyframes bounceAndRotate {
-    0% {
-        transform: translateY(0) rotate(0deg);
-    }
-    50% {
-        transform: translateY(-3px) rotate(15deg); 
-    }
-    100% {
-        transform: translateY(0) rotate(0deg);
-    }
-} */
-
 /* General Styling for the Logo Element */
 .company-logo {
     width: 30px;      
@@ -623,12 +588,6 @@ hospital-list-sidebar.collapsed #close-sidebar {
     position: relative;
     margin-top: -25px;
     z-index: 10;
-
-    /* Set transform-origin to avoid moving away from its position */
-    /* transform-origin: center bottom; */
-    
-    /* Apply the animation */
-    /* animation: bounceAndRotate 1.5s ease-in-out infinite; */
 }
 
 .company-logo:hover {
@@ -636,7 +595,7 @@ hospital-list-sidebar.collapsed #close-sidebar {
     cursor: pointer;          
 }
 
-/* Show rotation effect when rotating */
+/* rotation effect when globe rotating */
 .company-logo.rotate {
     transform: rotate(360deg); 
     transition: transform 1s ease-out;

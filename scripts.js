@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     const gtLogo = document.querySelector('.sidebar-logo');
     const backButton = document.createElement('button');
-   
+
     //set the initial view of Mapbox globe
     const INITIAL_CENTER = [-75.4265, 40.0428];
     const INITIAL_ZOOM = 1;
@@ -25,10 +25,10 @@ document.addEventListener("DOMContentLoaded", () => {
         container: 'map',
         style: 'mapbox://styles/mapbox/light-v11',
         projection: 'globe',
-        zoom: INITIAL_ZOOM,  
-        center: INITIAL_CENTER, 
+        zoom: INITIAL_ZOOM,
+        center: INITIAL_CENTER,
     });
- 
+
     // Adding navigation controls
     map.addControl(new mapboxgl.NavigationControl());
     // map.addControl(new mapboxgl.NavigationControl({ position: 'top-left' }));
@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Variables for user interaction detection
     let userInteracting = false;
-    
+
     // spin the globe smoothly when zoomed out
     function spinGlobe() {
         if (!userInteracting && map.getZoom() < 5) {
@@ -50,105 +50,103 @@ document.addEventListener("DOMContentLoaded", () => {
     map.on('mousedown', () => userInteracting = true);
     map.on('dragstart', () => userInteracting = true);
     map.on('moveend', () => spinGlobe());
-    
+
     // Start the globe spinning animation
     spinGlobe();
 
     // Map Animation on Load to set the globe to your preferred size and center
     map.on('load', () => {
         map.easeTo({
-            center: [-75.4265, 40.0428], 
+            center: [-75.4265, 40.0428],
             // zoom: 0,
             zoom: 1,
-            duration: 3000, 
-            easing: (t) => t * (2 - t) 
+            duration: 3000,
+            easing: (t) => t * (2 - t)
         });
     });
 
-// Initial flags to track interaction and visibility states
-let hasInteracted = false;
-let isInitialRotation = true;
+    // Initial flags to track interaction and visibility states
+    let hasInteracted = false;
+    let isInitialRotation = true;
 
-// Define GT logo markers for specified countries
-const countries = [
-    { name: 'USA', lngLat: [-80.147085, 30.954096] }, // gt office Near by location
-    { name: 'UK', lngLat: [-1.654816, 52.181932] },
-    { name: 'Aruba', lngLat: [-69.952269, 12.512168] },
-    { name: 'Canada', lngLat: [-106.728058, 57.922142] },
-    { name: 'Italy', lngLat: [12.465363, 42.835192] },
-];
+    // Define GT logo markers for specified countries
+    const countries = [
+        { name: 'USA', lngLat: [-80.147085, 30.954096] }, // gt office Near by location
+        { name: 'UK', lngLat: [-1.654816, 52.181932] },
+        { name: 'Aruba', lngLat: [-69.952269, 12.512168] },
+        { name: 'Canada', lngLat: [-106.728058, 57.922142] },
+        { name: 'Italy', lngLat: [12.465363, 42.835192] },
+    ];
 
-// Initialize GT logo markers, making them initially visible
-const gtLogoMarkers = countries.map(country => {
-    const logoElement = document.createElement('div');
-    logoElement.className = 'company-logo';
-    logoElement.style.backgroundImage = 'url(./img/gtLogo.png)';
-    const marker = new mapboxgl.Marker(logoElement, {
-        rotationAlignment: 'map',
-        offset: [0, -15],
-    }).setLngLat(country.lngLat).addTo(map);
+    // Initialize GT logo markers, making them initially visible
+    const gtLogoMarkers = countries.map(country => {
+        const logoElement = document.createElement('div');
+        logoElement.className = 'company-logo';
+        logoElement.style.backgroundImage = 'url(./img/gtLogo.png)';
+        const marker = new mapboxgl.Marker(logoElement, {
+            rotationAlignment: 'map',
+            offset: [0, -15],
+        }).setLngLat(country.lngLat).addTo(map);
 
-    // Set initial visibility to visible
-    marker.getElement().style.visibility = 'visible';
-    return marker;
-}); 
-
-// Utility function to safely set layer visibility if the layer exists
-function setLayerVisibility(layerId, visibility) {
-    if (map.getLayer(layerId)) {
-        map.setLayoutProperty(layerId, 'visibility', visibility);
-    }
-}
-
-// Hide clusters on sourcedata load event to ensure they are hidden initially
-map.on('sourcedata', (e) => {
-    if (!hasInteracted && e.isSourceLoaded) {
-        // Ensure clusters remain hidden on load
-        setLayerVisibility('clusters', 'none');
-        setLayerVisibility('cluster-count', 'none');
-        setLayerVisibility('unclustered-point', 'none');
-    }
-});
-
-//  initial globe rotation, show GT logos, and ensure clusters are hidden
-function startInitialRotation() {
-    // isInitialRotation = true;
-
-    // globe animation with GT logos visible
-    map.easeTo({
-        center: [-75.4265, 40.0428],
-        zoom: 1,
-        duration: 3000,
-        easing: (t) => t * (2 - t),
+        // Set initial visibility to visible
+        marker.getElement().style.visibility = 'visible';
+        return marker;
     });
-}
 
-// Function to handle first interaction, hiding GT logos and showing clusters
-function onFirstInteraction() {
-    if (!hasInteracted) {
-        hasInteracted = true;
-
-        // Hide GT logos permanently after the first interaction
-        gtLogoMarkers.forEach(marker => {
-            marker.getElement().style.visibility = 'hidden';
-        });
-
-        // Show clusters to follow their normal functionality
-        setLayerVisibility('clusters', 'visible');
-        setLayerVisibility('cluster-count', 'visible');
-        setLayerVisibility('unclustered-point', 'visible');
+    // Utility function to safely set layer visibility if the layer exists
+    function setLayerVisibility(layerId, visibility) {
+        if (map.getLayer(layerId)) {
+            map.setLayoutProperty(layerId, 'visibility', visibility);
+        }
     }
-}
 
-// event listeners to trigger onFirstInteraction only once
-map.on('mousedown', onFirstInteraction);
-map.on('zoom', onFirstInteraction);
-map.on('drag', onFirstInteraction);
+    // Hide clusters on sourcedata load event to ensure they are hidden initially
+    map.on('sourcedata', (e) => {
+        if (!hasInteracted && e.isSourceLoaded) {
+            // Ensure clusters remain hidden on load
+            setLayerVisibility('clusters', 'none');
+            setLayerVisibility('cluster-count', 'none');
+            setLayerVisibility('unclustered-point', 'none');
+        }
+    });
 
-//initial globe rotation and GT logo display on map load
-map.on('load', startInitialRotation);
+    //  initial globe rotation, show GT logos, and ensure clusters are hidden
+    function startInitialRotation() {
+        // isInitialRotation = true;
 
+        // globe animation with GT logos visible
+        map.easeTo({
+            center: [-75.4265, 40.0428],
+            zoom: 1,
+            duration: 3000,
+            easing: (t) => t * (2 - t),
+        });
+    }
 
+    // Function to handle first interaction, hiding GT logos and showing clusters
+    function onFirstInteraction() {
+        if (!hasInteracted) {
+            hasInteracted = true;
+
+            // Hide GT logos permanently after the first interaction
+            gtLogoMarkers.forEach(marker => {
+                marker.getElement().style.visibility = 'hidden';
+            });
+
+            // Show clusters to follow their normal functionality
+            setLayerVisibility('clusters', 'visible');
+            setLayerVisibility('cluster-count', 'visible');
+            setLayerVisibility('unclustered-point', 'visible');
+        }
+    }
+
+    // event listeners to trigger onFirstInteraction only once
+    map.on('mousedown', onFirstInteraction);
+    map.on('zoom', onFirstInteraction);
+    map.on('drag', onFirstInteraction);
+
+    //initial globe rotation and GT logo display on map load
+    map.on('load', startInitialRotation);
 
     // Check if elements are found
     if (!sidebar) {
@@ -167,12 +165,12 @@ map.on('load', startInitialRotation);
         }
     }
 
-// Observer to monitor sidebar content changes for the back-to-top button
-const observer = new MutationObserver(toggleBackToTopButton);
-observer.observe(sidebar, { childList: true, subtree: true });
+    // Observer to monitor sidebar content changes for the back-to-top button
+    const observer = new MutationObserver(toggleBackToTopButton);
+    observer.observe(sidebar, { childList: true, subtree: true });
 
     // Event listener for back-to-top button scroll
-    backToTopButton.addEventListener('click', () => {   
+    backToTopButton.addEventListener('click', () => {
         sidebar.scrollTo({ top: 0, behavior: "smooth" });
     });
 
@@ -200,42 +198,65 @@ observer.observe(sidebar, { childList: true, subtree: true });
         };
     }
 
-    //Geocoder Toggle Setup
+    // Geocoder Toggle Setup
     const geocoderToggle = document.getElementById("toggle-geocoder");
     const geocoderContainer = document.getElementById("geocoder-container");
     let geocoder;
 
-    //Define debounced toggle function
+    // Define debounced toggle function
     const debouncedGeocoderToggle = debounce(() => {
+        // Toggle display for geocoder container and toggle button
         geocoderContainer.style.display = geocoderContainer.style.display === "none" ? "block" : "none";
         geocoderToggle.style.display = geocoderContainer.style.display === "none" ? "flex" : "none";
 
-       // Initialize geocoder only when container is displayed
-    if (!geocoder && geocoderContainer.style.display === "block") {
-        geocoder = new MapboxGeocoder({
-            accessToken: mapboxgl.accessToken,
-            mapboxgl: mapboxgl,
-        });
-        geocoderContainer.appendChild(geocoder.onAdd(map));
-    } else if (geocoderContainer.style.display === "none" && geocoder) {
-        geocoder.onRemove();
-        geocoder = null;
-    }
-}, 300);
+        // Initialize geocoder only when container is displayed
+        if (!geocoder && geocoderContainer.style.display === "block") {
+            geocoder = new MapboxGeocoder({
+                accessToken: mapboxgl.accessToken,
+                mapboxgl: mapboxgl,
+            });
+            geocoderContainer.appendChild(geocoder.onAdd(map));
 
-    //Event Listener for Geocoder Toggle   
+            // Focus on the input after initializing the geocoder
+            setTimeout(() => {
+                const geocoderInput = geocoderContainer.querySelector('input[type="text"]');
+                if (geocoderInput) {
+                    geocoderInput.focus();
+                }
+            }, 100); // Optional delay to ensure input is visible
+        } else if (geocoderContainer.style.display === "none" && geocoder) {
+            geocoder.onRemove();
+            geocoder = null;
+        }
+    }, 300);
+
+    // Event Listener for Geocoder Toggle
     geocoderToggle.addEventListener("click", (e) => {
         e.stopPropagation();
-        debouncedGeocoderToggle();  
+        debouncedGeocoderToggle();
     });
 
-    //Outside Click Detection for Geocoder
+    // Outside Click Detection for Geocoder
     document.addEventListener("click", (event) => {
         if (!geocoderContainer.contains(event.target) && event.target !== geocoderToggle) {
             geocoderContainer.style.display = "none";
             geocoderToggle.style.display = "flex";
         }
     });
+
+    // Initialize the Mapbox Geocoder with a custom marker color
+geocoder = new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,
+    mapboxgl: mapboxgl,
+    marker: {
+        color: 'red'
+        // color: '#ff8502' //gt color
+    }
+});
+
+// Append Geocoder to your container
+geocoderContainer.appendChild(geocoder.onAdd(map));
+
 
     let sessionStartingView = null;
     // let previousRegionView = null;
@@ -526,24 +547,13 @@ Hospital Count: <strong>${hospital_count}</strong>
                     });
 
                     // Clear selection and hover states when the sidebar is closed
-                    // function clearRegionSelection() {
-                    //     clearHover();
-                    //     if (selectedRegionId !== null) {
-                    //         map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: false });
-                    //         selectedRegionId = null;
-                    //     }
-                    // }
-
                     function clearRegionSelection() {
-                        if (hoveredRegionId !== selectedRegionId) {
-                            clearHover();
-                        }
+                        clearHover();
                         if (selectedRegionId !== null) {
                             map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: false });
                             selectedRegionId = null;
                         }
                     }
-                    
 
                     // Attach clear function to sidebar close
                     document.getElementById('close-sidebar').addEventListener('click', clearRegionSelection);
@@ -596,91 +606,91 @@ Hospital Count: <strong>${hospital_count}</strong>
                     },
                     cluster: true,
                     clusterMaxZoom: 14,// To increase this value to reduce unclustered points at higher zoom levels
-                        clusterRadius: 80,// To increase radius to group more points together in clusters
-                    });
+                    clusterRadius: 80,// To increase radius to group more points together in clusters
+                });
 
-                    // Cluster layer with Goliath Technologies colors and outline for better visibility
-                    map.addLayer({
-                        id: 'clusters',
-                        type: 'circle',
-                        source: 'hospitals',
-                        filter: ['has', 'point_count'],
-                        paint: {
-                            'circle-color': [
-                                'step',
-                                ['get', 'point_count'],
-                                '#ff8502',  // Small clusters (dark blue)
-                                // '#b31919',  // Small clusters (red) 
-                                10, ' #0f2844'  // Medium and large clusters (orange)
-                            ],
-                            'circle-radius': [
-                                'step',
-                                ['get', 'point_count'],
-                                10,   // Small clusters
-                                20, 15, // Medium clusters
-                                50, 20 // Large clusters (reduced size)
-                            ],
-                            'circle-stroke-width': 1, // Add a thin outline
-                            'circle-stroke-color': '#0f2844' // Dark blue outline for consistency
-                        }
-                    });
+                // Cluster layer with Goliath Technologies colors and outline for better visibility
+                map.addLayer({
+                    id: 'clusters',
+                    type: 'circle',
+                    source: 'hospitals',
+                    filter: ['has', 'point_count'],
+                    paint: {
+                        'circle-color': [
+                            'step',
+                            ['get', 'point_count'],
+                            '#ff8502',  // Small clusters (dark blue)
+                            // '#b31919',  // Small clusters (red) 
+                            10, ' #0f2844'  // Medium and large clusters (orange)
+                        ],
+                        'circle-radius': [
+                            'step',
+                            ['get', 'point_count'],
+                            10,   // Small clusters
+                            20, 15, // Medium clusters
+                            50, 20 // Large clusters (reduced size)
+                        ],
+                        'circle-stroke-width': 1, // Add a thin outline
+                        'circle-stroke-color': '#0f2844' // Dark blue outline for consistency
+                    }
+                });
 
-                    // Cluster count layer
-                    map.addLayer({
-                        id: 'cluster-count',
-                        type: 'symbol',
-                        source: 'hospitals',
-                        filter: ['has', 'point_count'],
-                        layout: {
-                            'text-field': '{point_count_abbreviated}',
-                            'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-                            'text-size': 14,
-                            'text-anchor': 'center',
-                        },
-                        paint: {
-                            'text-color': '#FFFFFF',
-                        },
-                    });
+                // Cluster count layer
+                map.addLayer({
+                    id: 'cluster-count',
+                    type: 'symbol',
+                    source: 'hospitals',
+                    filter: ['has', 'point_count'],
+                    layout: {
+                        'text-field': '{point_count_abbreviated}',
+                        'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                        'text-size': 14,
+                        'text-anchor': 'center',
+                    },
+                    paint: {
+                        'text-color': '#FFFFFF',
+                    },
+                });
 
-                    // Unclustered point layer
-                    map.addLayer({
-                        id: 'unclustered-point',
-                        type: 'circle',
-                        source: 'hospitals',
-                        filter: ['!', ['has', 'point_count']],
-                        paint: {
-                            'circle-color': '#11b4da',
-                            'circle-radius': 3,
-                        },
-                    });
+                // Unclustered point layer
+                map.addLayer({
+                    id: 'unclustered-point',
+                    type: 'circle',
+                    source: 'hospitals',
+                    filter: ['!', ['has', 'point_count']],
+                    paint: {
+                        'circle-color': '#11b4da',
+                        'circle-radius': 3,
+                    },
+                });
 
-                    map.on('zoom', () => {
-                        map.setLayoutProperty('unclustered-point', 'visibility', map.getZoom() >= 6 ? 'visible' : 'none');
-                    });
+                map.on('zoom', () => {
+                    map.setLayoutProperty('unclustered-point', 'visibility', map.getZoom() >= 6 ? 'visible' : 'none');
+                });
 
-                    // Click event to show facility information in popup
-                    map.on('click', 'unclustered-point', (e) => {
-                        const coordinates = e.features[0].geometry.coordinates.slice();
-                        const { hospital_name, location, ehr_system, hospital_address } = e.features[0].properties;
+                // Click event to show facility information in popup
+                map.on('click', 'unclustered-point', (e) => {
+                    const coordinates = e.features[0].geometry.coordinates.slice();
+                    const { hospital_name, location, ehr_system, hospital_address } = e.features[0].properties;
 
-                        new mapboxgl.Popup()
-                            .setLngLat(coordinates)
-                            .setHTML(`<strong>${hospital_name}</strong><br>${location}<br>EHR System: ${ehr_system}<br>Address: ${hospital_address}`)
-                            .addTo(map);
-                    });
+                    new mapboxgl.Popup()
+                        .setLngLat(coordinates)
+                        .setHTML(`<strong>${hospital_name}</strong><br>${location}<br>EHR System: ${ehr_system}<br>Address: ${hospital_address}`)
+                        .addTo(map);
+                });
 
-                    // Cluster click event for expanding zoom level
-                    map.on('click', 'clusters', (e) => {
-                        const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
-                        const clusterId = features[0].properties.cluster_id;
-                        map.getSource('hospitals').getClusterExpansionZoom(clusterId, (err, zoom) => {
-                            if (err) return;
-                            map.easeTo({
-                                center: features[0].geometry.coordinates,
-                                zoom: zoom,
-                            });
+                // Cluster click event for expanding zoom level
+                map.on('click', 'clusters', (e) => {
+                    const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+                    const clusterId = features[0].properties.cluster_id;
+                    map.getSource('hospitals').getClusterExpansionZoom(clusterId, (err, zoom) => {
+                        if (err) return;
+                        map.easeTo({
+                            center: features[0].geometry.coordinates,
+                            zoom: zoom,
                         });
                     });
+                });
 
                 // Click event on state to display sidebar list of facilities
                 map.on('click', 'us-states-fill', (e) => {
@@ -1034,7 +1044,7 @@ ${hospital.location}<br>
                 sidebar.style.top = `${Math.min(Math.max(0, initialTop + dy), window.innerHeight - sidebar.offsetHeight)}px`;
             }
         }
-        
+
         // End Drag Function
         function endDrag() {
             isDragging = false;
