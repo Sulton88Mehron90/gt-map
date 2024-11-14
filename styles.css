@@ -678,11 +678,14 @@ hospital-list-sidebar.collapsed #close-sidebar {
     }
 
     #hospital-list-sidebar {
-        width: 30%;
+        position: fixed; 
         left: 5%;
+        bottom: 0;
+        width: 90%;
         max-height: 50vh;
         padding: 10px;
-        bottom: 0;
+        z-index: 10;
+        display: block;
     }
 
     #hospital-list li {

@@ -16,6 +16,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     const gtLogo = document.querySelector('.sidebar-logo');
     const backButton = document.createElement('button');
+    // document.querySelector(".mapbox-button-group").addEventListener("click", (event) => {
+    //     const target = event.target.closest(".flip-button");
+    //     if (target) {
+    //         const region = target.id.split("-")[2]; // e.g., "usa", "uk"
+    //         flyToRegion(region);
+    //     }
+    // });
+    
 
     //set the initial view of Mapbox globe
     const INITIAL_CENTER = [-75.4265, 40.0428];
@@ -148,47 +156,6 @@ document.addEventListener("DOMContentLoaded", () => {
     //initial globe rotation and GT logo display on map load
     map.on('load', startInitialRotation);
 
-    // Check if elements are found
-    if (!sidebar) {
-        console.error("Sidebar element not found!");
-    }
-    if (!backToTopButton) {
-        console.error("Back to Top button not found!");
-    }
-
-    // Function to toggle the back-to-top button visibility
-    function toggleBackToTopButton() {
-        if (sidebar.scrollHeight > sidebar.clientHeight && !sidebar.classList.contains('collapsed')) {
-            backToTopButton.style.display = 'block';
-        } else {
-            backToTopButton.style.display = 'none';
-        }
-    }
-
-    // Observer to monitor sidebar content changes for the back-to-top button
-    const observer = new MutationObserver(toggleBackToTopButton);
-    observer.observe(sidebar, { childList: true, subtree: true });
-
-    // Event listener for back-to-top button scroll
-    backToTopButton.addEventListener('click', () => {
-        sidebar.scrollTo({ top: 0, behavior: "smooth" });
-    });
-
-    document.getElementById('minimize-sidebar').addEventListener('click', () => {
-        sidebar.classList.toggle('collapsed');
-        toggleBackToTopButton();
-
-        // Update the minimize icon based on sidebar state
-        const minimizeIcon = document.getElementById('minimize-sidebar').querySelector('i');
-        if (sidebar.classList.contains('collapsed')) {
-            minimizeIcon.classList.remove('fa-chevron-up');
-            minimizeIcon.classList.add('fa-chevron-down');
-        } else {
-            minimizeIcon.classList.remove('fa-chevron-down');
-            minimizeIcon.classList.add('fa-chevron-up');
-        }
-    });
-
  // Debounce Function Definition
 function debounce(func, delay) {
     let timeout;
@@ -252,6 +219,46 @@ document.addEventListener("click", (event) => {
     }
 });
 
+// Check if elements are found
+if (!sidebar) {
+    console.error("Sidebar element not found!");
+}
+if (!backToTopButton) {
+    console.error("Back to Top button not found!");
+}
+
+// Function to toggle the back-to-top button visibility
+function toggleBackToTopButton() {
+    if (sidebar.scrollHeight > sidebar.clientHeight && !sidebar.classList.contains('collapsed')) {
+        backToTopButton.style.display = 'block';
+    } else {
+        backToTopButton.style.display = 'none';
+    }
+}
+
+// Observer to monitor sidebar content changes for the back-to-top button
+const observer = new MutationObserver(toggleBackToTopButton);
+observer.observe(sidebar, { childList: true, subtree: true });
+
+// Event listener for back-to-top button scroll
+backToTopButton.addEventListener('click', () => {
+    sidebar.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+document.getElementById('minimize-sidebar').addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+    toggleBackToTopButton();
+
+    // Update the minimize icon based on sidebar state
+    const minimizeIcon = document.getElementById('minimize-sidebar').querySelector('i');
+    if (sidebar.classList.contains('collapsed')) {
+        minimizeIcon.classList.remove('fa-chevron-up');
+        minimizeIcon.classList.add('fa-chevron-down');
+    } else {
+        minimizeIcon.classList.remove('fa-chevron-down');
+        minimizeIcon.classList.add('fa-chevron-up');
+    }
+});
 
     let sessionStartingView = null;
     // let previousRegionView = null;
@@ -1057,11 +1064,21 @@ ${hospital.location}<br>
         sidebarHeader.addEventListener("touchstart", startDrag, { passive: false });
 
         //Toggle Sidebar on Hover for Mobile Devices
-        function toggleSidebarOnHover(show) {
-            if (window.innerWidth <= 480) {
-                sidebar.style.display = show ? 'block' : 'none';
-            }
-        }
+       function toggleSidebarOnHover(show) {
+    if (window.innerWidth > 480) { // Hover only for larger screens
+        sidebar.style.display = show ? 'block' : 'none';
+    }
+}
+
+sidebar.addEventListener('touchstart', () => {
+    if (window.innerWidth <= 480) { // Only for mobile screens
+        sidebar.style.display = 'block';
+    }
+});
+
+document.getElementById("close-sidebar").addEventListener('click', () => {
+    sidebar.style.display = 'none';
+});
 
         //Sidebar Visibility with Touch and Hover Events
         // Event listeners for hover on sidebar
