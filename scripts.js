@@ -35,7 +35,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // map.scrollZoom.disable();
 
     // Variables for user interaction detection
-    let userInteracting = false;
+    let hasInteracted = false;
+    let isInitialRotation = true; 
     
     // spin the globe smoothly when zoomed out
     function spinGlobe() {
@@ -65,11 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
             easing: (t) => t * (2 - t)  // Smooth easing function
         });
     });
-
-///
-
-let hasInteracted = false;
-let isInitialRotation = true;  
+ 
 
 // Define GT logo markers for specified countries
 const countries = [
@@ -90,7 +87,7 @@ const gtLogoMarkers = countries.map(country => {
         offset: [0, -10],
     }).setLngLat(country.lngLat).addTo(map);
 
-    // Set GT logos to visible on load
+    // Show GT logos initially on page load
     marker.getElement().style.visibility = 'visible';
     return marker;
 });
@@ -102,18 +99,12 @@ function setLayerVisibility(layerId, visibility) {
     }
 }
 
-// Hide clusters initially on load
-map.on('load', () => {
-    if (!hasInteracted) {
-        // Explicitly hide clusters initially as GT logos are visible
+// Hide clusters initially after ensuring the layers are added
+map.on('sourcedata', () => {
+    if (!hasInteracted && isInitialRotation) {
         setLayerVisibility('clusters', 'none');
         setLayerVisibility('cluster-count', 'none');
         setLayerVisibility('unclustered-point', 'none');
-        
-        // Ensure GT logos are visible on load
-        gtLogoMarkers.forEach(marker => {
-            marker.getElement().style.visibility = 'visible';
-        });
     }
 });
 
@@ -135,15 +126,13 @@ function onFirstInteraction() {
     }
 }
 
-// Attach event listeners for first interaction to trigger onFirstInteraction only once
+// Attach interaction event listeners to trigger onFirstInteraction only once
 map.on('mousedown', onFirstInteraction);
 map.on('zoom', onFirstInteraction);
 map.on('drag', onFirstInteraction);
 
 
-///
-
-    // Check if elements are found
+// Check if elements are found
     if (!sidebar) {
         console.error("Sidebar element not found!");
     }
