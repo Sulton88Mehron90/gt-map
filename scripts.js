@@ -35,8 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // map.scrollZoom.disable();
 
     // Variables for user interaction detection
-    let hasInteracted = false;
-    let isInitialRotation = true; 
+    let userInteracting = false;
     
     // spin the globe smoothly when zoomed out
     function spinGlobe() {
@@ -66,7 +65,10 @@ document.addEventListener("DOMContentLoaded", () => {
             easing: (t) => t * (2 - t)  // Smooth easing function
         });
     });
- 
+
+
+let hasInteracted = false;
+let isInitialRotation = true;  
 
 // Define GT logo markers for specified countries
 const countries = [
@@ -131,8 +133,7 @@ map.on('mousedown', onFirstInteraction);
 map.on('zoom', onFirstInteraction);
 map.on('drag', onFirstInteraction);
 
-
-// Check if elements are found
+    // Check if elements are found
     if (!sidebar) {
         console.error("Sidebar element not found!");
     }
@@ -913,24 +914,6 @@ ${hospital.location}<br>
                 errorMessage.innerText = 'Failed to load facility data. Please try again later.';
             }
         }
-
-        // map.addControl(new mapboxgl.NavigationControl());
-        // // map.addControl(new mapboxgl.NavigationControl({ position: 'top-left' }));
-        // // map.scrollZoom.disable();
-
-        // let userInteracting = false;
-        // function spinGlobe() {
-        //     if (!userInteracting && map.getZoom() < 5) {
-        //         const center = map.getCenter();
-        //         center.lng -= 360 / 240;
-        //         map.easeTo({ center, duration: 1000, easing: (n) => n });
-        //     }
-        // }
-
-        // map.on('mousedown', () => userInteracting = true);
-        // map.on('dragstart', () => userInteracting = true);
-        // map.on('moveend', () => spinGlobe());
-        // spinGlobe();
 
         let hoveredPolygonId = null;
         map.on('mousemove', 'us-states-fill', (e) => {
