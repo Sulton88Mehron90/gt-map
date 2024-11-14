@@ -189,73 +189,68 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    //Debounce Function Definition
-    function debounce(func, delay) {
-        let timeout;
-        return function (...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), delay);
-        };
+ // Debounce Function Definition
+function debounce(func, delay) {
+    let timeout;
+    return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+}
+
+// Geocoder Toggle Setup
+const geocoderToggle = document.getElementById("toggle-geocoder");
+const geocoderContainer = document.getElementById("geocoder-container");
+let geocoder;
+
+// Define debounced toggle function
+const debouncedGeocoderToggle = debounce(() => {
+    // Toggle display for geocoder container and toggle button
+    geocoderContainer.style.display = geocoderContainer.style.display === "none" ? "block" : "none";
+    geocoderToggle.style.display = geocoderContainer.style.display === "none" ? "flex" : "none";
+
+    // Initialize geocoder only when container is displayed
+    if (!geocoder && geocoderContainer.style.display === "block") {
+        geocoder = new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl,
+            marker: {
+                // color: '#ff8502' // Set GT color
+                color: 'red'
+            }
+        });
+        geocoderContainer.appendChild(geocoder.onAdd(map));
+
+        // Use MutationObserver to detect when the input is added
+        const observer = new MutationObserver(() => {
+            const geocoderInput = geocoderContainer.querySelector('input[type="text"]');
+            if (geocoderInput) {
+                geocoderInput.focus();
+                observer.disconnect(); // Stop observing once input is found and focused
+            }
+        });
+
+        // Observe changes in the geocoderContainer
+        observer.observe(geocoderContainer, { childList: true, subtree: true });
+    } else if (geocoderContainer.style.display === "none" && geocoder) {
+        geocoder.onRemove();
+        geocoder = null;
     }
+}, 300);
 
-    // Geocoder Toggle Setup
-    const geocoderToggle = document.getElementById("toggle-geocoder");
-    const geocoderContainer = document.getElementById("geocoder-container");
-    let geocoder;
-
-    // Define debounced toggle function
-    const debouncedGeocoderToggle = debounce(() => {
-        // Toggle display for geocoder container and toggle button
-        geocoderContainer.style.display = geocoderContainer.style.display === "none" ? "block" : "none";
-        geocoderToggle.style.display = geocoderContainer.style.display === "none" ? "flex" : "none";
-
-        // Initialize geocoder only when container is displayed
-        if (!geocoder && geocoderContainer.style.display === "block") {
-            geocoder = new MapboxGeocoder({
-                accessToken: mapboxgl.accessToken,
-                mapboxgl: mapboxgl,
-            });
-            geocoderContainer.appendChild(geocoder.onAdd(map));
-
-            // Focus on the input after initializing the geocoder
-            setTimeout(() => {
-                const geocoderInput = geocoderContainer.querySelector('input[type="text"]');
-                if (geocoderInput) {
-                    geocoderInput.focus();
-                }
-            }, 100); // Optional delay to ensure input is visible
-        } else if (geocoderContainer.style.display === "none" && geocoder) {
-            geocoder.onRemove();
-            geocoder = null;
-        }
-    }, 300);
-
-    // Event Listener for Geocoder Toggle
-    geocoderToggle.addEventListener("click", (e) => {
-        e.stopPropagation();
-        debouncedGeocoderToggle();
-    });
-
-    // Outside Click Detection for Geocoder
-    document.addEventListener("click", (event) => {
-        if (!geocoderContainer.contains(event.target) && event.target !== geocoderToggle) {
-            geocoderContainer.style.display = "none";
-            geocoderToggle.style.display = "flex";
-        }
-    });
-
-    // Initialize the Mapbox Geocoder with a custom marker color
-geocoder = new MapboxGeocoder({
-    accessToken: mapboxgl.accessToken,
-    mapboxgl: mapboxgl,
-    marker: {
-        color: 'red'
-        // color: '#ff8502' //gt color
-    }
+// Event Listener for Geocoder Toggle
+geocoderToggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    debouncedGeocoderToggle();
 });
 
-// Append Geocoder to your container
-geocoderContainer.appendChild(geocoder.onAdd(map));
+// Outside Click Detection for Geocoder
+document.addEventListener("click", (event) => {
+    if (!geocoderContainer.contains(event.target) && event.target !== geocoderToggle) {
+        geocoderContainer.style.display = "none";
+        geocoderToggle.style.display = "flex";
+    }
+});
 
 
     let sessionStartingView = null;
