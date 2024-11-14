@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const backButton = document.createElement('button');
    
     //set the initial view of Mapbox globe
-    const INITIAL_CENTER = [-119.0187, 35.3733];
+    const INITIAL_CENTER = [-75.4265, 40.0428];
     const INITIAL_ZOOM = 1;
 
     const map = new mapboxgl.Map({
@@ -57,26 +57,25 @@ document.addEventListener("DOMContentLoaded", () => {
     // Map Animation on Load to set the globe to your preferred size and center
     map.on('load', () => {
         map.easeTo({
-            center: [-119.0187, 35.3733],
             center: [-75.4265, 40.0428], 
-            // zoom: 0,  // initial zoom level
+            // zoom: 0,
             zoom: 1,
-            duration: 3000,  // Duration of the animation
-            easing: (t) => t * (2 - t)  // Smooth easing function
+            duration: 3000, 
+            easing: (t) => t * (2 - t) 
         });
     });
 
-
+// Initial flags to track interaction and visibility states
 let hasInteracted = false;
-let isInitialRotation = true;  
+let isInitialRotation = true;
 
 // Define GT logo markers for specified countries
 const countries = [
-    { name: 'USA', lngLat: [-75.4265, 40.0428] },
-    { name: 'UK', lngLat: [-0.1276, 51.5074] },
-    { name: 'Aruba', lngLat: [-69.9683, 12.5211] },
-    { name: 'Canada', lngLat: [-106.3468, 56.1304] },
-    { name: 'Italy', lngLat: [12.5674, 41.8719] },
+    { name: 'USA', lngLat: [-80.147085, 30.954096] }, // gt office Near by location
+    { name: 'UK', lngLat: [-1.654816, 52.181932] },
+    { name: 'Aruba', lngLat: [-69.952269, 12.512168] },
+    { name: 'Canada', lngLat: [-106.728058, 57.922142] },
+    { name: 'Italy', lngLat: [12.465363, 42.835192] },
 ];
 
 // Initialize GT logo markers, making them initially visible
@@ -86,13 +85,13 @@ const gtLogoMarkers = countries.map(country => {
     logoElement.style.backgroundImage = 'url(./img/gtLogo.png)';
     const marker = new mapboxgl.Marker(logoElement, {
         rotationAlignment: 'map',
-        offset: [0, -10],
+        offset: [0, -15],
     }).setLngLat(country.lngLat).addTo(map);
 
-    // Show GT logos initially on page load
+    // Set initial visibility to visible
     marker.getElement().style.visibility = 'visible';
     return marker;
-});
+}); 
 
 // Utility function to safely set layer visibility if the layer exists
 function setLayerVisibility(layerId, visibility) {
@@ -101,37 +100,55 @@ function setLayerVisibility(layerId, visibility) {
     }
 }
 
-// Hide clusters initially after ensuring the layers are added
-map.on('sourcedata', () => {
-    if (!hasInteracted && isInitialRotation) {
+// Hide clusters on sourcedata load event to ensure they are hidden initially
+map.on('sourcedata', (e) => {
+    if (!hasInteracted && e.isSourceLoaded) {
+        // Ensure clusters remain hidden on load
         setLayerVisibility('clusters', 'none');
         setLayerVisibility('cluster-count', 'none');
         setLayerVisibility('unclustered-point', 'none');
     }
 });
 
+//  initial globe rotation, show GT logos, and ensure clusters are hidden
+function startInitialRotation() {
+    // isInitialRotation = true;
+
+    // globe animation with GT logos visible
+    map.easeTo({
+        center: [-75.4265, 40.0428],
+        zoom: 1,
+        duration: 3000,
+        easing: (t) => t * (2 - t),
+    });
+}
+
 // Function to handle first interaction, hiding GT logos and showing clusters
 function onFirstInteraction() {
     if (!hasInteracted) {
         hasInteracted = true;
-        isInitialRotation = false;  // End initial rotation state
 
-        // Hide GT logos after the first interaction
+        // Hide GT logos permanently after the first interaction
         gtLogoMarkers.forEach(marker => {
             marker.getElement().style.visibility = 'hidden';
         });
 
-        // Show clusters to follow their existing functionality
+        // Show clusters to follow their normal functionality
         setLayerVisibility('clusters', 'visible');
         setLayerVisibility('cluster-count', 'visible');
         setLayerVisibility('unclustered-point', 'visible');
     }
 }
 
-// Attach interaction event listeners to trigger onFirstInteraction only once
+// event listeners to trigger onFirstInteraction only once
 map.on('mousedown', onFirstInteraction);
 map.on('zoom', onFirstInteraction);
 map.on('drag', onFirstInteraction);
+
+//initial globe rotation and GT logo display on map load
+map.on('load', startInitialRotation);
+
+
 
     // Check if elements are found
     if (!sidebar) {
