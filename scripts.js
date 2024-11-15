@@ -79,12 +79,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // When the layer is added to the map,
         // get the rendering context for the map canvas.
+
         onAdd: function () {
             const canvas = document.createElement('canvas');
             canvas.width = this.width;
             canvas.height = this.height;
-            this.context = canvas.getContext('2d');
+            this.context = canvas.getContext('2d', { willReadFrequently: true });
+            console.log('Canvas initialized with willReadFrequently:', this.context);
         },
+        
+        // onAdd: function () {
+        //     const canvas = document.createElement('canvas');
+        //     canvas.width = this.width;
+        //     canvas.height = this.height;
+        //     this.context = canvas.getContext('2d');
+        // },
 
         // Call once before every frame where the icon will be used.
         render: function () {
@@ -139,8 +148,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 this.width,
                 this.height
             ).data;
-            console.log('Canvas context:', this.context); // Should not be undefined
-            console.log('Image data:', context.getImageData(0, 0, this.width, this.height).data); // Check if this runs
+            // console.log('Canvas context:', this.context); // Should not be undefined
+            // console.log('Image data:', context.getImageData(0, 0, this.width, this.height).data); // Check if this runs
 
 
             // Continuously repaint the map, resulting
@@ -154,11 +163,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     map.on('load', () => {
 
-        console.log('Map loaded.');
+        // console.log('Map loaded.');
 
         map.addImage('pulsing-dot', pulsingDot, { pixelRatio: 2 });
 
-        console.log('Pulsing dot image added.');
+        // console.log('Pulsing dot image added.');
 
         map.addSource('dot-point', {
             'type': 'geojson',
@@ -176,7 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        console.log('Source for pulsing dot added.');
+        // console.log('Source for pulsing dot added.');
 
         map.addLayer({
             'id': 'layer-with-pulsing-dot',
@@ -186,7 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 'icon-image': 'pulsing-dot'
             }
         });
-        console.log('Layer for pulsing dot added.');
+        // console.log('Layer for pulsing dot added.');
 
     });
 
@@ -514,22 +523,22 @@ Hospital Count: <strong>${hospital_count}</strong>
                     return marker;
                 });
                 // show borders
-                function addHoverOutlineLayer(map, layerId, sourceId) {
-                    map.addLayer({
-                        id: layerId,
-                        type: 'line',
-                        source: sourceId,
-                        paint: {
-                            'line-color': '#FFFFFF',
-                            'line-width': [
-                                'case',
-                                ['boolean', ['feature-state', 'hover'], false],
-                                2,
-                                0.6
-                            ]
-                        }
-                    });
-                }
+                // function addHoverOutlineLayer(map, layerId, sourceId) {
+                //     map.addLayer({
+                //         id: layerId,
+                //         type: 'line',
+                //         source: sourceId,
+                //         paint: {
+                //             'line-color': '#FFFFFF',
+                //             'line-width': [
+                //                 'case',
+                //                 ['boolean', ['feature-state', 'hover'], false],
+                //                 2,
+                //                 0.6
+                //             ]
+                //         }
+                //     });
+                // }
 
                 function addGlowEffect(map, layerId, sourceId) {
                     map.addLayer({
@@ -544,32 +553,32 @@ Hospital Count: <strong>${hospital_count}</strong>
                     });
                 }
 
-                //Uses a light blue color
-                // function addHoverOutlineLayer(map, layerId, sourceId) {
-                //     map.addLayer({
-                //         id: layerId,
-                //         type: 'line',
-                //         source: sourceId,
-                //         paint: {
-                //             // Set a soft, slightly translucent color for a pleasant effect
-                //             'line-color': [
-                //                 'case',
-                //                 ['boolean', ['feature-state', 'hover'], false],
-                //                 '#FFFFFF', // White for hovered state
-                //                 'rgba(173, 216, 230, 0.6)' // Light blue for default (non-hovered) state
-                //             ],
-                //             // Increase default width slightly for better visibility
-                //             'line-width': [
-                //                 'case',
-                //                 ['boolean', ['feature-state', 'hover'], false],
-                //                 2,  // Width on hover
-                //                 1.2 // Default width for non-hovered state
-                //             ],
-                //             // Optional: Add blur effect to make borders softer
-                //             'line-blur': 0.5
-                //         }
-                //     });
-                // }
+                // Uses a light blue color
+                function addHoverOutlineLayer(map, layerId, sourceId) {
+                    map.addLayer({
+                        id: layerId,
+                        type: 'line',
+                        source: sourceId,
+                        paint: {
+                            // Set a soft, slightly translucent color for a pleasant effect
+                            'line-color': [
+                                'case',
+                                ['boolean', ['feature-state', 'hover'], false],
+                                '#FFFFFF', // White for hovered state
+                                'rgba(173, 216, 230, 0.6)' // Light blue for default (non-hovered) state
+                            ],
+                            // Increase default width slightly for better visibility
+                            'line-width': [
+                                'case',
+                                ['boolean', ['feature-state', 'hover'], false],
+                                2,  // Width on hover
+                                1.2 // Default width for non-hovered state
+                            ],
+                            // Optional: Add blur effect to make borders softer
+                            'line-blur': 0.5
+                        }
+                    });
+                }
 
 
                 // Adding glow effect layers for each region
@@ -587,6 +596,14 @@ Hospital Count: <strong>${hospital_count}</strong>
                 addHoverOutlineLayer(map, 'aruba-region-line-hover', 'aruba-region');
                 addHoverOutlineLayer(map, 'italy-regions-line-hover', 'italy-regions');
                 addHoverOutlineLayer(map, 'uk-regions-line-hover', 'uk-regions');
+
+                // ['us-states', 'canada-regions', 'aruba-region', 'italy-regions', 'uk-regions'].forEach(region => {
+                //     console.log(`Applying styles for ${region}`);
+                //     addHoverOutlineLayer(map, `${region}-line-hover`, region, regionsWithFacilities);
+                //     addRegionLayer(map, region, region, regionsWithFacilities);
+                //     addRegionGlow(map, region, region);
+                // });
+                
 
 
                 // show regions and states
@@ -961,8 +978,6 @@ Hospital Count: <strong>${hospital_count}</strong>
     <div><strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}</div>
     <div><strong>Hospital Count:</strong> ${hospital.hospital_count || 1}</div>
 `;
-
-
                             // Add a special note if this is the CommonSpirit Health Headquarters
                             if (hospital.hospital_name === "CommonSpirit Health Headquarters") {
                                 listItem.innerHTML += `<br><strong style="color: #ff8502;">Note:</strong> CommonSpirit Health operates over 140 hospitals across 21 states. 
@@ -998,7 +1013,6 @@ Hospital Count: <strong>${hospital_count}</strong>
             } else {
                 sidebar.classList.remove('auto-height');
             }
-
         }
 
         //populateSidebar function.
