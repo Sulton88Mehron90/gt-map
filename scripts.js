@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const backButton = document.createElement('button');
 
     //set the initial view of Mapbox globe
-    const INITIAL_CENTER = [-75.4265, 40.0428];
+    const INITIAL_CENTER = [-75.4265, 40.0428]; //The coordinates for 1235 Westlakes Drive, Suite 120, Berwyn, PA 19312, are approximately 40.06361° N latitude and 75.47156° W longitude
     const INITIAL_ZOOM = 1;
 
     const map = new mapboxgl.Map({
@@ -67,6 +67,128 @@ document.addEventListener("DOMContentLoaded", () => {
     // Initial flags to track interaction and visibility states
     let hasInteracted = false;
     let isInitialRotation = true;
+
+    //animated pulsing Dot icon
+    const size = 50;
+    // This implements `StyleImageInterface`
+    // to draw a pulsing dot icon on the map.
+    const pulsingDot = {
+        width: size,
+        height: size,
+        data: new Uint8Array(size * size * 4),
+
+        // When the layer is added to the map,
+        // get the rendering context for the map canvas.
+        onAdd: function () {
+            const canvas = document.createElement('canvas');
+            canvas.width = this.width;
+            canvas.height = this.height;
+            this.context = canvas.getContext('2d');
+        },
+
+        // Call once before every frame where the icon will be used.
+        render: function () {
+            const duration = 1000;
+            const t = (performance.now() % duration) / duration;
+
+            const radius = (size / 2) * 0.3;
+            const outerRadius = (size / 2) * 0.7 * t + radius;
+            const context = this.context;
+
+            // Draw the outer circle.
+            context.clearRect(0, 0, this.width, this.height);
+            context.beginPath();
+            context.arc(
+                this.width / 2,
+                this.height / 2,
+                outerRadius,
+                0,
+                Math.PI * 2
+            );
+
+//Goliath colors
+// #ff8b1f: A vibrant orange; suitable for the outer circle or stroke.
+// #0f2844: A dark blue; ideal for the inner circle or border.
+// #ff0000: Bright red; can be used for the pulsing effect or an accent.
+// #ffffff: White; perfect for a border or subtle inner detail.
+
+
+            context.fillStyle = `rgba(255, 139, 31, ${1 - t})`; // Orange (Outer Circle)
+            context.fill();
+
+            // Draw the inner circle.
+            context.beginPath();
+            context.arc(
+                this.width / 2,
+                this.height / 2,
+                radius,
+                0,
+                Math.PI * 2
+            );
+            context.fillStyle = '#0f2844'; // Dark Blue (Inner Circle)
+            context.strokeStyle = '#ffffff'; // White Border
+            // context.strokeStyle = '#ff0000'; 
+            context.lineWidth = 2 + 4 * (1 - t);
+            context.fill();
+            context.stroke();
+
+            // Update this image's data with data from the canvas.
+            this.data = context.getImageData(
+                0,
+                0,
+                this.width,
+                this.height
+            ).data;
+            console.log('Canvas context:', this.context); // Should not be undefined
+            console.log('Image data:', context.getImageData(0, 0, this.width, this.height).data); // Check if this runs
+
+
+            // Continuously repaint the map, resulting
+            // in the smooth animation of the dot.
+            map.triggerRepaint();
+
+            // Return `true` to let the map know that the image was updated.
+            return true;
+        }
+    };
+
+    map.on('load', () => {
+
+        console.log('Map loaded.');
+
+        map.addImage('pulsing-dot', pulsingDot, { pixelRatio: 2 });
+
+        console.log('Pulsing dot image added.');
+
+        map.addSource('dot-point', {
+            'type': 'geojson',
+            'data': {
+                'type': 'FeatureCollection',
+                'features': [
+                    {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'Point',
+                            'coordinates': [-75.4265, 40.0428] // icon position [lng, lat]
+                        }
+                    }
+                ]
+            }
+        });
+
+        console.log('Source for pulsing dot added.');
+
+        map.addLayer({
+            'id': 'layer-with-pulsing-dot',
+            'type': 'symbol',
+            'source': 'dot-point',
+            'layout': {
+                'icon-image': 'pulsing-dot'
+            }
+        });
+        console.log('Layer for pulsing dot added.');
+
+    });
 
     // Define GT logo markers for specified countries
     const countries = [
@@ -227,7 +349,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             backToTopButton.style.display = 'none';
         }
-    }    
+    }
 
     // Observer to monitor sidebar content changes for the back-to-top button
     const observer = new MutationObserver(toggleBackToTopButton);
@@ -409,12 +531,63 @@ Hospital Count: <strong>${hospital_count}</strong>
                     });
                 }
 
+                function addGlowEffect(map, layerId, sourceId) {
+                    map.addLayer({
+                        id: `${layerId}-glow`,
+                        type: 'line',
+                        source: sourceId,
+                        paint: {
+                            'line-color': 'rgba(255, 255, 255, 0.3)', // White glow with low opacity
+                            'line-width': 4, // Slightly larger to act as an outer glow
+                            'line-blur': 2 // Blur to create a glow effect
+                        }
+                    });
+                }
+
+                //Uses a light blue color
+                // function addHoverOutlineLayer(map, layerId, sourceId) {
+                //     map.addLayer({
+                //         id: layerId,
+                //         type: 'line',
+                //         source: sourceId,
+                //         paint: {
+                //             // Set a soft, slightly translucent color for a pleasant effect
+                //             'line-color': [
+                //                 'case',
+                //                 ['boolean', ['feature-state', 'hover'], false],
+                //                 '#FFFFFF', // White for hovered state
+                //                 'rgba(173, 216, 230, 0.6)' // Light blue for default (non-hovered) state
+                //             ],
+                //             // Increase default width slightly for better visibility
+                //             'line-width': [
+                //                 'case',
+                //                 ['boolean', ['feature-state', 'hover'], false],
+                //                 2,  // Width on hover
+                //                 1.2 // Default width for non-hovered state
+                //             ],
+                //             // Optional: Add blur effect to make borders softer
+                //             'line-blur': 0.5
+                //         }
+                //     });
+                // }
+
+
+                // Adding glow effect layers for each region
+                addGlowEffect(map, 'us-states-line-hover', 'us-states');
+                addGlowEffect(map, 'canada-regions-line-hover', 'canada-regions');
+                addGlowEffect(map, 'aruba-region-line-hover', 'aruba-region');
+                addGlowEffect(map, 'italy-regions-line-hover', 'italy-regions');
+                addGlowEffect(map, 'uk-regions-line-hover', 'uk-regions');
+
+
+
                 // Adding hover outline layers for each region using the function
                 addHoverOutlineLayer(map, 'us-states-line-hover', 'us-states');
                 addHoverOutlineLayer(map, 'canada-regions-line-hover', 'canada-regions');
                 addHoverOutlineLayer(map, 'aruba-region-line-hover', 'aruba-region');
                 addHoverOutlineLayer(map, 'italy-regions-line-hover', 'italy-regions');
                 addHoverOutlineLayer(map, 'uk-regions-line-hover', 'uk-regions');
+
 
                 // show regions and states
                 function addRegionLayer(map, layerId, sourceId, regionsWithFacilities) {
@@ -482,12 +655,12 @@ Hospital Count: <strong>${hospital_count}</strong>
                     };
 
                     // Debounced hover function for non-touch devices
-    const debouncedHover = debounce((e) => {
-        const regionId = e.features[0].id;
-        if (regionsWithFacilities.has(regionId)) {
-            applyHover(regionId);
-        }
-    }, 50); // 50ms debounce delay
+                    const debouncedHover = debounce((e) => {
+                        const regionId = e.features[0].id;
+                        if (regionsWithFacilities.has(regionId)) {
+                            applyHover(regionId);
+                        }
+                    }, 50); // 50ms debounce delay
 
 
                     // Tap-to-Hover functionality for touch devices
@@ -567,7 +740,7 @@ Hospital Count: <strong>${hospital_count}</strong>
                         // Logic to show content for the selected region in the sidebar
                     }
                 }
-                
+
                 //Function for Zoom-Based Marker Visibility
                 function toggleMarkers() {
                     const zoomLevel = map.getZoom();
@@ -588,7 +761,7 @@ Hospital Count: <strong>${hospital_count}</strong>
                 // Initial call to set visibility based on the starting zoom level
                 toggleMarkers();
 
-//Cluster Source and Layer Styling
+                //Cluster Source and Layer Styling
                 // Set up cluster source for hospitals
                 map.addSource('hospitals', {
                     type: 'geojson',
@@ -789,7 +962,7 @@ Hospital Count: <strong>${hospital_count}</strong>
     <div><strong>Hospital Count:</strong> ${hospital.hospital_count || 1}</div>
 `;
 
-                        
+
                             // Add a special note if this is the CommonSpirit Health Headquarters
                             if (hospital.hospital_name === "CommonSpirit Health Headquarters") {
                                 listItem.innerHTML += `<br><strong style="color: #ff8502;">Note:</strong> CommonSpirit Health operates over 140 hospitals across 21 states. 
@@ -814,20 +987,20 @@ Hospital Count: <strong>${hospital_count}</strong>
                 errorMessage.innerText = 'Failed to load facility data. Please try again later.';
             });
 
-         // Adjust sidebar height based on content size
+        // Adjust sidebar height based on content size
         function adjustSidebarHeight() {
             const sidebar = document.getElementById('hospital-list-sidebar');
-const hospitalList = document.getElementById('hospital-list');
+            const hospitalList = document.getElementById('hospital-list');
 
-// Check if content fits without overflow
-if (hospitalList.scrollHeight <= sidebar.clientHeight) {
-    sidebar.classList.add('auto-height');
-} else {
-    sidebar.classList.remove('auto-height');
-}
+            // Check if content fits without overflow
+            if (hospitalList.scrollHeight <= sidebar.clientHeight) {
+                sidebar.classList.add('auto-height');
+            } else {
+                sidebar.classList.remove('auto-height');
+            }
 
         }
-        
+
         //populateSidebar function.
         function populateSidebar(regionId, regionName, facilities) {
             console.log(`Populating sidebar for region: ${regionName} (ID: ${regionId})`);
@@ -917,9 +1090,9 @@ if (hospitalList.scrollHeight <= sidebar.clientHeight) {
                     const zoomLevel = isMobile ? 10 : 12;
 
                     // Fly to the selected facility location
-//                     Fly-To Functionality on Facility Click
-// The fly-to functionality is implemented well, creating a smooth transition to the selected hospital’s location. Setting the mobile zoom level with const zoomLevel = isMobile ? 10 : 12; makes it user-friendly across devices.
-// The pitch and bearing values help in adding a sense of depth. If performance is a concern on some devices, consider testing with or without these to evaluate their impact.
+                    //                     Fly-To Functionality on Facility Click
+                    // The fly-to functionality is implemented well, creating a smooth transition to the selected hospital’s location. Setting the mobile zoom level with const zoomLevel = isMobile ? 10 : 12; makes it user-friendly across devices.
+                    // The pitch and bearing values help in adding a sense of depth. If performance is a concern on some devices, consider testing with or without these to evaluate their impact.
 
                     map.flyTo({
                         center: [hospital.longitude, hospital.latitude],
@@ -936,7 +1109,7 @@ if (hospitalList.scrollHeight <= sidebar.clientHeight) {
             // Display the sidebar only if there are hospitals to show
             sidebar.style.display = regionHospitals.length > 0 ? 'block' : 'none';
 
-    adjustSidebarHeight();
+            adjustSidebarHeight();
         }
 
         //Sets up a click event for a specified region layer.
@@ -1091,27 +1264,28 @@ if (hospitalList.scrollHeight <= sidebar.clientHeight) {
         sidebarHeader.addEventListener("mousedown", startDrag);
         sidebarHeader.addEventListener("touchstart", startDrag, { passive: false });
 
-     // Adjust Sidebar Visibility Based on Screen Size
-function toggleSidebarOnHover(show) {
-    // Only toggle visibility on small screens (e.g., max-width of 480px)
-    if (window.innerWidth <= 480) { 
-        sidebar.style.display = show ? 'block' : 'none';
-    }
-}
+        // Adjust Sidebar Visibility Based on Screen Size
+        function toggleSidebarOnHover(show) {
+            // Only toggle visibility on small screens (e.g., max-width of 480px)
+            if (window.innerWidth <= 480) {
+                sidebar.style.display = show ? 'block' : 'none';
+            }
+        }
 
-// Show sidebar on touch or mouse enter for small screens
-sidebar.addEventListener('mouseenter', () => toggleSidebarOnHover(true));
-sidebar.addEventListener('touchstart', () => toggleSidebarOnHover(true));
+        // Show sidebar on touch or mouse enter for small screens
+        sidebar.addEventListener('mouseenter', () => toggleSidebarOnHover(true));
+        sidebar.addEventListener('touchstart', () => toggleSidebarOnHover(true));
 
-// Remove hiding behavior on `mouseleave` and `touchend`
-sidebar.removeEventListener('mouseleave', () => toggleSidebarOnHover(false));
-sidebar.removeEventListener('touchend', () => toggleSidebarOnHover(false));
+        // Remove hiding behavior on `mouseleave` and `touchend`
+        sidebar.removeEventListener('mouseleave', () => toggleSidebarOnHover(false));
+        sidebar.removeEventListener('touchend', () => toggleSidebarOnHover(false));
 
-// Close sidebar only when the close button is clicked
-document.getElementById("close-sidebar").addEventListener('click', () => {
-    sidebar.style.display = 'none';
-});
+        // Close sidebar only when the close button is clicked
+        document.getElementById("close-sidebar").addEventListener('click', () => {
+            sidebar.style.display = 'none';
+        });
 
-    });
+
+    })
 
 });

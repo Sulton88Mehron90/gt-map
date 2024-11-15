@@ -1254,3 +1254,15 @@ map.on('moveend', () => {
 map.on('mousedown', onFirstInteraction);
 map.on('zoom', onFirstInteraction);
 map.on('drag', onFirstInteraction);
+
+
+
+//Goliath colors
+// #ff8b1f: A vibrant orange; suitable for the outer circle or stroke.
+// #0f2844: A dark blue; ideal for the inner circle or border.
+// #ff0000: Bright red; can be used for the pulsing effect or an accent.
+// #ffffff: White; perfect for a border or subtle inner detail.
+
+            // context.fillStyle = `rgba(255, 0, 0, ${1 - t})`; // Outer circle (red)
+            //context.fillStyle = 'rgba(0, 255, 0, 1)'; // Inner circle (green)
+            //context.strokeStyle = 'rgba(0, 0, 255, 1)'; // Stroke (blue)
