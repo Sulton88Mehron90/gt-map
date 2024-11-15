@@ -636,7 +636,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 });
 
-                console.log("Facilities data loaded:", facilitiesData); // Debug
+                // console.log("Facilities data loaded:", facilitiesData); // Debug
 
                 console.log("regionsWithFacilities:", Array.from(regionsWithFacilities));
 
@@ -823,11 +823,11 @@ Hospital Count: <strong>${hospital_count}</strong>
                 }
 
                 // glow effect and hover outline layers
-                addGlowEffect(map, 'us-states-line-hover', 'us-states');
-                addGlowEffect(map, 'canada-regions-line-hover', 'canada-regions');
-                addGlowEffect(map, 'aruba-region-line-hover', 'aruba-region');
-                addGlowEffect(map, 'italy-regions-line-hover', 'italy-regions');
-                addGlowEffect(map, 'uk-regions-line-hover', 'uk-regions');
+                // addGlowEffect(map, 'us-states-line-hover', 'us-states');
+                // addGlowEffect(map, 'canada-regions-line-hover', 'canada-regions');
+                // addGlowEffect(map, 'aruba-region-line-hover', 'aruba-region');
+                // addGlowEffect(map, 'italy-regions-line-hover', 'italy-regions');
+                // addGlowEffect(map, 'uk-regions-line-hover', 'uk-regions');
 
                 addHoverOutlineLayer(map, 'us-states-line-hover', 'us-states');
                 addHoverOutlineLayer(map, 'canada-regions-line-hover', 'canada-regions');
@@ -845,16 +845,16 @@ Hospital Count: <strong>${hospital_count}</strong>
                     addRegionInteractions(map, `${region}-fill`, region, regionsWithFacilities);
                 });
 
-                console.log(map.getSource('us-states'));
-                console.log(map.getLayer('us-states-fill'));
-                console.log(map.getLayer('us-states-line-hover'));
+                // console.log(map.getSource('us-states'));
+                // console.log(map.getLayer('us-states-fill'));
+                // console.log(map.getLayer('us-states-line-hover'));
 
-                console.log('Current layer order:', map.getStyle().layers.map(layer => layer.id));
+                // console.log('Current layer order:', map.getStyle().layers.map(layer => layer.id));
 
-                console.log('Facilities Data:', facilitiesData);
+                // console.log('Facilities Data:', facilitiesData);
 
-                addGeoJSONSource(map, 'us-states', '/data/us-states.geojson', 'id');
-                console.log("Sources after adding 'us-states':", map.getStyle().sources);
+                // addGeoJSONSource(map, 'us-states', '/data/us-states.geojson', 'id');
+                // console.log("Sources after adding 'us-states':", map.getStyle().sources);
 
                 // console.log('Features in us-states:', geojson.features.map(feature => feature.properties.name));
                 // console.log(geojson); // If this line exists without defining `geojson`, you'll get an error.

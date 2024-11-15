@@ -68,7 +68,7 @@
     {
         "ehr_system": "Cerner ITWorks",
         "hospital_name": "Central Maine Medical Center",
-        "hospital_count": 1,
+        "hospital_count": 2,
         "location": "Lewiston, ME",
         "hospital_address": "300 Main St, Lewiston, ME 04240",
         "latitude": 44.0774,
@@ -1815,7 +1815,7 @@
     {
         "ehr_system": "Cerner-ITWorks",
         "hospital_name": "Yavapai Regional Medical Center - Prescott Campus",
-        "hospital_count": 1,
+        "hospital_count": 2,
         "location": "Prescott, AZ",
         "hospital_address": "1003 Willow Creek Rd, Prescott, AZ 86301",
         "latitude": 34.5763,
@@ -1825,19 +1825,6 @@
         "parent_company": "Dignity Health",
         "region_id": "AZ",
         "main_facility": true
-    },
-    {
-        "ehr_system": "Cerner-ITWorks",
-        "hospital_name": "Yavapai Regional Medical Center - Prescott Valley Campus",
-        "hospital_count": 1,
-        "location": "Prescott Valley, AZ",
-        "hospital_address": "7700 E Florentine Rd, Prescott Valley, AZ 86314",
-        "latitude": 34.5893,
-        "longitude": -112.3368,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Dignity Health",
-        "region_id": "AZ"
     },
     {
         "ehr_system": "Cerner",
@@ -1922,7 +1909,7 @@
     {
         "ehr_system": "Cerner",
         "hospital_name": "Rogers Behavioral Health - Oconomowoc",
-        "hospital_count": 1,
+        "hospital_count": 3,
         "location": "Oconomowoc, WI",
         "hospital_address": "34700 Valley Rd, Oconomowoc, WI 53066",
         "latitude": 43.1117,
@@ -1935,34 +1922,8 @@
     },
     {
         "ehr_system": "Cerner",
-        "hospital_name": "Rogers Behavioral Health - Brown Deer",
-        "hospital_count": 1,
-        "location": "Brown Deer, WI",
-        "hospital_address": "4600 W Schroeder Dr, Brown Deer, WI 53223",
-        "latitude": 43.1765,
-        "longitude": -87.9746,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Rogers Behavioral Health",
-        "region_id": "WI"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Rogers Behavioral Health - West Allis",
-        "hospital_count": 1,
-        "location": "West Allis, WI",
-        "hospital_address": "11101 W Lincoln Ave, West Allis, WI 53227",
-        "latitude": 43.0029,
-        "longitude": -88.0465,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Rogers Behavioral Health",
-        "region_id": "WI"
-    },
-    {
-        "ehr_system": "Cerner",
         "hospital_name": "Maine Medical Center",
-        "hospital_count": 1,
+        "hospital_count": 2,
         "location": "Portland, ME",
         "hospital_address": "22 Bramhall St, Portland, ME 04102",
         "latitude": 43.6534,
