@@ -801,8 +801,20 @@ ${hospital.location}<br>
                 errorMessage.innerText = 'Failed to load facility data. Please try again later.';
             });
 
+         // Adjust sidebar height based on content size
+        function adjustSidebarHeight() {
+            const sidebar = document.getElementById('hospital-list-sidebar');
+            const list = document.getElementById('hospital-list');
+        
+            // Check if content height is less than max viewport height (80vh)
+            if (list.scrollHeight < window.innerHeight * 0.8) {
+                sidebar.classList.add('auto-height'); 
+            } else {
+                sidebar.classList.remove('auto-height');
+            }
+        }
+        
         //populateSidebar function.
-
         function populateSidebar(regionId, regionName, facilities) {
             console.log(`Populating sidebar for region: ${regionName} (ID: ${regionId})`);
 
@@ -909,6 +921,8 @@ ${hospital.location}<br>
 
             // Display the sidebar only if there are hospitals to show
             sidebar.style.display = regionHospitals.length > 0 ? 'block' : 'none';
+
+    adjustSidebarHeight();
         }
 
         //Sets up a click event for a specified region layer.

@@ -237,7 +237,7 @@ button:hover {
     background-color: #0f2844;
 }
 
-/* sidebar 1*/
+/* sidebar */
 
 #hospital-list-sidebar {
     font-family: 'Open Sans', sans-serif;
@@ -259,8 +259,9 @@ button:hover {
     /* transition: transform 0.3s ease-in-out; */
     transition: width 0.3s ease-in-out, max-height 0.3s ease-in-out;
     overflow-x: hidden;
-
-    display: block; /* Ensure sidebar is visible by default */
+    max-height: 80vh;
+    overflow-y: auto;
+    display: block;
 }
 
 #hospital-list-sidebar:hover {
@@ -269,6 +270,12 @@ button:hover {
 
 #hospital-list-sidebar.hidden {
     transform: translateX(-100%);
+}
+
+/* Class for dynamic adjustment when content is smaller than max height */
+#hospital-list-sidebar.auto-height {
+    max-height: none;
+    height: auto; 
 }
 
 #hospital-list-sidebar h2 {
