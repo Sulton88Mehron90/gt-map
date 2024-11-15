@@ -220,12 +220,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Function to toggle the back-to-top button visibility
     function toggleBackToTopButton() {
-        if (sidebar.scrollHeight > sidebar.clientHeight && !sidebar.classList.contains('collapsed')) {
+        const isScrollable = sidebar.scrollHeight > sidebar.clientHeight;
+        const isCollapsed = sidebar.classList.contains('collapsed');
+        if (isScrollable && !isCollapsed) {
             backToTopButton.style.display = 'block';
         } else {
             backToTopButton.style.display = 'none';
         }
-    }
+    }    
 
     // Observer to monitor sidebar content changes for the back-to-top button
     const observer = new MutationObserver(toggleBackToTopButton);
