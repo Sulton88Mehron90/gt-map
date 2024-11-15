@@ -275,6 +275,7 @@ button:hover {
 /* Class for dynamic adjustment when content is smaller than max height */
 #hospital-list-sidebar.auto-height {
     max-height: none;
+    max-height: 80vh;
     height: auto; 
 }
 
@@ -315,6 +316,11 @@ button:hover {
     font-size: 0.95rem;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     transition: background-color 0.3s, transform 0.2s;
+}
+
+#hospital-list li div {
+    display: block;
+    margin-top: 5px;
 }
 
 #hospital-list li:hover {
@@ -626,10 +632,10 @@ hospital-list-sidebar.collapsed #close-sidebar {
 
 @media (max-width: 768px) {
     #hospital-list-sidebar {
-        width: 80%;
-        left: 7.5%;
-        max-height: 60vh;
-        padding: 15px;
+        width: 100%;
+        left: 0;
+        max-height: 70vh;
+        padding: 10px;
         position: fixed;
         bottom: 0;
         overflow-y: auto;
@@ -692,21 +698,18 @@ hospital-list-sidebar.collapsed #close-sidebar {
         width: 100vw;
         height: calc(100vh - 40px);
     }
-
     #hospital-list-sidebar {
-        position: fixed; 
-        left: 5%;
+        width: 95%;
+        left: 2.5%;
         bottom: 0;
-        width: 90%;
-        max-height: 50vh;
-        padding: 10px;
-        z-index: 10;
-        display: block;
+        max-height: 60vh;
+        padding: 8px;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
     }
 
     #hospital-list li {
         font-size: 0.8rem;
-        padding: 5px;
+        padding: 4px;
     }
 
     #hospital-list-sidebar h2 {
@@ -718,23 +721,18 @@ hospital-list-sidebar.collapsed #close-sidebar {
     }
 
     #close-sidebar {
-        padding: 4px;   
+        padding: 3px;
         font-size: 0.8rem;
     }
 
     #close-sidebar,
     .theme-toggle-btn {
-        width: 30px;
-        height: 30px;
+        width: 25px;
+        height: 25px;
     }
 
     button {
         margin: 5px 0;
-    }
-
-    #hospital-list li {
-        font-size: 12px;
-        padding: 5px;
     }
 
     #home-logo {

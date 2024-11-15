@@ -766,17 +766,19 @@ Hospital Count: <strong>${hospital_count}</strong>
                             }
 
                             listItem.innerHTML = `
-<i class="fas fa-hospital-symbol"></i> 
-<strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
-${hospital.hospital_name}
-</strong><br>
-${hospital.parent_company ? `<strong>Parent Company:</strong> ${hospital.parent_company}<br>` : ""}
-${hospital.location}<br>
-<strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}<br>
-<strong>Hospital Count:</strong> ${hospital.hospital_count}<br>
+    <div>
+        <i class="fas fa-hospital-symbol"></i> 
+        <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
+            ${hospital.hospital_name}
+        </strong>
+    </div>
+    ${hospital.parent_company ? `<div><strong>Parent Company:</strong> ${hospital.parent_company}</div>` : ""}
+    <div>${hospital.location}</div>
+    <div><strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}</div>
+    <div><strong>Hospital Count:</strong> ${hospital.hospital_count || 1}</div>
 `;
 
-
+                        
                             // Add a special note if this is the CommonSpirit Health Headquarters
                             if (hospital.hospital_name === "CommonSpirit Health Headquarters") {
                                 listItem.innerHTML += `<br><strong style="color: #ff8502;">Note:</strong> CommonSpirit Health operates over 140 hospitals across 21 states. 
@@ -804,14 +806,15 @@ ${hospital.location}<br>
          // Adjust sidebar height based on content size
         function adjustSidebarHeight() {
             const sidebar = document.getElementById('hospital-list-sidebar');
-            const list = document.getElementById('hospital-list');
-        
-            // Check if content height is less than max viewport height (80vh)
-            if (list.scrollHeight < window.innerHeight * 0.8) {
-                sidebar.classList.add('auto-height'); 
-            } else {
-                sidebar.classList.remove('auto-height');
-            }
+const hospitalList = document.getElementById('hospital-list');
+
+// Check if content fits without overflow
+if (hospitalList.scrollHeight <= sidebar.clientHeight) {
+    sidebar.classList.add('auto-height');
+} else {
+    sidebar.classList.remove('auto-height');
+}
+
         }
         
         //populateSidebar function.
@@ -873,15 +876,15 @@ ${hospital.location}<br>
                 }
 
                 listItem.innerHTML = `
-                    <i class="fas fa-hospital-symbol"></i> 
-                    <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
-                        ${hospital.hospital_name}
-                    </strong><br>
-                    ${hospital.parent_company ? `<strong>Parent Company:</strong> ${hospital.parent_company}<br>` : ""}
-                    ${hospital.location}<br>
-                    <strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system || ""}
-                    <strong>Hospital Count:</strong> ${hospital.hospital_count || 1}<br>
-                `;
+    <i class="fas fa-hospital-symbol"></i> 
+    <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
+        ${hospital.hospital_name}
+    </strong><br>
+    ${hospital.parent_company ? `<strong>Parent Company:</strong> ${hospital.parent_company}<br>` : ""}
+    ${hospital.location}<br>
+    <div><strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}</div>
+    <div><strong>Hospital Count:</strong> ${hospital.hospital_count || 1}</div>
+`;
 
                 // Add fly-to functionality and show Back button on click
                 listItem.querySelector('.clickable-hospital').addEventListener('click', () => {
