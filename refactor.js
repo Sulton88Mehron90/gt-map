@@ -1,7 +1,6 @@
 //Imports and Mapbox Token Initialization
 import { MAPBOX_TOKEN } from './config.js';
 import { loadFacilitiesData } from './dataLoader.js';
-
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
 // Map Initialization on DOMContentLoaded
@@ -16,19 +15,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     const gtLogo = document.querySelector('.sidebar-logo');
     const backButton = document.createElement('button');
-   
+
     //set the initial view of Mapbox globe
-    const INITIAL_CENTER = [-75.4265, 40.0428];
+    const INITIAL_CENTER = [-75.4265, 40.0428]; //The coordinates for 1235 Westlakes Drive, Suite 120, Berwyn, PA 19312, are approximately 40.06361° N latitude and 75.47156° W longitude
     const INITIAL_ZOOM = 1;
 
     const map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/light-v11',
         projection: 'globe',
-        zoom: INITIAL_ZOOM,  
-        center: INITIAL_CENTER, 
+        zoom: INITIAL_ZOOM,
+        center: INITIAL_CENTER,
     });
- 
+
     // Adding navigation controls
     map.addControl(new mapboxgl.NavigationControl());
     // map.addControl(new mapboxgl.NavigationControl({ position: 'top-left' }));
@@ -36,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Variables for user interaction detection
     let userInteracting = false;
-    
+
     // spin the globe smoothly when zoomed out
     function spinGlobe() {
         if (!userInteracting && map.getZoom() < 5) {
@@ -50,105 +49,297 @@ document.addEventListener("DOMContentLoaded", () => {
     map.on('mousedown', () => userInteracting = true);
     map.on('dragstart', () => userInteracting = true);
     map.on('moveend', () => spinGlobe());
-    
+
     // Start the globe spinning animation
     spinGlobe();
 
     // Map Animation on Load to set the globe to your preferred size and center
     map.on('load', () => {
         map.easeTo({
-            center: [-75.4265, 40.0428], 
+            center: [-75.4265, 40.0428],
             // zoom: 0,
             zoom: 1,
-            duration: 3000, 
-            easing: (t) => t * (2 - t) 
+            duration: 3000,
+            easing: (t) => t * (2 - t)
         });
     });
 
-// Initial flags to track interaction and visibility states
-let hasInteracted = false;
-let isInitialRotation = true;
+    // Initial flags to track interaction and visibility states
+    let hasInteracted = false;
+    let isInitialRotation = true;
 
-// Define GT logo markers for specified countries
-const countries = [
-    { name: 'USA', lngLat: [-80.147085, 30.954096] }, // gt office Near by location
-    { name: 'UK', lngLat: [-1.654816, 52.181932] },
-    { name: 'Aruba', lngLat: [-69.952269, 12.512168] },
-    { name: 'Canada', lngLat: [-106.728058, 57.922142] },
-    { name: 'Italy', lngLat: [12.465363, 42.835192] },
-];
+    //animated pulsing Dot icon
+    const size = 50;
+    // This implements `StyleImageInterface`
+    // to draw a pulsing dot icon on the map.
+    const pulsingDot = {
+        width: size,
+        height: size,
+        data: new Uint8Array(size * size * 4),
 
-// Initialize GT logo markers, making them initially visible
-const gtLogoMarkers = countries.map(country => {
-    const logoElement = document.createElement('div');
-    logoElement.className = 'company-logo';
-    logoElement.style.backgroundImage = 'url(./img/gtLogo.png)';
-    const marker = new mapboxgl.Marker(logoElement, {
-        rotationAlignment: 'map',
-        offset: [0, -15],
-    }).setLngLat(country.lngLat).addTo(map);
+        // When the layer is added to the map,
+        // get the rendering context for the map canvas.
 
-    // Set initial visibility to visible
-    marker.getElement().style.visibility = 'visible';
-    return marker;
-}); 
+        onAdd: function () {
+            const canvas = document.createElement('canvas');
+            canvas.width = this.width;
+            canvas.height = this.height;
+            this.context = canvas.getContext('2d', { willReadFrequently: true });
+            console.log('Canvas initialized with willReadFrequently:', this.context);
+        },
+        
+        // onAdd: function () {
+        //     const canvas = document.createElement('canvas');
+        //     canvas.width = this.width;
+        //     canvas.height = this.height;
+        //     this.context = canvas.getContext('2d');
+        // },
 
-// Utility function to safely set layer visibility if the layer exists
-function setLayerVisibility(layerId, visibility) {
-    if (map.getLayer(layerId)) {
-        map.setLayoutProperty(layerId, 'visibility', visibility);
-    }
-}
+        // Call once before every frame where the icon will be used.
+        render: function () {
+            const duration = 1000;
+            const t = (performance.now() % duration) / duration;
 
-// Hide clusters on sourcedata load event to ensure they are hidden initially
-map.on('sourcedata', (e) => {
-    if (!hasInteracted && e.isSourceLoaded) {
-        // Ensure clusters remain hidden on load
-        setLayerVisibility('clusters', 'none');
-        setLayerVisibility('cluster-count', 'none');
-        setLayerVisibility('unclustered-point', 'none');
-    }
-});
+            const radius = (size / 2) * 0.3;
+            const outerRadius = (size / 2) * 0.7 * t + radius;
+            const context = this.context;
 
-//  initial globe rotation, show GT logos, and ensure clusters are hidden
-function startInitialRotation() {
-    // isInitialRotation = true;
+            // Draw the outer circle.
+            context.clearRect(0, 0, this.width, this.height);
+            context.beginPath();
+            context.arc(
+                this.width / 2,
+                this.height / 2,
+                outerRadius,
+                0,
+                Math.PI * 2
+            );
 
-    // globe animation with GT logos visible
-    map.easeTo({
-        center: [-75.4265, 40.0428],
-        zoom: 1,
-        duration: 3000,
-        easing: (t) => t * (2 - t),
-    });
-}
+//Goliath colors
+// #ff8b1f: A vibrant orange; suitable for the outer circle or stroke.
+// #0f2844: A dark blue; ideal for the inner circle or border.
+// #ff0000: Bright red; can be used for the pulsing effect or an accent.
+// #ffffff: White; perfect for a border or subtle inner detail.
 
-// Function to handle first interaction, hiding GT logos and showing clusters
-function onFirstInteraction() {
-    if (!hasInteracted) {
-        hasInteracted = true;
 
-        // Hide GT logos permanently after the first interaction
-        gtLogoMarkers.forEach(marker => {
-            marker.getElement().style.visibility = 'hidden';
+            context.fillStyle = `rgba(255, 139, 31, ${1 - t})`; // Orange (Outer Circle)
+            context.fill();
+
+            // Draw the inner circle.
+            context.beginPath();
+            context.arc(
+                this.width / 2,
+                this.height / 2,
+                radius,
+                0,
+                Math.PI * 2
+            );
+            context.fillStyle = '#0f2844'; // Dark Blue (Inner Circle)
+            context.strokeStyle = '#ffffff'; // White Border
+            // context.strokeStyle = '#ff0000'; 
+            context.lineWidth = 2 + 4 * (1 - t);
+            context.fill();
+            context.stroke();
+
+            // Update this image's data with data from the canvas.
+            this.data = context.getImageData(
+                0,
+                0,
+                this.width,
+                this.height
+            ).data;
+            // console.log('Canvas context:', this.context); // Should not be undefined
+            // console.log('Image data:', context.getImageData(0, 0, this.width, this.height).data); // Check if this runs
+
+
+            // Continuously repaint the map, resulting
+            // in the smooth animation of the dot.
+            map.triggerRepaint();
+
+            // Return `true` to let the map know that the image was updated.
+            return true;
+        }
+    };
+
+    map.on('load', () => {
+
+        // console.log('Map loaded.');
+
+        map.addImage('pulsing-dot', pulsingDot, { pixelRatio: 2 });
+
+        // console.log('Pulsing dot image added.');
+
+        map.addSource('dot-point', {
+            'type': 'geojson',
+            'data': {
+                'type': 'FeatureCollection',
+                'features': [
+                    {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'Point',
+                            'coordinates': [-75.4265, 40.0428] // icon position [lng, lat]
+                        }
+                    }
+                ]
+            }
         });
 
-        // Show clusters to follow their normal functionality
-        setLayerVisibility('clusters', 'visible');
-        setLayerVisibility('cluster-count', 'visible');
-        setLayerVisibility('unclustered-point', 'visible');
+        // console.log('Source for pulsing dot added.');
+
+        map.addLayer({
+            'id': 'layer-with-pulsing-dot',
+            'type': 'symbol',
+            'source': 'dot-point',
+            'layout': {
+                'icon-image': 'pulsing-dot'
+            }
+        });
+        // console.log('Layer for pulsing dot added.');
+
+    });
+
+    // Define GT logo markers for specified countries
+    const countries = [
+        { name: 'USA', lngLat: [-80.147085, 30.954096] }, // gt office Near by location
+        { name: 'UK', lngLat: [-1.654816, 52.181932] },
+        { name: 'Aruba', lngLat: [-69.952269, 12.512168] },
+        { name: 'Canada', lngLat: [-106.728058, 57.922142] },
+        { name: 'Italy', lngLat: [12.465363, 42.835192] },
+    ];
+
+    // Initialize GT logo markers, making them initially visible
+    const gtLogoMarkers = countries.map(country => {
+        const logoElement = document.createElement('div');
+        logoElement.className = 'company-logo';
+        logoElement.style.backgroundImage = 'url(./img/gtLogo.png)';
+        const marker = new mapboxgl.Marker(logoElement, {
+            rotationAlignment: 'map',
+            offset: [0, -15],
+        }).setLngLat(country.lngLat).addTo(map);
+
+        // Set initial visibility to visible
+        marker.getElement().style.visibility = 'visible';
+        return marker;
+    });
+
+    // Utility function to safely set layer visibility if the layer exists
+    function setLayerVisibility(layerId, visibility) {
+        if (map.getLayer(layerId)) {
+            map.setLayoutProperty(layerId, 'visibility', visibility);
+        }
     }
-}
 
-// event listeners to trigger onFirstInteraction only once
-map.on('mousedown', onFirstInteraction);
-map.on('zoom', onFirstInteraction);
-map.on('drag', onFirstInteraction);
+    // Hide clusters on sourcedata load event to ensure they are hidden initially
+    map.on('sourcedata', (e) => {
+        if (!hasInteracted && e.isSourceLoaded) {
+            // Ensure clusters remain hidden on load
+            setLayerVisibility('clusters', 'none');
+            setLayerVisibility('cluster-count', 'none');
+            setLayerVisibility('unclustered-point', 'none');
+        }
+    });
 
-//initial globe rotation and GT logo display on map load
-map.on('load', startInitialRotation);
+    //  initial globe rotation, show GT logos, and ensure clusters are hidden
+    function startInitialRotation() {
+        // isInitialRotation = true;
 
+        // globe animation with GT logos visible
+        map.easeTo({
+            center: [-75.4265, 40.0428],
+            zoom: 1,
+            duration: 3000,
+            easing: (t) => t * (2 - t),
+        });
+    }
 
+    // Function to handle first interaction, hiding GT logos and showing clusters
+    function onFirstInteraction() {
+        if (!hasInteracted) {
+            hasInteracted = true;
+
+            // Hide GT logos permanently after the first interaction
+            gtLogoMarkers.forEach(marker => {
+                marker.getElement().style.visibility = 'hidden';
+            });
+
+            // Show clusters to follow their normal functionality
+            setLayerVisibility('clusters', 'visible');
+            setLayerVisibility('cluster-count', 'visible');
+            setLayerVisibility('unclustered-point', 'visible');
+        }
+    }
+
+    // event listeners to trigger onFirstInteraction only once
+    map.on('mousedown', onFirstInteraction);
+    map.on('zoom', onFirstInteraction);
+    map.on('drag', onFirstInteraction);
+
+    //initial globe rotation and GT logo display on map load
+    map.on('load', startInitialRotation);
+
+    // Debounce Function Definition
+    function debounce(func, delay) {
+        let timeout;
+        return function (...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), delay);
+        };
+    }
+
+    // Geocoder Toggle Setup
+    const geocoderToggle = document.getElementById("toggle-geocoder");
+    const geocoderContainer = document.getElementById("geocoder-container");
+    let geocoder;
+
+    // Define debounced toggle function
+    const debouncedGeocoderToggle = debounce(() => {
+        // Toggle display for geocoder container and toggle button
+        geocoderContainer.style.display = geocoderContainer.style.display === "none" ? "block" : "none";
+        geocoderToggle.style.display = geocoderContainer.style.display === "none" ? "flex" : "none";
+
+        // Initialize geocoder only when container is displayed
+        if (!geocoder && geocoderContainer.style.display === "block") {
+            geocoder = new MapboxGeocoder({
+                accessToken: mapboxgl.accessToken,
+                mapboxgl: mapboxgl,
+                marker: {
+                    // color: '#ff8502' // Set GT color
+                    color: 'red'
+                }
+            });
+            geocoderContainer.appendChild(geocoder.onAdd(map));
+
+            // Use MutationObserver to detect when the input is added
+            const observer = new MutationObserver(() => {
+                const geocoderInput = geocoderContainer.querySelector('input[type="text"]');
+                if (geocoderInput) {
+                    geocoderInput.focus();
+                    observer.disconnect(); // Stop observing once input is found and focused
+                }
+            });
+
+            // Observe changes in the geocoderContainer
+            observer.observe(geocoderContainer, { childList: true, subtree: true });
+        } else if (geocoderContainer.style.display === "none" && geocoder) {
+            geocoder.onRemove();
+            geocoder = null;
+        }
+    }, 300);
+
+    // Event Listener for Geocoder Toggle
+    geocoderToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        debouncedGeocoderToggle();
+    });
+
+    // Outside Click Detection for Geocoder
+    document.addEventListener("click", (event) => {
+        if (!geocoderContainer.contains(event.target) && event.target !== geocoderToggle) {
+            geocoderContainer.style.display = "none";
+            geocoderToggle.style.display = "flex";
+        }
+    });
 
     // Check if elements are found
     if (!sidebar) {
@@ -160,19 +351,21 @@ map.on('load', startInitialRotation);
 
     // Function to toggle the back-to-top button visibility
     function toggleBackToTopButton() {
-        if (sidebar.scrollHeight > sidebar.clientHeight && !sidebar.classList.contains('collapsed')) {
+        const isScrollable = sidebar.scrollHeight > sidebar.clientHeight;
+        const isCollapsed = sidebar.classList.contains('collapsed');
+        if (isScrollable && !isCollapsed) {
             backToTopButton.style.display = 'block';
         } else {
             backToTopButton.style.display = 'none';
         }
     }
 
-// Observer to monitor sidebar content changes for the back-to-top button
-const observer = new MutationObserver(toggleBackToTopButton);
-observer.observe(sidebar, { childList: true, subtree: true });
+    // Observer to monitor sidebar content changes for the back-to-top button
+    const observer = new MutationObserver(toggleBackToTopButton);
+    observer.observe(sidebar, { childList: true, subtree: true });
 
     // Event listener for back-to-top button scroll
-    backToTopButton.addEventListener('click', () => {   
+    backToTopButton.addEventListener('click', () => {
         sidebar.scrollTo({ top: 0, behavior: "smooth" });
     });
 
@@ -188,52 +381,6 @@ observer.observe(sidebar, { childList: true, subtree: true });
         } else {
             minimizeIcon.classList.remove('fa-chevron-down');
             minimizeIcon.classList.add('fa-chevron-up');
-        }
-    });
-
-    //Debounce Function Definition
-    function debounce(func, delay) {
-        let timeout;
-        return function (...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), delay);
-        };
-    }
-
-    //Geocoder Toggle Setup
-    const geocoderToggle = document.getElementById("toggle-geocoder");
-    const geocoderContainer = document.getElementById("geocoder-container");
-    let geocoder;
-
-    //Define debounced toggle function
-    const debouncedGeocoderToggle = debounce(() => {
-        geocoderContainer.style.display = geocoderContainer.style.display === "none" ? "block" : "none";
-        geocoderToggle.style.display = geocoderContainer.style.display === "none" ? "flex" : "none";
-
-       // Initialize geocoder only when container is displayed
-    if (!geocoder && geocoderContainer.style.display === "block") {
-        geocoder = new MapboxGeocoder({
-            accessToken: mapboxgl.accessToken,
-            mapboxgl: mapboxgl,
-        });
-        geocoderContainer.appendChild(geocoder.onAdd(map));
-    } else if (geocoderContainer.style.display === "none" && geocoder) {
-        geocoder.onRemove();
-        geocoder = null;
-    }
-}, 300);
-
-    //Event Listener for Geocoder Toggle   
-    geocoderToggle.addEventListener("click", (e) => {
-        e.stopPropagation();
-        debouncedGeocoderToggle();  
-    });
-
-    //Outside Click Detection for Geocoder
-    document.addEventListener("click", (event) => {
-        if (!geocoderContainer.contains(event.target) && event.target !== geocoderToggle) {
-            geocoderContainer.style.display = "none";
-            geocoderToggle.style.display = "flex";
         }
     });
 
@@ -377,6 +524,10 @@ Hospital Count: <strong>${hospital_count}</strong>
                 });
                 // show borders
                 function addHoverOutlineLayer(map, layerId, sourceId) {
+                    if (map.getLayer(layerId)) {
+                        console.warn(`Layer with id "${layerId}" already exists. Skipping addition.`);
+                        return;
+                    }
                     map.addLayer({
                         id: layerId,
                         type: 'line',
@@ -393,12 +544,74 @@ Hospital Count: <strong>${hospital_count}</strong>
                     });
                 }
 
+                function addGlowEffect(map, layerId, sourceId) {
+                    if (map.getLayer(layerId)) {
+                        console.warn(`Layer with id "${layerId}" already exists. Skipping addition.`);
+                        return;
+                    }
+                
+                    map.addLayer({
+                        id: `${layerId}-glow`,
+                        type: 'line',
+                        source: sourceId,
+                        paint: {
+                            'line-color': 'rgba(255, 255, 255, 0.3)', // White glow with low opacity
+                            'line-width': 8, // Slightly larger to act as an outer glow
+                            'line-blur': 2 // Blur to create a glow effect
+                        }
+                    });
+                }
+
+                // Uses a light blue color
+                // function addHoverOutlineLayer(map, layerId, sourceId) {
+                //     map.addLayer({
+                //         id: layerId,
+                //         type: 'line',
+                //         source: sourceId,
+                //         paint: {
+                //             // Set a soft, slightly translucent color for a pleasant effect
+                //             'line-color': [
+                //                 'case',
+                //                 ['boolean', ['feature-state', 'hover'], false],
+                //                 '#FFFFFF', // White for hovered state
+                //                 'rgba(173, 216, 230, 0.6)' // Light blue for default (non-hovered) state
+                //             ],
+                //             // Increase default width slightly for better visibility
+                //             'line-width': [
+                //                 'case',
+                //                 ['boolean', ['feature-state', 'hover'], false],
+                //                 2,  // Width on hover
+                //                 1.2 // Default width for non-hovered state
+                //             ],
+                //             // Optional: Add blur effect to make borders softer
+                //             'line-blur': 0.5
+                //         }
+                //     });
+                // }
+
+
+                // Adding glow effect layers for each region
+                addGlowEffect(map, 'us-states-line-hover', 'us-states');
+                addGlowEffect(map, 'canada-regions-line-hover', 'canada-regions');
+                addGlowEffect(map, 'aruba-region-line-hover', 'aruba-region');
+                addGlowEffect(map, 'italy-regions-line-hover', 'italy-regions');
+                addGlowEffect(map, 'uk-regions-line-hover', 'uk-regions');
+
                 // Adding hover outline layers for each region using the function
-                addHoverOutlineLayer(map, 'us-states-line-hover', 'us-states');
+                // addHoverOutlineLayer(map, 'us-states-line-hover', 'us-states');
                 addHoverOutlineLayer(map, 'canada-regions-line-hover', 'canada-regions');
                 addHoverOutlineLayer(map, 'aruba-region-line-hover', 'aruba-region');
                 addHoverOutlineLayer(map, 'italy-regions-line-hover', 'italy-regions');
                 addHoverOutlineLayer(map, 'uk-regions-line-hover', 'uk-regions');
+
+                ['us-states', 'canada-regions', 'aruba-region', 'italy-regions', 'uk-regions'].forEach(region => {
+                    console.log(`Applying styles for ${region}`);
+                    addHoverOutlineLayer(map, `${region}-line-hover`, region, regionsWithFacilities);
+                    addRegionLayer(map, region, region, regionsWithFacilities);
+                    addRegionGlow(map, region, region);
+                });
+                
+
 
                 // show regions and states
                 function addRegionLayer(map, layerId, sourceId, regionsWithFacilities) {
@@ -465,6 +678,15 @@ Hospital Count: <strong>${hospital_count}</strong>
                         hoveredRegionId = null;
                     };
 
+                    // Debounced hover function for non-touch devices
+                    const debouncedHover = debounce((e) => {
+                        const regionId = e.features[0].id;
+                        if (regionsWithFacilities.has(regionId)) {
+                            applyHover(regionId);
+                        }
+                    }, 50); // 50ms debounce delay
+
+
                     // Tap-to-Hover functionality for touch devices
                     if (isTouchDevice) {
                         map.on('touchstart', layerId, (e) => {
@@ -526,24 +748,13 @@ Hospital Count: <strong>${hospital_count}</strong>
                     });
 
                     // Clear selection and hover states when the sidebar is closed
-                    // function clearRegionSelection() {
-                    //     clearHover();
-                    //     if (selectedRegionId !== null) {
-                    //         map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: false });
-                    //         selectedRegionId = null;
-                    //     }
-                    // }
-
                     function clearRegionSelection() {
-                        if (hoveredRegionId !== selectedRegionId) {
-                            clearHover();
-                        }
+                        clearHover();
                         if (selectedRegionId !== null) {
                             map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: false });
                             selectedRegionId = null;
                         }
                     }
-                    
 
                     // Attach clear function to sidebar close
                     document.getElementById('close-sidebar').addEventListener('click', clearRegionSelection);
@@ -554,6 +765,7 @@ Hospital Count: <strong>${hospital_count}</strong>
                     }
                 }
 
+                //Function for Zoom-Based Marker Visibility
                 function toggleMarkers() {
                     const zoomLevel = map.getZoom();
                     const minZoomToShowMarkers = 4;
@@ -573,6 +785,7 @@ Hospital Count: <strong>${hospital_count}</strong>
                 // Initial call to set visibility based on the starting zoom level
                 toggleMarkers();
 
+                //Cluster Source and Layer Styling
                 // Set up cluster source for hospitals
                 map.addSource('hospitals', {
                     type: 'geojson',
@@ -595,92 +808,92 @@ Hospital Count: <strong>${hospital_count}</strong>
                         })),
                     },
                     cluster: true,
-                    clusterMaxZoom: 14,// To increase this value to reduce unclustered points at higher zoom levels
-                        clusterRadius: 80,// To increase radius to group more points together in clusters
-                    });
+                    clusterMaxZoom: 12,// To increase this value to reduce unclustered points at higher zoom levels
+                    clusterRadius: 60,// To increase radius to group more points together in clusters
+                });
 
-                    // Cluster layer with Goliath Technologies colors and outline for better visibility
-                    map.addLayer({
-                        id: 'clusters',
-                        type: 'circle',
-                        source: 'hospitals',
-                        filter: ['has', 'point_count'],
-                        paint: {
-                            'circle-color': [
-                                'step',
-                                ['get', 'point_count'],
-                                '#ff8502',  // Small clusters (dark blue)
-                                // '#b31919',  // Small clusters (red) 
-                                10, ' #0f2844'  // Medium and large clusters (orange)
-                            ],
-                            'circle-radius': [
-                                'step',
-                                ['get', 'point_count'],
-                                10,   // Small clusters
-                                20, 15, // Medium clusters
-                                50, 20 // Large clusters (reduced size)
-                            ],
-                            'circle-stroke-width': 1, // Add a thin outline
-                            'circle-stroke-color': '#0f2844' // Dark blue outline for consistency
-                        }
-                    });
+                // Cluster layer with Goliath Technologies colors and outline for better visibility
+                map.addLayer({
+                    id: 'clusters',
+                    type: 'circle',
+                    source: 'hospitals',
+                    filter: ['has', 'point_count'],
+                    paint: {
+                        'circle-color': [
+                            'step',
+                            ['get', 'point_count'],
+                            '#ff8502',  // Small clusters (dark blue)
+                            // '#b31919',  // Small clusters (red) 
+                            10, ' #0f2844'  // Medium and large clusters (orange)
+                        ],
+                        'circle-radius': [
+                            'step',
+                            ['get', 'point_count'],
+                            10,   // Small clusters
+                            20, 15, // Medium clusters
+                            50, 20 // Large clusters (reduced size)
+                        ],
+                        'circle-stroke-width': 1, // Add a thin outline
+                        'circle-stroke-color': '#0f2844' // Dark blue outline for consistency
+                    }
+                });
 
-                    // Cluster count layer
-                    map.addLayer({
-                        id: 'cluster-count',
-                        type: 'symbol',
-                        source: 'hospitals',
-                        filter: ['has', 'point_count'],
-                        layout: {
-                            'text-field': '{point_count_abbreviated}',
-                            'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
-                            'text-size': 14,
-                            'text-anchor': 'center',
-                        },
-                        paint: {
-                            'text-color': '#FFFFFF',
-                        },
-                    });
+                // Cluster count layer
+                map.addLayer({
+                    id: 'cluster-count',
+                    type: 'symbol',
+                    source: 'hospitals',
+                    filter: ['has', 'point_count'],
+                    layout: {
+                        'text-field': '{point_count_abbreviated}',
+                        'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold'],
+                        'text-size': 14,
+                        'text-anchor': 'center',
+                    },
+                    paint: {
+                        'text-color': '#FFFFFF',
+                    },
+                });
 
-                    // Unclustered point layer
-                    map.addLayer({
-                        id: 'unclustered-point',
-                        type: 'circle',
-                        source: 'hospitals',
-                        filter: ['!', ['has', 'point_count']],
-                        paint: {
-                            'circle-color': '#11b4da',
-                            'circle-radius': 3,
-                        },
-                    });
+                // Unclustered point layer
+                map.addLayer({
+                    id: 'unclustered-point',
+                    type: 'circle',
+                    source: 'hospitals',
+                    filter: ['!', ['has', 'point_count']],
+                    paint: {
+                        'circle-color': '#11b4da',
+                        'circle-radius': 3,
+                    },
+                });
 
-                    map.on('zoom', () => {
-                        map.setLayoutProperty('unclustered-point', 'visibility', map.getZoom() >= 6 ? 'visible' : 'none');
-                    });
+                map.on('zoom', () => {
+                    map.setLayoutProperty('unclustered-point', 'visibility', map.getZoom() >= 6 ? 'visible' : 'none');
+                });
 
-                    // Click event to show facility information in popup
-                    map.on('click', 'unclustered-point', (e) => {
-                        const coordinates = e.features[0].geometry.coordinates.slice();
-                        const { hospital_name, location, ehr_system, hospital_address } = e.features[0].properties;
+                // Click event to show facility information in popup
+                map.on('click', 'unclustered-point', (e) => {
+                    const coordinates = e.features[0].geometry.coordinates.slice();
+                    const { hospital_name, location, ehr_system, hospital_address } = e.features[0].properties;
 
-                        new mapboxgl.Popup()
-                            .setLngLat(coordinates)
-                            .setHTML(`<strong>${hospital_name}</strong><br>${location}<br>EHR System: ${ehr_system}<br>Address: ${hospital_address}`)
-                            .addTo(map);
-                    });
+                    new mapboxgl.Popup()
+                        .setLngLat(coordinates)
+                        .setHTML(`<strong>${hospital_name}</strong><br>${location}<br>EHR System: ${ehr_system}<br>Address: ${hospital_address}`)
+                        .addTo(map);
+                });
 
-                    // Cluster click event for expanding zoom level
-                    map.on('click', 'clusters', (e) => {
-                        const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
-                        const clusterId = features[0].properties.cluster_id;
-                        map.getSource('hospitals').getClusterExpansionZoom(clusterId, (err, zoom) => {
-                            if (err) return;
-                            map.easeTo({
-                                center: features[0].geometry.coordinates,
-                                zoom: zoom,
-                            });
+                // Cluster click event for expanding zoom level
+                map.on('click', 'clusters', (e) => {
+                    const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+                    const clusterId = features[0].properties.cluster_id;
+                    map.getSource('hospitals').getClusterExpansionZoom(clusterId, (err, zoom) => {
+                        if (err) return;
+                        map.easeTo({
+                            center: features[0].geometry.coordinates,
+                            zoom: zoom,
                         });
                     });
+                });
 
                 // Click event on state to display sidebar list of facilities
                 map.on('click', 'us-states-fill', (e) => {
@@ -761,16 +974,17 @@ Hospital Count: <strong>${hospital_count}</strong>
                             }
 
                             listItem.innerHTML = `
-<i class="fas fa-hospital-symbol"></i> 
-<strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
-${hospital.hospital_name}
-</strong><br>
-${hospital.parent_company ? `<strong>Parent Company:</strong> ${hospital.parent_company}<br>` : ""}
-${hospital.location}<br>
-<strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}<br>
-<strong>Hospital Count:</strong> ${hospital.hospital_count}<br>
+    <div>
+        <i class="fas fa-hospital-symbol"></i> 
+        <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
+            ${hospital.hospital_name}
+        </strong>
+    </div>
+    ${hospital.parent_company ? `<div><strong>Parent Company:</strong> ${hospital.parent_company}</div>` : ""}
+    <div>${hospital.location}</div>
+    <div><strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}</div>
+    <div><strong>Hospital Count:</strong> ${hospital.hospital_count || 1}</div>
 `;
-
                             // Add a special note if this is the CommonSpirit Health Headquarters
                             if (hospital.hospital_name === "CommonSpirit Health Headquarters") {
                                 listItem.innerHTML += `<br><strong style="color: #ff8502;">Note:</strong> CommonSpirit Health operates over 140 hospitals across 21 states. 
@@ -795,6 +1009,20 @@ ${hospital.location}<br>
                 errorMessage.innerText = 'Failed to load facility data. Please try again later.';
             });
 
+        // Adjust sidebar height based on content size
+        function adjustSidebarHeight() {
+            const sidebar = document.getElementById('hospital-list-sidebar');
+            const hospitalList = document.getElementById('hospital-list');
+
+            // Check if content fits without overflow
+            if (hospitalList.scrollHeight <= sidebar.clientHeight) {
+                sidebar.classList.add('auto-height');
+            } else {
+                sidebar.classList.remove('auto-height');
+            }
+        }
+
+        //populateSidebar function.
         function populateSidebar(regionId, regionName, facilities) {
             console.log(`Populating sidebar for region: ${regionName} (ID: ${regionId})`);
 
@@ -853,15 +1081,15 @@ ${hospital.location}<br>
                 }
 
                 listItem.innerHTML = `
-                    <i class="fas fa-hospital-symbol"></i> 
-                    <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
-                        ${hospital.hospital_name}
-                    </strong><br>
-                    ${hospital.parent_company ? `<strong>Parent Company:</strong> ${hospital.parent_company}<br>` : ""}
-                    ${hospital.location}<br>
-                    <strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system || ""}
-                    <strong>Hospital Count:</strong> ${hospital.hospital_count || 1}<br>
-                `;
+    <i class="fas fa-hospital-symbol"></i> 
+    <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
+        ${hospital.hospital_name}
+    </strong><br>
+    ${hospital.parent_company ? `<strong>Parent Company:</strong> ${hospital.parent_company}<br>` : ""}
+    ${hospital.location}<br>
+    <div><strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}</div>
+    <div><strong>Hospital Count:</strong> ${hospital.hospital_count || 1}</div>
+`;
 
                 // Add fly-to functionality and show Back button on click
                 listItem.querySelector('.clickable-hospital').addEventListener('click', () => {
@@ -883,6 +1111,10 @@ ${hospital.location}<br>
                     const zoomLevel = isMobile ? 10 : 12;
 
                     // Fly to the selected facility location
+                    //                     Fly-To Functionality on Facility Click
+                    // The fly-to functionality is implemented well, creating a smooth transition to the selected hospital’s location. Setting the mobile zoom level with const zoomLevel = isMobile ? 10 : 12; makes it user-friendly across devices.
+                    // The pitch and bearing values help in adding a sense of depth. If performance is a concern on some devices, consider testing with or without these to evaluate their impact.
+
                     map.flyTo({
                         center: [hospital.longitude, hospital.latitude],
                         zoom: 12,
@@ -897,6 +1129,8 @@ ${hospital.location}<br>
 
             // Display the sidebar only if there are hospitals to show
             sidebar.style.display = regionHospitals.length > 0 ? 'block' : 'none';
+
+            adjustSidebarHeight();
         }
 
         //Sets up a click event for a specified region layer.
@@ -979,7 +1213,7 @@ ${hospital.location}<br>
             uk: { center: [360.242386, 51.633362], zoom: 4, pitch: 45 },
             italy: { center: [12.563553, 42.798676], zoom: 4, pitch: 45 },
             canada: { center: [-106.3468, 56.1304], zoom: 4, pitch: 30 },
-            aruba: { center: [-70.027, 12.5246], zoom: 6, pitch: 45 }
+            aruba: { center: [-70.027, 12.5246], zoom: 7, pitch: 45 }
         };
 
         function flyToRegion(region) {
@@ -1034,7 +1268,7 @@ ${hospital.location}<br>
                 sidebar.style.top = `${Math.min(Math.max(0, initialTop + dy), window.innerHeight - sidebar.offsetHeight)}px`;
             }
         }
-        
+
         // End Drag Function
         function endDrag() {
             isDragging = false;
@@ -1051,27 +1285,28 @@ ${hospital.location}<br>
         sidebarHeader.addEventListener("mousedown", startDrag);
         sidebarHeader.addEventListener("touchstart", startDrag, { passive: false });
 
-        //Toggle Sidebar on Hover for Mobile Devices
+        // Adjust Sidebar Visibility Based on Screen Size
         function toggleSidebarOnHover(show) {
+            // Only toggle visibility on small screens (e.g., max-width of 480px)
             if (window.innerWidth <= 480) {
                 sidebar.style.display = show ? 'block' : 'none';
             }
         }
 
-        //Sidebar Visibility with Touch and Hover Events
-        // Event listeners for hover on sidebar
+        // Show sidebar on touch or mouse enter for small screens
         sidebar.addEventListener('mouseenter', () => toggleSidebarOnHover(true));
-        sidebar.addEventListener('mouseleave', () => toggleSidebarOnHover(false));
-
-        // Add touch events for mobile devices
         sidebar.addEventListener('touchstart', () => toggleSidebarOnHover(true));
-        sidebar.addEventListener('touchend', () => toggleSidebarOnHover(false));
 
-        // Close sidebar when the close button is clicked
+        // Remove hiding behavior on `mouseleave` and `touchend`
+        sidebar.removeEventListener('mouseleave', () => toggleSidebarOnHover(false));
+        sidebar.removeEventListener('touchend', () => toggleSidebarOnHover(false));
+
+        // Close sidebar only when the close button is clicked
         document.getElementById("close-sidebar").addEventListener('click', () => {
             sidebar.style.display = 'none';
         });
 
-    });
+
+    })
 
 });

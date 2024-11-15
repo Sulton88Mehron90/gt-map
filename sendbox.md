@@ -1266,3 +1266,74 @@ map.on('drag', onFirstInteraction);
             // context.fillStyle = `rgba(255, 0, 0, ${1 - t})`; // Outer circle (red)
             //context.fillStyle = 'rgba(0, 255, 0, 1)'; // Inner circle (green)
             //context.strokeStyle = 'rgba(0, 0, 255, 1)'; // Stroke (blue)
+
+
+
+
+                    // show borders
+                    // function addHoverOutlineLayer(map, layerId, sourceId) {
+                    //     if (map.getLayer(layerId)) {
+                    //         console.warn(`Layer with id "${layerId}" already exists. Skipping addition.`);
+                    //         return;
+                    //     }
+                    //     map.addLayer({
+                    //         id: layerId,
+                    //         type: 'line',
+                    //         source: sourceId,
+                    //         paint: {
+                    //             'line-color': '#FFFFFF',
+                    //             'line-width': [
+                    //                 'case',
+                    //                 ['boolean', ['feature-state', 'hover'], false],
+                    //                 2,
+                    //                 0.6
+                    //             ]
+                    //         }
+                    //     });
+                    // }
+
+                    // function addGlowEffect(map, layerId, sourceId) {
+                    //     if (map.getLayer(layerId)) {
+                    //         console.warn(`Layer with id "${layerId}" already exists. Skipping addition.`);
+                    //         return;
+                    //     }
+
+                    //     map.addLayer({
+                    //         id: `${layerId}-glow`,
+                    //         type: 'line',
+                    //         source: sourceId,
+                    //         paint: {
+                    //             'line-color': 'rgba(255, 255, 255, 0.3)', // White glow with low opacity
+                    //             'line-width': 8, // Slightly larger to act as an outer glow
+                    //             'line-blur': 2 // Blur to create a glow effect
+                    //         }
+                    //     });
+                    // }
+
+                    // Uses a light blue color
+                    // function addHoverOutlineLayer(map, layerId, sourceId) {
+                    //     map.addLayer({
+                    //         id: layerId,
+                    //         type: 'line',
+                    //         source: sourceId,
+                    //         paint: {
+                    //             // Set a soft, slightly translucent color for a pleasant effect
+                    //             'line-color': [
+                    //                 'case',
+                    //                 ['boolean', ['feature-state', 'hover'], false],
+                    //                 '#FFFFFF', // White for hovered state
+                    //                 'rgba(173, 216, 230, 0.6)' // Light blue for default (non-hovered) state
+                    //             ],
+                    //             // Increase default width slightly for better visibility
+                    //             'line-width': [
+                    //                 'case',
+                    //                 ['boolean', ['feature-state', 'hover'], false],
+                    //                 2,  // Width on hover
+                    //                 1.2 // Default width for non-hovered state
+                    //             ],
+                    //             // Optional: Add blur effect to make borders softer
+                    //             'line-blur': 0.5
+                    //         }
+                    //     });
+                    // }
+
