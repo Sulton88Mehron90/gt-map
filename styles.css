@@ -743,3 +743,12 @@ hospital-list-sidebar.collapsed #close-sidebar {
         width: 30px;
     }
 }
+
+@media (max-width: 320px) {
+    #hospital-list li {
+        font-size: 0.75rem;
+    }
+    #hospital-list-sidebar h2 {
+        font-size: 0.9rem;
+    }
+}

@@ -481,6 +481,15 @@ Hospital Count: <strong>${hospital_count}</strong>
                         hoveredRegionId = null;
                     };
 
+                    // Debounced hover function for non-touch devices
+    const debouncedHover = debounce((e) => {
+        const regionId = e.features[0].id;
+        if (regionsWithFacilities.has(regionId)) {
+            applyHover(regionId);
+        }
+    }, 50); // 50ms debounce delay
+
+
                     // Tap-to-Hover functionality for touch devices
                     if (isTouchDevice) {
                         map.on('touchstart', layerId, (e) => {
@@ -602,8 +611,8 @@ Hospital Count: <strong>${hospital_count}</strong>
                         })),
                     },
                     cluster: true,
-                    clusterMaxZoom: 14,// To increase this value to reduce unclustered points at higher zoom levels
-                    clusterRadius: 80,// To increase radius to group more points together in clusters
+                    clusterMaxZoom: 12,// To increase this value to reduce unclustered points at higher zoom levels
+                    clusterRadius: 60,// To increase radius to group more points together in clusters
                 });
 
                 // Cluster layer with Goliath Technologies colors and outline for better visibility
