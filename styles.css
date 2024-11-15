@@ -603,11 +603,6 @@ hospital-list-sidebar.collapsed #close-sidebar {
     transition: transform 1s ease-out;
 }
 
-#map:active .hoverable-element, 
-#map .hoverable-element:focus {
-    outline: 2px solid #FFFFFF; 
-}
-
 #error-message {
     background-color: #ffe6e6;
     color: red;
@@ -619,7 +614,6 @@ hospital-list-sidebar.collapsed #close-sidebar {
     border-radius: 5px;
     display: none;
 }
-
 
 /* Responsive Styles */
 
