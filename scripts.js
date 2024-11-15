@@ -523,22 +523,22 @@ Hospital Count: <strong>${hospital_count}</strong>
                     return marker;
                 });
                 // show borders
-                // function addHoverOutlineLayer(map, layerId, sourceId) {
-                //     map.addLayer({
-                //         id: layerId,
-                //         type: 'line',
-                //         source: sourceId,
-                //         paint: {
-                //             'line-color': '#FFFFFF',
-                //             'line-width': [
-                //                 'case',
-                //                 ['boolean', ['feature-state', 'hover'], false],
-                //                 2,
-                //                 0.6
-                //             ]
-                //         }
-                //     });
-                // }
+                function addHoverOutlineLayer(map, layerId, sourceId) {
+                    map.addLayer({
+                        id: layerId,
+                        type: 'line',
+                        source: sourceId,
+                        paint: {
+                            'line-color': '#FFFFFF',
+                            'line-width': [
+                                'case',
+                                ['boolean', ['feature-state', 'hover'], false],
+                                2,
+                                0.6
+                            ]
+                        }
+                    });
+                }
 
                 function addGlowEffect(map, layerId, sourceId) {
                     map.addLayer({
@@ -554,31 +554,31 @@ Hospital Count: <strong>${hospital_count}</strong>
                 }
 
                 // Uses a light blue color
-                function addHoverOutlineLayer(map, layerId, sourceId) {
-                    map.addLayer({
-                        id: layerId,
-                        type: 'line',
-                        source: sourceId,
-                        paint: {
-                            // Set a soft, slightly translucent color for a pleasant effect
-                            'line-color': [
-                                'case',
-                                ['boolean', ['feature-state', 'hover'], false],
-                                '#FFFFFF', // White for hovered state
-                                'rgba(173, 216, 230, 0.6)' // Light blue for default (non-hovered) state
-                            ],
-                            // Increase default width slightly for better visibility
-                            'line-width': [
-                                'case',
-                                ['boolean', ['feature-state', 'hover'], false],
-                                2,  // Width on hover
-                                1.2 // Default width for non-hovered state
-                            ],
-                            // Optional: Add blur effect to make borders softer
-                            'line-blur': 0.5
-                        }
-                    });
-                }
+                // function addHoverOutlineLayer(map, layerId, sourceId) {
+                //     map.addLayer({
+                //         id: layerId,
+                //         type: 'line',
+                //         source: sourceId,
+                //         paint: {
+                //             // Set a soft, slightly translucent color for a pleasant effect
+                //             'line-color': [
+                //                 'case',
+                //                 ['boolean', ['feature-state', 'hover'], false],
+                //                 '#FFFFFF', // White for hovered state
+                //                 'rgba(173, 216, 230, 0.6)' // Light blue for default (non-hovered) state
+                //             ],
+                //             // Increase default width slightly for better visibility
+                //             'line-width': [
+                //                 'case',
+                //                 ['boolean', ['feature-state', 'hover'], false],
+                //                 2,  // Width on hover
+                //                 1.2 // Default width for non-hovered state
+                //             ],
+                //             // Optional: Add blur effect to make borders softer
+                //             'line-blur': 0.5
+                //         }
+                //     });
+                // }
 
 
                 // Adding glow effect layers for each region
