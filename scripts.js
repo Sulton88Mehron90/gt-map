@@ -991,7 +991,7 @@ ${hospital.location}<br>
             uk: { center: [360.242386, 51.633362], zoom: 4, pitch: 45 },
             italy: { center: [12.563553, 42.798676], zoom: 4, pitch: 45 },
             canada: { center: [-106.3468, 56.1304], zoom: 4, pitch: 30 },
-            aruba: { center: [-70.027, 12.5246], zoom: 6, pitch: 45 }
+            aruba: { center: [-70.027, 12.5246], zoom: 7, pitch: 45 }
         };
 
         function flyToRegion(region) {
