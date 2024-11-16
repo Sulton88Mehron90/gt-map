@@ -334,47 +334,111 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Check if elements are found
-    if (!sidebar) {
-        console.error("Sidebar element not found!");
+if (!sidebar) {
+    console.error("Sidebar element not found!");
+}
+if (!backToTopButton) {
+    console.error("Back to Top button not found!");
+}
+
+// Function to toggle the back-to-top button visibility
+function toggleBackToTopButton() {
+    const isCollapsed = sidebar.classList.contains('collapsed'); // Sidebar is minimized
+    const isScrollable = sidebar.scrollHeight > sidebar.clientHeight; // Sidebar has overflow
+    const isSmallScreen = window.innerWidth <= 480; // Check for small screens
+
+    // Force recalculation of sidebar dimensions to ensure accuracy
+    sidebar.style.height = 'auto';
+
+    // Show button only if the sidebar is expanded and scrollable
+    if (!isCollapsed && (isScrollable || isSmallScreen)) {
+        backToTopButton.style.display = 'block';
+    } else {
+        backToTopButton.style.display = 'none';
     }
-    if (!backToTopButton) {
-        console.error("Back to Top button not found!");
+}
+
+// Observer to monitor sidebar content changes for the back-to-top button
+const observer = new MutationObserver(toggleBackToTopButton);
+observer.observe(sidebar, { childList: true, subtree: true });
+
+// Event listener for back-to-top button scroll
+backToTopButton.addEventListener('click', () => {
+    sidebar.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+sidebar.addEventListener('touchstart', () => {
+    if (!sidebar.classList.contains('collapsed')) {
+        toggleBackToTopButton();
+    }
+}, { passive: false });
+
+
+// Sidebar minimize/expand button logic
+function toggleBackToTopButton() {
+    const isCollapsed = sidebar.classList.contains('collapsed'); // Sidebar is minimized
+    const isScrollable = sidebar.scrollHeight > sidebar.clientHeight; // Sidebar has overflow
+    const isSmallScreen = window.innerWidth <= 480; // Check for small screens
+
+    // Always hide the button when the sidebar is collapsed
+    if (isCollapsed) {
+        backToTopButton.style.display = 'none';
+        return;
     }
 
-    // Function to toggle the back-to-top button visibility
-    function toggleBackToTopButton() {
-        const isScrollable = sidebar.scrollHeight > sidebar.clientHeight;
-        const isCollapsed = sidebar.classList.contains('collapsed');
-        if (isScrollable && !isCollapsed) {
+    // On small screens, show the button only if the sidebar is scrollable
+    if (isSmallScreen) {
+        if (isScrollable) {
             backToTopButton.style.display = 'block';
         } else {
             backToTopButton.style.display = 'none';
         }
+        return;
     }
 
-    // Observer to monitor sidebar content changes for the back-to-top button
-    const observer = new MutationObserver(toggleBackToTopButton);
-    observer.observe(sidebar, { childList: true, subtree: true });
+    // On larger screens, show the button only if the sidebar is expanded and scrollable
+    if (isScrollable) {
+        backToTopButton.style.display = 'block';
+    } else {
+        backToTopButton.style.display = 'none';
+    }
+}
 
-    // Event listener for back-to-top button scroll
-    backToTopButton.addEventListener('click', () => {
-        sidebar.scrollTo({ top: 0, behavior: "smooth" });
-    });
+document.getElementById('minimize-sidebar').addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
 
-    document.getElementById('minimize-sidebar').addEventListener('click', () => {
-        sidebar.classList.toggle('collapsed');
+    // Reset sidebar scroll state after minimizing or reopening
+    if (!sidebar.classList.contains('collapsed')) {
+        sidebar.scrollTo(0, 0); // Reset to the top
+    }
+
+    // Use a delay to recalculate dimensions accurately after transition
+    setTimeout(() => {
         toggleBackToTopButton();
+    }, 200); // Match with the CSS transition duration if needed
 
-        // Update the minimize icon based on sidebar state
-        const minimizeIcon = document.getElementById('minimize-sidebar').querySelector('i');
-        if (sidebar.classList.contains('collapsed')) {
-            minimizeIcon.classList.remove('fa-chevron-up');
-            minimizeIcon.classList.add('fa-chevron-down');
-        } else {
-            minimizeIcon.classList.remove('fa-chevron-down');
-            minimizeIcon.classList.add('fa-chevron-up');
-        }
-    });
+    // Update the minimize icon based on sidebar state
+    const minimizeIcon = document.getElementById('minimize-sidebar').querySelector('i');
+    if (sidebar.classList.contains('collapsed')) {
+        minimizeIcon.classList.remove('fa-chevron-up');
+        minimizeIcon.classList.add('fa-chevron-down');
+    } else {
+        minimizeIcon.classList.remove('fa-chevron-down');
+        minimizeIcon.classList.add('fa-chevron-up');
+    }
+});
+
+sidebar.addEventListener('touchstart', (event) => {
+    if (!sidebar.classList.contains('collapsed')) {
+        toggleBackToTopButton();
+    }
+}, { passive: false });
+
+sidebar.addEventListener('touchend', () => {
+    toggleBackToTopButton();
+}, { passive: true });
+
+
 
     let sessionStartingView = null;
     // let previousRegionView = null;
@@ -568,7 +632,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-
     //Sets up a click event for a specified region layer.
     //On click, fetches and displays facility data in the sidebar for the clicked region.
     //@param {string} regionSource - The source layer ID for the map region.
@@ -709,11 +772,10 @@ Hospital Count: <strong>${hospital_count}</strong>
                     return marker;
                 });
 
-                // show regions and states
+// show regions and states
                 function addRegionLayer(map, layerId, sourceId, regionsWithFacilities) {
                     const hoverColor = '#05aaff';
                     const selectedColor = '#ff8502';
-
 
                     if (map.getLayer(`${layerId}-fill`)) {
                         console.warn(`Layer with id "${layerId}-fill" already exists. Skipping addition.`);
@@ -739,12 +801,18 @@ Hospital Count: <strong>${hospital_count}</strong>
                     });
                 }
 
-                /// Consolidated Hover and Glow Layers
+
                 function addHoverOutlineLayer(map, layerId, sourceId) {
                     if (map.getLayer(layerId)) {
                         console.warn(`Layer with id "${layerId}" already exists. Skipping addition.`);
                         return;
                     }
+                
+                    if (map.getLayer(`${layerId}-glow`)) {
+                        console.warn(`Glow layer with id "${layerId}-glow" already exists. Skipping addition.`);
+                        return;
+                    }
+                
                     map.addLayer({
                         id: layerId,
                         type: 'line',
@@ -757,27 +825,9 @@ Hospital Count: <strong>${hospital_count}</strong>
                                 2,  // Thicker line for hover
                                 0.6 // Default line width
                             ]
-
-                            // 'line-color': '#00FF00', // Bright green for better visibility
-                            // 'line-width': [
-                            //     'case',
-                            //     ['boolean', ['feature-state', 'hover'], false],
-                            //     3, // Wider line width when hovered
-                            //     1  // Thinner line width when not hovered
-                            // ]
                         }
                     });
-                }
-
-                function addGlowEffect(map, layerId, sourceId) {
-                    if (map.getLayer(`${layerId}-fill`)) {
-                        console.warn(`Layer with id "${layerId}-fill" already exists. Skipping addition.`);
-                        return;
-                    }
-                    if (map.getLayer(`${layerId}-glow`)) {
-                        console.warn(`Layer with id "${layerId}-glow" already exists. Skipping addition.`);
-                        return;
-                    }
+                
                     map.addLayer({
                         id: `${layerId}-glow`,
                         type: 'line',
@@ -786,61 +836,33 @@ Hospital Count: <strong>${hospital_count}</strong>
                             'line-color': 'rgba(255, 255, 255, 0.3)', // White glow
                             'line-width': 2, // Larger width for glow effect
                             'line-blur': 2   // Blur for glow
-
-                            // 'line-color': 'rgba(255, 0, 0, 0.6)', // Red glow with 60% opacity
-                            // 'line-width': 8,                     // Larger line width for better visibility
-                            // 'line-blur': 4                       // Blur for a glowing effect
                         }
                     });
                 }
+                
+               // Define regions
+const regions = [
+    { layerId: 'us-states', sourceId: 'us-states' },
+    { layerId: 'canada-regions', sourceId: 'canada-regions' },
+    { layerId: 'aruba-region', sourceId: 'aruba-region' },
+    { layerId: 'italy-regions', sourceId: 'italy-regions' },
+    { layerId: 'uk-regions', sourceId: 'uk-regions' },
+];
 
-
-                // Function to add a consolidated fill layer to the map
-
-                function addConsolidatedFillLayer(map, layerId, sourceId, regionsWithFacilities, selectedColor, hoverColor) {
-                    if (map.getLayer(`${layerId}-fill`)) {
-                        console.warn(`Layer with id "${layerId}-fill" already exists. Skipping addition.`);
-                        return;
-                    }
-
-                    map.addLayer({
-                        id: `${layerId}-fill`,
-                        type: 'fill',
-                        source: sourceId,
-                        paint: {
-                            'fill-color': [
-                                'case',
-                                // Apply selected color if the region is selected and has facilities
-                                ['all', ['boolean', ['feature-state', 'selected'], false], ['in', ['get', 'id'], ['literal', Array.from(regionsWithFacilities)]]], selectedColor,
-                                // Apply hover color if the region is hovered and has facilities
-                                ['all', ['boolean', ['feature-state', 'hover'], false], ['in', ['get', 'id'], ['literal', Array.from(regionsWithFacilities)]]], hoverColor,
-                                // Default color for regions without facilities
-                                '#d3d3d3'
-                            ],
-                            'fill-opacity': 0.5
-                        }
-                    });
-                }
-
-                // glow effect and hover outline layers
-                // addGlowEffect(map, 'us-states-line-hover', 'us-states');
-                // addGlowEffect(map, 'canada-regions-line-hover', 'canada-regions');
-                // addGlowEffect(map, 'aruba-region-line-hover', 'aruba-region');
-                // addGlowEffect(map, 'italy-regions-line-hover', 'italy-regions');
-                // addGlowEffect(map, 'uk-regions-line-hover', 'uk-regions');
-
-                addHoverOutlineLayer(map, 'us-states-line-hover', 'us-states');
-                addHoverOutlineLayer(map, 'canada-regions-line-hover', 'canada-regions');
-                addHoverOutlineLayer(map, 'aruba-region-line-hover', 'aruba-region');
-                addHoverOutlineLayer(map, 'italy-regions-line-hover', 'italy-regions');
-                addHoverOutlineLayer(map, 'uk-regions-line-hover', 'uk-regions');
-
+regions.forEach(({ layerId, sourceId }) => {
+    console.log(`Processing region: ${layerId}`);
+    if (map.getLayer(`${layerId}-fill`)) {
+        console.warn(`Layer with id "${layerId}-fill" already exists. Removing before re-adding.`);
+        map.removeLayer(`${layerId}-fill`);
+    }
+    addRegionLayer(map, layerId, sourceId, regionsWithFacilities);
+    addHoverOutlineLayer(map, `${layerId}-line-hover`, sourceId);
+});
 
 
                 ['us-states', 'canada-regions', 'aruba-region', 'italy-regions', 'uk-regions'].forEach(region => {
                     console.log(`Applying styles for ${region}`);
                     addHoverOutlineLayer(map, `${region}-line-hover`, region);
-                    addGlowEffect(map, region, region);
                     addRegionLayer(map, region, region, regionsWithFacilities);
                     addRegionInteractions(map, `${region}-fill`, region, regionsWithFacilities);
                 });
@@ -1216,23 +1238,23 @@ Hospital Count: <strong>${hospital_count}</strong>
             }
         }
 
-        let hoveredPolygonId = null;
-        map.on('mousemove', 'us-states-fill', (e) => {
-            if (e.features.length > 0) {
-                if (hoveredPolygonId !== null) {
-                    map.setFeatureState({ source: 'us-states', id: hoveredPolygonId }, { hover: false });
-                }
-                hoveredPolygonId = e.features[0].id;
-                map.setFeatureState({ source: 'us-states', id: hoveredPolygonId }, { hover: true });
-            }
-        });
+        // let hoveredPolygonId = null;
+        // map.on('mousemove', 'us-states-fill', (e) => {
+        //     if (e.features.length > 0) {
+        //         if (hoveredPolygonId !== null) {
+        //             map.setFeatureState({ source: 'us-states', id: hoveredPolygonId }, { hover: false });
+        //         }
+        //         hoveredPolygonId = e.features[0].id;
+        //         map.setFeatureState({ source: 'us-states', id: hoveredPolygonId }, { hover: true });
+        //     }
+        // });
 
-        map.on('mouseleave', 'us-states-fill', () => {
-            if (hoveredPolygonId !== null) {
-                map.setFeatureState({ source: 'us-states', id: hoveredPolygonId }, { hover: false });
-            }
-            hoveredPolygonId = null;
-        });
+        // map.on('mouseleave', 'us-states-fill', () => {
+        //     if (hoveredPolygonId !== null) {
+        //         map.setFeatureState({ source: 'us-states', id: hoveredPolygonId }, { hover: false });
+        //     }
+        //     hoveredPolygonId = null;
+        // });
 
         // Define the closeSidebar function
         function closeSidebar() {

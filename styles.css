@@ -460,7 +460,7 @@ button:hover {
     gap: 5px;
 }
 
-/* 1111Round button styling */
+/* Round button styling */
 .round-button {
     background-color: #333;
     color: #fff;
@@ -489,7 +489,7 @@ button:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     margin-right: 10px;
 }
-/* 11111hospital-list-sidebar collapsed */
+/* hospital-list-sidebar collapsed */
 #hospital-list-sidebar.collapsed {
     max-height: 50px;
     width: 50px;
@@ -505,6 +505,10 @@ button:hover {
 #hospital-list-sidebar.collapsed .count-display,
 #back-to-top-button.show {
     display: none !important;
+}
+
+#back-to-top-button {
+    display: none; /* Ensure button is hidden by default */
 }
 
 #hospital-list-sidebar.dragging {
@@ -635,16 +639,30 @@ hospital-list-sidebar.collapsed #close-sidebar {
 
 @media (max-width: 768px) {
     #hospital-list-sidebar {
-        width: 100%;
-        left: 0;
-        max-height: 70vh;
-        padding: 10px;
-        position: fixed;
-        bottom: 0;
-        overflow-y: auto;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        width: 60%;
+        max-height: 50vh; 
+        overflow-y: auto; 
     }
 
+    #back-to-top-button {
+        /* position: fixed; */
+        bottom: 10px;
+        right: 10px;
+        z-index: 999;
+    }
+
+#back-button {
+    display: none;
+    position: absolute;
+    margin-right: 9px;
+}
+
+#back-button i {
+    margin-top: -1px; 
+    position: relative;
+    top: -5px; 
+    padding-bottom: 0; 
+}
     #hospital-list-sidebar h2 {
         font-size: 1.2rem;
     }
@@ -678,16 +696,6 @@ hospital-list-sidebar.collapsed #close-sidebar {
     #home-logo {
         width: 60px;
     }
-
-    /* #hospital-list-sidebar.collapsed {
-        max-height: 40px;
-        width: 30%; 
-    } */
-
-    /* .round-button {
-        width: 18px;
-        height: 18px;
-    } */
     
     #back-button {
         display: block;
@@ -702,13 +710,30 @@ hospital-list-sidebar.collapsed #close-sidebar {
         height: calc(100vh - 40px);
     }
     #hospital-list-sidebar {
-        width: 95%;
-        left: 2.5%;
-        bottom: 0;
-        max-height: 60vh;
-        padding: 8px;
-        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        width: 50%;
+        max-height: 50vh; 
+        overflow-y: auto; 
     }
+
+    #back-to-top-button {
+        /* position: fixed; */
+        bottom: 10px;
+        right: 10px;
+        z-index: 999;
+    }
+
+#back-button {
+    display: none;
+    position: absolute;
+    left: 18%;
+}
+
+#back-button i {
+    margin-top: -1px; 
+    position: relative;
+    top: -5px; 
+    padding-bottom: 0; 
+}
 
     #hospital-list li {
         font-size: 0.8rem;
@@ -754,4 +779,5 @@ hospital-list-sidebar.collapsed #close-sidebar {
     #hospital-list-sidebar h2 {
         font-size: 0.9rem;
     }
+
 }
