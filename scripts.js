@@ -438,8 +438,6 @@ document.addEventListener("DOMContentLoaded", () => {
         toggleBackToTopButton();
     }, { passive: true });
 
-
-
     let sessionStartingView = null;
     // let previousRegionView = null;
 
@@ -837,6 +835,14 @@ Hospital Count: <strong>${hospital_count}</strong>
                                 2,  // Thicker line for hover
                                 0.6 // Default line width
                             ]
+
+                            // 'line-color': '#00FF00', // Bright green for better visibility
+                            // 'line-width': [
+                            //     'case',
+                            //     ['boolean', ['feature-state', 'hover'], false],
+                            //     3, // Wider line width when hovered
+                            //     1  // Thinner line width when not hovered
+                            // ]
                         }
                     });
 
@@ -848,6 +854,10 @@ Hospital Count: <strong>${hospital_count}</strong>
                             'line-color': 'rgba(255, 255, 255, 0.3)', // White glow
                             'line-width': 2, // Larger width for glow effect
                             'line-blur': 2   // Blur for glow
+
+                            // 'line-color': 'rgba(255, 0, 0, 0.6)', // Red glow with 60% opacity
+                            // 'line-width': 8,                     // Larger line width for better visibility
+                            // 'line-blur': 4                       // Blur for a glowing effect
                         }
                     });
                 }

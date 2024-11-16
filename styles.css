@@ -558,6 +558,7 @@ hospital-list-sidebar.collapsed #close-sidebar {
 #back-button i {
     margin-top: -1px; 
     position: relative;
+    /* position: absolute; */
     top: -5px; 
     padding-bottom: 0; 
 }
@@ -779,5 +780,26 @@ hospital-list-sidebar.collapsed #close-sidebar {
     #hospital-list-sidebar h2 {
         font-size: 0.9rem;
     }
+    #hospital-list-sidebar.minimized {
+        width: 30px;
+    }
+    #hospital-list-sidebar {
+        width: 50%;
+        max-height: 50vh; 
+        overflow-y: auto; 
+    }
+
+    #back-to-top-button {
+        bottom: 10px;
+        right: 10px;
+        z-index: 999;
+    }
+
+#back-button {
+    right: 5px;
+    display: none;
+    position: absolute;
+}
+
 
 }

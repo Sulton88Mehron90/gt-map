@@ -869,14 +869,23 @@ Hospital Count: <strong>${hospital_count}</strong>
                         type: 'line',
                         source: sourceId,
                         paint: {
-                            'line-color': '#FFFFFF',
+                            // 'line-color': '#FFFFFF',
+                            // 'line-width': [
+                            //     'case',
+                            //     ['boolean', ['feature-state', 'hover'], false],
+                            //     2,  // Thicker line for hover
+                            //     0.6 // Default line width
+                            // ]
+
+                            'line-color': '#00FF00', // Bright green for better visibility
                             'line-width': [
                                 'case',
                                 ['boolean', ['feature-state', 'hover'], false],
-                                2,  // Thicker line for hover
-                                0.6 // Default line width
+                                3, // Wider line width when hovered
+                                1  // Thinner line width when not hovered
                             ]
                         }
+                       
                     });
 
                     map.addLayer({
@@ -884,14 +893,18 @@ Hospital Count: <strong>${hospital_count}</strong>
                         type: 'line',
                         source: sourceId,
                         paint: {
-                            'line-color': 'rgba(255, 255, 255, 0.3)', // White glow
-                            'line-width': 2, // Larger width for glow effect
-                            'line-blur': 2   // Blur for glow
+                            // 'line-color': 'rgba(255, 255, 255, 0.3)', // White glow
+                            // 'line-width': 2, // Larger width for glow effect
+                            // 'line-blur': 2   // Blur for glow
+
+                            'line-color': 'rgba(255, 0, 0, 0.6)', // Red glow with 60% opacity
+                            'line-width': 8,                     // Larger line width for better visibility
+                            'line-blur': 4                       // Blur for a glowing effect
                         }
                     });
                 }
 
-                //                // Define regions
+                // Define regions
                 // const regions = [
                 //     { layerId: 'us-states', sourceId: 'us-states' },
                 //     { layerId: 'canada-regions', sourceId: 'canada-regions' },
@@ -1431,3 +1444,6 @@ Hospital Count: <strong>${hospital_count}</strong>
     })
 
 });
+
+
+
