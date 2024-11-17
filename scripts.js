@@ -1,6 +1,7 @@
 //Imports and Mapbox Token Initialization
 import { MAPBOX_TOKEN } from './config.js';
 import { loadFacilitiesData } from './dataLoader.js';
+// import debounce from 'lodash.debounce';
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
 // Map Initialization on DOMContentLoaded
@@ -48,7 +49,14 @@ document.addEventListener("DOMContentLoaded", () => {
     // Event listeners for user interaction
     map.on('mousedown', () => userInteracting = true);
     map.on('dragstart', () => userInteracting = true);
-    map.on('moveend', () => spinGlobe());
+    // map.on('moveend', () => spinGlobe());
+
+    map.on('moveend', () => {
+        spinGlobe(); // 
+        updateMarkers();
+        // console.log('Markers Data:', markersData); // Verify markersData is populated
+    });
+    
 
     // Start the globe spinning animation
     spinGlobe();
@@ -85,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
             canvas.width = this.width;
             canvas.height = this.height;
             this.context = canvas.getContext('2d', { willReadFrequently: true });
-            console.log('Canvas initialized with willReadFrequently:', this.context);
+            // console.log('Canvas initialized with willReadFrequently:', this.context);
         },
 
         // Call once before every frame where the icon will be used.
@@ -653,6 +661,106 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+// Global variables for markers
+let markers = [];
+let markersData = [];
+
+
+// Debounce utility function to limit execution frequency
+function debounce(func, delay) {
+    let timeout;
+    return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+}
+
+//Dynamic Sizing Example
+function adjustMarkerSize(zoomLevel) {
+    const size = Math.max(15, Math.min(30, zoomLevel * 4)); 
+    document.querySelectorAll('.custom-marker').forEach(marker => {
+        marker.style.width = `${size}px`;
+        marker.style.height = `${size}px`;
+    });
+    console.log(`Adjusted marker size to: ${size}px at zoom level ${zoomLevel}`);
+}
+
+
+// Create a custom marker with a popup
+function createCustomMarker(lng, lat, popupContent) {
+    // Create a custom marker element
+    const markerElement = document.createElement('div');
+    markerElement.className = 'custom-marker company-logo sidebar-logo';
+    markerElement.style.width = '30px';
+    markerElement.style.height = '30px';
+    markerElement.style.backgroundImage = `url('./img/gtLogo.png')`; 
+    markerElement.style.backgroundSize = '70%'; 
+    markerElement.style.backgroundRepeat = 'no-repeat';
+    markerElement.style.backgroundPosition = 'center';
+    markerElement.style.borderRadius = '50%'; 
+    markerElement.style.transform = 'rotate(-50deg)'; 
+    markerElement.style.transition = 'visibility 0.3s ease, transform 1s linear, opacity 0.3s ease, box-shadow 0.3s ease';
+    markerElement.style.boxShadow = '0px 2px 4px rgba(0, 0, 0, 0.15)'; 
+
+    // Add a popup to the marker
+    const popup = new mapboxgl.Popup({ offset: 15 }).setHTML(popupContent);
+
+    return new mapboxgl.Marker(markerElement)
+        .setLngLat([lng, lat])
+        .setPopup(popup);
+}
+
+// markers dynamically based on map bounds
+function updateMarkers() {
+    console.log('updateMarkers called');
+
+    // Check if markersData is available
+    if (!markersData || markersData.length === 0) {
+        console.warn('Markers Data is empty. Skipping updateMarkers.');
+        return;
+    }
+
+    const bounds = map.getBounds();
+    if (!bounds || !bounds._sw || !bounds._ne) {
+        console.error('Invalid map bounds:', bounds);
+        return;
+    }
+
+    console.log('Map Bounds:', bounds);
+
+
+    // Remove existing markers from the map
+    markers.forEach(marker => marker.remove());
+    markers = []; // Clear the markers array
+
+    // Deduplicate markersData
+    const uniqueMarkers = markersData.filter(
+        (marker, index, self) =>
+            index === self.findIndex(m => m.lng === marker.lng && m.lat === marker.lat)
+    );
+
+    console.log(`Total Markers Data: ${markersData.length}`);
+    console.log(`Markers added: ${markers.length}`);
+    console.log(`Unique Markers to Add: ${uniqueMarkers.length}`);
+
+    // Add markers within visible bounds
+    uniqueMarkers.forEach(markerData => {
+        const { lng, lat, popupContent } = markerData;
+
+        if (bounds.contains([lng, lat])) {
+            console.log(`Adding marker at: ${lng}, ${lat}`);
+            const marker = createCustomMarker(lng, lat, popupContent).addTo(map);
+            markers.push(marker);
+        }
+    });
+
+    console.log(`Markers added: ${markers.length}`);
+}
+
+// Debounce updateMarkers for better performance
+const debouncedUpdateMarkers = debounce(updateMarkers, 300);
+
+
     //Map Load Event and Fog Setting
     map.on('load', () => {
         map.setFog({});
@@ -679,8 +787,8 @@ document.addEventListener("DOMContentLoaded", () => {
         let selectedStateId = null;
         const logoUrl = './img/gtLogo.png';
 
-        // imported loadFacilitiesData function
 
+        // imported loadFacilitiesData function  
         loadFacilitiesData()
             .then(facilities => {
                 facilitiesData = facilities;
@@ -712,7 +820,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 ];
                 // Loop through each region to process layers and interactions
                 layerRegions.forEach(({ layerId, sourceId }) => {
-                    console.log(`Processing region: ${layerId}`);
+                    // console.log(`Processing region: ${layerId}`);
 
                     // Remove existing layers if present
                     if (map.getLayer(`${layerId}-fill`)) {
@@ -736,7 +844,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 // markers for each facility
                 let markers = facilities.map(({ ehr_system, hospital_name, location, hospital_address, longitude, latitude, parent_company, hospital_count }) => {
                     let popupContent = `
-// <strong>${hospital_name}</strong><br>
+<strong>${hospital_name}</strong><br>
 <strong style="color: #05aaff">${location}</strong><br>
 ${parent_company ? `Parent Company: ${parent_company}<br>` : ""}
 EHR System: <strong style="color: #0f2844">${ehr_system}</strong><br>
@@ -756,8 +864,8 @@ Hospital Count: <strong>${hospital_count}</strong>
                     const markerElement = document.createElement('div');
                     markerElement.className = 'custom-marker';
                     markerElement.style.backgroundImage = `url(${logoUrl})`;
-                    markerElement.style.width = '20px';
-                    markerElement.style.height = '20px';
+                    markerElement.style.width = '30px';
+                    markerElement.style.height = '30px';
                     markerElement.style.borderRadius = '50%';
                     markerElement.style.backgroundSize = 'cover';
 
@@ -862,26 +970,6 @@ Hospital Count: <strong>${hospital_count}</strong>
                     });
                 }
 
-                //                // Define regions
-                // const regions = [
-                //     { layerId: 'us-states', sourceId: 'us-states' },
-                //     { layerId: 'canada-regions', sourceId: 'canada-regions' },
-                //     { layerId: 'aruba-region', sourceId: 'aruba-region' },
-                //     { layerId: 'italy-regions', sourceId: 'italy-regions' },
-                //     { layerId: 'uk-regions', sourceId: 'uk-regions' },
-                // ];
-
-                // regions.forEach(({ layerId, sourceId }) => {
-                //     console.log(`Processing region: ${layerId}`);
-                //     if (map.getLayer(`${layerId}-fill`)) {
-                //         console.warn(`Layer with id "${layerId}-fill" already exists. Removing before re-adding.`);
-                //         map.removeLayer(`${layerId}-fill`);
-                //     }
-                //     addRegionLayer(map, layerId, sourceId, regionsWithFacilities);
-                //     addHoverOutlineLayer(map, `${layerId}-line-hover`, sourceId);
-                // });
-
-
                 ['us-states', 'canada-regions', 'aruba-region', 'italy-regions', 'uk-regions'].forEach(region => {
                     console.log(`Applying styles for ${region}`);
                     addHoverOutlineLayer(map, `${region}-line-hover`, region);
@@ -899,6 +987,7 @@ Hospital Count: <strong>${hospital_count}</strong>
 
                 addGeoJSONSource(map, 'us-states', '/data/us-states.geojson', 'id');
                 console.log("Sources after adding 'us-states':", map.getStyle().sources);
+                
 
                 //Function for Zoom-Based Marker Visibility
                 function toggleMarkers() {
@@ -1135,15 +1224,58 @@ Hospital Count: <strong>${hospital_count}</strong>
                     }
 
                 });
+                
+// Fetch and populate markersData
+loadFacilitiesData()
+    .then(facilities => {
+        // Populate markersData
+        markersData = facilities.map(facility => ({
+            lng: facility.longitude,
+            lat: facility.latitude,
+            popupContent: `
+                <strong>${facility.hospital_name}</strong><br>
+                ${facility.location}<br>
+                ${facility.parent_company ? `Parent Company: ${facility.parent_company}<br>` : ""}
+                EHR System: ${facility.ehr_system}<br>
+                Address: ${facility.hospital_address}
+            `
+        }));
 
-            })
+        console.log(`Markers Data Populated: ${markersData.length}`);
+
+          // debounced updateMarkers to map events
+        map.on('moveend', debouncedUpdateMarkers);
+        map.on('zoomend', () => {
+            debouncedUpdateMarkers();
+            adjustMarkerSize(map.getZoom());
+        });
+
+        map.on('zoomend', () => {
+            console.log('Zoom Level:', map.getZoom());
+            console.log('Map Bounds:', map.getBounds());
+        });        
+
+// Handle map reset or view changes
+map.on('reset', () => {
+    adjustMarkerSize(map.getZoom());
+});
+
+        // Adjust markers on reset
+        map.on('reset', () => adjustMarkerSize(map.getZoom()));
+
+        // Initial render of markers
+        updateMarkers();
+
+    })
             .catch(error => {
                 console.error('Error loading facilities data:', error);
                 const errorMessage = document.getElementById('error-message');
                 errorMessage.style.display = 'block';
                 errorMessage.innerText = 'Failed to load facility data. Please try again later.';
             });
+        })
 
+// layers behavior and reset button
             function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
                 let hoveredRegionId = null;
                 let selectedRegionId = null;

@@ -347,15 +347,6 @@ button:hover {
     width: 100%;
 }
 
-.sidebar-logo {
-    width: 20px;
-    height: auto;
-    border-radius: 50%;
-    background-color: #333;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    transition: background-color 0.3s ease;
-}
-
 #close-sidebar {
     display: flex;
     align-items: center;
@@ -411,16 +402,25 @@ button:hover {
 }
 
 .custom-marker {
+    width: 30px;
+    height: 30px;  
+    /* background-size: 70%;  */
+    border-radius: 50%; 
+    cursor: pointer; 
     background-repeat: no-repeat;
     background-position: center;
+    background-size: cover; 
+    cursor: pointer; 
+    transition: transform 0.2s ease, z-index 0.2s ease, box-shadow 0.2s ease;
     cursor: default;
 }
 
-/* Regular hover effect for desktop */
+/* Hover effect */
 .custom-marker:hover,
 .custom-marker.hover-effect {
     transform: scale(1.2);
     z-index: 2;
+    box-shadow: 0px 5px 6px rgba(0, 0, 0, 0.3);
 }
 
 .mapboxgl-map .hovered {
@@ -481,14 +481,6 @@ button:hover {
     transform: scale(1.1);
 }
 
-.sidebar-logo {
-    width: 20px;
-    height: auto;
-    border-radius: 50%;
-    background-color: #333;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    margin-right: 10px;
-}
 /* hospital-list-sidebar collapsed */
 #hospital-list-sidebar.collapsed {
     max-height: 50px;
@@ -580,6 +572,25 @@ hospital-list-sidebar.collapsed #close-sidebar {
     outline: none;
 }
 
+.sidebar-logo {
+    width: 20px;
+    height: auto;
+    background-color: #333;
+    margin-right: 10px;
+    background-size: 70%; 
+    border-radius: 50%; 
+    cursor: pointer; 
+    transition: transform 0.2s ease, z-index 0.3s ease;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 0.5px solid rgba(12, 0, 0, 0.892)
+}
+
+.sidebar-logo:hover {
+    box-shadow: 0 6px 12px #ff8502;
+    cursor: pointer; 
+}
+
 /* 
 #sidebar-resizer {
     width: 15px;
@@ -614,6 +625,7 @@ hospital-list-sidebar.collapsed #close-sidebar {
 }
 
 .company-logo:hover {
+    transform: scale(1.1) rotate(-50deg); 
     opacity: 0.8;            
     cursor: pointer;          
 }
