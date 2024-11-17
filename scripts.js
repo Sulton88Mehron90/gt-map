@@ -1032,8 +1032,8 @@ Hospital Count: <strong>${hospital_count}</strong>
                         })),
                     },
                     cluster: true,
-                    clusterMaxZoom: 12,// To increase this value to reduce unclustered points at higher zoom levels
-                    clusterRadius: 60,// To increase radius to group more points together in clusters
+                    clusterMaxZoom: 14,// To increase this value to reduce unclustered points at higher zoom levels
+                    clusterRadius: 30,// To increase radius to group more points together in clusters
                 });
 
                 // Cluster layer with Goliath Technologies colors and outline for better visibility
