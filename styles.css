@@ -800,6 +800,11 @@ hospital-list-sidebar.collapsed #close-sidebar {
     display: none;
     position: absolute;
 }
-
+    #back-to-top-button {
+        margin-left: 10px;
+    }
+    #reset-view {
+        margin-right: 10px;
+    }
 
 }
