@@ -56,16 +56,37 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Event listeners for user interaction
-    map.on('mousedown', () => userInteracting = true);
-    map.on('dragstart', () => userInteracting = true);
-    // map.on('moveend', () => spinGlobe());
+    // // Event listeners for user interaction
+    // map.on('mousedown', () => userInteracting = true);
+    // map.on('dragstart', () => userInteracting = true);
+    // // map.on('moveend', () => spinGlobe());
 
-    map.on('moveend', () => {
-        spinGlobe(); // 
-        updateMarkers();
-        // console.log('Markers Data:', markersData); // Verify markersData is populated
-    });
+    // map.on('moveend', () => {
+    //     spinGlobe(); // 
+    //     updateMarkers();
+    //     // console.log('Markers Data:', markersData); // Verify markersData is populated
+    // });
+
+    // Event listeners for user interaction
+map.on('mousedown', () => {
+    userInteracting = true;
+    hasInteracted = true; // Stop spinning after user interaction
+});
+map.on('dragstart', () => {
+    userInteracting = true;
+    hasInteracted = true; // Stop spinning after user interaction
+});
+map.on('moveend', () => {
+    userInteracting = false;
+
+    // Only spin the globe if the user hasn't interacted
+    if (!hasInteracted) {
+        spinGlobe();
+    }
+
+    // Update markers after the map moves
+    updateMarkers();
+});
 
     // Start the globe spinning animation
     spinGlobe();
@@ -1691,24 +1712,39 @@ function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
         });
 
         const regions = {
-            usa: { center: [-101.714859, 39.710884], zoom: 4, pitch: 45 },
-            uk: { center: [360.242386, 51.633362], zoom: 4, pitch: 45 },
+            usa: { center: [-101.714859, 40.710884], zoom: 3.5, pitch: 0 },
+            uk: { center: [360.242386, 51.633362], zoom: 4, pitch: 15 },
             italy: { center: [12.563553, 42.798676], zoom: 4, pitch: 45 },
-            canada: { center: [-106.3468, 56.1304], zoom: 4, pitch: 30 },
-            aruba: { center: [-70.027, 12.5246], zoom: 7, pitch: 45 }
+            canada: { center: [-106.3468, 56.1304], zoom: 3, pitch: 0 },
+            aruba: { center: [-70.027, 12.5246], zoom: 10, pitch: 45 }
         };
-
+        
         function flyToRegion(region) {
-            const { center, zoom, pitch } = regions[region];
-            map.flyTo({ center, zoom, pitch });
+            if (!regions[region]) {
+                console.error(`Region "${region}" is not defined.`);
+                return;
+            }
+        
+            const { center, zoom } = regions[region];
+            map.flyTo({
+                center,
+                zoom,
+                pitch:0,
+                bearing: 0,
+                duration: 2000, 
+                easing: (t) => t * (2 - t)
+            });
+        
+            // Highlight active button
+            document.querySelectorAll(".region-button").forEach(button => button.classList.remove("active"));
+            document.getElementById(`fly-to-${region}`).classList.add("active");
         }
-
-        //Attaching event listeners
-        document.getElementById("fly-to-usa").addEventListener("click", () => flyToRegion('usa'));
-        document.getElementById("fly-to-uk").addEventListener("click", () => flyToRegion('uk'));
-        document.getElementById("fly-to-italy").addEventListener("click", () => flyToRegion('italy'));
-        document.getElementById("fly-to-canada").addEventListener("click", () => flyToRegion('canada'));
-        document.getElementById("fly-to-aruba").addEventListener("click", () => flyToRegion('aruba'));
+        
+        // Attach event listeners dynamically
+        Object.keys(regions).forEach(region => {
+            document.getElementById(`fly-to-${region}`).addEventListener("click", () => flyToRegion(region));
+        });
+        
 
         // Drag Initialization and Threshold Handling
         let isDragging = false;
