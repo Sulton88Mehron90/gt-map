@@ -439,7 +439,7 @@
         "scale": 0.6,
         "parent_company": "Children's National Health System",
         "region_id": "MD",
-        "main_facility": false
+        "main_facility": true
     },
     {
         "ehr_system": "Cerner",
@@ -453,7 +453,7 @@
         "scale": 0.6,
         "parent_company": "Children's National Health System",
         "region_id": "VA",
-        "main_facility": false
+        "main_facility": true
     },
     {
         "ehr_system": "Cerner",
@@ -600,7 +600,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "CommonSpirit Health",
-        "region_id": "ND"
+        "region_id": "ND",
+        "main_facility": true
     },
     {
         "ehr_system": "Cerner",
@@ -652,7 +653,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "CommonSpirit Health",
-        "region_id": "NE"
+        "region_id": "NE",
+        "main_facility": true
     },
     {
         "ehr_system": "Cerner",
@@ -1410,7 +1412,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Intermountain Health",
-        "region_id": "UT"
+        "region_id": "UT",
+        "main_facility": true
     },
     {
         "ehr_system": "Cerner",
@@ -1728,7 +1731,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Universal Health Services",
-        "region_id": "NV"
+        "region_id": "NV",
+        "main_facility": true
     },
     {
         "ehr_system": "Cerner",
@@ -2107,7 +2111,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Ascension Healthcare",
-        "region_id": "MI"
+        "region_id": "MI",
+        "main_facility": true
     },
     {
         "ehr_system": "Epic",
@@ -2354,7 +2359,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "National Surgical Hospitals",
-        "region_id": "AL"
+        "region_id": "AL",
+        "main_facility": true
     },
     {
         "ehr_system": "Epic",
@@ -2707,7 +2713,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Government of Nunavut",
-        "region_id": "NU"
+        "region_id": "NU",
+        "main_facility": true
     },
     {
         "ehr_system": "Meditech",
@@ -2759,7 +2766,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Government of Aruba",
-        "region_id": "AW"
+        "region_id": "AW",
+        "main_facility": true
     },
     {
         "ehr_system": "Cerner",

@@ -34,8 +34,18 @@ document.addEventListener("DOMContentLoaded", () => {
     // map.addControl(new mapboxgl.NavigationControl({ position: 'top-left' }));
     // map.scrollZoom.disable();
 
-    // Variables for user interaction detection
+    // Variables    
     let userInteracting = false;
+    let hasInteracted = false;
+    // let isInitialRotation = true;
+    let hoveredRegionId = null;
+    let selectedRegionId = null;
+
+    // Global variables for markers
+    let stateRegionMarkers = [];
+    let markers = []; // To store Mapbox markers
+    let markersData = []; // To store marker data from facilities
+    let markersDataReady = false; // Flag to indicate markersData readiness
 
     // spin the globe smoothly when zoomed out
     function spinGlobe() {
@@ -56,13 +66,13 @@ document.addEventListener("DOMContentLoaded", () => {
         updateMarkers();
         // console.log('Markers Data:', markersData); // Verify markersData is populated
     });
-    
 
     // Start the globe spinning animation
     spinGlobe();
 
     // Map Animation on Load to set the globe to your preferred size and center
     map.on('load', () => {
+        console.log('Map loaded');
         map.easeTo({
             center: [-75.4265, 40.0428],
             // zoom: 0,
@@ -72,132 +82,128 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Initial flags to track interaction and visibility states
-    let hasInteracted = false;
-    let isInitialRotation = true;
+    // //animated pulsing Dot icon
+    // const size = 50;
+    // // This implements `StyleImageInterface`
+    // // to draw a pulsing dot icon on the map.
+    // const pulsingDot = {
+    //     width: size,
+    //     height: size,
+    //     data: new Uint8Array(size * size * 4),
 
-    //animated pulsing Dot icon
-    const size = 50;
-    // This implements `StyleImageInterface`
-    // to draw a pulsing dot icon on the map.
-    const pulsingDot = {
-        width: size,
-        height: size,
-        data: new Uint8Array(size * size * 4),
+    //     // When the layer is added to the map,
+    //     // get the rendering context for the map canvas.
 
-        // When the layer is added to the map,
-        // get the rendering context for the map canvas.
+    //     onAdd: function () {
+    //         const canvas = document.createElement('canvas');
+    //         canvas.width = this.width;
+    //         canvas.height = this.height;
+    //         this.context = canvas.getContext('2d', { willReadFrequently: true });
+    //         // console.log('Canvas initialized with willReadFrequently:', this.context);
+    //     },
 
-        onAdd: function () {
-            const canvas = document.createElement('canvas');
-            canvas.width = this.width;
-            canvas.height = this.height;
-            this.context = canvas.getContext('2d', { willReadFrequently: true });
-            // console.log('Canvas initialized with willReadFrequently:', this.context);
-        },
+    //     // Call once before every frame where the icon will be used.
+    //     render: function () {
+    //         const duration = 1000;
+    //         const t = (performance.now() % duration) / duration;
 
-        // Call once before every frame where the icon will be used.
-        render: function () {
-            const duration = 1000;
-            const t = (performance.now() % duration) / duration;
+    //         const radius = (size / 2) * 0.3;
+    //         const outerRadius = (size / 2) * 0.7 * t + radius;
+    //         const context = this.context;
 
-            const radius = (size / 2) * 0.3;
-            const outerRadius = (size / 2) * 0.7 * t + radius;
-            const context = this.context;
+    //         // Draw the outer circle.
+    //         context.clearRect(0, 0, this.width, this.height);
+    //         context.beginPath();
+    //         context.arc(
+    //             this.width / 2,
+    //             this.height / 2,
+    //             outerRadius,
+    //             0,
+    //             Math.PI * 2
+    //         );
 
-            // Draw the outer circle.
-            context.clearRect(0, 0, this.width, this.height);
-            context.beginPath();
-            context.arc(
-                this.width / 2,
-                this.height / 2,
-                outerRadius,
-                0,
-                Math.PI * 2
-            );
+    //         //Goliath colors
+    //         // #ff8b1f: A vibrant orange; suitable for the outer circle or stroke.
+    //         // #0f2844: A dark blue; ideal for the inner circle or border.
+    //         // #ff0000: Bright red; can be used for the pulsing effect or an accent.
+    //         // #ffffff: White; perfect for a border or subtle inner detail.
 
-            //Goliath colors
-            // #ff8b1f: A vibrant orange; suitable for the outer circle or stroke.
-            // #0f2844: A dark blue; ideal for the inner circle or border.
-            // #ff0000: Bright red; can be used for the pulsing effect or an accent.
-            // #ffffff: White; perfect for a border or subtle inner detail.
+    //         context.fillStyle = `rgba(255, 139, 31, ${1 - t})`; // Orange (Outer Circle)
+    //         context.fill();
 
-            context.fillStyle = `rgba(255, 139, 31, ${1 - t})`; // Orange (Outer Circle)
-            context.fill();
+    //         // Draw the inner circle.
+    //         context.beginPath();
+    //         context.arc(
+    //             this.width / 2,
+    //             this.height / 2,
+    //             radius,
+    //             0,
+    //             Math.PI * 2
+    //         );
+    //         context.fillStyle = '#0f2844'; // Dark Blue (Inner Circle)
+    //         context.strokeStyle = '#ffffff'; // White Border
+    //         // context.strokeStyle = '#ff0000'; 
+    //         context.lineWidth = 2 + 4 * (1 - t);
+    //         context.fill();
+    //         context.stroke();
 
-            // Draw the inner circle.
-            context.beginPath();
-            context.arc(
-                this.width / 2,
-                this.height / 2,
-                radius,
-                0,
-                Math.PI * 2
-            );
-            context.fillStyle = '#0f2844'; // Dark Blue (Inner Circle)
-            context.strokeStyle = '#ffffff'; // White Border
-            // context.strokeStyle = '#ff0000'; 
-            context.lineWidth = 2 + 4 * (1 - t);
-            context.fill();
-            context.stroke();
-
-            // Update this image's data with data from the canvas.
-            this.data = context.getImageData(
-                0,
-                0,
-                this.width,
-                this.height
-            ).data;
-            // console.log('Canvas context:', this.context); // Should not be undefined
-            // console.log('Image data:', context.getImageData(0, 0, this.width, this.height).data); // Check if this runs
+    //         // Update this image's data with data from the canvas.
+    //         this.data = context.getImageData(
+    //             0,
+    //             0,
+    //             this.width,
+    //             this.height
+    //         ).data;
+    //         // console.log('Canvas context:', this.context); // Should not be undefined
+    //         // console.log('Image data:', context.getImageData(0, 0, this.width, this.height).data); // Check if this runs
 
 
-            // Continuously repaint the map, resulting
-            // in the smooth animation of the dot.
-            map.triggerRepaint();
+    //         // Continuously repaint the map, resulting
+    //         // in the smooth animation of the dot.
+    //         map.triggerRepaint();
 
-            // Return `true` to let the map know that the image was updated.
-            return true;
-        }
-    };
+    //         // Return `true` to let the map know that the image was updated.
+    //         return true;
+    //     }
+    // };
 
-    map.on('load', () => {
+    // map.on('load', () => {
 
-        // console.log('Map loaded.');
+    //     // console.log('Map loaded.');
 
-        map.addImage('pulsing-dot', pulsingDot, { pixelRatio: 2 });
+    //     map.addImage('pulsing-dot', pulsingDot, { pixelRatio: 2 });
 
-        // console.log('Pulsing dot image added.');
+    //     // console.log('Pulsing dot image added.');
 
-        map.addSource('dot-point', {
-            'type': 'geojson',
-            'data': {
-                'type': 'FeatureCollection',
-                'features': [
-                    {
-                        'type': 'Feature',
-                        'geometry': {
-                            'type': 'Point',
-                            'coordinates': [-75.4265, 40.0428] // icon position [lng, lat]
-                        }
-                    }
-                ]
-            }
-        });
+    //     map.addSource('dot-point', {
+    //         'type': 'geojson',
+    //         'data': {
+    //             'type': 'FeatureCollection',
+    //             'features': [
+    //                 {
+    //                     'type': 'Feature',
+    //                     'geometry': {
+    //                         'type': 'Point',
+    //                         'coordinates': [-75.4265, 40.0428] // icon position [lng, lat]
+    //                     }
+    //                 }
+    //             ]
+    //         }
+    //     });
 
-        // console.log('Source for pulsing dot added.');
+    //     // console.log('Source for pulsing dot added.');
 
-        map.addLayer({
-            'id': 'layer-with-pulsing-dot',
-            'type': 'symbol',
-            'source': 'dot-point',
-            'layout': {
-                'icon-image': 'pulsing-dot'
-            }
-        });
-        // console.log('Layer for pulsing dot added.');
+    //     map.addLayer({
+    //         'id': 'layer-with-pulsing-dot',
+    //         'type': 'symbol',
+    //         'source': 'dot-point',
+    //         'layout': {
+    //             'icon-image': 'pulsing-dot'
+    //         }
+    //     });
+    //     // console.log('Layer for pulsing dot added.');
 
-    });
+    // });
 
     // Define GT logo markers for specified countries
     const countries = [
@@ -240,10 +246,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    //  initial globe rotation, show GT logos, and ensure clusters are hidden
+    // Initial globe rotation, show GT logos, and ensure clusters are hidden
     function startInitialRotation() {
-        // isInitialRotation = true;
-
         // globe animation with GT logos visible
         map.easeTo({
             center: [-75.4265, 40.0428],
@@ -254,6 +258,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Function to handle first interaction, hiding GT logos and showing clusters
+
     function onFirstInteraction() {
         if (!hasInteracted) {
             hasInteracted = true;
@@ -267,16 +272,20 @@ document.addEventListener("DOMContentLoaded", () => {
             setLayerVisibility('clusters', 'visible');
             setLayerVisibility('cluster-count', 'visible');
             setLayerVisibility('unclustered-point', 'visible');
+
+            // Show state/region markers after the first interaction
+            stateRegionMarkers.forEach(marker => {
+                marker.getElement().style.visibility = 'visible'; 
+            });
+
         }
     }
 
-    // event listeners to trigger onFirstInteraction only once
+    //Event listeners to trigger onFirstInteraction only once
     map.on('mousedown', onFirstInteraction);
     map.on('zoom', onFirstInteraction);
     map.on('drag', onFirstInteraction);
-
-    //initial globe rotation and GT logo display on map load
-    map.on('load', startInitialRotation);
+    
 
     // Debounce Function Definition
     function debounce(func, delay) {
@@ -483,18 +492,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Function to add a GeoJSON source to the map
     function addGeoJSONSource(map, sourceId, dataUrl, promoteId) {
-        console.log(`Attempting to add source: ${sourceId}`);
+        // console.log(`Attempting to add source: ${sourceId}`);
         if (!map.getSource(sourceId)) {
             map.addSource(sourceId, {
                 type: 'geojson',
                 data: dataUrl,
                 promoteId: promoteId,
             });
-            console.log(`Source with ID "${sourceId}" added successfully.`);
-        } else {
-            console.warn(`Source with ID "${sourceId}" already exists. Skipping addition.`);
+            //     console.log(`Source with ID "${sourceId}" added successfully.`);
         }
-        console.log('Current sources:', map.getStyle().sources);
+        // else {
+        //     console.warn(`Source with ID "${sourceId}" already exists. Skipping addition.`);
+        // }
+        // console.log('Current sources:', map.getStyle().sources);
     }
 
     // Adjust sidebar height based on content size
@@ -512,7 +522,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //populateSidebar function.
     function populateSidebar(regionId, regionName, facilities) {
-        console.log(`Populating sidebar for region: ${regionName} (ID: ${regionId})`);
+        // console.log(`Populating sidebar for region: ${regionName} (ID: ${regionId})`);
 
         // const sidebar = document.getElementById('hospital-list-sidebar');
         const list = document.getElementById('hospital-list');
@@ -536,7 +546,7 @@ document.addEventListener("DOMContentLoaded", () => {
             sum + (hospital.hospital_count || 1), 0
         );
 
-        console.log(`Found ${regionHospitals.length} hospitals in ${regionName} with a total of ${totalHospitalCount} facilities.`);
+        // console.log(`Found ${regionHospitals.length} hospitals in ${regionName} with a total of ${totalHospitalCount} facilities.`);
 
         // Display total facility count in the sidebar
         const countDisplay = document.createElement('p');
@@ -641,7 +651,7 @@ document.addEventListener("DOMContentLoaded", () => {
         map.on('click', `${regionSource}-fill`, (e) => {
             const clickedRegionId = e.features[0].properties[regionIdProp];
             const regionName = e.features[0].properties[regionNameProp];
-            console.log(`Region clicked: ${regionName} (ID: ${clickedRegionId})`);
+            // console.log(`Region clicked: ${regionName} (ID: ${clickedRegionId})`);
 
             // Use cached facilities data if available
             loadFacilitiesData()
@@ -661,105 +671,103 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-// Global variables for markers
-let markers = [];
-let markersData = [];
-
-
-// Debounce utility function to limit execution frequency
-function debounce(func, delay) {
-    let timeout;
-    return function (...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), delay);
-    };
-}
-
-//Dynamic Sizing Example
-function adjustMarkerSize(zoomLevel) {
-    const size = Math.max(15, Math.min(30, zoomLevel * 4)); 
-    document.querySelectorAll('.custom-marker').forEach(marker => {
-        marker.style.width = `${size}px`;
-        marker.style.height = `${size}px`;
-    });
-    console.log(`Adjusted marker size to: ${size}px at zoom level ${zoomLevel}`);
-}
-
-
-// Create a custom marker with a popup
-function createCustomMarker(lng, lat, popupContent) {
-    // Create a custom marker element
-    const markerElement = document.createElement('div');
-    markerElement.className = 'custom-marker company-logo sidebar-logo';
-    markerElement.style.width = '30px';
-    markerElement.style.height = '30px';
-    markerElement.style.backgroundImage = `url('./img/gtLogo.png')`; 
-    markerElement.style.backgroundSize = '70%'; 
-    markerElement.style.backgroundRepeat = 'no-repeat';
-    markerElement.style.backgroundPosition = 'center';
-    markerElement.style.borderRadius = '50%'; 
-    markerElement.style.transform = 'rotate(-50deg)'; 
-    markerElement.style.transition = 'visibility 0.3s ease, transform 1s linear, opacity 0.3s ease, box-shadow 0.3s ease';
-    markerElement.style.boxShadow = '0px 2px 4px rgba(0, 0, 0, 0.15)'; 
-
-    // Add a popup to the marker
-    const popup = new mapboxgl.Popup({ offset: 15 }).setHTML(popupContent);
-
-    return new mapboxgl.Marker(markerElement)
-        .setLngLat([lng, lat])
-        .setPopup(popup);
-}
-
-// markers dynamically based on map bounds
-function updateMarkers() {
-    console.log('updateMarkers called');
-
-    // Check if markersData is available
-    if (!markersData || markersData.length === 0) {
-        console.warn('Markers Data is empty. Skipping updateMarkers.');
-        return;
+    // Debounce utility function to limit execution frequency
+    function debounce(func, delay) {
+        let timeout;
+        return function (...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), delay);
+        };
     }
 
-    const bounds = map.getBounds();
-    if (!bounds || !bounds._sw || !bounds._ne) {
-        console.error('Invalid map bounds:', bounds);
-        return;
+    //Dynamic Sizing Example
+    function adjustMarkerSize(zoomLevel) {
+        const size = Math.max(15, Math.min(30, zoomLevel * 4));
+        document.querySelectorAll('.custom-marker').forEach(marker => {
+            marker.style.width = `${size}px`;
+            marker.style.height = `${size}px`;
+        });
+        console.log(`Adjusted marker size to: ${size}px at zoom level ${zoomLevel}`);
     }
 
-    console.log('Map Bounds:', bounds);
+    // Create a custom marker with a popup
+    function createCustomMarker(lng, lat, popupContent) {
+        // Create a custom marker element
+        const markerElement = document.createElement('div');
+        markerElement.className = 'custom-marker company-logo sidebar-logo';
+        markerElement.style.width = '20px';
+        markerElement.style.height = '20px';
+        markerElement.style.backgroundImage = `url('./img/gtLogo.png')`;
+        markerElement.style.backgroundSize = '50%';
+        markerElement.style.backgroundRepeat = 'no-repeat';
+        markerElement.style.backgroundPosition = 'center';
+        markerElement.style.borderRadius = '50%';
+        markerElement.style.transform = 'rotate(-50deg)';
+        markerElement.style.transition = 'visibility 0.3s ease, transform 1s linear, opacity 0.3s ease, box-shadow 0.3s ease';
+        markerElement.style.boxShadow = '0px 2px 4px rgba(0, 0, 0, 0.15)';
 
+        // Add a popup to the marker
+        const popup = new mapboxgl.Popup({ offset: 15 }).setHTML(popupContent);
 
-    // Remove existing markers from the map
-    markers.forEach(marker => marker.remove());
-    markers = []; // Clear the markers array
+        return new mapboxgl.Marker(markerElement)
+            .setLngLat([lng, lat])
+            .setPopup(popup);
+    }
 
-    // Deduplicate markersData
-    const uniqueMarkers = markersData.filter(
-        (marker, index, self) =>
-            index === self.findIndex(m => m.lng === marker.lng && m.lat === marker.lat)
-    );
-
-    console.log(`Total Markers Data: ${markersData.length}`);
-    console.log(`Markers added: ${markers.length}`);
-    console.log(`Unique Markers to Add: ${uniqueMarkers.length}`);
-
-    // Add markers within visible bounds
-    uniqueMarkers.forEach(markerData => {
-        const { lng, lat, popupContent } = markerData;
-
-        if (bounds.contains([lng, lat])) {
-            console.log(`Adding marker at: ${lng}, ${lat}`);
-            const marker = createCustomMarker(lng, lat, popupContent).addTo(map);
-            markers.push(marker);
+    // markers dynamically based on map bounds
+    function updateMarkers() {
+        if (!markersDataReady) {
+            // console.warn('Markers data is not ready yet. Skipping updateMarkers.');
+            return;
         }
-    });
 
-    console.log(`Markers added: ${markers.length}`);
-}
+        // console.log('updateMarkers called');
 
-// Debounce updateMarkers for better performance
-const debouncedUpdateMarkers = debounce(updateMarkers, 300);
+        // Check if markersData is available
+        if (!markersData || markersData.length === 0) {
+            console.warn('Markers Data is empty. Skipping updateMarkers.');
+            return;
+        }
 
+        const bounds = map.getBounds();
+        if (!bounds || !bounds._sw || !bounds._ne) {
+            // console.error('Invalid map bounds:', bounds);
+            return;
+        }
+
+        // console.log('Map Bounds:', bounds);
+
+
+        // Remove existing markers from the map
+        markers.forEach(marker => marker.remove());
+        markers = []; 
+
+        // Deduplicate markersData
+        const uniqueMarkers = markersData.filter(
+            (marker, index, self) =>
+                index === self.findIndex(m => m.lng === marker.lng && m.lat === marker.lat)
+        );
+
+        // console.log(`Total Markers Data: ${markersData.length}`);
+        // console.log(`Markers added: ${markers.length}`);
+        // console.log(`Unique Markers to Add: ${uniqueMarkers.length}`);
+
+        // Add markers within visible bounds
+        uniqueMarkers.forEach(markerData => {
+            const { lng, lat, popupContent } = markerData;
+
+            if (bounds.contains([lng, lat])) {
+                // console.log(`Adding marker at: ${lng}, ${lat}`);
+                const marker = createCustomMarker(lng, lat, popupContent).addTo(map);
+                markers.push(marker);
+            }
+        });
+
+        // console.log(`Markers added: ${markers.length}`);
+    }
+
+    // Debounce updateMarkers for better performance
+    const debouncedUpdateMarkers = debounce(updateMarkers, 300);
 
     //Map Load Event and Fog Setting
     map.on('load', () => {
@@ -779,7 +787,18 @@ const debouncedUpdateMarkers = debounce(updateMarkers, 300);
                 addGeoJSONSource(map, id, url, 'id');
             }
         });
-
+        map.on('load', () => {
+            console.log('Map fully loaded');
+        
+            startInitialRotation(); 
+        
+            if (markersDataReady) {
+                placeStateMarkers(markersData, map);
+            } else {
+                console.warn('Markers data not ready at map load');
+            }
+        });
+        
         //Initialize Facilities Data and Set Variables
         let facilitiesData = [];
         const regionsWithFacilities = new Set();
@@ -791,6 +810,8 @@ const debouncedUpdateMarkers = debounce(updateMarkers, 300);
         // imported loadFacilitiesData function  
         loadFacilitiesData()
             .then(facilities => {
+                // console.log("Facilities data loaded:", facilities);
+                // Feature 1: Process regions and states
                 facilitiesData = facilities;
 
                 // regionsWithFacilities and statesWithFacilities sets
@@ -808,7 +829,10 @@ const debouncedUpdateMarkers = debounce(updateMarkers, 300);
 
                 // console.log("Facilities data loaded:", facilitiesData); // Debug
 
+
                 console.log("regionsWithFacilities:", Array.from(regionsWithFacilities));
+
+                console.log('Locations in data:', facilitiesData.map(f => f.location));
 
                 // Define regions dynamically
                 const layerRegions = [
@@ -841,6 +865,164 @@ const debouncedUpdateMarkers = debounce(updateMarkers, 300);
                     addRegionInteractions(map, `${layerId}-fill`, sourceId, regionsWithFacilities);
                 });
 
+               // Place State/Region markers
+            placeStateMarkers(facilitiesData, map);
+
+                // Populate markersData
+                markersData = facilities.map(facility => ({
+                    lng: facility.longitude,
+                    lat: facility.latitude,
+                    popupContent: `
+                <strong>${facility.hospital_name}</strong><br>
+                ${facility.location}<br>
+                ${facility.parent_company ? `Parent Company: ${facility.parent_company}<br>` : ""}
+                EHR System: ${facility.ehr_system}<br>
+                Address: ${facility.hospital_address}
+            `
+                }));
+
+                console.log(`Markers Data Populated: ${markersData.length}`);
+                markersDataReady = true;
+                // console.log('Markers Data Populated:', markersData);
+
+
+                // Initial render of markers
+                updateMarkers();
+
+
+                // debounced updateMarkers to map events
+                map.on('moveend', debouncedUpdateMarkers);
+                map.on('zoomend', () => {
+                    debouncedUpdateMarkers();
+                    adjustMarkerSize(map.getZoom());
+                    // console.log('Zoom Level:', map.getZoom());
+                    // console.log('Map Bounds:', map.getBounds());
+                });
+
+                // Handle map reset or view changes
+                map.on('reset', () => {
+                    adjustMarkerSize(map.getZoom());
+                });
+
+                // Adjust markers on reset
+                map.on('reset', () => adjustMarkerSize(map.getZoom()));
+
+                // Feature 3: Place state/region markers
+                placeStateMarkers(facilities, map);
+
+                // Feature 4: Add GT logo markers
+                gtLogoMarkers.forEach(marker => {
+                    marker.getElement().style.visibility = 'visible';
+                });
+
+    //             // Add regions dynamically for interactivity
+    // layerRegions.forEach(({ layerId, sourceId }) => {
+    //     addRegionLayer(map, layerId, sourceId, regionsWithFacilities);
+    //     addHoverOutlineLayer(map, `${layerId}-line-hover`, sourceId);
+    //     setRegionClickEvent(sourceId, 'id', 'name');
+    //     addRegionInteractions(map, `${layerId}-fill`, sourceId, regionsWithFacilities);
+    // });
+
+    // Set up GT logo markers
+    gtLogoMarkers.forEach(marker => marker.getElement().style.visibility = 'visible');
+
+
+                //Dynamic Logo per Facility
+                // function createGMarker(logoUrl) {
+                //     const div = document.createElement('div');
+                //     div.className = 'g-marker';
+                //     div.style.backgroundImage = `url(${logoUrl})`;
+                //     return div;
+                // }
+
+                // facilitiesData.forEach(facility => {
+                //     const marker = new mapboxgl.Marker({ 
+                //         element: createGMarer(facility.logoUrl) 
+                //     })
+                //     .setLngLat([facility.longitude, facility.latitude])
+                //     .addTo(map);
+                // });
+
+                // Function to create a marker with the company logo
+                function createGMarker() {
+                    const div = document.createElement('div');
+                    div.className = 'g-marker';
+                    return div;
+                }
+
+                // Function to get state center dynamically based on main_facility
+                function getStateCenterCoordinates(stateId, facilitiesData) {
+                    const mainFacility = facilitiesData.find(
+                        facility => facility.region_id === stateId && facility.main_facility
+                    );
+
+                    if (mainFacility) {
+                        return [mainFacility.longitude, mainFacility.latitude];
+                    }
+
+                    console.warn(`No main facility found for state: ${stateId}`);
+                    return null;
+                }
+
+                // Place state/region markers on the map
+                // function placeStateMarkers(facilitiesData, map) {
+                //     const statesWithCustomers = Array.from(
+                //         new Set(facilitiesData.map(facility => facility.region_id))
+                //     );
+
+                //     const bounds = new mapboxgl.LngLatBounds();
+
+                //     statesWithCustomers.forEach(state => {
+                //         const stateCenter = getStateCenterCoordinates(state, facilitiesData);
+                //         if (stateCenter) {
+                //             const marker = new mapboxgl.Marker({ element: createGMarker() })
+                //                 .setLngLat(stateCenter)
+                //                 .addTo(map);
+
+                //             marker.getElement().style.visibility = 'hidden'; // Initially hidden
+                //             stateRegionMarkers.push(marker); // Store marker for later visibility toggle
+
+                //             // console.log(`Marker added for state at: ${stateCenter}`);
+                //             bounds.extend(stateCenter);
+                //         } else {
+                //             console.warn(`No center found for state: ${state}`);
+                //         }
+                //     });
+
+                //     if (statesWithCustomers.length > 0) {
+                //         map.fitBounds(bounds, { padding: 20 });
+                //     }
+                // }
+
+
+                function placeStateMarkers(facilitiesData, map) {
+                    const statesWithCustomers = Array.from(
+                        new Set(facilitiesData.map(facility => facility.region_id))
+                    );
+                
+                    const bounds = new mapboxgl.LngLatBounds();
+                
+                    statesWithCustomers.forEach(state => {
+                        const stateCenter = getStateCenterCoordinates(state, facilitiesData);
+                        if (stateCenter) {
+                            const marker = new mapboxgl.Marker({ element: createGMarker() })
+                                .setLngLat(stateCenter)
+                                .addTo(map);
+                
+                            marker.getElement().style.visibility = 'hidden'; // Initially hidden
+                            stateRegionMarkers.push(marker);
+                            bounds.extend(stateCenter);
+                        } else {
+                            console.warn(`No center found for state: ${state}`);
+                        }
+                    });
+                
+                    // Only fit bounds after user interaction
+                    if (hasInteracted && statesWithCustomers.length > 0) {
+                        map.fitBounds(bounds, { padding: 20 });
+                    }
+                }          
+
                 // markers for each facility
                 let markers = facilities.map(({ ehr_system, hospital_name, location, hospital_address, longitude, latitude, parent_company, hospital_count }) => {
                     let popupContent = `
@@ -864,8 +1046,8 @@ Hospital Count: <strong>${hospital_count}</strong>
                     const markerElement = document.createElement('div');
                     markerElement.className = 'custom-marker';
                     markerElement.style.backgroundImage = `url(${logoUrl})`;
-                    markerElement.style.width = '30px';
-                    markerElement.style.height = '30px';
+                    markerElement.style.width = '20px';
+                    markerElement.style.height = '20px';
                     markerElement.style.borderRadius = '50%';
                     markerElement.style.backgroundSize = 'cover';
 
@@ -919,7 +1101,6 @@ Hospital Count: <strong>${hospital_count}</strong>
                     });
                 }
 
-
                 function addHoverOutlineLayer(map, layerId, sourceId) {
                     if (map.getLayer(layerId)) {
                         console.warn(`Layer with id "${layerId}" already exists. Skipping addition.`);
@@ -970,24 +1151,24 @@ Hospital Count: <strong>${hospital_count}</strong>
                     });
                 }
 
+
                 ['us-states', 'canada-regions', 'aruba-region', 'italy-regions', 'uk-regions'].forEach(region => {
-                    console.log(`Applying styles for ${region}`);
+                    // console.log(`Applying styles for ${region}`);
                     addHoverOutlineLayer(map, `${region}-line-hover`, region);
                     addRegionLayer(map, region, region, regionsWithFacilities);
                     addRegionInteractions(map, `${region}-fill`, region, regionsWithFacilities);
                 });
 
-                console.log(map.getSource('us-states'));
-                console.log(map.getLayer('us-states-fill'));
-                console.log(map.getLayer('us-states-line-hover'));
+                // console.log(map.getSource('us-states'));
+                // console.log(map.getLayer('us-states-fill'));
+                // console.log(map.getLayer('us-states-line-hover'));
 
-                console.log('Current layer order:', map.getStyle().layers.map(layer => layer.id));
+                // console.log('Current layer order:', map.getStyle().layers.map(layer => layer.id));
 
-                console.log('Facilities Data:', facilitiesData);
 
-                addGeoJSONSource(map, 'us-states', '/data/us-states.geojson', 'id');
-                console.log("Sources after adding 'us-states':", map.getStyle().sources);
-                
+                // addGeoJSONSource(map, 'us-states', '/data/us-states.geojson', 'id');
+                // console.log("Sources after adding 'us-states':", map.getStyle().sources);
+
 
                 //Function for Zoom-Based Marker Visibility
                 function toggleMarkers() {
@@ -1046,9 +1227,10 @@ Hospital Count: <strong>${hospital_count}</strong>
                         'circle-color': [
                             'step',
                             ['get', 'point_count'],
-                            '#ff8502',  // Small clusters (dark blue)
+                            '#ff8502',  // Small clusters (orange)
                             // '#b31919',  // Small clusters (red) 
-                            10, ' #0f2844'  // Medium and large clusters (orange)
+                            10, ' #0f2844',  // Medium clusters (dark blue)
+                            50, '#b31919'   // Large clusters
                         ],
                         'circle-radius': [
                             'step',
@@ -1224,180 +1406,265 @@ Hospital Count: <strong>${hospital_count}</strong>
                     }
 
                 });
-                
-// Fetch and populate markersData
-loadFacilitiesData()
-    .then(facilities => {
-        // Populate markersData
-        markersData = facilities.map(facility => ({
-            lng: facility.longitude,
-            lat: facility.latitude,
-            popupContent: `
-                <strong>${facility.hospital_name}</strong><br>
-                ${facility.location}<br>
-                ${facility.parent_company ? `Parent Company: ${facility.parent_company}<br>` : ""}
-                EHR System: ${facility.ehr_system}<br>
-                Address: ${facility.hospital_address}
-            `
-        }));
 
-        console.log(`Markers Data Populated: ${markersData.length}`);
 
-          // debounced updateMarkers to map events
-        map.on('moveend', debouncedUpdateMarkers);
-        map.on('zoomend', () => {
-            debouncedUpdateMarkers();
-            adjustMarkerSize(map.getZoom());
-        });
-
-        map.on('zoomend', () => {
-            console.log('Zoom Level:', map.getZoom());
-            console.log('Map Bounds:', map.getBounds());
-        });        
-
-// Handle map reset or view changes
-map.on('reset', () => {
-    adjustMarkerSize(map.getZoom());
-});
-
-        // Adjust markers on reset
-        map.on('reset', () => adjustMarkerSize(map.getZoom()));
-
-        // Initial render of markers
-        updateMarkers();
-
-    })
+            })
             .catch(error => {
                 console.error('Error loading facilities data:', error);
                 const errorMessage = document.getElementById('error-message');
                 errorMessage.style.display = 'block';
                 errorMessage.innerText = 'Failed to load facility data. Please try again later.';
             });
-        })
-
-// layers behavior and reset button
-            function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
-                let hoveredRegionId = null;
-                let selectedRegionId = null;
-    
-                const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-                const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
 
 
-                // Add reset button functionality inside
+
+//  // layers behavior and reset button
+//  function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
+//     let hoveredRegionId = null;
+//     let selectedRegionId = null;
+
+//     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+//     const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
+
+
+//     // Add reset button functionality inside
+// document.getElementById("reset-view").addEventListener("click", () => {
+// // Reset the map view
+// map.flyTo({ center: INITIAL_CENTER, zoom: INITIAL_ZOOM, pitch: 0 });
+
+// // Clear any selected regions
+// clearRegionSelection();
+// closeSidebar() 
+// });
+
+//     // Apply hover effect only to regions with facilities
+//     const applyHover = (regionId) => {
+//         if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
+//             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
+//         }
+//         hoveredRegionId = regionId;
+//         if (hoveredRegionId !== selectedRegionId) {
+//             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: true });
+//         }
+//     };
+
+//     const clearHover = () => {
+//         if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
+//             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
+//         }
+//         hoveredRegionId = null;
+//     };
+
+//     // Debounced hover function for non-touch devices
+//     const debouncedHover = debounce((e) => {
+//         const regionId = e.features[0].id;
+//         if (regionsWithFacilities.has(regionId)) {
+//             applyHover(regionId);
+//         }
+//     }, 50); // 50ms debounce delay
+
+
+//     // Tap-to-Hover functionality for touch devices
+//     if (isTouchDevice) {
+//         map.on('touchstart', layerId, (e) => {
+//             const regionId = e.features[0].id;
+
+//             if (regionsWithFacilities.has(regionId)) {
+//                 if (hoveredRegionId === regionId) {
+//                     // If already hovered, treat it as a click
+//                     selectRegion(regionId);
+//                 } else {
+//                     // Otherwise, just apply hover effect
+//                     applyHover(regionId);
+//                 }
+//             }
+//         });
+
+//         map.on('touchend', layerId, clearHover);
+//         map.on('touchcancel', layerId, clearHover);
+//     }
+
+//     // Regular hover for non-touch devices
+//     map.on(hoverEvent, layerId, (e) => {
+//         const regionId = e.features[0].id;
+//         // if (regionsWithFacilities.has(regionId)) {
+//         //     applyHover(regionId);
+//         // }
+//         applyHover(regionId);
+//     });
+
+//     // Clear hover effect on mouse leave for non-touch devices
+//     if (!isTouchDevice) {
+//         map.on('mouseleave', layerId, clearHover);
+//     }
+
+//     // Function to select a region
+//     function selectRegion(regionId) {
+//         clearRegionSelection(); // Clear previous selection
+
+//         selectedRegionId = regionId;
+//         map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: true });
+
+//         // Update sidebar for the new selection
+//         updateSidebarForRegion(regionId);
+//     }
+
+//     // Handle selection on click
+//     map.on('click', layerId, (e) => {
+//         const regionId = e.features[0].id;
+//         if (regionsWithFacilities.has(regionId)) {
+//             selectRegion(regionId);
+//         }
+//     });
+
+//     // Clear selection when clicking outside
+//     map.on('click', (e) => {
+//         const features = map.queryRenderedFeatures(e.point, { layers: [layerId] });
+//         if (features.length === 0) {
+//             clearRegionSelection();
+//         }
+//     });
+
+//     // Clear selection and hover states when the sidebar is closed
+//     function clearRegionSelection() {
+//         clearHover();
+//         if (selectedRegionId !== null) {
+//             map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: false });
+//             selectedRegionId = null;
+//         }
+//     }
+
+//     // Attach clear function to sidebar close
+//     document.getElementById('close-sidebar').addEventListener('click', clearRegionSelection);
+
+//     // Placeholder function to update sidebar content based on region selection
+//     function updateSidebarForRegion(regionId) {
+//         // Logic to show content for the selected region in the sidebar
+//     }
+// }
+
+
+function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
+    let hoveredRegionId = null;
+    let selectedRegionId = null;
+    let locationMarkers = []; // Store individual location markers
+
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
+
+    // Reset button functionality
     document.getElementById("reset-view").addEventListener("click", () => {
-        // Reset the map view
         map.flyTo({ center: INITIAL_CENTER, zoom: INITIAL_ZOOM, pitch: 0 });
-
-        // Clear any selected regions
         clearRegionSelection();
-        closeSidebar() 
+        closeSidebar();
     });
-    
-                // Apply hover effect only to regions with facilities
-                const applyHover = (regionId) => {
-                    if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
-                        map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
-                    }
-                    hoveredRegionId = regionId;
-                    if (hoveredRegionId !== selectedRegionId) {
-                        map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: true });
-                    }
-                };
-    
-                const clearHover = () => {
-                    if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
-                        map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
-                    }
-                    hoveredRegionId = null;
-                };
-    
-                // Debounced hover function for non-touch devices
-                const debouncedHover = debounce((e) => {
-                    const regionId = e.features[0].id;
-                    if (regionsWithFacilities.has(regionId)) {
-                        applyHover(regionId);
-                    }
-                }, 50); // 50ms debounce delay
-    
-    
-                // Tap-to-Hover functionality for touch devices
-                if (isTouchDevice) {
-                    map.on('touchstart', layerId, (e) => {
-                        const regionId = e.features[0].id;
-    
-                        if (regionsWithFacilities.has(regionId)) {
-                            if (hoveredRegionId === regionId) {
-                                // If already hovered, treat it as a click
-                                selectRegion(regionId);
-                            } else {
-                                // Otherwise, just apply hover effect
-                                applyHover(regionId);
-                            }
-                        }
-                    });
-    
-                    map.on('touchend', layerId, clearHover);
-                    map.on('touchcancel', layerId, clearHover);
-                }
-    
-                // Regular hover for non-touch devices
-                map.on(hoverEvent, layerId, (e) => {
-                    const regionId = e.features[0].id;
-                    if (regionsWithFacilities.has(regionId)) {
-                        applyHover(regionId);
-                    }
-                });
-    
-                // Clear hover effect on mouse leave for non-touch devices
-                if (!isTouchDevice) {
-                    map.on('mouseleave', layerId, clearHover);
-                }
-    
-                // Function to select a region
-                function selectRegion(regionId) {
-                    clearRegionSelection(); // Clear previous selection
-    
-                    selectedRegionId = regionId;
-                    map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: true });
-    
-                    // Update sidebar for the new selection
-                    updateSidebarForRegion(regionId);
-                }
-    
-                // Handle selection on click
-                map.on('click', layerId, (e) => {
-                    const regionId = e.features[0].id;
-                    if (regionsWithFacilities.has(regionId)) {
-                        selectRegion(regionId);
-                    }
-                });
-    
-                // Clear selection when clicking outside
-                map.on('click', (e) => {
-                    const features = map.queryRenderedFeatures(e.point, { layers: [layerId] });
-                    if (features.length === 0) {
-                        clearRegionSelection();
-                    }
-                });
-    
-                // Clear selection and hover states when the sidebar is closed
-                function clearRegionSelection() {
-                    clearHover();
-                    if (selectedRegionId !== null) {
-                        map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: false });
-                        selectedRegionId = null;
-                    }
-                }
-    
-                // Attach clear function to sidebar close
-                document.getElementById('close-sidebar').addEventListener('click', clearRegionSelection);
-    
-                // Placeholder function to update sidebar content based on region selection
-                function updateSidebarForRegion(regionId) {
-                    // Logic to show content for the selected region in the sidebar
+
+    // Apply hover effect only to regions with facilities
+    const applyHover = (regionId) => {
+        if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
+            map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
+        }
+        hoveredRegionId = regionId;
+        if (hoveredRegionId !== selectedRegionId) {
+            map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: true });
+        }
+    };
+
+    const clearHover = () => {
+        if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
+            map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
+        }
+        hoveredRegionId = null;
+    };
+
+    // Tap-to-Hover functionality for touch devices
+    if (isTouchDevice) {
+        map.on('touchstart', layerId, (e) => {
+            const regionId = e.features[0].id;
+            if (regionsWithFacilities.has(regionId)) {
+                if (hoveredRegionId === regionId) {
+                    selectRegion(regionId);
+                } else {
+                    applyHover(regionId);
                 }
             }
+        });
+
+        map.on('touchend', layerId, clearHover);
+        map.on('touchcancel', layerId, clearHover);
+    }
+
+    // Hover for non-touch devices
+    map.on(hoverEvent, layerId, (e) => {
+        const regionId = e.features[0].id;
+        applyHover(regionId);
+    });
+
+    if (!isTouchDevice) {
+        map.on('mouseleave', layerId, clearHover);
+    }
+
+    // Function to select a region
+    function selectRegion(regionId) {
+        clearRegionSelection(); // Clear previous selection
+
+        selectedRegionId = regionId;
+        map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: true });
+
+        // Fetch locations for the selected region
+        const locationsInRegion = facilities.filter(facility => facility.region_id === regionId);
+
+        // Add markers for each location
+        locationsInRegion.forEach(location => {
+            const marker = new mapboxgl.Marker({ color: '#ff8502' }) // Customize marker color
+                .setLngLat([location.longitude, location.latitude])
+                .addTo(map);
+            locationMarkers.push(marker); // Store marker for later removal
+        });
+
+        updateSidebarForRegion(regionId); // Update sidebar
+    }
+
+    // Clear selection when clicking outside
+    map.on('click', (e) => {
+        const features = map.queryRenderedFeatures(e.point, { layers: [layerId] });
+        if (features.length === 0) {
+            clearRegionSelection();
+        }
+    });
+
+    // Function to clear selection and markers
+    function clearRegionSelection() {
+        clearHover();
+
+        if (selectedRegionId !== null) {
+            map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: false });
+            selectedRegionId = null;
+        }
+
+        // Remove all location markers
+        locationMarkers.forEach(marker => marker.remove());
+        locationMarkers = [];
+    }
+
+    // Attach clearRegionSelection to sidebar close button
+    document.getElementById('close-sidebar').addEventListener('click', () => {
+        clearRegionSelection();
+        closeSidebar();
+    });
+
+    // Prevent markers from showing on zoom
+    map.on('zoom', () => {
+        // No action required on zoom - markers are controlled via selectRegion
+    });
+
+    // Placeholder function for updating the sidebar
+    function updateSidebarForRegion(regionId) {
+        // Logic to display region-specific details in the sidebar
+    }
+}
+
+
 
         // Define the closeSidebar function
         function closeSidebar() {
@@ -1409,7 +1676,8 @@ map.on('reset', () => {
         }
         document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
         
-         // Reset view button
+
+        // Reset view button
         // document.getElementById("reset-view").addEventListener("click", () => {
         //     map.flyTo({ center: INITIAL_CENTER, zoom: INITIAL_ZOOM, pitch: 0 });
         // });

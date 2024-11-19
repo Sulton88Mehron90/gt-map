@@ -3,6 +3,9 @@ let cachedFacilitiesData = null;
 
 // Fetch the facilities data once and store it in cache
 export function loadFacilitiesData() {
+
+    //Validate facility data before using it
+
     if (cachedFacilitiesData) return Promise.resolve(cachedFacilitiesData);
     return fetch('./data/facilities.json')
         .then(response => response.json())
@@ -57,3 +60,50 @@ export const loadUKRegions = () => loadGeoJSON('ukRegions');
 export const loadItalyRegions = () => loadGeoJSON('italyRegions');
 export const loadCanadaRegions = () => loadGeoJSON('canadaRegions');
 export const loadArubaRegion = () => loadGeoJSON('arubaRegion');
+
+
+// // Global cache for facilities data
+// let cachedFacilitiesData = null;
+
+// // Validate a single facility object
+// function validateFacility(facility) {
+//     if (
+//         typeof facility.ehr_system !== 'string' ||
+//         typeof facility.hospital_name !== 'string' ||
+//         typeof facility.location !== 'string' ||
+//         typeof facility.hospital_address !== 'string' ||
+//         typeof facility.latitude !== 'number' ||
+//         typeof facility.longitude !== 'number' ||
+//         (facility.parent_company && typeof facility.parent_company !== 'string') ||
+//         (facility.hospital_count && typeof facility.hospital_count !== 'number') ||
+//         (facility.region_id && typeof facility.region_id !== 'string')
+//     ) {
+//         console.error("Invalid facility:", facility);
+//         return false;
+//     }
+//     return true;
+// }
+
+// // Fetch the facilities data once and store it in cache
+// export function loadFacilitiesData() {
+//     if (cachedFacilitiesData) return Promise.resolve(cachedFacilitiesData);
+
+//     return fetch('./data/facilities.json')
+//         .then(response => response.json())
+//         .then(data => {
+//             if (!Array.isArray(data) || data.some(facility => !validateFacility(facility))) {
+//                 throw new Error("Invalid facilities data structure");
+//             }
+//             cachedFacilitiesData = data;
+//             return cachedFacilitiesData;
+//         })
+//         .catch(error => {
+//             console.error('Error loading facilities data:', error);
+//             const errorMessage = document.getElementById('error-message');
+//             if (errorMessage) {
+//                 errorMessage.style.display = 'block';
+//                 errorMessage.innerText = 'Failed to load facility data. Please try again later.';
+//             }
+//             throw error; // Re-throw for upstream handling
+//         });
+// }

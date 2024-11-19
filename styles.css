@@ -648,6 +648,20 @@ hospital-list-sidebar.collapsed #close-sidebar {
     display: none;
 }
 
+/* one GT per region */
+/* .g-marker { */
+    /* background-image: url('./img/goliath-logo.png'); */
+    /* background-image: url('./img/redDot.png'); */
+    /* background-image: url('./img/gtLogo.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 20px; 
+    height: 20px; 
+    border-radius: 50%; 
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); */
+/* } */
+
 /* Responsive Styles */
 
 @media (max-width: 768px) {
@@ -783,6 +797,13 @@ hospital-list-sidebar.collapsed #close-sidebar {
     #hospital-list-sidebar.minimized {
         width: 30px;
     }
+
+    /* button,
+.flip-button {
+    min-width: 44px;
+    min-height: 44px;
+} */
+
 }
 
 @media (max-width: 320px) {
