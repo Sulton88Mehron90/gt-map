@@ -31,22 +31,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Adding navigation controls
     map.addControl(new mapboxgl.NavigationControl());
-    // map.addControl(new mapboxgl.NavigationControl({ position: 'top-left' }));
     // map.scrollZoom.disable();
 
-    // Variables    
+    // Global variables
     let userInteracting = false;
     let hasInteracted = false;
-    // let isInitialRotation = true;
     let hoveredRegionId = null;
     let selectedRegionId = null;
-    let locationMarkers = []; 
-
-    // Global variables for markers
+    let locationMarkers = [];
     let stateRegionMarkers = [];
     let markers = []; // To store Mapbox markers
     let markersData = []; // To store marker data from facilities
-    let markersDataReady = false; // Flag to indicate markersData readiness
+    let markersDataReady = false;
 
     // spin the globe smoothly when zoomed out
     function spinGlobe() {
@@ -58,30 +54,30 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Event listeners for user interaction
-map.on('mousedown', () => {
-    userInteracting = true;
-    hasInteracted = true; // Stop spinning after user interaction
-});
-map.on('dragstart', () => {
-    userInteracting = true;
-    hasInteracted = true; // Stop spinning after user interaction
-});
-map.on('moveend', () => {
-    userInteracting = false;
+    map.on('mousedown', () => {
+        userInteracting = true;
+        hasInteracted = true; 
+    });
+    map.on('dragstart', () => {
+        userInteracting = true;
+        hasInteracted = true;
+    });
+    map.on('moveend', () => {
+        userInteracting = false;
 
-    // Only spin the globe if the user hasn't interacted
-    if (!hasInteracted) {
-        spinGlobe();
-    }
+        // Only spin the globe if the user hasn't interacted
+        if (!hasInteracted) {
+            spinGlobe();
+        }
 
-    // Update markers after the map moves
-    updateMarkers();
-});
+        // Update markers after the map moves
+        updateMarkers();
+    });
 
     // Start the globe spinning animation
     spinGlobe();
 
-    // Map Animation on Load to set the globe to your preferred size and center
+    // Map Animation on Load to set the globe size and center
     map.on('load', () => {
         console.log('Map loaded');
         map.easeTo({
@@ -93,130 +89,19 @@ map.on('moveend', () => {
         });
     });
 
-    // //animated pulsing Dot icon
-    // const size = 50;
-    // // This implements `StyleImageInterface`
-    // // to draw a pulsing dot icon on the map.
-    // const pulsingDot = {
-    //     width: size,
-    //     height: size,
-    //     data: new Uint8Array(size * size * 4),
+        // Initial globe rotation, show GT logos, and ensure clusters are hidden
+        function startInitialRotation() {
+            // globe animation with GT logos visible
+            map.easeTo({
+                center: [-75.4265, 40.0428],
+                zoom: 1,
+                duration: 3000,
+                easing: (t) => t * (2 - t),
+            });
+        }
+    
 
-    //     // When the layer is added to the map,
-    //     // get the rendering context for the map canvas.
-
-    //     onAdd: function () {
-    //         const canvas = document.createElement('canvas');
-    //         canvas.width = this.width;
-    //         canvas.height = this.height;
-    //         this.context = canvas.getContext('2d', { willReadFrequently: true });
-    //         // console.log('Canvas initialized with willReadFrequently:', this.context);
-    //     },
-
-    //     // Call once before every frame where the icon will be used.
-    //     render: function () {
-    //         const duration = 1000;
-    //         const t = (performance.now() % duration) / duration;
-
-    //         const radius = (size / 2) * 0.3;
-    //         const outerRadius = (size / 2) * 0.7 * t + radius;
-    //         const context = this.context;
-
-    //         // Draw the outer circle.
-    //         context.clearRect(0, 0, this.width, this.height);
-    //         context.beginPath();
-    //         context.arc(
-    //             this.width / 2,
-    //             this.height / 2,
-    //             outerRadius,
-    //             0,
-    //             Math.PI * 2
-    //         );
-
-    //         //Goliath colors
-    //         // #ff8b1f: A vibrant orange; suitable for the outer circle or stroke.
-    //         // #0f2844: A dark blue; ideal for the inner circle or border.
-    //         // #ff0000: Bright red; can be used for the pulsing effect or an accent.
-    //         // #ffffff: White; perfect for a border or subtle inner detail.
-
-    //         context.fillStyle = `rgba(255, 139, 31, ${1 - t})`; // Orange (Outer Circle)
-    //         context.fill();
-
-    //         // Draw the inner circle.
-    //         context.beginPath();
-    //         context.arc(
-    //             this.width / 2,
-    //             this.height / 2,
-    //             radius,
-    //             0,
-    //             Math.PI * 2
-    //         );
-    //         context.fillStyle = '#0f2844'; // Dark Blue (Inner Circle)
-    //         context.strokeStyle = '#ffffff'; // White Border
-    //         // context.strokeStyle = '#ff0000'; 
-    //         context.lineWidth = 2 + 4 * (1 - t);
-    //         context.fill();
-    //         context.stroke();
-
-    //         // Update this image's data with data from the canvas.
-    //         this.data = context.getImageData(
-    //             0,
-    //             0,
-    //             this.width,
-    //             this.height
-    //         ).data;
-    //         // console.log('Canvas context:', this.context); // Should not be undefined
-    //         // console.log('Image data:', context.getImageData(0, 0, this.width, this.height).data); // Check if this runs
-
-
-    //         // Continuously repaint the map, resulting
-    //         // in the smooth animation of the dot.
-    //         map.triggerRepaint();
-
-    //         // Return `true` to let the map know that the image was updated.
-    //         return true;
-    //     }
-    // };
-
-    // map.on('load', () => {
-
-    //     // console.log('Map loaded.');
-
-    //     map.addImage('pulsing-dot', pulsingDot, { pixelRatio: 2 });
-
-    //     // console.log('Pulsing dot image added.');
-
-    //     map.addSource('dot-point', {
-    //         'type': 'geojson',
-    //         'data': {
-    //             'type': 'FeatureCollection',
-    //             'features': [
-    //                 {
-    //                     'type': 'Feature',
-    //                     'geometry': {
-    //                         'type': 'Point',
-    //                         'coordinates': [-75.4265, 40.0428] // icon position [lng, lat]
-    //                     }
-    //                 }
-    //             ]
-    //         }
-    //     });
-
-    //     // console.log('Source for pulsing dot added.');
-
-    //     map.addLayer({
-    //         'id': 'layer-with-pulsing-dot',
-    //         'type': 'symbol',
-    //         'source': 'dot-point',
-    //         'layout': {
-    //             'icon-image': 'pulsing-dot'
-    //         }
-    //     });
-    //     // console.log('Layer for pulsing dot added.');
-
-    // });
-
-    // Define GT logo markers for specified countries
+    // GT logo markers for countries
     const countries = [
         { name: 'USA', lngLat: [-80.147085, 30.954096] }, // gt office Near by location
         { name: 'UK', lngLat: [-1.654816, 52.181932] },
@@ -225,7 +110,7 @@ map.on('moveend', () => {
         { name: 'Italy', lngLat: [12.465363, 42.835192] },
     ];
 
-    // Initialize GT logo markers, making them initially visible
+    // GT logo markers, making them initially visible
     const gtLogoMarkers = countries.map(country => {
         const logoElement = document.createElement('div');
         logoElement.className = 'company-logo';
@@ -235,12 +120,11 @@ map.on('moveend', () => {
             offset: [0, -15],
         }).setLngLat(country.lngLat).addTo(map);
 
-        // Set initial visibility to visible
+        // Set initial visibility
         marker.getElement().style.visibility = 'visible';
         return marker;
     });
 
-    // Utility function to safely set layer visibility if the layer exists
     function setLayerVisibility(layerId, visibility) {
         if (map.getLayer(layerId)) {
             map.setLayoutProperty(layerId, 'visibility', visibility);
@@ -286,7 +170,7 @@ map.on('moveend', () => {
 
             // Show state/region markers after the first interaction
             stateRegionMarkers.forEach(marker => {
-                marker.getElement().style.visibility = 'visible'; 
+                marker.getElement().style.visibility = 'visible';
             });
 
         }
@@ -296,7 +180,7 @@ map.on('moveend', () => {
     map.on('mousedown', onFirstInteraction);
     map.on('zoom', onFirstInteraction);
     map.on('drag', onFirstInteraction);
-    
+
 
     // Debounce Function Definition
     function debounce(func, delay) {
@@ -328,6 +212,7 @@ map.on('moveend', () => {
                     color: 'red'
                 }
             });
+
             geocoderContainer.appendChild(geocoder.onAdd(map));
 
             // Use MutationObserver to detect when the input is added
@@ -578,6 +463,9 @@ map.on('moveend', () => {
                 case 'Cerner':
                     ehrLogo = '<img src="./img/cerner-logo.png" alt="Cerner logo" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%;">';
                     break;
+                case 'Cerner-ITWorks':
+                    ehrLogo = '<img src="./img/cerner-logo.png" alt="Cerner logo" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%;">';
+                    break;
                 case 'Epic':
                     ehrLogo = '<img src="./img/epic-logo.png" alt="Epic logo" style="width: 20px; height: 18px; vertical-align: middle; margin-right: 5px;">';
                     break;
@@ -630,7 +518,7 @@ map.on('moveend', () => {
                     pitch: 45,
                     bearing: 0,
                     essential: true,
-                    duration: 2000, 
+                    duration: 2000,
                     easing: (t) => t * (2 - t)
                 });
             });
@@ -693,7 +581,7 @@ map.on('moveend', () => {
         };
     }
 
-    //Dynamic Sizing Example
+    //Dynamic Sizing
     function adjustMarkerSize(zoomLevel) {
         const size = Math.max(15, Math.min(30, zoomLevel * 4));
         document.querySelectorAll('.custom-marker').forEach(marker => {
@@ -703,7 +591,7 @@ map.on('moveend', () => {
         console.log(`Adjusted marker size to: ${size}px at zoom level ${zoomLevel}`);
     }
 
-    // Create a custom marker with a popup
+    // custom marker with a popup
     function createCustomMarker(lng, lat, popupContent) {
         // Create a custom marker element
         const markerElement = document.createElement('div');
@@ -719,7 +607,7 @@ map.on('moveend', () => {
         markerElement.style.transition = 'visibility 0.3s ease, transform 1s linear, opacity 0.3s ease, box-shadow 0.3s ease';
         markerElement.style.boxShadow = '0px 2px 4px rgba(0, 0, 0, 0.15)';
 
-        // Add a popup to the marker
+        // popup to the marker
         const popup = new mapboxgl.Popup({ offset: 15 }).setHTML(popupContent);
 
         return new mapboxgl.Marker(markerElement)
@@ -753,7 +641,7 @@ map.on('moveend', () => {
 
         // Remove existing markers from the map
         markers.forEach(marker => marker.remove());
-        markers = []; 
+        markers = [];
 
         // Deduplicate markersData
         const uniqueMarkers = markersData.filter(
@@ -782,11 +670,11 @@ map.on('moveend', () => {
     // Debounce updateMarkers for better performance
     const debouncedUpdateMarkers = debounce(updateMarkers, 300);
 
-    //Map Load Event and Fog Setting
     map.on('load', () => {
+        console.log('Map fully loaded');
         map.setFog({});
-
-        // addGeoJSONSource function to add each region's data source
+    
+        // Add GeoJSON sources
         const sources = [
             { id: 'us-states', url: '/data/us-states.geojson' },
             { id: 'uk-regions', url: '/data/uk-regions.geojson' },
@@ -794,25 +682,24 @@ map.on('moveend', () => {
             { id: 'aruba-region', url: '/data/aruba-region.geojson' },
             { id: 'italy-regions', url: '/data/italy-regions.geojson' },
         ];
-
+    
         sources.forEach(({ id, url }) => {
             if (!map.getSource(id)) {
                 addGeoJSONSource(map, id, url, 'id');
             }
         });
-        map.on('load', () => {
-            console.log('Map fully loaded');
-        
-            startInitialRotation(); 
-        
-            if (markersDataReady) {
-                placeStateMarkers(markersData, map);
-            } else {
-                console.warn('Markers data not ready at map load');
-            }
-        });
-        
-        //Initialize Facilities Data and Set Variables
+    
+        // Start initial globe rotation
+        startInitialRotation();
+    
+        // Check and place state markers
+        if (markersDataReady) {
+            placeStateMarkers(markersData, map);
+        } else {
+            console.warn('Markers data not ready at map load');
+        }
+
+     //Initialize Facilities Data and Set Variables
         let facilitiesData = [];
         const regionsWithFacilities = new Set();
         const statesWithFacilities = new Set();
@@ -878,8 +765,8 @@ map.on('moveend', () => {
                     addRegionInteractions(map, `${layerId}-fill`, sourceId, regionsWithFacilities);
                 });
 
-               // Place State/Region markers
-            placeStateMarkers(facilitiesData, map);
+                // Place State/Region markers
+                placeStateMarkers(facilitiesData, map);
 
                 // Populate markersData
                 markersData = facilities.map(facility => ({
@@ -928,16 +815,16 @@ map.on('moveend', () => {
                     marker.getElement().style.visibility = 'visible';
                 });
 
-    //             // Add regions dynamically for interactivity
-    // layerRegions.forEach(({ layerId, sourceId }) => {
-    //     addRegionLayer(map, layerId, sourceId, regionsWithFacilities);
-    //     addHoverOutlineLayer(map, `${layerId}-line-hover`, sourceId);
-    //     setRegionClickEvent(sourceId, 'id', 'name');
-    //     addRegionInteractions(map, `${layerId}-fill`, sourceId, regionsWithFacilities);
-    // });
+                //             // Add regions dynamically for interactivity
+                // layerRegions.forEach(({ layerId, sourceId }) => {
+                //     addRegionLayer(map, layerId, sourceId, regionsWithFacilities);
+                //     addHoverOutlineLayer(map, `${layerId}-line-hover`, sourceId);
+                //     setRegionClickEvent(sourceId, 'id', 'name');
+                //     addRegionInteractions(map, `${layerId}-fill`, sourceId, regionsWithFacilities);
+                // });
 
-    // Set up GT logo markers
-    gtLogoMarkers.forEach(marker => marker.getElement().style.visibility = 'visible');
+                // Set up GT logo markers
+                gtLogoMarkers.forEach(marker => marker.getElement().style.visibility = 'visible');
 
 
                 //Dynamic Logo per Facility
@@ -1012,16 +899,16 @@ map.on('moveend', () => {
                     const statesWithCustomers = Array.from(
                         new Set(facilitiesData.map(facility => facility.region_id))
                     );
-                
+
                     const bounds = new mapboxgl.LngLatBounds();
-                
+
                     statesWithCustomers.forEach(state => {
                         const stateCenter = getStateCenterCoordinates(state, facilitiesData);
                         if (stateCenter) {
                             const marker = new mapboxgl.Marker({ element: createGMarker() })
                                 .setLngLat(stateCenter)
                                 .addTo(map);
-                
+
                             marker.getElement().style.visibility = 'hidden'; // Initially hidden
                             stateRegionMarkers.push(marker);
                             bounds.extend(stateCenter);
@@ -1029,12 +916,12 @@ map.on('moveend', () => {
                             console.warn(`No center found for state: ${state}`);
                         }
                     });
-                
+
                     // Only fit bounds after user interaction
                     if (hasInteracted && statesWithCustomers.length > 0) {
                         map.fitBounds(bounds, { padding: 20 });
                     }
-                }          
+                }
 
                 // markers for each facility
                 let markers = facilities.map(({ ehr_system, hospital_name, location, hospital_address, longitude, latitude, parent_company, hospital_count }) => {
@@ -1431,248 +1318,248 @@ Hospital Count: <strong>${hospital_count}</strong>
 
 
 
-//  // layers behavior and reset button
-//  function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
-//     let hoveredRegionId = null;
-//     let selectedRegionId = null;
+        //  // layers behavior and reset button
+        //  function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
+        //     let hoveredRegionId = null;
+        //     let selectedRegionId = null;
 
-//     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-//     const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
-
-
-//     // Add reset button functionality inside
-// document.getElementById("reset-view").addEventListener("click", () => {
-// // Reset the map view
-// map.flyTo({ center: INITIAL_CENTER, zoom: INITIAL_ZOOM, pitch: 0 });
-
-// // Clear any selected regions
-// clearRegionSelection();
-// closeSidebar() 
-// });
-
-//     // Apply hover effect only to regions with facilities
-//     const applyHover = (regionId) => {
-//         if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
-//             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
-//         }
-//         hoveredRegionId = regionId;
-//         if (hoveredRegionId !== selectedRegionId) {
-//             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: true });
-//         }
-//     };
-
-//     const clearHover = () => {
-//         if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
-//             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
-//         }
-//         hoveredRegionId = null;
-//     };
-
-//     // Debounced hover function for non-touch devices
-//     const debouncedHover = debounce((e) => {
-//         const regionId = e.features[0].id;
-//         if (regionsWithFacilities.has(regionId)) {
-//             applyHover(regionId);
-//         }
-//     }, 50); // 50ms debounce delay
+        //     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        //     const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
 
 
-//     // Tap-to-Hover functionality for touch devices
-//     if (isTouchDevice) {
-//         map.on('touchstart', layerId, (e) => {
-//             const regionId = e.features[0].id;
+        //     // Add reset button functionality inside
+        // document.getElementById("reset-view").addEventListener("click", () => {
+        // // Reset the map view
+        // map.flyTo({ center: INITIAL_CENTER, zoom: INITIAL_ZOOM, pitch: 0 });
 
-//             if (regionsWithFacilities.has(regionId)) {
-//                 if (hoveredRegionId === regionId) {
-//                     // If already hovered, treat it as a click
-//                     selectRegion(regionId);
-//                 } else {
-//                     // Otherwise, just apply hover effect
-//                     applyHover(regionId);
-//                 }
-//             }
-//         });
+        // // Clear any selected regions
+        // clearRegionSelection();
+        // closeSidebar() 
+        // });
 
-//         map.on('touchend', layerId, clearHover);
-//         map.on('touchcancel', layerId, clearHover);
-//     }
+        //     // Apply hover effect only to regions with facilities
+        //     const applyHover = (regionId) => {
+        //         if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
+        //             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
+        //         }
+        //         hoveredRegionId = regionId;
+        //         if (hoveredRegionId !== selectedRegionId) {
+        //             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: true });
+        //         }
+        //     };
 
-//     // Regular hover for non-touch devices
-//     map.on(hoverEvent, layerId, (e) => {
-//         const regionId = e.features[0].id;
-//         // if (regionsWithFacilities.has(regionId)) {
-//         //     applyHover(regionId);
-//         // }
-//         applyHover(regionId);
-//     });
+        //     const clearHover = () => {
+        //         if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
+        //             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
+        //         }
+        //         hoveredRegionId = null;
+        //     };
 
-//     // Clear hover effect on mouse leave for non-touch devices
-//     if (!isTouchDevice) {
-//         map.on('mouseleave', layerId, clearHover);
-//     }
-
-//     // Function to select a region
-//     function selectRegion(regionId) {
-//         clearRegionSelection(); // Clear previous selection
-
-//         selectedRegionId = regionId;
-//         map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: true });
-
-//         // Update sidebar for the new selection
-//         updateSidebarForRegion(regionId);
-//     }
-
-//     // Handle selection on click
-//     map.on('click', layerId, (e) => {
-//         const regionId = e.features[0].id;
-//         if (regionsWithFacilities.has(regionId)) {
-//             selectRegion(regionId);
-//         }
-//     });
-
-//     // Clear selection when clicking outside
-//     map.on('click', (e) => {
-//         const features = map.queryRenderedFeatures(e.point, { layers: [layerId] });
-//         if (features.length === 0) {
-//             clearRegionSelection();
-//         }
-//     });
-
-//     // Clear selection and hover states when the sidebar is closed
-//     function clearRegionSelection() {
-//         clearHover();
-//         if (selectedRegionId !== null) {
-//             map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: false });
-//             selectedRegionId = null;
-//         }
-//     }
-
-//     // Attach clear function to sidebar close
-//     document.getElementById('close-sidebar').addEventListener('click', clearRegionSelection);
-
-//     // Placeholder function to update sidebar content based on region selection
-//     function updateSidebarForRegion(regionId) {
-//         // Logic to show content for the selected region in the sidebar
-//     }
-// }
+        //     // Debounced hover function for non-touch devices
+        //     const debouncedHover = debounce((e) => {
+        //         const regionId = e.features[0].id;
+        //         if (regionsWithFacilities.has(regionId)) {
+        //             applyHover(regionId);
+        //         }
+        //     }, 50); // 50ms debounce delay
 
 
-function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
+        //     // Tap-to-Hover functionality for touch devices
+        //     if (isTouchDevice) {
+        //         map.on('touchstart', layerId, (e) => {
+        //             const regionId = e.features[0].id;
 
-    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
+        //             if (regionsWithFacilities.has(regionId)) {
+        //                 if (hoveredRegionId === regionId) {
+        //                     // If already hovered, treat it as a click
+        //                     selectRegion(regionId);
+        //                 } else {
+        //                     // Otherwise, just apply hover effect
+        //                     applyHover(regionId);
+        //                 }
+        //             }
+        //         });
 
-    // Reset button functionality
-    document.getElementById("reset-view").addEventListener("click", () => {
-        map.flyTo({ center: INITIAL_CENTER, zoom: INITIAL_ZOOM, pitch: 0 });
-        clearRegionSelection();
-        closeSidebar();
-    });
+        //         map.on('touchend', layerId, clearHover);
+        //         map.on('touchcancel', layerId, clearHover);
+        //     }
 
-    // Apply hover effect only to regions with facilities
-    const applyHover = (regionId) => {
-        if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
-            map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
-        }
-        hoveredRegionId = regionId;
-        if (hoveredRegionId !== selectedRegionId) {
-            map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: true });
-        }
-    };
+        //     // Regular hover for non-touch devices
+        //     map.on(hoverEvent, layerId, (e) => {
+        //         const regionId = e.features[0].id;
+        //         // if (regionsWithFacilities.has(regionId)) {
+        //         //     applyHover(regionId);
+        //         // }
+        //         applyHover(regionId);
+        //     });
 
-    const clearHover = () => {
-        if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
-            map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
-        }
-        hoveredRegionId = null;
-    };
+        //     // Clear hover effect on mouse leave for non-touch devices
+        //     if (!isTouchDevice) {
+        //         map.on('mouseleave', layerId, clearHover);
+        //     }
 
-    // Tap-to-Hover functionality for touch devices
-    if (isTouchDevice) {
-        map.on('touchstart', layerId, (e) => {
-            const regionId = e.features[0].id;
-            if (regionsWithFacilities.has(regionId)) {
-                if (hoveredRegionId === regionId) {
-                    selectRegion(regionId);
-                } else {
-                    applyHover(regionId);
+        //     // Function to select a region
+        //     function selectRegion(regionId) {
+        //         clearRegionSelection(); // Clear previous selection
+
+        //         selectedRegionId = regionId;
+        //         map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: true });
+
+        //         // Update sidebar for the new selection
+        //         updateSidebarForRegion(regionId);
+        //     }
+
+        //     // Handle selection on click
+        //     map.on('click', layerId, (e) => {
+        //         const regionId = e.features[0].id;
+        //         if (regionsWithFacilities.has(regionId)) {
+        //             selectRegion(regionId);
+        //         }
+        //     });
+
+        //     // Clear selection when clicking outside
+        //     map.on('click', (e) => {
+        //         const features = map.queryRenderedFeatures(e.point, { layers: [layerId] });
+        //         if (features.length === 0) {
+        //             clearRegionSelection();
+        //         }
+        //     });
+
+        //     // Clear selection and hover states when the sidebar is closed
+        //     function clearRegionSelection() {
+        //         clearHover();
+        //         if (selectedRegionId !== null) {
+        //             map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: false });
+        //             selectedRegionId = null;
+        //         }
+        //     }
+
+        //     // Attach clear function to sidebar close
+        //     document.getElementById('close-sidebar').addEventListener('click', clearRegionSelection);
+
+        //     // Placeholder function to update sidebar content based on region selection
+        //     function updateSidebarForRegion(regionId) {
+        //         // Logic to show content for the selected region in the sidebar
+        //     }
+        // }
+
+
+        function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
+
+            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
+
+            // Reset button functionality
+            document.getElementById("reset-view").addEventListener("click", () => {
+                map.flyTo({ center: INITIAL_CENTER, zoom: INITIAL_ZOOM, pitch: 0 });
+                clearRegionSelection();
+                closeSidebar();
+            });
+
+            // Apply hover effect only to regions with facilities
+            const applyHover = (regionId) => {
+                if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
+                    map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
                 }
+                hoveredRegionId = regionId;
+                if (hoveredRegionId !== selectedRegionId) {
+                    map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: true });
+                }
+            };
+
+            const clearHover = () => {
+                if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
+                    map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
+                }
+                hoveredRegionId = null;
+            };
+
+            // Tap-to-Hover functionality for touch devices
+            if (isTouchDevice) {
+                map.on('touchstart', layerId, (e) => {
+                    const regionId = e.features[0].id;
+                    if (regionsWithFacilities.has(regionId)) {
+                        if (hoveredRegionId === regionId) {
+                            selectRegion(regionId);
+                        } else {
+                            applyHover(regionId);
+                        }
+                    }
+                });
+
+                map.on('touchend', layerId, clearHover);
+                map.on('touchcancel', layerId, clearHover);
             }
-        });
 
-        map.on('touchend', layerId, clearHover);
-        map.on('touchcancel', layerId, clearHover);
-    }
+            // Hover for non-touch devices
+            map.on(hoverEvent, layerId, (e) => {
+                const regionId = e.features[0].id;
+                applyHover(regionId);
+            });
 
-    // Hover for non-touch devices
-    map.on(hoverEvent, layerId, (e) => {
-        const regionId = e.features[0].id;
-        applyHover(regionId);
-    });
+            if (!isTouchDevice) {
+                map.on('mouseleave', layerId, clearHover);
+            }
 
-    if (!isTouchDevice) {
-        map.on('mouseleave', layerId, clearHover);
-    }
+            // Function to select a region
+            function selectRegion(regionId) {
+                clearRegionSelection(); // Clear previous selection
 
-    // Function to select a region
-    function selectRegion(regionId) {
-        clearRegionSelection(); // Clear previous selection
+                selectedRegionId = regionId;
+                map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: true });
 
-        selectedRegionId = regionId;
-        map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: true });
+                // Fetch locations for the selected region
+                const locationsInRegion = facilities.filter(facility => facility.region_id === regionId);
 
-        // Fetch locations for the selected region
-        const locationsInRegion = facilities.filter(facility => facility.region_id === regionId);
+                // Add markers for each location
+                locationsInRegion.forEach(location => {
+                    const marker = new mapboxgl.Marker({ color: '#ff8502' }) // Customize marker color
+                        .setLngLat([location.longitude, location.latitude])
+                        .addTo(map);
+                    locationMarkers.push(marker); // Store marker for later removal
+                });
 
-        // Add markers for each location
-        locationsInRegion.forEach(location => {
-            const marker = new mapboxgl.Marker({ color: '#ff8502' }) // Customize marker color
-                .setLngLat([location.longitude, location.latitude])
-                .addTo(map);
-            locationMarkers.push(marker); // Store marker for later removal
-        });
+                updateSidebarForRegion(regionId); // Update sidebar
+            }
 
-        updateSidebarForRegion(regionId); // Update sidebar
-    }
+            // Clear selection when clicking outside
+            map.on('click', (e) => {
+                const features = map.queryRenderedFeatures(e.point, { layers: [layerId] });
+                if (features.length === 0) {
+                    clearRegionSelection();
+                }
+            });
 
-    // Clear selection when clicking outside
-    map.on('click', (e) => {
-        const features = map.queryRenderedFeatures(e.point, { layers: [layerId] });
-        if (features.length === 0) {
-            clearRegionSelection();
+            // Function to clear selection and markers
+            function clearRegionSelection() {
+                clearHover();
+
+                if (selectedRegionId !== null) {
+                    map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: false });
+                    selectedRegionId = null;
+                }
+
+                // Remove all location markers
+                locationMarkers.forEach(marker => marker.remove());
+                locationMarkers = [];
+            }
+
+            // Attach clearRegionSelection to sidebar close button
+            document.getElementById('close-sidebar').addEventListener('click', () => {
+                clearRegionSelection();
+                closeSidebar();
+            });
+
+            // Prevent markers from showing on zoom
+            map.on('zoom', () => {
+                // No action required on zoom - markers are controlled via selectRegion
+            });
+
+            // Placeholder function for updating the sidebar
+            function updateSidebarForRegion(regionId) {
+                // Logic to display region-specific details in the sidebar
+            }
         }
-    });
-
-    // Function to clear selection and markers
-    function clearRegionSelection() {
-        clearHover();
-
-        if (selectedRegionId !== null) {
-            map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: false });
-            selectedRegionId = null;
-        }
-
-        // Remove all location markers
-        locationMarkers.forEach(marker => marker.remove());
-        locationMarkers = [];
-    }
-
-    // Attach clearRegionSelection to sidebar close button
-    document.getElementById('close-sidebar').addEventListener('click', () => {
-        clearRegionSelection();
-        closeSidebar();
-    });
-
-    // Prevent markers from showing on zoom
-    map.on('zoom', () => {
-        // No action required on zoom - markers are controlled via selectRegion
-    });
-
-    // Placeholder function for updating the sidebar
-    function updateSidebarForRegion(regionId) {
-        // Logic to display region-specific details in the sidebar
-    }
-}
 
 
 
@@ -1685,7 +1572,7 @@ function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
             selectedStateId = null;
         }
         document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
-        
+
 
         // Reset view button
         // document.getElementById("reset-view").addEventListener("click", () => {
@@ -1707,33 +1594,33 @@ function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
             canada: { center: [-106.3468, 56.1304], zoom: 3, pitch: 0 },
             aruba: { center: [-70.027, 12.5246], zoom: 10, pitch: 45 }
         };
-        
+
         function flyToRegion(region) {
             if (!regions[region]) {
                 console.error(`Region "${region}" is not defined.`);
                 return;
             }
-        
+
             const { center, zoom } = regions[region];
             map.flyTo({
                 center,
                 zoom,
-                pitch:0,
+                pitch: 0,
                 bearing: 0,
-                duration: 2000, 
+                duration: 2000,
                 easing: (t) => t * (2 - t)
             });
-        
+
             // Highlight active button
             document.querySelectorAll(".region-button").forEach(button => button.classList.remove("active"));
             document.getElementById(`fly-to-${region}`).classList.add("active");
         }
-        
+
         // Attach event listeners dynamically
         Object.keys(regions).forEach(region => {
             document.getElementById(`fly-to-${region}`).addEventListener("click", () => flyToRegion(region));
         });
-        
+
 
         // Drag Initialization and Threshold Handling
         let isDragging = false;

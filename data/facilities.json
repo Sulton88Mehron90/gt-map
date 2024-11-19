@@ -52,7 +52,7 @@
         "main_facility": true
     },
     {
-        "ehr_system": "Cerner ITWorks",
+        "ehr_system": "Cerner-ITWorks",
         "hospital_name": "Beloit Memorial Hospital",
         "hospital_count": 1,
         "location": "Beloit, WI",
@@ -66,7 +66,7 @@
         "main_facility": true
     },
     {
-        "ehr_system": "Cerner ITWorks",
+        "ehr_system": "Cerner-ITWorks",
         "hospital_name": "Central Maine Medical Center",
         "hospital_count": 2,
         "location": "Lewiston, ME",
@@ -80,7 +80,7 @@
         "main_facility": true
     },
     {
-        "ehr_system": "Cerner ITWorks",
+        "ehr_system": "Cerner-ITWorks",
         "hospital_name": "Bridgton Hospital",
         "hospital_count": 1,
         "location": "Bridgton, ME",
@@ -94,7 +94,7 @@
         "main_facility": false
     },
     {
-        "ehr_system": "Cerner ITWorks",
+        "ehr_system": "Cerner-ITWorks",
         "hospital_name": "Rumford Hospital",
         "hospital_count": 1,
         "location": "Rumford, ME",
@@ -108,7 +108,7 @@
         "main_facility": false
     },
     {
-        "ehr_system": "Cerner ITWorks",
+        "ehr_system": "Cerner-ITWorks",
         "hospital_name": "Baptist Hospital of Miami",
         "hospital_count": 1,
         "location": "Miami, FL",
@@ -122,7 +122,7 @@
         "main_facility": false
     },
     {
-        "ehr_system": "Cerner ITWorks",
+        "ehr_system": "Cerner-ITWorks",
         "hospital_name": "South Miami Hospital",
         "hospital_count": 1,
         "location": "South Miami, FL",
@@ -136,7 +136,7 @@
         "main_facility": false
     },
     {
-        "ehr_system": "Cerner ITWorks",
+        "ehr_system": "Cerner-ITWorks",
         "hospital_name": "Doctors Hospital",
         "hospital_count": 1,
         "location": "Coral Gables, FL",
@@ -150,7 +150,7 @@
         "main_facility": true
     },
     {
-        "ehr_system": "Cerner ITWorks",
+        "ehr_system": "Cerner-ITWorks",
         "hospital_name": "Homestead Hospital",
         "hospital_count": 1,
         "location": "Homestead, FL",
@@ -164,7 +164,7 @@
         "main_facility": false
     },
     {
-        "ehr_system": "Cerner ITWorks",
+        "ehr_system": "Cerner-ITWorks",
         "hospital_name": "Mariners Hospital",
         "hospital_count": 1,
         "location": "Tavernier, FL",
@@ -178,7 +178,7 @@
         "main_facility": false
     },
     {
-        "ehr_system": "Cerner ITWorks",
+        "ehr_system": "Cerner-ITWorks",
         "hospital_name": "West Kendall Baptist Hospital",
         "hospital_count": 1,
         "location": "Miami, FL",
@@ -192,7 +192,7 @@
         "main_facility": false
     },
     {
-        "ehr_system": "Cerner ITWorks",
+        "ehr_system": "Cerner-ITWorks",
         "hospital_name": "Boca Raton Regional Hospital",
         "hospital_count": 1,
         "location": "Boca Raton, FL",
@@ -206,7 +206,7 @@
         "main_facility": false
     },
     {
-        "ehr_system": "Cerner ITWorks",
+        "ehr_system": "Cerner-ITWorks",
         "hospital_name": "Boca Raton Regional Hospital Lynn Cancer Institute",
         "hospital_count": 1,
         "location": "Boca Raton, FL",
