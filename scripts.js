@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // let isInitialRotation = true;
     let hoveredRegionId = null;
     let selectedRegionId = null;
+    let locationMarkers = []; 
 
     // Global variables for markers
     let stateRegionMarkers = [];
@@ -55,17 +56,6 @@ document.addEventListener("DOMContentLoaded", () => {
             map.easeTo({ center, duration: 1000, easing: (n) => n });
         }
     }
-
-    // // Event listeners for user interaction
-    // map.on('mousedown', () => userInteracting = true);
-    // map.on('dragstart', () => userInteracting = true);
-    // // map.on('moveend', () => spinGlobe());
-
-    // map.on('moveend', () => {
-    //     spinGlobe(); // 
-    //     updateMarkers();
-    //     // console.log('Markers Data:', markersData); // Verify markersData is populated
-    // });
 
     // Event listeners for user interaction
 map.on('mousedown', () => {
@@ -639,7 +629,9 @@ map.on('moveend', () => {
                     zoom: 12,
                     pitch: 45,
                     bearing: 0,
-                    essential: true
+                    essential: true,
+                    duration: 2000, 
+                    easing: (t) => t * (2 - t)
                 });
             });
 
@@ -1566,9 +1558,6 @@ Hospital Count: <strong>${hospital_count}</strong>
 
 
 function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
-    let hoveredRegionId = null;
-    let selectedRegionId = null;
-    let locationMarkers = []; // Store individual location markers
 
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';

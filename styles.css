@@ -587,7 +587,7 @@ hospital-list-sidebar.collapsed #close-sidebar {
 }
 
 .sidebar-logo:hover {
-    box-shadow: 0 6px 12px #ff8502;
+    box-shadow: 0 6px 12px whitesmoke;
     cursor: pointer; 
 }
 
