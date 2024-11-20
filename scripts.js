@@ -1,12 +1,23 @@
-//Imports and Mapbox Token Initialization
+// Imports and Mapbox Token Initialization
 import { MAPBOX_TOKEN } from './config.js';
 import { loadFacilitiesData } from './dataLoader.js';
-// import debounce from 'lodash.debounce';
 mapboxgl.accessToken = MAPBOX_TOKEN;
+
+// Constants
+const INITIAL_CENTER = [-75.4265, 40.0428]; // Coordinates for Berwyn, PA
+const INITIAL_ZOOM = 1;
 
 // Map Initialization on DOMContentLoaded
 document.addEventListener("DOMContentLoaded", () => {
     const sidebar = document.getElementById("hospital-list-sidebar");
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/light-v11',
+        projection: 'globe',
+        zoom: INITIAL_ZOOM,
+        center: INITIAL_CENTER,
+    });
+
     const sidebarHeader = document.querySelector(".sidebar-header");
     const backToTopButton = document.getElementById('back-to-top-button');
     // const minimizeButton = document.getElementById('minimize-sidebar');
@@ -16,18 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     const gtLogo = document.querySelector('.sidebar-logo');
     const backButton = document.createElement('button');
-
-    //set the initial view of Mapbox globe
-    const INITIAL_CENTER = [-75.4265, 40.0428]; //The coordinates for 1235 Westlakes Drive, Suite 120, Berwyn, PA 19312, are approximately 40.06361° N latitude and 75.47156° W longitude
-    const INITIAL_ZOOM = 1;
-
-    const map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/light-v11',
-        projection: 'globe',
-        zoom: INITIAL_ZOOM,
-        center: INITIAL_CENTER,
-    });
 
     // Adding navigation controls
     map.addControl(new mapboxgl.NavigationControl());
@@ -44,7 +43,17 @@ document.addEventListener("DOMContentLoaded", () => {
     let markersData = []; // To store marker data from facilities
     let markersDataReady = false;
 
-    // spin the globe smoothly when zoomed out
+    // Toggle visibility for elements (markers or layers)
+    function toggleVisibility(elements, visibility) {
+        elements.forEach(el => {
+            if (el.getElement) {
+                el.getElement().style.visibility = visibility; // For markers
+            } else if (map.getLayer(el)) {
+                map.setLayoutProperty(el, 'visibility', visibility); // For Mapbox layers
+            }
+        });
+    }
+
     function spinGlobe() {
         if (!userInteracting && map.getZoom() < 5) {
             const center = map.getCenter();
@@ -52,6 +61,12 @@ document.addEventListener("DOMContentLoaded", () => {
             map.easeTo({ center, duration: 1000, easing: (n) => n });
         }
     }
+    
+    // Trigger spinGlobe only under certain conditions
+    setTimeout(() => {
+        if (!userInteracting && !hasInteracted) spinGlobe();
+    }, 5000);
+    
 
     // Event listeners for user interaction
     map.on('mousedown', () => {
@@ -74,33 +89,20 @@ document.addEventListener("DOMContentLoaded", () => {
         updateMarkers();
     });
 
-    // Start the globe spinning animation
-    spinGlobe();
-
-    // Map Animation on Load to set the globe size and center
-    map.on('load', () => {
-        console.log('Map loaded');
-        map.easeTo({
-            center: [-75.4265, 40.0428],
-            // zoom: 0,
-            zoom: 1,
-            duration: 3000,
-            easing: (t) => t * (2 - t)
-        });
+   // Map Animation on Load to set the globe size and center
+map.on('load', () => {
+    // console.log('Map loaded');
+    startInitialRotation();
     });
 
-        // Initial globe rotation, show GT logos, and ensure clusters are hidden
-        function startInitialRotation() {
-            // globe animation with GT logos visible
-            map.easeTo({
-                center: [-75.4265, 40.0428],
-                zoom: 1,
-                duration: 3000,
-                easing: (t) => t * (2 - t),
-            });
-        }
-    
-
+function startInitialRotation() {
+    map.easeTo({
+        center: INITIAL_CENTER,
+        zoom: INITIAL_ZOOM,
+        duration: 3000,
+        easing: (t) => t * (2 - t),
+    });
+}
     // GT logo markers for countries
     const countries = [
         { name: 'USA', lngLat: [-80.147085, 30.954096] }, // gt office Near by location
@@ -141,19 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Initial globe rotation, show GT logos, and ensure clusters are hidden
-    function startInitialRotation() {
-        // globe animation with GT logos visible
-        map.easeTo({
-            center: [-75.4265, 40.0428],
-            zoom: 1,
-            duration: 3000,
-            easing: (t) => t * (2 - t),
-        });
-    }
-
     // Function to handle first interaction, hiding GT logos and showing clusters
-
     function onFirstInteraction() {
         if (!hasInteracted) {
             hasInteracted = true;
@@ -588,7 +578,7 @@ document.addEventListener("DOMContentLoaded", () => {
             marker.style.width = `${size}px`;
             marker.style.height = `${size}px`;
         });
-        console.log(`Adjusted marker size to: ${size}px at zoom level ${zoomLevel}`);
+        // console.log(`Adjusted marker size to: ${size}px at zoom level ${zoomLevel}`);
     }
 
     // custom marker with a popup
@@ -705,6 +695,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const statesWithFacilities = new Set();
         let selectedStateId = null;
         const logoUrl = './img/gtLogo.png';
+        
 
 
         // imported loadFacilitiesData function  
@@ -730,9 +721,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 // console.log("Facilities data loaded:", facilitiesData); // Debug
 
 
-                console.log("regionsWithFacilities:", Array.from(regionsWithFacilities));
+                // console.log("regionsWithFacilities:", Array.from(regionsWithFacilities));
 
-                console.log('Locations in data:', facilitiesData.map(f => f.location));
+                // console.log('Locations in data:', facilitiesData.map(f => f.location));
 
                 // Define regions dynamically
                 const layerRegions = [
@@ -766,7 +757,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
 
                 // Place State/Region markers
-                placeStateMarkers(facilitiesData, map);
+                // placeStateMarkers(facilitiesData, map);
 
                 // Populate markersData
                 markersData = facilities.map(facility => ({
@@ -789,7 +780,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Initial render of markers
                 updateMarkers();
 
-
                 // debounced updateMarkers to map events
                 map.on('moveend', debouncedUpdateMarkers);
                 map.on('zoomend', () => {
@@ -808,63 +798,91 @@ document.addEventListener("DOMContentLoaded", () => {
                 map.on('reset', () => adjustMarkerSize(map.getZoom()));
 
                 // Feature 3: Place state/region markers
-                placeStateMarkers(facilities, map);
+                // placeStateMarkers(facilities, map);
 
                 // Feature 4: Add GT logo markers
                 gtLogoMarkers.forEach(marker => {
                     marker.getElement().style.visibility = 'visible';
                 });
 
-                //             // Add regions dynamically for interactivity
-                // layerRegions.forEach(({ layerId, sourceId }) => {
-                //     addRegionLayer(map, layerId, sourceId, regionsWithFacilities);
-                //     addHoverOutlineLayer(map, `${layerId}-line-hover`, sourceId);
-                //     setRegionClickEvent(sourceId, 'id', 'name');
-                //     addRegionInteractions(map, `${layerId}-fill`, sourceId, regionsWithFacilities);
-                // });
+                // Load custom marker image for state markers. redDot.png 
+                //Resize redDot.png to be small, like 20px x 20px.
+            map.loadImage('./img/gtLogo.png', (error, image) => {
+                if (error) throw error;
+    if (!map.hasImage('custom-marker')) {
+        map.addImage('custom-marker', image, { sdf: false }); 
+                }
+                // Add custom image to the map
+                if (!map.hasImage('custom-marker')) {
+                    map.addImage('custom-marker', image);
+                }
 
+                // Add GeoJSON source for state markers
+                map.addSource('state-markers', {
+                    type: 'geojson',
+                    data: {
+                        type: 'FeatureCollection',
+                        features: facilitiesData
+                            .filter(facility => facility.main_facility) 
+                            .map(facility => ({
+                                type: 'Feature',
+                                properties: {
+                                    region_id: facility.region_id,
+                                    has_facilities: true,
+                                },
+                                geometry: {
+                                    type: 'Point',
+                                    coordinates: [facility.longitude, facility.latitude],
+                                },
+                            })),
+                    },
+                });
+
+                // Add a layer for state markers
+                map.addLayer({
+                    id: 'state-markers',
+                    type: 'symbol',
+                    source: 'state-markers',
+                    layout: {
+                        'icon-image': 'custom-marker',
+                        'icon-size': 0.05, 
+                    },
+                });
+                
+                // Dynamically adjust icon size based on zoom level
+                map.on('zoomend', () => {
+                    const zoomLevel = map.getZoom();
+                    const size = zoomLevel < 4 ? 0.05 : zoomLevel > 10 ? 0.3 : 0.1; 
+                    map.setLayoutProperty('state-markers', 'icon-size', size);
+                });
+
+
+            });                
                 // Set up GT logo markers
-                gtLogoMarkers.forEach(marker => marker.getElement().style.visibility = 'visible');
+                // gtLogoMarkers.forEach(marker => marker.getElement().style.visibility = 'visible');
 
-
-                //Dynamic Logo per Facility
-                // function createGMarker(logoUrl) {
+                // // Function to create a marker with the company logo
+                // function createGMarker() {
                 //     const div = document.createElement('div');
                 //     div.className = 'g-marker';
-                //     div.style.backgroundImage = `url(${logoUrl})`;
                 //     return div;
                 // }
 
-                // facilitiesData.forEach(facility => {
-                //     const marker = new mapboxgl.Marker({ 
-                //         element: createGMarer(facility.logoUrl) 
-                //     })
-                //     .setLngLat([facility.longitude, facility.latitude])
-                //     .addTo(map);
-                // });
+                // // Function to get state center dynamically based on main_facility
+                // function getStateCenterCoordinates(stateId, facilitiesData) {
+                //     const mainFacility = facilitiesData.find(
+                //         facility => facility.region_id === stateId && facility.main_facility
+                //     );
 
-                // Function to create a marker with the company logo
-                function createGMarker() {
-                    const div = document.createElement('div');
-                    div.className = 'g-marker';
-                    return div;
-                }
+                //     if (mainFacility) {
+                //         return [mainFacility.longitude, mainFacility.latitude];
+                //     }
 
-                // Function to get state center dynamically based on main_facility
-                function getStateCenterCoordinates(stateId, facilitiesData) {
-                    const mainFacility = facilitiesData.find(
-                        facility => facility.region_id === stateId && facility.main_facility
-                    );
+                //     console.warn(`No main facility found for state: ${stateId}`);
+                //     return null;
+                // }
 
-                    if (mainFacility) {
-                        return [mainFacility.longitude, mainFacility.latitude];
-                    }
 
-                    console.warn(`No main facility found for state: ${stateId}`);
-                    return null;
-                }
-
-                // Place state/region markers on the map
                 // function placeStateMarkers(facilitiesData, map) {
                 //     const statesWithCustomers = Array.from(
                 //         new Set(facilitiesData.map(facility => facility.region_id))
@@ -880,48 +898,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 //                 .addTo(map);
 
                 //             marker.getElement().style.visibility = 'hidden'; // Initially hidden
-                //             stateRegionMarkers.push(marker); // Store marker for later visibility toggle
-
-                //             // console.log(`Marker added for state at: ${stateCenter}`);
+                //             stateRegionMarkers.push(marker);
                 //             bounds.extend(stateCenter);
                 //         } else {
                 //             console.warn(`No center found for state: ${state}`);
                 //         }
                 //     });
 
-                //     if (statesWithCustomers.length > 0) {
+                //     // Only fit bounds after user interaction
+                //     if (hasInteracted && statesWithCustomers.length > 0) {
                 //         map.fitBounds(bounds, { padding: 20 });
                 //     }
                 // }
-
-
-                function placeStateMarkers(facilitiesData, map) {
-                    const statesWithCustomers = Array.from(
-                        new Set(facilitiesData.map(facility => facility.region_id))
-                    );
-
-                    const bounds = new mapboxgl.LngLatBounds();
-
-                    statesWithCustomers.forEach(state => {
-                        const stateCenter = getStateCenterCoordinates(state, facilitiesData);
-                        if (stateCenter) {
-                            const marker = new mapboxgl.Marker({ element: createGMarker() })
-                                .setLngLat(stateCenter)
-                                .addTo(map);
-
-                            marker.getElement().style.visibility = 'hidden'; // Initially hidden
-                            stateRegionMarkers.push(marker);
-                            bounds.extend(stateCenter);
-                        } else {
-                            console.warn(`No center found for state: ${state}`);
-                        }
-                    });
-
-                    // Only fit bounds after user interaction
-                    if (hasInteracted && statesWithCustomers.length > 0) {
-                        map.fitBounds(bounds, { padding: 20 });
-                    }
-                }
 
                 // markers for each facility
                 let markers = facilities.map(({ ehr_system, hospital_name, location, hospital_address, longitude, latitude, parent_company, hospital_count }) => {
