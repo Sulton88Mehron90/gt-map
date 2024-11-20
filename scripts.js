@@ -43,16 +43,16 @@ document.addEventListener("DOMContentLoaded", () => {
     let markersData = []; // To store marker data from facilities
     let markersDataReady = false;
 
-    // Toggle visibility for elements (markers or layers)
-    function toggleVisibility(elements, visibility) {
-        elements.forEach(el => {
-            if (el.getElement) {
-                el.getElement().style.visibility = visibility; // For markers
-            } else if (map.getLayer(el)) {
-                map.setLayoutProperty(el, 'visibility', visibility); // For Mapbox layers
-            }
-        });
-    }
+   // Toggle visibility for elements (markers or layers)
+function toggleVisibility(elements, visibility) {
+    elements.forEach(el => {
+        if (el.getElement) {
+            el.getElement().style.visibility = visibility; 
+        } else if (map.getLayer(el)) {
+            map.setLayoutProperty(el, 'visibility', visibility); 
+        }
+    });
+}
 
     function spinGlobe() {
         if (!userInteracting && map.getZoom() < 5) {
@@ -140,6 +140,7 @@ function startInitialRotation() {
             setLayerVisibility('clusters', 'none');
             setLayerVisibility('cluster-count', 'none');
             setLayerVisibility('unclustered-point', 'none');
+            setLayerVisibility('state-markers', 'none');
         }
     });
 
@@ -157,6 +158,7 @@ function startInitialRotation() {
             setLayerVisibility('clusters', 'visible');
             setLayerVisibility('cluster-count', 'visible');
             setLayerVisibility('unclustered-point', 'visible');
+            setLayerVisibility('state-markers', 'visible');
 
             // Show state/region markers after the first interaction
             stateRegionMarkers.forEach(marker => {
@@ -689,8 +691,6 @@ function startInitialRotation() {
         const statesWithFacilities = new Set();
         let selectedStateId = null;
         const logoUrl = './img/gtLogo.png';
-        
-
 
         // imported loadFacilitiesData function  
         loadFacilitiesData()
@@ -800,6 +800,122 @@ function startInitialRotation() {
                 });
 ////////
   // Load custom marker image for state markers
+// map.loadImage('./img/gtLogo.png', (error, image) => {
+//     if (error) {
+//         console.error('Error loading image:', error);
+//         return;
+//     }
+
+//     // Add state marker image
+//     if (!map.hasImage('custom-marker')) {
+//         map.addImage('custom-marker', image, { sdf: false });
+//     }
+
+//     // Add GeoJSON source for state markers
+//     map.addSource('state-markers', {
+//         type: 'geojson',
+//         data: {
+//             type: 'FeatureCollection',
+//             features: Array.from(new Set(facilitiesData.map(f => f.region_id))) // Unique states
+//                 .filter(regionId => regionId) // Ensure non-null region IDs
+//                 .map(regionId => {
+//                     const stateFacilities = facilitiesData.filter(f => f.region_id === regionId);
+//                     const stateCenter = stateFacilities.length
+//                         ? [stateFacilities[0].longitude, stateFacilities[0].latitude] // Use first facility as state center
+//                         : null;
+
+//                     return stateCenter
+//                         ? {
+//                             type: 'Feature',
+//                             properties: { region_id: regionId },
+//                             geometry: {
+//                                 type: 'Point',
+//                                 coordinates: stateCenter
+//                             }
+//                         }
+//                         : null;
+//                 })
+//                 .filter(f => f) // Remove nulls
+//         }
+//     });
+
+//     // Add a layer for the state "G" markers
+//     map.addLayer({
+//         id: 'state-markers',
+//         type: 'symbol',
+//         source: 'state-markers',
+//         layout: {
+//             'icon-image': 'custom-marker',
+//             'icon-size': 0.1,
+//             'visibility': 'none' // Initially hidden during globe rotation
+//         }
+//     });
+
+//     // Show state markers after the globe rotation ends
+//     map.on('idle', () => {
+//         if (map.getZoom() <= 3) {
+//             map.setLayoutProperty('state-markers', 'visibility', 'visible');
+//             map.setLayoutProperty('clusters', 'visibility', 'none');
+//             map.setLayoutProperty('unclustered-point', 'visibility', 'none');
+//         }
+//     });
+    
+//     // Add click event for state markers
+// // Hide state markers and show clusters when a state is clicked
+// map.on('click', 'state-markers', (e) => {
+//     const clickedFeature = e.features[0];
+//     const regionId = clickedFeature.properties.region_id;
+
+//     // Fit the map to the state bounds
+//     const stateFacilities = facilitiesData.filter(f => f.region_id === regionId);
+//     const stateBounds = new mapboxgl.LngLatBounds();
+//     stateFacilities.forEach(facility => stateBounds.extend([facility.longitude, facility.latitude]));
+
+//     map.fitBounds(stateBounds, {
+//         padding: 50,
+//         maxZoom: 9,
+//         duration: 2000
+//     });
+
+//     // Update visibility
+//     toggleVisibility(['state-markers'], 'none');
+//     toggleVisibility(['clusters', 'unclustered-point'], 'visible');
+// });
+
+// // Reset view to show only state markers
+// map.on('click', (e) => {
+//     const features = map.queryRenderedFeatures(e.point, {
+//         layers: ['state-markers', 'clusters', 'unclustered-point']
+//     });
+
+//     if (!features.length) {
+//         toggleVisibility(['state-markers'], 'visible');
+//         toggleVisibility(['clusters', 'unclustered-point'], 'none');
+//         map.easeTo({
+//             center: [-98.5795, 39.8283], // Center of the US
+//             zoom: 3,
+//             duration: 2000,
+//         });
+//     }
+// });
+
+//     map.on('zoomend', () => {
+//         const zoomLevel = map.getZoom();
+//         if (zoomLevel < 6) {
+//             map.setLayoutProperty('clusters', 'visibility', 'none');
+//             map.setLayoutProperty('unclustered-point', 'visibility', 'none');
+//         } else {
+//             map.setLayoutProperty('clusters', 'visibility', 'visible');
+//             map.setLayoutProperty('unclustered-point', 'visibility', 'visible');
+//         }
+//     });
+    
+    
+
+// });
+
+
+// Load custom marker image for state markers
 map.loadImage('./img/gtLogo.png', (error, image) => {
     if (error) {
         console.error('Error loading image:', error);
@@ -854,26 +970,20 @@ map.loadImage('./img/gtLogo.png', (error, image) => {
     // Show state markers after the globe rotation ends
     map.on('idle', () => {
         if (map.getZoom() <= 3) {
-            map.setLayoutProperty('state-markers', 'visibility', 'visible');
-            map.setLayoutProperty('clusters', 'visibility', 'none');
-            map.setLayoutProperty('unclustered-point', 'visibility', 'none');
+            toggleVisibility(['state-markers'], 'visible');
+            toggleVisibility(['clusters', 'unclustered-point'], 'none');
         }
     });
-    
-    
-    // Add click event for state markers
+
+    // Handle state marker click
     map.on('click', 'state-markers', (e) => {
         const clickedFeature = e.features[0];
         const regionId = clickedFeature.properties.region_id;
 
-        // Zoom into the clicked state
-        const stateFacilities = facilitiesData.filter(facility => facility.region_id === regionId);
+        // Fit the map to the state bounds
+        const stateFacilities = facilitiesData.filter(f => f.region_id === regionId);
         const stateBounds = new mapboxgl.LngLatBounds();
-
-        // Extend bounds with each facility's coordinates
-        stateFacilities.forEach(facility => {
-            stateBounds.extend([facility.longitude, facility.latitude]);
-        });
+        stateFacilities.forEach(facility => stateBounds.extend([facility.longitude, facility.latitude]));
 
         map.fitBounds(stateBounds, {
             padding: 50,
@@ -881,64 +991,39 @@ map.loadImage('./img/gtLogo.png', (error, image) => {
             duration: 2000
         });
 
-map.setLayoutProperty('state-markers', 'visibility', 'none');
-map.setLayoutProperty('clusters', 'visibility', 'visible');
-map.setLayoutProperty('unclustered-point', 'visibility', 'visible');
-map.once('moveend', () => {
-    const zoomLevel = map.getZoom();
-
-    if (zoomLevel >= 6) {
-        map.setLayoutProperty('clusters', 'visibility', 'visible');
-        map.setLayoutProperty('unclustered-point', 'visibility', 'visible');
-    }
-});
-
-map.setLayoutProperty('clusters', 'visibility', 'none');
-map.setLayoutProperty('unclustered-point', 'visibility', 'none');
-
-
-map.on('click', 'state-markers', (e) => {
-    const clickedFeature = e.features[0];
-    const regionId = clickedFeature.properties.region_id;
-
-    // Zoom into the clicked state
-    const stateFacilities = facilitiesData.filter(facility => facility.region_id === regionId);
-    const stateBounds = new mapboxgl.LngLatBounds();
-
-    stateFacilities.forEach(facility => {
-        stateBounds.extend([facility.longitude, facility.latitude]);
+        // Hide state markers and show clusters
+        toggleVisibility(['state-markers'], 'none');
+        toggleVisibility(['clusters', 'unclustered-point', 'cluster-count'], 'visible');
     });
 
-    map.fitBounds(stateBounds, {
-        padding: 50,
-        maxZoom: 9,
-        duration: 2000
+    // Reset to state markers when clicking outside
+    map.on('click', (e) => {
+        const features = map.queryRenderedFeatures(e.point, {
+            layers: ['state-markers', 'clusters', 'unclustered-point', 'cluster-count']
+        });
+
+        if (!features.length) {
+            toggleVisibility(['state-markers'], 'visible');
+            toggleVisibility(['clusters', 'unclustered-point', 'cluster-count'], 'none');
+            map.easeTo({
+                center: [-98.5795, 39.8283], // Center of the US
+                zoom: 3,
+                duration: 2000,
+            });
+        }
     });
 
-    map.setLayoutProperty('state-markers', 'visibility', 'none');
-    map.once('moveend', () => {
-        map.setLayoutProperty('clusters', 'visibility', 'visible');
-        map.setLayoutProperty('unclustered-point', 'visibility', 'visible');
-    });
-});
-
-
-    });
-
+    // Adjust visibility based on zoom level
     map.on('zoomend', () => {
         const zoomLevel = map.getZoom();
         if (zoomLevel < 6) {
-            map.setLayoutProperty('clusters', 'visibility', 'none');
-            map.setLayoutProperty('unclustered-point', 'visibility', 'none');
+            toggleVisibility(['clusters', 'unclustered-point', 'cluster-count'], 'none');
         } else {
-            map.setLayoutProperty('clusters', 'visibility', 'visible');
-            map.setLayoutProperty('unclustered-point', 'visibility', 'visible');
+            toggleVisibility(['clusters', 'unclustered-point', 'cluster-count'], 'visible');
         }
     });
-    
-    
-
 });
+
 
             
 ////
