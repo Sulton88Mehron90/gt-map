@@ -652,10 +652,10 @@ hospital-list-sidebar.collapsed #close-sidebar {
 
 
 /* GT Marker Style one GT per region */
-.g-marker {
+/* .g-marker { */
     /* background-image: url('./img/goliath-logo.png'); */
-    background-image: url('./img/redDot.png');
-    /* background-image: url('./img/gtLogo.png'); */
+    /* background-image: url('./img/redDot.png'); */
+    /* background-image: url('./img/gtLogo.png');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -664,8 +664,8 @@ hospital-list-sidebar.collapsed #close-sidebar {
     border-radius: 50%; 
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-}
+    cursor: pointer; */
+/* } */
 
 /* Hover Effect */
 .g-marker:hover {
