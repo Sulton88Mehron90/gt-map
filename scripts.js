@@ -765,21 +765,25 @@ document.addEventListener("DOMContentLoaded", () => {
         // console.log(`Adjusted marker size to: ${size}px at zoom level ${zoomLevel}`);
     }
 
-    // Custom marker creation with a popup
+    // Custom marker creation with a popup. offset with this function.
     function createCustomMarker(lng, lat, popupContent, regionId) {
         // Create a custom marker element
         const markerElement = document.createElement('div');
         markerElement.className = 'custom-marker company-logo sidebar-logo';
-        markerElement.style.width = '10px';
-        markerElement.style.height = '10px';
+        markerElement.style.width = '12px';
+        markerElement.style.height = '12px';
         markerElement.style.backgroundImage = `url('./img/gtLogo.png')`;
-        // markerElement.style.backgroundImage = `url('./img/orangeDot')`;
+        // markerElement.style.backgroundImage = `url('./img/blueDot')`;
         markerElement.style.backgroundSize = '50%';
         markerElement.style.backgroundRepeat = 'no-repeat';
         markerElement.style.backgroundPosition = 'center';
         markerElement.style.borderRadius = '50%';
         markerElement.setAttribute('data-region-id', regionId);
-        console.log(`createCustomMarker created with data-region-id: ${regionId}`);
+        // markerElement.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.8)';
+        // markerElement.style.boxShadow = '4px 4px 10px rgba(0, 0, 0, 0.5)'; // Larger, softer shadow
+// markerElement.style.boxShadow = '0px 0px 6px rgba(0, 0, 0, 1)';    // Glow effect
+
+        // console.log(`createCustomMarker created with data-region-id: ${regionId}`);
 
         // Create a popup and attach it to the marker
         const popup = new mapboxgl.Popup({ offset: 15 }).setHTML(popupContent);
@@ -852,7 +856,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //helper function 
     function handleStateClick(clickedRegionId, facilitiesData) {
         console.log(`Clicked Region ID: ${clickedRegionId}`);
-        console.log(`Facilities Data:`, facilitiesData);
+        // console.log(`Facilities Data:`, facilitiesData);
 
         // Toggle visibility for markers
         locationMarkers.forEach(marker => {
@@ -873,11 +877,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Filter facilities for the clicked state
         const stateFacilities = facilitiesData.filter(facility => facility.region_id === clickedRegionId);
-        console.log(`Filtered Facilities for Region ${clickedRegionId}:`, stateFacilities);
+        // console.log(`Filtered Facilities for Region ${clickedRegionId}:`, stateFacilities);
 
         // Zoom into the bounds of the state
         if (stateFacilities.length > 0) {
-            console.log(`Zooming into state with facilities:`, stateFacilities);
+            // console.log(`Zooming into state with facilities:`, stateFacilities);
             const stateBounds = new mapboxgl.LngLatBounds();
             stateFacilities.forEach(facility => {
                 stateBounds.extend([facility.longitude, facility.latitude]);
@@ -901,12 +905,12 @@ document.addEventListener("DOMContentLoaded", () => {
         map.on('click', `${regionSource}-fill`, (e) => {
             const clickedRegionId = e.features[0].properties[regionIdProp];
             const regionName = e.features[0].properties[regionNameProp];
-            console.log(`Region clicked: ${regionName} (ID: ${clickedRegionId})`); // Debug
+            // console.log(`Region clicked: ${regionName} (ID: ${clickedRegionId})`); // Debug
 
             // Fetch facilities data
             loadFacilitiesData()
                 .then(facilities => {
-                    console.log(`Loaded Facilities Data:`, facilities); // Debug
+                    // console.log(`Loaded Facilities Data:`, facilities); // Debug
 
                     // Call handleStateClick to add markers and zoom into the state
                     handleStateClick(clickedRegionId, facilities);
@@ -926,7 +930,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     map.on('load', () => {
-        console.log('Map fully loaded');
+        // console.log('Map fully loaded');
         map.setFog({});
 
         // Add GeoJSON sources
@@ -946,6 +950,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Start initial globe rotation
         startInitialRotation();
+
+        // addFacilityMarkersWithOffsets(map, facilities); 
 
         //Initialize Facilities Data and Set Variables
         let facilitiesData = [];
@@ -1024,12 +1030,40 @@ document.addEventListener("DOMContentLoaded", () => {
                 EHR System: ${facility.ehr_system}<br>
                 Address: ${facility.hospital_address}
             `,
-                    regionId: facility.region_id
+                    regionId: facility.region_id,
                 }));
 
                 console.log(`Markers Data Populated: ${markersData.length}`);
                 markersDataReady = true;
                 // console.log('Markers Data Populated:', markersData);
+
+
+
+    // Function to add facility markers with offsets
+// Function to add facility markers with offsets
+function addFacilityMarkersWithOffsets(map, facilities) {
+    console.log("Adding facility markers with offsets..."); // Debugging log
+    facilities.forEach((facility, index) => {
+        const offsetLng = (index % 10) * 0.002;
+        const offsetLat = (index % 5) * 0.002;
+
+        console.log(`Processing facility: ${facility.hospital_name}, Index: ${index}`);
+        console.log(`Original coords: ${facility.longitude}, ${facility.latitude}`);
+        console.log(`Offset coords: ${facility.longitude + offsetLng}, ${facility.latitude + offsetLat}`);
+
+        const marker = createCustomMarker(
+            facility.longitude + offsetLng,
+            facility.latitude + offsetLat,
+            `<strong>${facility.hospital_name}</strong><br>${facility.location}`,
+            facility.region_id
+        );
+
+        marker.addTo(map);
+        console.log(`Marker added for: ${facility.hospital_name}`);
+    });
+}
+
+                addFacilityMarkersWithOffsets(map, facilities); 
 
                 // Initial render of markers
                 updateMarkers();
@@ -1212,7 +1246,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         region_id
                     } = facility; // Destructure properties from the facility object
 
-                    console.log(`Facility Region ID: ${region_id}`); // Debug
+                    // console.log(`Facility Region ID: ${region_id}`); // Debug
 
                     let popupContent = `
     <strong>${hospital_name}</strong><br>
@@ -1238,16 +1272,20 @@ document.addEventListener("DOMContentLoaded", () => {
                     // markerElement.style.backgroundImage = `url('./img/redDot.png')`;
                     // markerElement.style.backgroundImage = `url('./img/orangeDot.png')`;
                     markerElement.style.backgroundImage = `url('./img/gtLogo.png')`;
-                    markerElement.style.width = '10px';
-                    markerElement.style.height = '10px';
+                    markerElement.style.width = '12px';
+                    markerElement.style.height = '12px';
                     markerElement.style.borderRadius = '50%';
                     markerElement.style.backgroundSize = 'cover';
                     markerElement.setAttribute('data-region-id', region_id);
-                    console.log(`under markers created with data-region-id: ${region_id}`);
+                    // markerElement.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.8)';
+                    // markerElement.style.boxShadow = '4px 4px 10px rgba(0, 0, 0, 0.5)'; // Larger, softer shadow
+                    // markerElement.style.boxShadow = '0px 0px 6px rgba(0, 0, 0, 1)';    // Glow effect
+
+                    // console.log(`under markers created with data-region-id: ${region_id}`);
 
                     // Set data-region-id attribute
                     markerElement.setAttribute('data-region-id', region_id);
-                    console.log(`Marker created with data-region-id: ${region_id}`); // Debug
+                    // console.log(`Marker created with data-region-id: ${region_id}`); // Debug
 
                     const marker = new mapboxgl.Marker(markerElement)
                         .setLngLat([longitude, latitude])
@@ -1408,8 +1446,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         })),
                     },
                     cluster: true,
-                    clusterMaxZoom: 20,// To increase this value to reduce unclustered points at higher zoom levels
-                    clusterRadius: 60,// To increase radius to group more points together in clusters
+                    clusterMaxZoom: 15,// To increase this value to reduce unclustered points at higher zoom levels
+                    clusterRadius: 80,// To increase radius to group more points together in clusters
                 });
 
                 // Cluster layer with Goliath Technologies colors and outline for better visibility
@@ -1424,8 +1462,8 @@ document.addEventListener("DOMContentLoaded", () => {
                             ['get', 'point_count'],
                             '#ff8502',  // Small clusters (orange)
                             // '#b31919',  // Small clusters (red) 
-                            10, ' #0f2844',  // Medium clusters (dark blue)
-                            50, '#b31919'   // Large clusters
+                            10, ' #ff8502',  // Medium clusters (dark blue)
+                            50, '#0f2844'   // Large clusters
                         ],
                         'circle-radius': [
                             'step',
