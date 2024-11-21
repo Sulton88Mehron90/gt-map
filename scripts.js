@@ -402,156 +402,24 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    //populateSidebar function.
-    //     function populateSidebar(regionId, regionName, facilities) {
-    //         // console.log(`Populating sidebar for region: ${regionName} (ID: ${regionId})`);
-
-    //         // const sidebar = document.getElementById('hospital-list-sidebar');
-    //         const list = document.getElementById('hospital-list');
-    //         list.innerHTML = '';
-
-    //         // Update sidebar title with the region name
-    //         const title = sidebar.querySelector('h2');
-    //         title.innerText = `Facilities Using Goliath's Solutions in ${regionName}`;
-
-    //         // Remove any existing count display
-    //         const existingCountDisplay = sidebar.querySelector('.count-display');
-    //         if (existingCountDisplay) existingCountDisplay.remove();
-
-    //         // Filter facilities by region
-    //         const regionHospitals = facilities.filter(hospital =>
-    //             hospital.location.includes(regionName) || hospital.region_id === regionId
-    //         );
-
-    //         // Calculate total facility count, accounting for multi-hospital entries
-    //         const totalHospitalCount = regionHospitals.reduce((sum, hospital) =>
-    //             sum + (hospital.hospital_count || 1), 0
-    //         );
-
-    //         // console.log(`Found ${regionHospitals.length} hospitals in ${regionName} with a total of ${totalHospitalCount} facilities.`);
-
-    //         // Display total facility count in the sidebar
-    //         const countDisplay = document.createElement('p');
-    //         countDisplay.classList.add('count-display');
-    //         countDisplay.innerHTML = `Total Facilities: <span style="color: #ff8502;">${totalHospitalCount}</span>`;
-    //         countDisplay.style.fontWeight = 'bold';
-    //         countDisplay.style.color = '#FFFFFF';
-    //         countDisplay.style.marginTop = '10px';
-    //         list.before(countDisplay);
-
-    //         // Populate sidebar list with hospitals
-    //         regionHospitals.forEach(hospital => {
-    //             const listItem = document.createElement('li');
-
-    //             // Select the appropriate EHR logo based on the ehr_system value
-    //             let ehrLogo;
-    //             switch (hospital.ehr_system) {
-    //                 case 'Cerner':
-    //                     ehrLogo = '<img src="./img/cerner-logo.png" alt="Cerner logo" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%;">';
-    //                     break;
-    //                 case 'Cerner-ITWorks':
-    //                     ehrLogo = '<img src="./img/cerner-logo.png" alt="Cerner logo" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%;">';
-    //                     break;
-    //                 case 'Epic':
-    //                     ehrLogo = '<img src="./img/epic-logo.png" alt="Epic logo" style="width: 20px; height: 18px; vertical-align: middle; margin-right: 5px;">';
-    //                     break;
-    //                 case 'Meditech':
-    //                     ehrLogo = '<img src="./img/meditech-logo.png" alt="Meditech logo" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%;">';
-    //                     break;
-    //                 default:
-    //                     ehrLogo = '';
-    //                     break;
-    //             }
-
-    //             listItem.innerHTML = `
-    //     <i class="fas fa-hospital-symbol"></i> 
-    //     <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
-    //         ${hospital.hospital_name}
-    //     </strong><br>
-    //     ${hospital.parent_company ? `<strong>Parent Company:</strong> ${hospital.parent_company}<br>` : ""}
-    //     ${hospital.location}<br>
-    //     <div><strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}</div>
-    //     <div><strong>Hospital Count:</strong> ${hospital.hospital_count || 1}</div>
-    // `;
-
-    //             // Add fly-to functionality and show Back button on click
-    //             listItem.querySelector('.clickable-hospital').addEventListener('click', () => {
-    //                 if (!sessionStartingView) {
-    //                     sessionStartingView = {
-    //                         center: map.getCenter(),
-    //                         zoom: map.getZoom(),
-    //                         pitch: map.getPitch(),
-    //                         bearing: map.getBearing()
-    //                     };
-    //                 }
-
-    //                 // Hide GT logo, show back button, and fly to selected facility location
-    //                 gtLogo.style.display = 'none';
-    //                 backButton.style.display = 'block';
-
-    //                 // Set a mobile-friendly zoom level
-    //                 const isMobile = window.innerWidth <= 780;
-    //                 const zoomLevel = isMobile ? 10 : 12;
-
-    //                 // Fly to the selected facility location
-    //                 // Fly-To Functionality on Facility Click
-    //                 // The fly-to functionality is implemented well, creating a smooth transition to the selected hospital’s location. Setting the mobile zoom level with const zoomLevel = isMobile ? 10 : 12; makes it user-friendly across devices.
-    //                 // The pitch and bearing values help in adding a sense of depth. If performance is a concern on some devices, consider testing with or without these to evaluate their impact.
-
-    //                 map.flyTo({
-    //                     center: [hospital.longitude, hospital.latitude],
-    //                     zoom: 12,
-    //                     pitch: 45,
-    //                     bearing: 0,
-    //                     essential: true,
-    //                     duration: 2000,
-    //                     easing: (t) => t * (2 - t)
-    //                 });
-    //             });
-
-    //             list.appendChild(listItem);
-    //         });
-
-    //         // Display the sidebar only if there are hospitals to show
-    //         sidebar.style.display = regionHospitals.length > 0 ? 'block' : 'none';
-
-    //         adjustSidebarHeight();
-    //     }
-
-    //Displays only unique health systems (based on parent_company or hospital_name).
     // function populateSidebar(regionId, regionName, facilities) {
-    //     console.log(`Populating sidebar for region: ${regionName} (ID: ${regionId})`);
-
     //     const list = document.getElementById('hospital-list');
     //     list.innerHTML = '';
 
-    //     // Update sidebar title with the region name
-    //     const title = document.querySelector('#hospital-list-sidebar h2');
+    //     const title = sidebar.querySelector('h2');
     //     title.innerText = `Facilities Using Goliath's Solutions in ${regionName}`;
 
-    //     // Remove any existing count display
-    //     const existingCountDisplay = document.querySelector('.count-display');
+    //     const existingCountDisplay = sidebar.querySelector('.count-display');
     //     if (existingCountDisplay) existingCountDisplay.remove();
 
-    //     // Filter facilities by region and deduplicate by parent company or hospital name
-    //     const uniqueHospitals = Array.from(
-    //         facilities.reduce((map, hospital) => {
-    //             const key = hospital.parent_company || hospital.hospital_name;
-    //             if (!map.has(key)) {
-    //                 map.set(key, hospital);
-    //             }
-    //             return map;
-    //         }, new Map()).values()
+    //     const regionHospitals = facilities.filter(hospital =>
+    //         hospital.location.includes(regionName) || hospital.region_id === regionId
     //     );
 
-    //     // Calculate total facility count, accounting for multi-hospital entries
-    //     const totalHospitalCount = uniqueHospitals.reduce((sum, hospital) =>
+    //     const totalHospitalCount = regionHospitals.reduce((sum, hospital) =>
     //         sum + (hospital.hospital_count || 1), 0
     //     );
 
-    //     console.log(`Found ${uniqueHospitals.length} unique hospitals in ${regionName} with a total of ${totalHospitalCount} facilities.`);
-
-    //     // Display total facility count in the sidebar
     //     const countDisplay = document.createElement('p');
     //     countDisplay.classList.add('count-display');
     //     countDisplay.innerHTML = `Total Facilities: <span style="color: #ff8502;">${totalHospitalCount}</span>`;
@@ -560,16 +428,19 @@ document.addEventListener("DOMContentLoaded", () => {
     //     countDisplay.style.marginTop = '10px';
     //     list.before(countDisplay);
 
-    //     // Populate sidebar list with unique hospitals
-    //     uniqueHospitals.forEach(hospital => {
+    //     const uniqueHealthSystems = new Map();
+    //     regionHospitals.forEach(hospital => {
+    //         if (!uniqueHealthSystems.has(hospital.parent_company)) {
+    //             uniqueHealthSystems.set(hospital.parent_company, hospital);
+    //         }
+    //     });
+
+    //     uniqueHealthSystems.forEach(hospital => {
     //         const listItem = document.createElement('li');
 
-    //         // Select the appropriate EHR logo based on the ehr_system value
     //         let ehrLogo;
     //         switch (hospital.ehr_system) {
     //             case 'Cerner':
-    //                 ehrLogo = '<img src="./img/cerner-logo.png" alt="Cerner logo" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%;">';
-    //                 break;
     //             case 'Cerner-ITWorks':
     //                 ehrLogo = '<img src="./img/cerner-logo.png" alt="Cerner logo" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%;">';
     //                 break;
@@ -585,57 +456,49 @@ document.addEventListener("DOMContentLoaded", () => {
     //         }
 
     //         listItem.innerHTML = `
-    //             <i class="fas fa-hospital-symbol"></i> 
-    //             <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
-    //                 ${hospital.hospital_name}
-    //             </strong><br>
-    //             ${hospital.parent_company ? `<strong>Parent Company:</strong> ${hospital.parent_company}<br>` : ""}
-    //             ${hospital.location}<br>
-    //             <div><strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}</div>
-    //             <div><strong>Hospital Count:</strong> ${hospital.hospital_count || 1}</div>
-    //         `;
+    //         <i class="fas fa-hospital-symbol"></i> 
+    //         <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
+    //             ${hospital.hospital_name}
+    //         </strong><br>
+    //         ${hospital.parent_company ? `<strong>Parent Company:</strong> ${hospital.parent_company}<br>` : ""}
+    //         ${hospital.location}<br>
+    //         <div><strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}</div>
+    //         <div><strong>Hospital Count:</strong> ${hospital.hospital_count || 1}</div>
+    //     `;
 
-    //         // Add fly-to functionality and show Back button on click
     //         listItem.querySelector('.clickable-hospital').addEventListener('click', () => {
     //             if (!sessionStartingView) {
     //                 sessionStartingView = {
     //                     center: map.getCenter(),
     //                     zoom: map.getZoom(),
     //                     pitch: map.getPitch(),
-    //                     bearing: map.getBearing()
+    //                     bearing: map.getBearing(),
     //                 };
     //             }
 
-    //             // Hide GT logo, show back button, and fly to selected facility location
-    //             gtLogo.style.display = 'none';
-    //             backButton.style.display = 'block';
-
-    //             // Set a mobile-friendly zoom level
-    //             const isMobile = window.innerWidth <= 780;
-    //             const zoomLevel = isMobile ? 10 : 12;
-
-    //             // Fly to the selected facility location
     //             map.flyTo({
     //                 center: [hospital.longitude, hospital.latitude],
-    //                 zoom: zoomLevel,
+    //                 zoom: 12,
     //                 pitch: 45,
     //                 bearing: 0,
     //                 essential: true,
     //                 duration: 2000,
-    //                 easing: (t) => t * (2 - t)
+    //                 easing: (t) => t * (2 - t),
     //             });
+
+    //             backButton.style.display = 'block';
     //         });
 
     //         list.appendChild(listItem);
     //     });
 
-    //     // Display the sidebar only if there are hospitals to show
-    //     document.getElementById('hospital-list-sidebar').style.display = uniqueHospitals.length > 0 ? 'block' : 'none';
-
+    //     sidebar.style.display = uniqueHealthSystems.size > 0 ? 'block' : 'none';
     //     adjustSidebarHeight();
     // }
 
-    //parent_company appears only once in the sidebar
+
+    // Define a centralized error message handler
+
     function populateSidebar(regionId, regionName, facilities) {
         const list = document.getElementById('hospital-list');
         list.innerHTML = '';
@@ -646,14 +509,34 @@ document.addEventListener("DOMContentLoaded", () => {
         const existingCountDisplay = sidebar.querySelector('.count-display');
         if (existingCountDisplay) existingCountDisplay.remove();
 
+        // Filter facilities by region
         const regionHospitals = facilities.filter(hospital =>
             hospital.location.includes(regionName) || hospital.region_id === regionId
         );
 
-        const totalHospitalCount = regionHospitals.reduce((sum, hospital) =>
-            sum + (hospital.hospital_count || 1), 0
-        );
+        // Use a Map to group hospitals by parent_company
+        const uniqueHealthSystems = new Map();
+        let totalHospitalCount = 0; // Initialize total count
 
+        regionHospitals.forEach(hospital => {
+            const parentCompany = hospital.parent_company || hospital.hospital_name;
+
+            // Accumulate count for all hospitals under the same parent company
+            if (uniqueHealthSystems.has(parentCompany)) {
+                const existing = uniqueHealthSystems.get(parentCompany);
+                existing.hospital_count += hospital.hospital_count || 1;
+            } else {
+                uniqueHealthSystems.set(parentCompany, {
+                    ...hospital,
+                    hospital_count: hospital.hospital_count || 1, // Initialize count
+                });
+            }
+
+            // Accumulate total hospital count
+            totalHospitalCount += hospital.hospital_count || 1;
+        });
+
+        // Display total facility count in the sidebar
         const countDisplay = document.createElement('p');
         countDisplay.classList.add('count-display');
         countDisplay.innerHTML = `Total Facilities: <span style="color: #ff8502;">${totalHospitalCount}</span>`;
@@ -661,14 +544,6 @@ document.addEventListener("DOMContentLoaded", () => {
         countDisplay.style.color = '#FFFFFF';
         countDisplay.style.marginTop = '10px';
         list.before(countDisplay);
-
-        // Filter for unique health systems (parent_company)
-        const uniqueHealthSystems = new Map();
-        regionHospitals.forEach(hospital => {
-            if (!uniqueHealthSystems.has(hospital.parent_company)) {
-                uniqueHealthSystems.set(hospital.parent_company, hospital);
-            }
-        });
 
         // Populate the sidebar with one hospital per health system
         uniqueHealthSystems.forEach(hospital => {
@@ -692,15 +567,15 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             listItem.innerHTML = `
-    <i class="fas fa-hospital-symbol"></i> 
-    <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
-        ${hospital.hospital_name}
-    </strong><br>
-    ${hospital.parent_company ? `<strong>Parent Company:</strong> ${hospital.parent_company}<br>` : ""}
-    ${hospital.location}<br>
-    <div><strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}</div>
-    <div><strong>Hospital Count:</strong> ${hospital.hospital_count || 1}</div>
-`;
+            <i class="fas fa-hospital-symbol"></i> 
+            <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
+                ${hospital.hospital_name}
+            </strong><br>
+            ${hospital.parent_company ? `<strong>Parent Company:</strong> ${hospital.parent_company}<br>` : ""}
+            ${hospital.location}<br>
+            <div><strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}</div>
+            <div><strong>Hospital Count:</strong> ${hospital.hospital_count || 1}</div>
+            `;
 
             listItem.querySelector('.clickable-hospital').addEventListener('click', () => {
                 if (!sessionStartingView) {
@@ -708,25 +583,21 @@ document.addEventListener("DOMContentLoaded", () => {
                         center: map.getCenter(),
                         zoom: map.getZoom(),
                         pitch: map.getPitch(),
-                        bearing: map.getBearing()
+                        bearing: map.getBearing(),
                     };
                 }
 
-                gtLogo.style.display = 'none';
-                backButton.style.display = 'block';
-
-                const isMobile = window.innerWidth <= 780;
-                const zoomLevel = isMobile ? 10 : 12;
-
                 map.flyTo({
                     center: [hospital.longitude, hospital.latitude],
-                    zoom: zoomLevel,
+                    zoom: 12,
                     pitch: 45,
                     bearing: 0,
                     essential: true,
                     duration: 2000,
-                    easing: (t) => t * (2 - t)
+                    easing: (t) => t * (2 - t),
                 });
+
+                backButton.style.display = 'block';
             });
 
             list.appendChild(listItem);
@@ -736,7 +607,7 @@ document.addEventListener("DOMContentLoaded", () => {
         adjustSidebarHeight();
     }
 
-    // Define a centralized error message handler
+
     function displayErrorMessage(error) {
         console.error('Error loading facilities data:', error);
         const errorMessage = document.getElementById('error-message');
@@ -781,7 +652,7 @@ document.addEventListener("DOMContentLoaded", () => {
         markerElement.setAttribute('data-region-id', regionId);
         // markerElement.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.8)';
         // markerElement.style.boxShadow = '4px 4px 10px rgba(0, 0, 0, 0.5)'; // Larger, softer shadow
-// markerElement.style.boxShadow = '0px 0px 6px rgba(0, 0, 0, 1)';    // Glow effect
+        // markerElement.style.boxShadow = '0px 0px 6px rgba(0, 0, 0, 1)';    // Glow effect
 
         // console.log(`createCustomMarker created with data-region-id: ${regionId}`);
 
@@ -853,23 +724,30 @@ document.addEventListener("DOMContentLoaded", () => {
     // Debounce updateMarkers for better performance
     const debouncedUpdateMarkers = debounce(updateMarkers, 300);
 
-    //helper function 
+    //helper function
     function handleStateClick(clickedRegionId, facilitiesData) {
         console.log(`Clicked Region ID: ${clickedRegionId}`);
-        // console.log(`Facilities Data:`, facilitiesData);
+
+        // Store the current view if not already stored
+        if (!sessionStartingView) {
+            sessionStartingView = {
+                center: map.getCenter(),
+                zoom: map.getZoom(),
+                pitch: map.getPitch(),
+                bearing: map.getBearing(),
+            };
+            console.log('Stored session view:', sessionStartingView);
+        }
 
         // Toggle visibility for markers
         locationMarkers.forEach(marker => {
             const markerRegionId = marker.getElement().getAttribute('data-region-id');
-            console.log(`Marker Region ID: ${markerRegionId} | Clicked Region ID: ${clickedRegionId}`);
             if (markerRegionId === clickedRegionId) {
                 if (!marker._map) {
-                    console.log(`Adding marker for region: ${markerRegionId}`);
                     marker.addTo(map); // Add marker for the clicked region
                 }
             } else {
                 if (marker._map) {
-                    console.log(`Removing marker for region: ${markerRegionId}`);
                     marker.remove(); // Remove markers for other regions
                 }
             }
@@ -877,11 +755,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Filter facilities for the clicked state
         const stateFacilities = facilitiesData.filter(facility => facility.region_id === clickedRegionId);
-        // console.log(`Filtered Facilities for Region ${clickedRegionId}:`, stateFacilities);
 
         // Zoom into the bounds of the state
         if (stateFacilities.length > 0) {
-            // console.log(`Zooming into state with facilities:`, stateFacilities);
             const stateBounds = new mapboxgl.LngLatBounds();
             stateFacilities.forEach(facility => {
                 stateBounds.extend([facility.longitude, facility.latitude]);
@@ -889,9 +765,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             map.fitBounds(stateBounds, {
                 padding: 50,
-                maxZoom: 6,
+                maxZoom: clickedRegionId === "aruba" ? 9 : 6, // Use maxZoom = 9 for Aruba
                 duration: 2000,
             });
+
+            // Show the back button
+            backButton.style.display = 'block';
         }
     }
 
@@ -928,7 +807,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-
     map.on('load', () => {
         // console.log('Map fully loaded');
         map.setFog({});
@@ -950,8 +828,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Start initial globe rotation
         startInitialRotation();
-
-        // addFacilityMarkersWithOffsets(map, facilities); 
 
         //Initialize Facilities Data and Set Variables
         let facilitiesData = [];
@@ -1037,33 +913,30 @@ document.addEventListener("DOMContentLoaded", () => {
                 markersDataReady = true;
                 // console.log('Markers Data Populated:', markersData);
 
+                // Function to add facility markers with offsets
+                function addFacilityMarkersWithOffsets(map, facilities) {
+                    console.log("Adding facility markers with offsets..."); // Debugging log
+                    facilities.forEach((facility, index) => {
+                        const offsetLng = (index % 10) * 0.002;
+                        const offsetLat = (index % 5) * 0.002;
 
+                        console.log(`Processing facility: ${facility.hospital_name}, Index: ${index}`);
+                        console.log(`Original coords: ${facility.longitude}, ${facility.latitude}`);
+                        console.log(`Offset coords: ${facility.longitude + offsetLng}, ${facility.latitude + offsetLat}`);
 
-    // Function to add facility markers with offsets
-// Function to add facility markers with offsets
-function addFacilityMarkersWithOffsets(map, facilities) {
-    console.log("Adding facility markers with offsets..."); // Debugging log
-    facilities.forEach((facility, index) => {
-        const offsetLng = (index % 10) * 0.002;
-        const offsetLat = (index % 5) * 0.002;
+                        const marker = createCustomMarker(
+                            facility.longitude + offsetLng,
+                            facility.latitude + offsetLat,
+                            `<strong>${facility.hospital_name}</strong><br>${facility.location}`,
+                            facility.region_id
+                        );
 
-        console.log(`Processing facility: ${facility.hospital_name}, Index: ${index}`);
-        console.log(`Original coords: ${facility.longitude}, ${facility.latitude}`);
-        console.log(`Offset coords: ${facility.longitude + offsetLng}, ${facility.latitude + offsetLat}`);
+                        marker.addTo(map);
+                        console.log(`Marker added for: ${facility.hospital_name}`);
+                    });
+                }
 
-        const marker = createCustomMarker(
-            facility.longitude + offsetLng,
-            facility.latitude + offsetLat,
-            `<strong>${facility.hospital_name}</strong><br>${facility.location}`,
-            facility.region_id
-        );
-
-        marker.addTo(map);
-        console.log(`Marker added for: ${facility.hospital_name}`);
-    });
-}
-
-                addFacilityMarkersWithOffsets(map, facilities); 
+                addFacilityMarkersWithOffsets(map, facilities);
 
                 // Initial render of markers
                 updateMarkers();
@@ -1085,14 +958,10 @@ function addFacilityMarkersWithOffsets(map, facilities) {
                 // Adjust markers on reset
                 map.on('reset', () => adjustMarkerSize(map.getZoom()));
 
-                // Feature 3: Place state/region markers
-                // placeStateMarkers(facilities, map);
-
                 // Feature 4: Add GT logo markers
                 gtLogoMarkers.forEach(marker => {
                     marker.getElement().style.visibility = 'visible';
                 });
-
 
                 // Load custom marker image for state markers
                 map.loadImage('./img/gtLogo.png', (error, image) => {
@@ -1155,7 +1024,6 @@ function addFacilityMarkersWithOffsets(map, facilities) {
                     });
 
                     // Handle state marker click
-
                     // map.on('click', 'state-markers', (e) => {
                     //     const clickedStateId = e.features[0].properties.region_id;
                     //     const stateFacilities = facilitiesData.filter(f => f.region_id === clickedStateId);
@@ -1188,9 +1056,7 @@ function addFacilityMarkersWithOffsets(map, facilities) {
                     //     populateSidebar(clickedStateId, e.features[0].properties.name, stateFacilities);
                     // });
 
-
                     //  Reset to state markers when clicking outside
-
                     map.on('click', (e) => {
                         const features = map.queryRenderedFeatures(e.point, {
                             layers: ['state-markers', 'clusters', 'unclustered-point', 'cluster-count']
@@ -1200,15 +1066,12 @@ function addFacilityMarkersWithOffsets(map, facilities) {
                             toggleVisibility(['state-markers'], 'visible');
                             toggleVisibility(['clusters', 'unclustered-point', 'cluster-count'], 'none');
                             map.easeTo({
-                                // center: [-98.5795, 39.8283], // Center of the US
-                                // zoom: 3,
                                 duration: 2000,
                             });
                         }
                     });
 
-
-                    //Adjust visibility based on zoom level
+                    //visibility based on zoom level
                     map.on('zoomend', () => {
                         const zoomLevel = map.getZoom();
                         if (zoomLevel <= 6) {
@@ -1217,18 +1080,6 @@ function addFacilityMarkersWithOffsets(map, facilities) {
                             toggleVisibility(['clusters', 'unclustered-point', 'cluster-count'], 'visible');
                         }
                     });
-
-                    // map.on('zoomend', () => {
-                    //     const zoomLevel = map.getZoom();
-                    //     if (zoomLevel <= 3) {
-                    //         toggleVisibility(['state-markers'], 'visible');
-                    //         toggleVisibility(['clusters', 'unclustered-point', 'cluster-count'], 'none');
-                    //     } else {
-                    //         toggleVisibility(['state-markers'], 'none');
-                    //     }
-                    // });
-
-
                 });
 
 
@@ -1244,7 +1095,7 @@ function addFacilityMarkersWithOffsets(map, facilities) {
                         parent_company,
                         hospital_count,
                         region_id
-                    } = facility; // Destructure properties from the facility object
+                    } = facility; 
 
                     // console.log(`Facility Region ID: ${region_id}`); // Debug
 
@@ -1281,7 +1132,7 @@ function addFacilityMarkersWithOffsets(map, facilities) {
                     // markerElement.style.boxShadow = '4px 4px 10px rgba(0, 0, 0, 0.5)'; // Larger, softer shadow
                     // markerElement.style.boxShadow = '0px 0px 6px rgba(0, 0, 0, 1)';    // Glow effect
 
-                    // console.log(`under markers created with data-region-id: ${region_id}`);
+                    console.log(`under markers created with data-region-id: ${region_id}`);
 
                     // Set data-region-id attribute
                     markerElement.setAttribute('data-region-id', region_id);
@@ -1310,7 +1161,6 @@ function addFacilityMarkersWithOffsets(map, facilities) {
 
                     return marker;
                 });
-
 
                 // show regions and states
                 function addRegionLayer(map, layerId, sourceId, regionsWithFacilities) {
@@ -1401,7 +1251,6 @@ function addFacilityMarkersWithOffsets(map, facilities) {
                 // console.log('Current layer order:', map.getStyle().layers.map(layer => layer.id));
                 // addGeoJSONSource(map, 'us-states', '/data/us-states.geojson', 'id');
                 // console.log("Sources after adding 'us-states':", map.getStyle().sources);
-
 
                 //Function for Zoom-Based Marker Visibility
                 function toggleMarkers() {
@@ -1637,9 +1486,7 @@ function addFacilityMarkersWithOffsets(map, facilities) {
                     } else {
                         sidebar.style.display = 'none';
                     }
-
                 });
-
             })
             .catch(error => {
                 console.error('Error loading facilities data:', error);
@@ -1717,13 +1564,13 @@ function addFacilityMarkersWithOffsets(map, facilities) {
 
                 // Add markers for each location
                 locationsInRegion.forEach(location => {
-                    const marker = new mapboxgl.Marker({ color: '#ff8502' }) // Customize marker color
+                    const marker = new mapboxgl.Marker({ color: '#ff8502' }) 
                         .setLngLat([location.longitude, location.latitude])
                         .addTo(map);
-                    locationMarkers.push(marker); // Store marker for later removal
+                    locationMarkers.push(marker);
                 });
 
-                updateSidebarForRegion(regionId); // Update sidebar
+                updateSidebarForRegion(regionId);
             }
 
             // Clear selection when clicking outside
@@ -1756,7 +1603,6 @@ function addFacilityMarkersWithOffsets(map, facilities) {
 
             // Prevent markers from showing on zoom
             map.on('zoom', () => {
-                // No action required on zoom - markers are controlled via selectRegion
             });
 
             // Placeholder function for updating the sidebar
@@ -1774,12 +1620,6 @@ function addFacilityMarkersWithOffsets(map, facilities) {
             selectedStateId = null;
         }
         document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
-
-
-        // Reset view button
-        // document.getElementById("reset-view").addEventListener("click", () => {
-        //     map.flyTo({ center: INITIAL_CENTER, zoom: INITIAL_ZOOM, pitch: 0 });
-        // });
 
         // Fly-to buttons for navigating regions
         document.getElementById("fit-to-usa").addEventListener("click", () => {
