@@ -1495,130 +1495,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 errorMessage.innerText = 'Failed to load facility data. Please try again later.';
             });
 
-        // function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
-
-        //     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-        //     const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
-
-        //     // Reset button functionality
-        //     document.getElementById("reset-view").addEventListener("click", () => {
-        //         map.flyTo({ center: INITIAL_CENTER, zoom: INITIAL_ZOOM, pitch: 0 });
-        //         clearRegionSelection();
-        //         closeSidebar();
-        //     });
-
-        //     // Apply hover effect only to regions with facilities
-        //     const applyHover = (regionId) => {
-        //         if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
-        //             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
-        //         }
-        //         hoveredRegionId = regionId;
-        //         if (hoveredRegionId !== selectedRegionId) {
-        //             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: true });
-        //         }
-        //     };
-
-        //     const clearHover = () => {
-        //         if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
-        //             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
-        //         }
-        //         hoveredRegionId = null;
-        //     };
-
-        //     // Tap-to-Hover functionality for touch devices
-        //     if (isTouchDevice) {
-        //         map.on('touchstart', layerId, (e) => {
-        //             const regionId = e.features[0].id;
-        //             if (regionsWithFacilities.has(regionId)) {
-        //                 if (hoveredRegionId === regionId) {
-        //                     selectRegion(regionId);
-        //                 } else {
-        //                     applyHover(regionId);
-        //                 }
-        //             }
-        //         });
-
-        //         map.on('touchend', layerId, clearHover);
-        //         map.on('touchcancel', layerId, clearHover);
-        //     }
-
-        //     // Hover for non-touch devices
-        //     map.on(hoverEvent, layerId, (e) => {
-        //         const regionId = e.features[0].id;
-        //         applyHover(regionId);
-        //     });
-
-        //     if (!isTouchDevice) {
-        //         map.on('mouseleave', layerId, clearHover);
-        //     }
-
-        //     // Function to select a region
-        //     function selectRegion(regionId) {
-        //         clearRegionSelection(); // Clear previous selection
-
-        //         selectedRegionId = regionId;
-        //         map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: true });
-
-        //         // Fetch locations for the selected region
-        //         const locationsInRegion = facilities.filter(facility => facility.region_id === regionId);
-
-        //         // Add markers for each location
-        //         locationsInRegion.forEach(location => {
-        //             const marker = new mapboxgl.Marker({ color: '#ff8502' }) 
-        //                 .setLngLat([location.longitude, location.latitude])
-        //                 .addTo(map);
-        //             locationMarkers.push(marker);
-        //         });
-
-        //         updateSidebarForRegion(regionId);
-        //     }
-
-        //     // Clear selection when clicking outside
-        //     map.on('click', (e) => {
-        //         const features = map.queryRenderedFeatures(e.point, { layers: [layerId] });
-        //         if (features.length === 0) {
-        //             clearRegionSelection();
-        //         }
-        //     });
-
-        //     // Function to clear selection and markers
-        //     function clearRegionSelection() {
-        //         clearHover();
-
-        //         if (selectedRegionId !== null) {
-        //             map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: false });
-        //             selectedRegionId = null;
-        //         }
-
-        //         // Remove all location markers
-        //         locationMarkers.forEach(marker => marker.remove());
-        //         locationMarkers = [];
-        //     }
-
-        //     // Attach clearRegionSelection to sidebar close button
-        //     document.getElementById('close-sidebar').addEventListener('click', () => {
-        //         clearRegionSelection();
-        //         closeSidebar();
-        //     });
-
-        //     // Prevent markers from showing on zoom
-        //     map.on('zoom', () => {
-        //     });
-
-        //     // Placeholder function for updating the sidebar //regionId?
-        //     function updateSidebarForRegion(regionId) {
-        //         // Logic to display region-specific details in the sidebar
-        //     }
-        // }
-
-        // Define the closeSidebar function
-        
-        ////
-
- 
-
-        ///
-        
         function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
             const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
             const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
@@ -1714,11 +1590,11 @@ document.addEventListener("DOMContentLoaded", () => {
             // **Attach Reset Button Functionality**
             const resetButton = document.getElementById("reset-view");
             resetButton.addEventListener("click", () => {
-                clearRegionSelection(); // Clear all active selections
-                closeSidebar(); // Close the sidebar
-                map.flyTo({ // Reset map to initial view
-                    center: INITIAL_CENTER, // Replace with your default map center
-                    zoom: INITIAL_ZOOM, // Replace with your default zoom level
+                clearRegionSelection();
+                closeSidebar(); 
+                map.flyTo({ 
+                    center: INITIAL_CENTER, 
+                    zoom: INITIAL_ZOOM, 
                     pitch: 0,
                     bearing: 0,
                     duration: 1000
