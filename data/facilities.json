@@ -68,7 +68,7 @@
     {
         "ehr_system": "Cerner-ITWorks",
         "hospital_name": "Central Maine Medical Center",
-        "hospital_count": 2,
+        "hospital_count": 1,
         "location": "Lewiston, ME",
         "hospital_address": "300 Main St, Lewiston, ME 04240",
         "latitude": 44.0774,
@@ -229,12 +229,14 @@
         "longitude": -89.7057,
         "color": "#57fa7d",
         "scale": 0.6,
-        "parent_company": "CGH Medical Center"
+        "parent_company": "CGH Medical Center",
+        "main_facility": true,
+        "region_id": "IL"
     },
     {
         "ehr_system": "Cerner",
         "hospital_name": "W.W. Hastings Hospital",
-        "hospital_count": 2,
+        "hospital_count": 1,
         "location": "Tahlequah, OK",
         "hospital_address": "100 S Bliss Ave, Tahlequah, OK 74464",
         "latitude": 35.9179,
@@ -243,7 +245,7 @@
         "scale": 0.6,
         "parent_company": "Cherokee Nation Health Services",
         "region_id": "OK",
-        "main_facility": false
+        "main_facility": true
     },
     {
         "ehr_system": "Cerner",
@@ -360,142 +362,16 @@
     {
         "ehr_system": "Cerner",
         "hospital_name": "Children's National Medical Center - Main Hospital",
-        "hospital_count": 1,
+        "hospital_count": 10,
         "location": "Washington, DC",
         "hospital_address": "111 Michigan Avenue, NW, Washington, DC 20010",
         "latitude": 38.9296,
         "longitude": -77.0146,
         "color": "#57fa7d",
         "scale": 0.6,
-        "parent_company": "Children's National Health System",
+        "parent_company": "Children's National Medical Center ",
         "region_id": "DC",
         "main_facility": true
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Children's National Health Center - Anacostia",
-        "hospital_count": 1,
-        "location": "Washington, DC",
-        "hospital_address": "Good Hope Road SE, Washington, DC",
-        "latitude": 38.8667,
-        "longitude": -76.9902,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Children's National Health System",
-        "region_id": "DC",
-        "main_facility": false
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Children's National Health Center - Adams Morgan",
-        "hospital_count": 1,
-        "location": "Washington, DC",
-        "hospital_address": "Columbia Road NW, Washington, DC",
-        "latitude": 38.9213,
-        "longitude": -77.0430,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Children's National Health System",
-        "region_id": "DC",
-        "main_facility": false
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Children's National Emergency Department at United Medical Center",
-        "hospital_count": 1,
-        "location": "Washington, DC",
-        "hospital_address": "1310 Southern Ave SE, Washington, DC 20032",
-        "latitude": 38.8375,
-        "longitude": -76.9869,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Children's National Health System",
-        "region_id": "DC",
-        "main_facility": false
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Prince George's County Outpatient Center",
-        "hospital_count": 1,
-        "location": "Lanham, MD",
-        "hospital_address": "2900 North Campus Way, Lanham, MD 20706",
-        "latitude": 38.9667,
-        "longitude": -76.8392,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Children's National Health System",
-        "region_id": "MD",
-        "main_facility": false
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Children's National Health Center - Montgomery County",
-        "hospital_count": 1,
-        "location": "Rockville, MD",
-        "hospital_address": "15245 Shady Grove Rd, Rockville, MD 20850",
-        "latitude": 39.1018,
-        "longitude": -77.2003,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Children's National Health System",
-        "region_id": "MD",
-        "main_facility": true
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Children's National Pediatric Specialists of Virginia",
-        "hospital_count": 1,
-        "location": "Fairfax, VA",
-        "hospital_address": "3023 Hamaker Ct, Fairfax, VA 22031",
-        "latitude": 38.8672,
-        "longitude": -77.2310,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Children's National Health System",
-        "region_id": "VA",
-        "main_facility": true
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Children's National Health Center - Friendship Heights",
-        "hospital_count": 1,
-        "location": "Washington, DC",
-        "hospital_address": "5028 Wisconsin Ave NW, Washington, DC 20016",
-        "latitude": 38.9547,
-        "longitude": -77.0833,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Children's National Health System",
-        "region_id": "DC",
-        "main_facility": false
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Children's National Health Center - Laurel Lakes",
-        "hospital_count": 1,
-        "location": "Laurel, MD",
-        "hospital_address": "13922 Baltimore Ave, Laurel, MD 20707",
-        "latitude": 39.0853,
-        "longitude": -76.8783,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Children's National Health System",
-        "region_id": "MD",
-        "main_facility": false
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Children's National Health Center - Frederick",
-        "hospital_count": 1,
-        "location": "Frederick, MD",
-        "hospital_address": "5900 Frederick Crossing Lane, Frederick, MD 21704",
-        "latitude": 39.3917,
-        "longitude": -77.4160,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Children's National Health System",
-        "region_id": "MD",
-        "main_facility": false
     },
     {
         "ehr_system": "Cerner",
@@ -510,282 +386,6 @@
         "parent_company": "CommonSpirit Health",
         "region_id": "IL",
         "main_facility": true
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "St. Anthony Hospital",
-        "hospital_count": 1,
-        "location": "Lakewood, CO",
-        "hospital_address": "11600 W 2nd Pl, Lakewood, CO 80228",
-        "latitude": 39.7186,
-        "longitude": -105.1305,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "CommonSpirit Health",
-        "region_id": "CO"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "OrthoColorado Hospital",
-        "hospital_count": 1,
-        "location": "Lakewood, CO",
-        "hospital_address": "11650 W 2nd Pl, Lakewood, CO 80228",
-        "latitude": 39.7186,
-        "longitude": -105.1305,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "CommonSpirit Health",
-        "region_id": "CO"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "St. Mary-Corwin Medical Center",
-        "hospital_count": 1,
-        "location": "Pueblo, CO",
-        "hospital_address": "1008 Minnequa Avenue, Pueblo, CO 81004",
-        "latitude": 38.2342,
-        "longitude": -104.6189,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "CommonSpirit Health",
-        "region_id": "CO"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Mercy Hospital",
-        "hospital_count": 1,
-        "location": "Durango, CO",
-        "hospital_address": "1010 Three Springs Blvd., Durango, CO 81301",
-        "latitude": 37.2413,
-        "longitude": -107.8253,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "CommonSpirit Health",
-        "region_id": "CO"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Holy Cross Hospital – Salt Lake",
-        "hospital_count": 1,
-        "location": "Salt Lake City, UT",
-        "hospital_address": "1050 East South Temple, Salt Lake City, UT 84102",
-        "latitude": 40.7736,
-        "longitude": -111.8611,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "CommonSpirit Health",
-        "region_id": "UT"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Holy Cross Hospital – Jordan Valley West",
-        "hospital_count": 1,
-        "location": "West Valley City, UT",
-        "hospital_address": "3460 South Pioneer Parkway, West Valley City, UT 84120",
-        "latitude": 40.6916,
-        "longitude": -111.9936,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "CommonSpirit Health",
-        "region_id": "UT"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "CHI St. Alexius Health Bismarck",
-        "hospital_count": 1,
-        "location": "Bismarck, ND",
-        "hospital_address": "900 E Broadway Ave, Bismarck, ND 58501",
-        "latitude": 46.8083,
-        "longitude": -100.7837,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "CommonSpirit Health",
-        "region_id": "ND",
-        "main_facility": true
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "California Hospital Medical Center",
-        "hospital_count": 1,
-        "location": "Los Angeles, CA",
-        "hospital_address": "1401 S Grand Ave, Los Angeles, CA 90015",
-        "latitude": 34.0407,
-        "longitude": -118.2664,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "CommonSpirit Health",
-        "region_id": "CA"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Saint Francis Memorial Hospital",
-        "hospital_count": 1,
-        "location": "San Francisco, CA",
-        "hospital_address": "900 Hyde St, San Francisco, CA 94109",
-        "latitude": 37.7904,
-        "longitude": -122.4183,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "CommonSpirit Health",
-        "region_id": "CA"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "MercyOne Des Moines Medical Center",
-        "hospital_count": 1,
-        "location": "Des Moines, IA",
-        "hospital_address": "1111 6th Ave, Des Moines, IA 50314",
-        "latitude": 41.5931,
-        "longitude": -93.6229,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "CommonSpirit Health",
-        "region_id": "IA"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "St. Elizabeth Regional Medical Center",
-        "hospital_count": 1,
-        "location": "Lincoln, NE",
-        "hospital_address": "555 S 70th St, Lincoln, NE 68510",
-        "latitude": 40.8077,
-        "longitude": -96.6272,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "CommonSpirit Health",
-        "region_id": "NE",
-        "main_facility": true
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "CHI St. Luke's Health - Baylor St. Luke's Medical Center",
-        "hospital_count": 1,
-        "location": "Houston, TX",
-        "hospital_address": "6720 Bertner Ave, Houston, TX 77030",
-        "latitude": 29.7065,
-        "longitude": -95.3994,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "CommonSpirit Health",
-        "region_id": "TX"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Dignity Health Mercy General Hospital",
-        "hospital_count": 1,
-        "location": "Sacramento, CA",
-        "hospital_address": "4001 J St, Sacramento, CA 95819",
-        "latitude": 38.5704,
-        "longitude": -121.4526,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "CommonSpirit Health",
-        "region_id": "CA"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "CHI Franciscan St. Joseph Medical Center",
-        "hospital_count": 1,
-        "location": "Tacoma, WA",
-        "hospital_address": "1717 S J St, Tacoma, WA 98405",
-        "latitude": 47.2426,
-        "longitude": -122.4572,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "CommonSpirit Health",
-        "region_id": "WA"
-    },
-    {
-        "ehr_system": "Epic",
-        "hospital_name": "CHI Franciscan St. Joseph Medical Center",
-        "hospital_count": 1,
-        "location": "Tacoma, WA",
-        "hospital_address": "1717 S J St, Tacoma, WA 98405",
-        "latitude": 47.2426,
-        "longitude": -122.4572,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "CommonSpirit Health",
-        "region_id": "WA",
-        "main_facility": true
-    },
-    {
-        "ehr_system": "Epic",
-        "hospital_name": "Mercy San Juan Medical Center",
-        "hospital_count": 1,
-        "location": "Carmichael, CA",
-        "hospital_address": "6501 Coyle Ave, Carmichael, CA 95608",
-        "latitude": 38.6570,
-        "longitude": -121.3216,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "CommonSpirit Health",
-        "region_id": "CA"
-    },
-    {
-        "ehr_system": "Epic",
-        "hospital_name": "Saint Joseph Hospital",
-        "hospital_count": 1,
-        "location": "Denver, CO",
-        "hospital_address": "1375 E 19th Ave, Denver, CO 80218",
-        "latitude": 39.7461,
-        "longitude": -104.9650,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "CommonSpirit Health",
-        "region_id": "CO"
-    },
-    {
-        "ehr_system": "Epic",
-        "hospital_name": "CHI St. Luke's Health - Baylor St. Luke's Medical Center",
-        "hospital_count": 1,
-        "location": "Houston, TX",
-        "hospital_address": "6720 Bertner Ave, Houston, TX 77030",
-        "latitude": 29.7053,
-        "longitude": -95.3995,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "CommonSpirit Health",
-        "region_id": "TX"
-    },
-    {
-        "ehr_system": "Epic",
-        "hospital_name": "Dignity Health Mercy General Hospital",
-        "hospital_count": 1,
-        "location": "Sacramento, CA",
-        "hospital_address": "4001 J St, Sacramento, CA 95819",
-        "latitude": 38.5704,
-        "longitude": -121.4526,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "CommonSpirit Health",
-        "region_id": "CA"
-    },
-    {
-        "ehr_system": "Epic",
-        "hospital_name": "St. Joseph's Hospital and Medical Center",
-        "hospital_count": 1,
-        "location": "Phoenix, AZ",
-        "hospital_address": "350 W Thomas Rd, Phoenix, AZ 85013",
-        "latitude": 33.4800,
-        "longitude": -112.0792,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "CommonSpirit Health",
-        "region_id": "AZ"
-    },
-    {
-        "ehr_system": "Epic",
-        "hospital_name": "CHI Memorial Hospital Chattanooga",
-        "hospital_count": 1,
-        "location": "Chattanooga, TN",
-        "hospital_address": "2525 de Sales Ave, Chattanooga, TN 37404",
-        "latitude": 35.0360,
-        "longitude": -85.2809,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "CommonSpirit Health",
-        "region_id": "TN"
     },
     {
         "ehr_system": "Cerner",
@@ -940,104 +540,6 @@
         "parent_company": "Children's Hospital Los Angeles",
         "region_id": "CA",
         "main_facility": true
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Shriners for Children Medical Center",
-        "hospital_count": 1,
-        "location": "Pasadena, CA",
-        "hospital_address": "909 S Fair Oaks Ave, Pasadena, CA 91105",
-        "latitude": 34.1298,
-        "longitude": -118.1528,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Shriners Hospitals for Children",
-        "region_id": "CA",
-        "main_facility": false
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Miller Children's & Women's Hospital",
-        "hospital_count": 1,
-        "location": "Long Beach, CA",
-        "hospital_address": "2801 Atlantic Ave, Long Beach, CA 90806",
-        "latitude": 33.8076,
-        "longitude": -118.1892,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "MemorialCare Health System",
-        "region_id": "CA",
-        "main_facility": false
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "CHOC Children's Hospital",
-        "hospital_count": 1,
-        "location": "Orange, CA",
-        "hospital_address": "1201 W La Veta Ave, Orange, CA 92868",
-        "latitude": 33.7774,
-        "longitude": -117.8677,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Children's Hospital of Orange County",
-        "region_id": "CA",
-        "main_facility": false
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Kaiser Permanente Los Angeles Medical Center",
-        "hospital_count": 1,
-        "location": "Los Angeles, CA",
-        "hospital_address": "4867 Sunset Blvd, Los Angeles, CA 90027",
-        "latitude": 34.0976,
-        "longitude": -118.2941,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Kaiser Permanente",
-        "region_id": "CA",
-        "main_facility": false
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Loma Linda University Children's Hospital",
-        "hospital_count": 1,
-        "location": "Loma Linda, CA",
-        "hospital_address": "11234 Anderson St, Loma Linda, CA 92354",
-        "latitude": 34.0494,
-        "longitude": -117.2622,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Loma Linda University Health",
-        "region_id": "CA",
-        "main_facility": false
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Mattel Children's Hospital UCLA",
-        "hospital_count": 1,
-        "location": "Los Angeles, CA",
-        "hospital_address": "757 Westwood Plaza, Los Angeles, CA 90095",
-        "latitude": 34.0655,
-        "longitude": -118.4443,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "UCLA Health",
-        "region_id": "CA",
-        "main_facility": false
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Cedars-Sinai Guerin Children's",
-        "hospital_count": 1,
-        "location": "Los Angeles, CA",
-        "hospital_address": "8700 Beverly Blvd, Los Angeles, CA 90048",
-        "latitude": 34.0762,
-        "longitude": -118.3790,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Cedars-Sinai Health System",
-        "region_id": "CA",
-        "main_facility": false
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -1231,7 +733,9 @@
         "longitude": -90.4707,
         "color": "#57fa7d",
         "scale": 0.6,
-        "parent_company": "Esse Health"
+        "parent_company": "Esse Health",
+        "region_id": "MO",
+        "main_facility": true
     },
     {
         "ehr_system": "Meditech",
@@ -1243,7 +747,9 @@
         "longitude": -85.747,
         "color": "#57fa7d",
         "scale": 0.6,
-        "parent_company": "University of Louisville"
+        "parent_company": "University of Louisville",
+        "region_id": "KY",
+        "main_facility": true
     },
     {
         "ehr_system": "Meditech",
@@ -1255,7 +761,9 @@
         "longitude": -121.4885,
         "color": "#57fa7d",
         "scale": 0.6,
-        "parent_company": "State of California"
+        "parent_company": "State of California",
+        "region_id": "CA",
+        "main_facility": false
     },
     {
         "ehr_system": "Meditech",
@@ -1268,7 +776,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Exeter Health Resources",
-        "region_id": "NH"
+        "region_id": "NH",
+        "main_facility": true
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -1286,110 +795,6 @@
     },
     {
         "ehr_system": "Cerner",
-        "hospital_name": "Saint Joseph Hospital",
-        "hospital_count": 1,
-        "location": "Denver, CO",
-        "hospital_address": "1375 E 19th Ave, Denver, CO 80218",
-        "latitude": 39.7465,
-        "longitude": -104.9690,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Intermountain Health",
-        "region_id": "CO"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Lutheran Medical Center",
-        "hospital_count": 1,
-        "location": "Wheat Ridge, CO",
-        "hospital_address": "8300 W 38th Ave, Wheat Ridge, CO 80033",
-        "latitude": 39.7690,
-        "longitude": -105.0910,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Intermountain Health",
-        "region_id": "CO"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Good Samaritan Medical Center",
-        "hospital_count": 1,
-        "location": "Lafayette, CO",
-        "hospital_address": "200 Exempla Cir, Lafayette, CO 80026",
-        "latitude": 39.9670,
-        "longitude": -105.1310,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Intermountain Health",
-        "region_id": "CO"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "St. Mary's Medical Center",
-        "hospital_count": 1,
-        "location": "Grand Junction, CO",
-        "hospital_address": "2635 N 7th St, Grand Junction, CO 81501",
-        "latitude": 39.0830,
-        "longitude": -108.5540,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Intermountain Health",
-        "region_id": "CO"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Logan Regional Hospital",
-        "hospital_count": 1,
-        "location": "Logan, UT",
-        "hospital_address": "500 E 1400 N, Logan, UT 84341",
-        "latitude": 41.7450,
-        "longitude": -111.8090,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Intermountain Health",
-        "region_id": "UT"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Utah Valley Hospital",
-        "hospital_count": 1,
-        "location": "Provo, UT",
-        "hospital_address": "1034 N 500 W, Provo, UT 84604",
-        "latitude": 40.2440,
-        "longitude": -111.6620,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Intermountain Health",
-        "region_id": "UT"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "St. George Regional Hospital",
-        "hospital_count": 1,
-        "location": "St. George, UT",
-        "hospital_address": "1380 E Medical Center Dr, St. George, UT 84790",
-        "latitude": 37.0950,
-        "longitude": -113.5550,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Intermountain Health",
-        "region_id": "UT"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Primary Children's Hospital",
-        "hospital_count": 1,
-        "location": "Salt Lake City, UT",
-        "hospital_address": "100 N Mario Capecchi Dr, Salt Lake City, UT 84113",
-        "latitude": 40.7710,
-        "longitude": -111.8370,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Intermountain Health",
-        "region_id": "UT"
-    },
-    {
-        "ehr_system": "Cerner",
         "hospital_name": "HQ. Intermountain Medical Center",
         "hospital_count": 25,
         "location": "Murray, UT",
@@ -1399,21 +804,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Intermountain Health",
-        "region_id": "UT"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "LDS Hospital",
-        "hospital_count": 1,
-        "location": "Salt Lake City, UT",
-        "hospital_address": "8th Ave & C St, Salt Lake City, UT 84143",
-        "latitude": 40.7770,
-        "longitude": -111.8880,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Intermountain Health",
         "region_id": "UT",
-        "main_facility": true
+        "main_facility": false
     },
     {
         "ehr_system": "Cerner",
@@ -1425,7 +817,9 @@
         "longitude": -75.2401,
         "color": "#57fa7d",
         "scale": 0.6,
-        "parent_company": "Inspira Health Network"
+        "parent_company": "Inspira Health Network",
+        "region_id": "NJ",
+        "main_facility": false
     },
     {
         "ehr_system": "Cerner",
@@ -1437,19 +831,9 @@
         "longitude": -75.0656,
         "color": "#57fa7d",
         "scale": 0.6,
-        "parent_company": "Inspira Health Network"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Inspira Medical Center Elmer",
-        "hospital_count": 1,
-        "location": "Elmer, NJ",
-        "hospital_address": "501 West Front St, Elmer, NJ 08318",
-        "latitude": 39.5945,
-        "longitude": -75.1831,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Inspira Health Network"
+        "parent_company": "Inspira Health Network",
+        "region_id": "NJ",
+        "main_facility": false
     },
     {
         "ehr_system": "Cerner",
@@ -1462,10 +846,11 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Inspira Health Network",
+        "region_id": "NJ",
         "main_facility": true
     },
     {
-        "ehr_system": "Epic",
+        "ehr_system": "Cerner",
         "hospital_name": "Kaweah Health Medical Center",
         "hospital_count": 1,
         "location": "Visalia, CA",
@@ -1475,7 +860,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Kaweah Health",
-        "main_facility": true
+        "main_facility": true,
+        "region_id": "CA"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -1488,51 +874,13 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Mason Health",
-        "main_facility": true
-    },
-    {
-        "ehr_system": "Cerner-ITWorks",
-        "hospital_name": "Family Medicine Clinic",
-        "hospital_count": 1,
-        "location": "Columbia, MO",
-        "hospital_address": "1101 Hospital Dr, Columbia, MO 65212",
-        "latitude": 38.9365,
-        "longitude": -92.3294,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "MU Health System",
-        "region_id": "MO"
+        "main_facility": true,
+         "region_id": "WA"
     },
     {
         "ehr_system": "Cerner-ITWorks",
         "hospital_name": "University Hospital",
-        "hospital_count": 1,
-        "location": "Columbia, MO",
-        "hospital_address": "1 Hospital Dr, Columbia, MO 65212",
-        "latitude": 38.9366,
-        "longitude": -92.3285,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "MU Health System",
-        "region_id": "MO"
-    },
-    {
-        "ehr_system": "Cerner-ITWorks",
-        "hospital_name": "Women's and Children's Hospital",
-        "hospital_count": 1,
-        "location": "Columbia, MO",
-        "hospital_address": "404 N Keene St, Columbia, MO 65201",
-        "latitude": 38.9521,
-        "longitude": -92.2956,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "MU Health System",
-        "region_id": "MO"
-    },
-    {
-        "ehr_system": "Cerner-ITWorks",
-        "hospital_name": "MU Health System HQ",
-        "hospital_count": 1,
+        "hospital_count": 6,
         "location": "Columbia, MO",
         "hospital_address": "1 Hospital Dr, Columbia, MO 65212",
         "latitude": 38.9366,
@@ -1542,32 +890,6 @@
         "parent_company": "MU Health System",
         "region_id": "MO",
         "main_facility": true
-    },
-    {
-        "ehr_system": "Cerner-ITWorks",
-        "hospital_name": "Missouri Orthopaedic Institute",
-        "hospital_count": 1,
-        "location": "Columbia, MO",
-        "hospital_address": "1100 Virginia Ave, Columbia, MO 65212",
-        "latitude": 38.9349,
-        "longitude": -92.3276,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "MU Health System",
-        "region_id": "MO"
-    },
-    {
-        "ehr_system": "Cerner-ITWorks",
-        "hospital_name": "Missouri Psychiatric Center",
-        "hospital_count": 1,
-        "location": "Columbia, MO",
-        "hospital_address": "3 Hospital Dr, Columbia, MO 65212",
-        "latitude": 38.9359,
-        "longitude": -92.3289,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "MU Health System",
-        "region_id": "MO"
     },
     {
         "ehr_system": "Cerner",
@@ -1636,7 +958,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "San Juan Regional Medical Center",
-        "region_id": "NM"
+        "region_id": "NM",
+        "main_facility": false
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -1693,72 +1016,6 @@
         "parent_company": "Universal Health Services",
         "region_id": "DC",
         "main_facility": true
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Manatee Memorial Hospital",
-        "hospital_count": 1,
-        "location": "Bradenton, FL",
-        "hospital_address": "206 2nd St E, Bradenton, FL 34208",
-        "latitude": 27.4992,
-        "longitude": -82.5583,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Universal Health Services",
-        "region_id": "FL"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Aiken Regional Medical Centers",
-        "hospital_count": 1,
-        "location": "Aiken, SC",
-        "hospital_address": "302 University Pkwy, Aiken, SC 29801",
-        "latitude": 33.5671,
-        "longitude": -81.7304,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Universal Health Services",
-        "region_id": "SC"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Desert Springs Hospital Medical Center",
-        "hospital_count": 1,
-        "location": "Las Vegas, NV",
-        "hospital_address": "2075 E Flamingo Rd, Las Vegas, NV 89119",
-        "latitude": 36.1154,
-        "longitude": -115.1226,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Universal Health Services",
-        "region_id": "NV",
-        "main_facility": true
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Valley Hospital Medical Center",
-        "hospital_count": 1,
-        "location": "Las Vegas, NV",
-        "hospital_address": "620 Shadow Ln, Las Vegas, NV 89106",
-        "latitude": 36.1663,
-        "longitude": -115.1594,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Universal Health Services",
-        "region_id": "NV"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Texoma Medical Center",
-        "hospital_count": 1,
-        "location": "Denison, TX",
-        "hospital_address": "5016 S US Hwy 75, Denison, TX 75020",
-        "latitude": 33.7045,
-        "longitude": -96.5764,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Universal Health Services",
-        "region_id": "TX"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -1831,7 +1088,7 @@
         "main_facility": true
     },
     {
-        "ehr_system": "Cerner",
+        "ehr_system": "Epic",
         "hospital_name": "Ascension Via Christi St. Francis",
         "hospital_count": 27,
         "location": "Wichita, KS",
@@ -1840,7 +1097,7 @@
         "longitude": -97.3236,
         "color": "#57fa7d",
         "scale": 0.6,
-        "parent_company": "Ascension Health",
+        "parent_company": "Ascension Via Christi Health System",
         "region_id": "KS",
         "main_facility": true
     },
@@ -1869,7 +1126,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Genesis Health System",
-        "region_id": "IL"
+        "region_id": "IL",
+        "main_facility": false
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -1882,7 +1140,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Genesis Health System",
-        "region_id": "IA"
+        "region_id": "IA",
+        "main_facility": true
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -1895,7 +1154,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Genesis Health System",
-        "region_id": "IA"
+        "region_id": "IA",
+        "main_facility": false
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -1908,7 +1168,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Genesis Health System",
-        "region_id": "IL"
+        "region_id": "IL",
+        "main_facility": false
     },
     {
         "ehr_system": "Cerner",
@@ -1927,7 +1188,7 @@
     {
         "ehr_system": "Cerner",
         "hospital_name": "Maine Medical Center",
-        "hospital_count": 2,
+        "hospital_count": 12,
         "location": "Portland, ME",
         "hospital_address": "22 Bramhall St, Portland, ME 04102",
         "latitude": 43.6534,
@@ -1937,45 +1198,6 @@
         "parent_company": "MaineHealth",
         "region_id": "ME",
         "main_facility": true
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Southern Maine Health Care",
-        "hospital_count": 1,
-        "location": "Biddeford, ME",
-        "hospital_address": "1 Medical Center Dr, Biddeford, ME 04005",
-        "latitude": 43.4745,
-        "longitude": -70.4769,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "MaineHealth",
-        "region_id": "ME"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "LincolnHealth - Miles Campus",
-        "hospital_count": 1,
-        "location": "Damariscotta, ME",
-        "hospital_address": "35 Miles St, Damariscotta, ME 04543",
-        "latitude": 44.0341,
-        "longitude": -69.5172,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "MaineHealth",
-        "region_id": "ME"
-    },
-    {
-        "ehr_system": "Cerner",
-        "hospital_name": "Pen Bay Medical Center",
-        "hospital_count": 1,
-        "location": "Rockport, ME",
-        "hospital_address": "6 Glen Cove Dr, Rockport, ME 04856",
-        "latitude": 44.1598,
-        "longitude": -69.1001,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "MaineHealth",
-        "region_id": "ME"
     },
     {
         "ehr_system": "Cerner",
@@ -2049,73 +1271,6 @@
     },
     {
         "ehr_system": "Epic",
-        "hospital_name": "Ascension Healthcare Headquarters",
-        "hospital_count": 1,
-        "location": "St. Louis, MO",
-        "hospital_address": "4600 Edmundson Rd, St. Louis, MO 63134",
-        "latitude": 38.7386,
-        "longitude": -90.3615,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Ascension Healthcare",
-        "region_id": "MO",
-        "main_facility": true
-    },
-    {
-        "ehr_system": "Epic",
-        "hospital_name": "Ascension St. Vincent Hospital",
-        "hospital_count": 1,
-        "location": "Indianapolis, IN",
-        "hospital_address": "2001 W 86th St, Indianapolis, IN 46260",
-        "latitude": 39.9181,
-        "longitude": -86.2015,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Ascension Healthcare",
-        "region_id": "IN"
-    },
-    {
-        "ehr_system": "Epic",
-        "hospital_name": "Ascension Seton Medical Center Austin",
-        "hospital_count": 1,
-        "location": "Austin, TX",
-        "hospital_address": "1201 W 38th St, Austin, TX 78705",
-        "latitude": 30.3031,
-        "longitude": -97.7447,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Ascension Healthcare",
-        "region_id": "TX"
-    },
-    {
-        "ehr_system": "Epic",
-        "hospital_name": "Ascension St. John Medical Center",
-        "hospital_count": 1,
-        "location": "Tulsa, OK",
-        "hospital_address": "1923 S Utica Ave, Tulsa, OK 74104",
-        "latitude": 36.1353,
-        "longitude": -95.9636,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Ascension Healthcare",
-        "region_id": "OK"
-    },
-    {
-        "ehr_system": "Epic",
-        "hospital_name": "Ascension Providence Hospital",
-        "hospital_count": 1,
-        "location": "Southfield, MI",
-        "hospital_address": "16001 W Nine Mile Rd, Southfield, MI 48075",
-        "latitude": 42.4501,
-        "longitude": -83.2114,
-        "color": "#57fa7d",
-        "scale": 0.6,
-        "parent_company": "Ascension Healthcare",
-        "region_id": "MI",
-        "main_facility": true
-    },
-    {
-        "ehr_system": "Epic",
         "hospital_name": "Licking Memorial Hospital Headquarters",
         "hospital_count": 1,
         "location": "Newark, OH",
@@ -2139,7 +1294,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Licking Memorial Health Systems",
-        "region_id": "OH"
+        "region_id": "OH",
+        "main_facility": false
     },
     {
         "ehr_system": "Epic",
@@ -2152,7 +1308,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Licking Memorial Health Systems",
-        "region_id": "OH"
+        "region_id": "OH",
+        "main_facility": false
     },
     {
         "ehr_system": "Epic",
@@ -2165,7 +1322,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Licking Memorial Health Systems",
-        "region_id": "OH"
+        "region_id": "OH",
+        "main_facility": false
     },
     {
         "ehr_system": "Epic",
@@ -2262,7 +1420,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Reid Health",
-        "region_id": "OH"
+        "region_id": "OH",
+        "main_facility": false
     },
     {
         "ehr_system": "Epic",
@@ -2541,7 +1700,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Liverpool Women's NHS Foundation Trust",
-        "region_id": "ENG"
+        "region_id": "ENG",
+        "main_facility": false
     },
     {
         "ehr_system": "Meditech",
@@ -2554,7 +1714,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "The Clatterbridge Cancer Centre NHS Foundation Trust",
-        "region_id": "ENG"
+        "region_id": "ENG",
+        "main_facility": false
     },
     {
         "ehr_system": "Meditech",
@@ -2568,7 +1729,7 @@
         "scale": 0.6,
         "parent_company": "Tillsonburg District Memorial Hospital Corporation",
         "region_id": "ON",
-        "main_facility": true
+        "main_facility": false
     },
     {
         "ehr_system": "Epic",
@@ -2582,7 +1743,7 @@
         "scale": 0.6,
         "parent_company": "Markham Stouffville Hospital Corporation",
         "region_id": "ON",
-        "main_facility": true
+        "main_facility": false
     },
     {
         "ehr_system": "Epic",
@@ -2609,7 +1770,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Hamilton Health Sciences",
-        "region_id": "ON"
+        "region_id": "ON",
+        "main_facility": false
     },
     {
         "ehr_system": "Epic",
@@ -2622,11 +1784,12 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Hamilton Health Sciences",
-        "region_id": "ON"
+        "region_id": "ON",
+        "main_facility": false
     },
     {
         "ehr_system": "Epic",
-        "hospital_name": "McMaster Children’s Hospital",
+        "hospital_name": "McMaster Children's Hospital",
         "hospital_count": 1,
         "location": "Hamilton, ON",
         "hospital_address": "1200 Main St W, Hamilton, ON L8N 3Z5, Canada",
@@ -2635,11 +1798,12 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Hamilton Health Sciences",
-        "region_id": "ON"
+        "region_id": "ON",
+        "main_facility": false
     },
     {
         "ehr_system": "Epic",
-        "hospital_name": "St. Peter’s Hospital",
+        "hospital_name": "St. Peter's Hospital",
         "hospital_count": 1,
         "location": "Hamilton, ON",
         "hospital_address": "88 Maplewood Ave, Hamilton, ON L8M 1W9, Canada",
@@ -2648,7 +1812,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Hamilton Health Sciences",
-        "region_id": "ON"
+        "region_id": "ON",
+        "main_facility": false
     },
     {
         "ehr_system": "Epic",
@@ -2661,11 +1826,12 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Hamilton Health Sciences",
-        "region_id": "ON"
+        "region_id": "ON",
+        "main_facility": false
     },
     {
         "ehr_system": "Epic",
-        "hospital_name": "Ron Joyce Children’s Health Centre",
+        "hospital_name": "Ron Joyce Children's Health Centre",
         "hospital_count": 1,
         "location": "Hamilton, ON",
         "hospital_address": "325 Wellington St N, Hamilton, ON L8L 0A4, Canada",
@@ -2674,7 +1840,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Hamilton Health Sciences",
-        "region_id": "ON"
+        "region_id": "ON",
+        "main_facility": false
     },
     {
         "ehr_system": "Epic",
@@ -2687,7 +1854,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Hamilton Health Sciences",
-        "region_id": "ON"
+        "region_id": "ON",
+        "main_facility": false
     },
     {
         "ehr_system": "Meditech",
@@ -2700,7 +1868,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Sault Area Hospital Group",
-        "region_id": "ON"
+        "region_id": "ON",
+        "main_facility": false
     },
     {
         "ehr_system": "Meditech",
@@ -2727,7 +1896,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Queensway Carleton Hospital",
-        "region_id": "ON"
+        "region_id": "ON",
+        "main_facility": false
     },
     {
         "ehr_system": "Meditech",
@@ -2740,7 +1910,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Royal Victoria Regional Health Centre",
-        "region_id": "ON"
+        "region_id": "ON",
+        "main_facility": false
     },
     {
         "ehr_system": "Meditech",
@@ -2753,7 +1924,8 @@
         "color": "#57fa7d",
         "scale": 0.6,
         "parent_company": "Southlake Regional Health Centre",
-        "region_id": "ON"
+        "region_id": "ON",
+        "main_facility": false
     },
     {
         "ehr_system": "Meditech",
