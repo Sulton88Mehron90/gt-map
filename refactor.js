@@ -1733,3 +1733,65 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     })
 });
+
+
+
+
+
+map.addSource('state-facility-counts', {
+    type: 'geojson',
+    data: {
+        type: 'FeatureCollection',
+        features: facilitiesData.reduce((acc, facility) => {
+            const stateId = facility.region_id;
+            if (!stateId) return acc;
+
+            const existingFeature = acc.find(feature => feature.properties.region_id === stateId);
+            if (existingFeature) {
+                existingFeature.properties.facility_count += 1;
+            } else {
+                acc.push({
+                    type: 'Feature',
+                    properties: {
+                        region_id: stateId,
+                        facility_count: 1
+                    },
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [facility.longitude, facility.latitude]
+                    }
+                });
+            }
+            return acc;
+        }, [])
+    }
+});
+
+map.addLayer({
+    id: 'state-facility-circles',
+    type: 'circle',
+    source: 'state-facility-counts',
+    paint: {
+        'circle-color': '#ff8502', // Orange for consistency
+        'circle-radius': [
+            'interpolate', ['linear'], ['get', 'facility_count'],
+            1, 10,  // Small circle for 1 facility
+            100, 30 // Larger circle for 100+ facilities
+        ],
+        'circle-opacity': 0.6
+    }
+});
+
+map.addLayer({
+    id: 'state-facility-labels',
+    type: 'symbol',
+    source: 'state-facility-counts',
+    layout: {
+        'text-field': '{facility_count}',
+        'text-size': 12,
+        'text-font': ['DIN Offc Pro Medium', 'Arial Unicode MS Bold']
+    },
+    paint: {
+        'text-color': '#ffffff'
+    }
+});

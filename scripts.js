@@ -40,6 +40,12 @@ document.addEventListener("DOMContentLoaded", () => {
     let markers = [];
     let markersData = [];
     let markersDataReady = false;
+     //Initialize Facilities Data and Set Variables
+     let facilitiesData = [];
+     const regionsWithFacilities = new Set();
+     const statesWithFacilities = new Set();
+     let selectedStateId = null;
+     const logoUrl = './img/gtLogo.png';
 
     // Toggle visibility for elements (markers or layers)
     function toggleVisibility(layerIds, visibility) {
@@ -621,10 +627,60 @@ document.addEventListener("DOMContentLoaded", () => {
     const debouncedUpdateMarkers = debounce(updateMarkers, 300);
 
     //helper function
+    // function handleStateClick(clickedRegionId, facilitiesData) {
+    //     // Hide state markers when a state is clicked
+    //     setLayerVisibility('state-markers', 'none');
+
+    //     // Store the current view if not already stored
+    //     if (!sessionStartingView) {
+    //         sessionStartingView = {
+    //             center: map.getCenter(),
+    //             zoom: map.getZoom(),
+    //             pitch: map.getPitch(),
+    //             bearing: map.getBearing(),
+    //         };
+    //     }
+
+    //     // Show only location markers for the clicked region
+    //     locationMarkers.forEach(marker => {
+    //         const markerRegionId = marker.getElement().getAttribute('data-region-id');
+    //         if (markerRegionId === clickedRegionId) {
+    //             if (!marker._map) {
+    //                 marker.addTo(map); 
+    //             }
+    //         } else {
+    //             if (marker._map) {
+    //                 marker.remove();
+    //             }
+    //         }
+    //     });
+
+    //     // Filter facilities for the clicked state
+    //     const stateFacilities = facilitiesData.filter(facility => facility.region_id === clickedRegionId);
+
+    //     // Zoom into the bounds of the state
+    //     if (stateFacilities.length > 0) {
+    //         const stateBounds = new mapboxgl.LngLatBounds();
+    //         stateFacilities.forEach(facility => {
+    //             stateBounds.extend([facility.longitude, facility.latitude]);
+    //         });
+
+    //         map.fitBounds(stateBounds, {
+    //             padding: 50,
+    //             maxZoom: clickedRegionId === "aruba" ? 9 : 6,
+    //             duration: 2000,
+    //         });
+
+    //         // Show the back button
+    //         backButton.style.display = 'block';
+    //     }
+    // }
+
+
     function handleStateClick(clickedRegionId, facilitiesData) {
         // Hide state markers when a state is clicked
         setLayerVisibility('state-markers', 'none');
-
+    
         // Store the current view if not already stored
         if (!sessionStartingView) {
             sessionStartingView = {
@@ -634,41 +690,47 @@ document.addEventListener("DOMContentLoaded", () => {
                 bearing: map.getBearing(),
             };
         }
-
+    
         // Show only location markers for the clicked region
         locationMarkers.forEach(marker => {
             const markerRegionId = marker.getElement().getAttribute('data-region-id');
             if (markerRegionId === clickedRegionId) {
                 if (!marker._map) {
-                    marker.addTo(map); // Add marker for the clicked region
+                    marker.addTo(map); 
                 }
             } else {
                 if (marker._map) {
-                    marker.remove(); // Remove markers for other regions
+                    marker.remove();
                 }
             }
         });
-
+    
         // Filter facilities for the clicked state
         const stateFacilities = facilitiesData.filter(facility => facility.region_id === clickedRegionId);
-
-        // Zoom into the bounds of the state
-        if (stateFacilities.length > 0) {
-            const stateBounds = new mapboxgl.LngLatBounds();
-            stateFacilities.forEach(facility => {
-                stateBounds.extend([facility.longitude, facility.latitude]);
-            });
-
-            map.fitBounds(stateBounds, {
-                padding: 50,
-                maxZoom: clickedRegionId === "aruba" ? 9 : 6,
-                duration: 2000,
-            });
-
-            // Show the back button
-            backButton.style.display = 'block';
+    
+        // Handle case where no facilities are found
+        if (stateFacilities.length === 0) {
+            console.warn(`No facilities found for region ID: ${clickedRegionId}`);
+            return; // Exit early if no facilities are found
         }
+    
+        // Zoom into the bounds of the state
+        const stateBounds = new mapboxgl.LngLatBounds();
+        stateFacilities.forEach(facility => {
+            stateBounds.extend([facility.longitude, facility.latitude]);
+        });
+    
+        map.fitBounds(stateBounds, {
+            padding: 50,
+            maxZoom: clickedRegionId === "aruba" ? 9 : 6,
+            duration: 2000,
+        });
+    
+        // Show the back button
+        backButton.style.display = 'block';
     }
+    
+
 
     //Sets up a click event for a specified region layer.
     //On click, fetches and displays facility data in the sidebar for the clicked region.
@@ -680,16 +742,29 @@ document.addEventListener("DOMContentLoaded", () => {
         map.on('click', `${regionSource}-fill`, (e) => {
             const clickedRegionId = e.features[0].properties[regionIdProp];
             const regionName = e.features[0].properties[regionNameProp];
-            // console.log(`Region clicked: ${regionName} (ID: ${clickedRegionId})`); // Debug
-
+    
+            // Check if the clicked region has facilities
+            if (!regionsWithFacilities.has(clickedRegionId)) {
+                console.warn(`Region "${regionName}" with ID ${clickedRegionId} does not have facilities. Ignoring click.`);
+    
+                // Close the sidebar if it is open
+                const sidebar = document.getElementById('hospital-list-sidebar');
+                if (sidebar) {
+                    sidebar.style.display = 'none'; 
+                }
+    
+                return; 
+            }
+    
+            // Proceed with facility-related behavior
+            console.log(`Region clicked: ${regionName} (ID: ${clickedRegionId})`);
+    
             // Fetch facilities data
             loadFacilitiesData()
                 .then(facilities => {
-                    // console.log(`Loaded Facilities Data:`, facilities); // Debug
-
                     // Call handleStateClick to add markers and zoom into the state
                     handleStateClick(clickedRegionId, facilities);
-
+    
                     // Update the sidebar with facility details for the selected state
                     populateSidebar(
                         clickedRegionId,
@@ -702,7 +777,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
         });
     }
-
+    
     map.on('load', () => {
         // console.log('Map fully loaded');
         map.setFog({});
@@ -745,13 +820,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        //Initialize Facilities Data and Set Variables
-        let facilitiesData = [];
-        const regionsWithFacilities = new Set();
-        const statesWithFacilities = new Set();
-        let selectedStateId = null;
-        const logoUrl = './img/gtLogo.png';
-
         // imported loadFacilitiesData function  
         loadFacilitiesData()
             .then(facilities => {
@@ -764,6 +832,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     const regionId = facility.region_id ? facility.region_id.toUpperCase() : null;
                     if (regionId) {
                         regionsWithFacilities.add(regionId);
+                        console.log("regionsWithFacilities:", Array.from(regionsWithFacilities));
                     }
 
                     const stateOrRegion = facility.location.split(', ')[1];
@@ -825,7 +894,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 // console.log(`Markers Data Populated: ${markersData.length}`);
                 markersDataReady = true;
                 // console.log('Markers Data Populated:', markersData);
-
+                
                 function addFacilityMarkersWithOffsets(map, facilities, offsetFactor = 0.002) {
                     facilities.forEach(({ longitude, latitude, hospital_name, location, region_id }, index) => {
                         if (!longitude || !latitude) {
@@ -963,7 +1032,6 @@ document.addEventListener("DOMContentLoaded", () => {
                             'visibility': 'visible'
                         }
                     });
-
 
                     // Idle event to ensure correct visibility after the globe rotation
                     map.on('idle', () => {
@@ -1304,7 +1372,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         'circle-radius': 3,
                     },
                     layout: {
-                        'visibility': 'none' // Initially hidden
+                        'visibility': 'none' 
                     }
                 });
 
@@ -1354,7 +1422,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 // Click event on state to display sidebar list of facilities
-                map.on('click', 'us-states-fill', (e) => {
+                map.on('click', '${layerId}-fill', (e) => {
                     const clickedStateId = e.features[0].properties.id;
 
                     // Check if the clicked state has facilities
@@ -1364,7 +1432,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         // Deselect previously selected state if any
                         if (selectedStateId !== null) {
-                            map.setFeatureState({ source: 'us-states', id: selectedStateId }, { selected: false });
+                            // map.setFeatureState({ source: '{ layerId, sourceId }', id: selectedStateId }, { selected: false }); 
+                            
+                            ///source: 'us-states', id: selectedStateId
+
+                             map.setFeatureState({ source: '{ sourceId }', id: selectedStateId }, { selected: false });
                         }
                         selectedStateId = null;
                         return;
@@ -1372,12 +1444,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     // Deselect previously selected state
                     if (selectedStateId !== null) {
-                        map.setFeatureState({ source: 'us-states', id: selectedStateId }, { selected: false });
+                        map.setFeatureState({ source: '{ layerId, sourceId }', id: selectedStateId }, { selected: false });
                     }
 
                     // Set the clicked state as selected
                     selectedStateId = clickedStateId;
-                    map.setFeatureState({ source: 'us-states', id: selectedStateId }, { selected: true });
+                    map.setFeatureState({ source: '{ layerId, sourceId }', id: selectedStateId }, { selected: true });
 
                     // Display facilities in the sidebar
                     const stateName = e.features[0].properties.name;
