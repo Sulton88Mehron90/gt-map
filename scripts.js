@@ -1,6 +1,7 @@
 // Imports and Mapbox Token Initialization
 import { MAPBOX_TOKEN } from './config.js';
-import { loadFacilitiesData } from './dataLoader.js';
+import { loadFacilitiesData } from './data/dataLoader.js';
+import { centerStateMarkerLocation } from './data/centerStateMarkerLocation.js';
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
 // Constants
@@ -40,12 +41,13 @@ document.addEventListener("DOMContentLoaded", () => {
     let markers = [];
     let markersData = [];
     let markersDataReady = false;
-     //Initialize Facilities Data and Set Variables
-     let facilitiesData = [];
-     const regionsWithFacilities = new Set();
-     const statesWithFacilities = new Set();
-     let selectedStateId = null;
-     const logoUrl = './img/gtLogo.png';
+    //Initialize Facilities Data and Set Variables
+    let facilitiesData = [];
+    const regionsWithFacilities = new Set();
+    const statesWithFacilities = new Set();
+    let selectedStateId = null;
+    const logoUrl = './img/gtLogo.png';
+    let currentRegion = 'usa';
 
     // Toggle visibility for elements (markers or layers)
     function toggleVisibility(layerIds, visibility) {
@@ -346,23 +348,47 @@ document.addEventListener("DOMContentLoaded", () => {
     backButton.style.display = 'none';
     document.querySelector('.sidebar-header').appendChild(backButton);
 
+    // function resetToSessionView() {
+    //     if (sessionStartingView) {
+    //         const isMobile = window.innerWidth <= 780;
+    //         const zoomLevel = isMobile ? sessionStartingView.zoom - 1 : sessionStartingView.zoom;
+
+    //         map.flyTo({
+    //             center: sessionStartingView.center,
+    //             zoom: zoomLevel,
+    //             pitch: sessionStartingView.pitch,
+    //             bearing: sessionStartingView.bearing
+    //         });
+
+    //         backButton.style.display = 'none';
+    //         gtLogo.style.display = 'block';
+    //         sessionStartingView = null;
+    //     }
+    // }
+
     function resetToSessionView() {
         if (sessionStartingView) {
             const isMobile = window.innerWidth <= 780;
             const zoomLevel = isMobile ? sessionStartingView.zoom - 1 : sessionStartingView.zoom;
-
+    
+            // Fly to the original session view
             map.flyTo({
                 center: sessionStartingView.center,
                 zoom: zoomLevel,
                 pitch: sessionStartingView.pitch,
-                bearing: sessionStartingView.bearing
+                bearing: sessionStartingView.bearing,
             });
-
+    
+            // Adjust marker size and visibility for the new zoom level
+            adjustMarkerSize(zoomLevel);
+            // toggleMarkers();
+    
+            // Update UI elements
             backButton.style.display = 'none';
             gtLogo.style.display = 'block';
             sessionStartingView = null;
         }
-    }
+    }    
 
     backButton.addEventListener('click', resetToSessionView);
 
@@ -530,13 +556,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //Dynamic Sizing
     function adjustMarkerSize(zoomLevel) {
-        const size = Math.max(15, Math.min(30, zoomLevel * 4));
+        // Scale marker size more conservatively
+        const size = Math.max(6, Math.min(20, zoomLevel * 3));
         document.querySelectorAll('.custom-marker').forEach(marker => {
             marker.style.width = `${size}px`;
             marker.style.height = `${size}px`;
         });
-        // console.log(`Adjusted marker size to: ${size}px at zoom level ${zoomLevel}`);
+        console.log(`Adjusted marker size to: ${size}px at zoom level ${zoomLevel}`);
     }
+    
 
     // Custom marker creation with a popup. offset with this function.
     function createCustomMarker(lng, lat, popupContent, regionId) {
@@ -624,9 +652,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Debounce updateMarkers for better performance
-    const debouncedUpdateMarkers = debounce(updateMarkers, 300);
+    // const debouncedUpdateMarkers = debounce(updateMarkers, 300);
 
-    //helper function
     // function handleStateClick(clickedRegionId, facilitiesData) {
     //     // Hide state markers when a state is clicked
     //     setLayerVisibility('state-markers', 'none');
@@ -658,27 +685,46 @@ document.addEventListener("DOMContentLoaded", () => {
     //     // Filter facilities for the clicked state
     //     const stateFacilities = facilitiesData.filter(facility => facility.region_id === clickedRegionId);
 
-    //     // Zoom into the bounds of the state
-    //     if (stateFacilities.length > 0) {
-    //         const stateBounds = new mapboxgl.LngLatBounds();
-    //         stateFacilities.forEach(facility => {
-    //             stateBounds.extend([facility.longitude, facility.latitude]);
-    //         });
-
-    //         map.fitBounds(stateBounds, {
-    //             padding: 50,
-    //             maxZoom: clickedRegionId === "aruba" ? 9 : 6,
-    //             duration: 2000,
-    //         });
-
-    //         // Show the back button
-    //         backButton.style.display = 'block';
+    //     // Handle case where no facilities are found
+    //     if (stateFacilities.length === 0) {
+    //         console.warn(`No facilities found for region ID: ${clickedRegionId}`);
+    //         return; 
     //     }
+
+    //     // Custom zoom levels for specific regions
+    // let customZoom = 5; 
+    // if (clickedRegionId === 'AW') customZoom = 9; // Aruba
+    // else if (clickedRegionId === 'IT') customZoom = 10; // Italy
+    // else if (clickedRegionId === 'ENG') customZoom = 7; // UK (England)
+
+    // // Zoom into the bounds of the state
+    // const stateBounds = new mapboxgl.LngLatBounds();
+    // stateFacilities.forEach(facility => {
+    //     stateBounds.extend([facility.longitude, facility.latitude]);
+    // });
+
+    // map.fitBounds(stateBounds, {
+    //     padding: 50,
+    //     maxZoom: customZoom,
+    //     duration: 2000,
+    // });
+
+
+    //     // Show the back button
+    //     backButton.style.display = 'block';
     // }
 
 
+
+
+
+    //Sets up a click event for a specified region layer.
+    //On click, fetches and displays facility data in the sidebar for the clicked region.
+    //@param {string} regionSource - The source layer ID for the map region.
+    //@param {string} regionIdProp - The property name in geoJSON data that represents the region ID.
+    //@param {string} regionNameProp - The property name in geoJSON data that represents the region name.
     function handleStateClick(clickedRegionId, facilitiesData) {
-        // Hide state markers when a state is clicked
+        // Hide state markers when a region is clicked
         setLayerVisibility('state-markers', 'none');
     
         // Store the current view if not already stored
@@ -691,30 +737,31 @@ document.addEventListener("DOMContentLoaded", () => {
             };
         }
     
-        // Show only location markers for the clicked region
-        locationMarkers.forEach(marker => {
-            const markerRegionId = marker.getElement().getAttribute('data-region-id');
-            if (markerRegionId === clickedRegionId) {
-                if (!marker._map) {
-                    marker.addTo(map); 
-                }
-            } else {
-                if (marker._map) {
-                    marker.remove();
-                }
-            }
-        });
+        // Remove all existing markers
+        locationMarkers.forEach(marker => marker.remove());
+        locationMarkers = [];
     
-        // Filter facilities for the clicked state
+        // Filter facilities for the clicked region
         const stateFacilities = facilitiesData.filter(facility => facility.region_id === clickedRegionId);
     
-        // Handle case where no facilities are found
         if (stateFacilities.length === 0) {
             console.warn(`No facilities found for region ID: ${clickedRegionId}`);
-            return; // Exit early if no facilities are found
+            return;
         }
     
-        // Zoom into the bounds of the state
+        // Add markers for the selected region
+        stateFacilities.forEach(facility => {
+            const marker = createCustomMarker(
+                facility.longitude,
+                facility.latitude,
+                `<strong>${facility.hospital_name}</strong><br>${facility.location}`,
+                facility.region_id
+            );
+            marker.addTo(map); // Add marker to the map
+            locationMarkers.push(marker); // Store for later removal
+        });
+    
+        // Zoom into the region
         const stateBounds = new mapboxgl.LngLatBounds();
         stateFacilities.forEach(facility => {
             stateBounds.extend([facility.longitude, facility.latitude]);
@@ -722,7 +769,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
         map.fitBounds(stateBounds, {
             padding: 50,
-            maxZoom: clickedRegionId === "aruba" ? 9 : 6,
+            maxZoom: 6,
             duration: 2000,
         });
     
@@ -731,40 +778,33 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     
 
-
-    //Sets up a click event for a specified region layer.
-    //On click, fetches and displays facility data in the sidebar for the clicked region.
-    //@param {string} regionSource - The source layer ID for the map region.
-    //@param {string} regionIdProp - The property name in geoJSON data that represents the region ID.
-    //@param {string} regionNameProp - The property name in geoJSON data that represents the region name.
-
     function setRegionClickEvent(regionSource, regionIdProp, regionNameProp) {
         map.on('click', `${regionSource}-fill`, (e) => {
             const clickedRegionId = e.features[0].properties[regionIdProp];
             const regionName = e.features[0].properties[regionNameProp];
-    
+
             // Check if the clicked region has facilities
             if (!regionsWithFacilities.has(clickedRegionId)) {
                 console.warn(`Region "${regionName}" with ID ${clickedRegionId} does not have facilities. Ignoring click.`);
-    
+
                 // Close the sidebar if it is open
                 const sidebar = document.getElementById('hospital-list-sidebar');
                 if (sidebar) {
-                    sidebar.style.display = 'none'; 
+                    sidebar.style.display = 'none';
                 }
-    
-                return; 
+
+                return;
             }
-    
+
             // Proceed with facility-related behavior
             console.log(`Region clicked: ${regionName} (ID: ${clickedRegionId})`);
-    
+
             // Fetch facilities data
             loadFacilitiesData()
                 .then(facilities => {
                     // Call handleStateClick to add markers and zoom into the state
                     handleStateClick(clickedRegionId, facilities);
-    
+
                     // Update the sidebar with facility details for the selected state
                     populateSidebar(
                         clickedRegionId,
@@ -777,7 +817,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
         });
     }
-    
+
     map.on('load', () => {
         // console.log('Map fully loaded');
         map.setFog({});
@@ -800,14 +840,30 @@ document.addEventListener("DOMContentLoaded", () => {
         // Start globe rotation
         startInitialRotation();
 
-        // Explicitly set initial visibility for layers
-        setTimeout(() => {
-            setLayerVisibility('state-markers', 'visible');
-            setLayerVisibility('location-markers', 'none');
-            setLayerVisibility('clusters', 'none');
-            setLayerVisibility('cluster-count', 'none');
-            setLayerVisibility('unclustered-point', 'none');
-        }, 0);
+        // console.log('Current layer order:', map.getStyle().layers.map(layer => layer.id));
+        // addGeoJSONSource(map, 'us-states', '/data/us-states.geojson', 'id');
+        // console.log("Sources after adding 'us-states':", map.getStyle().sources);
+
+        // Add click event to reset view when clicking outside markers
+    map.on('click', (e) => {
+        const features = map.queryRenderedFeatures(e.point, { layers: ['state-markers'] });
+        if (!features.length) {
+            locationMarkers.forEach(marker => marker.remove()); // Clear markers
+            setLayerVisibility('state-markers', 'visible'); // Reset state markers
+            map.flyTo({ center: INITIAL_CENTER, zoom: INITIAL_ZOOM, pitch: 0, bearing: 0 });
+            sidebar.style.display = 'none'; // Hide sidebar
+            backButton.style.display = 'none'; // Hide back button
+        }
+    });
+
+// Explicitly set visibility for initial layers
+setTimeout(() => {
+    setLayerVisibility('state-markers', 'visible');
+    setLayerVisibility('location-markers', 'none');
+    setLayerVisibility('clusters', 'none');
+    setLayerVisibility('cluster-count', 'none');
+    setLayerVisibility('unclustered-point', 'none');
+}, 0);
 
         // Idle event to recheck visibility after rotation
         map.on('idle', () => {
@@ -825,6 +881,13 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(facilities => {
                 addFacilityMarkersWithOffsets(map, facilities);
                 // console.log("Facilities data loaded:", facilities);
+
+                updateMarkers();
+
+                  // Attach zoom and moveend listeners for marker updates
+            // map.on('zoomend', debouncedUpdateMarkers);
+            // map.on('moveend', debouncedUpdateMarkers);
+
                 facilitiesData = facilities;
 
                 // regionsWithFacilities and statesWithFacilities sets
@@ -874,7 +937,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     // Set click events and interactions
                     setRegionClickEvent(sourceId, 'id', 'name');
-                    addRegionInteractions(map, `${layerId}-fill`, sourceId, regionsWithFacilities);
+                    // addRegionInteractions(map, `${layerId}-fill`, sourceId, regionsWithFacilities);
+
+                    // Add click event to reset the view when clicking outside regions or markers
+    map.on('click', (e) => {
+        const features = map.queryRenderedFeatures(e.point, { layers: ['state-markers'] });
+        if (!features.length) {
+            // Clear all markers
+            locationMarkers.forEach(marker => marker.remove());
+            locationMarkers = [];
+
+            // Reset to default view
+            setLayerVisibility('state-markers', 'visible');
+            map.flyTo({
+                center: INITIAL_CENTER,
+                zoom: INITIAL_ZOOM,
+                pitch: 0,
+                bearing: 0,
+            });
+
+            // Hide sidebar and back button
+            sidebar.style.display = 'none';
+            backButton.style.display = 'none';
+        }
+    });
                 });
 
                 // Populate markersData
@@ -894,7 +980,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 // console.log(`Markers Data Populated: ${markersData.length}`);
                 markersDataReady = true;
                 // console.log('Markers Data Populated:', markersData);
-                
+
                 function addFacilityMarkersWithOffsets(map, facilities, offsetFactor = 0.002) {
                     facilities.forEach(({ longitude, latitude, hospital_name, location, region_id }, index) => {
                         if (!longitude || !latitude) {
@@ -919,29 +1005,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Initial render of markers
                 updateMarkers();
 
-                // debounced updateMarkers to map events
-                map.on('moveend', debouncedUpdateMarkers);
-                map.on('zoomend', () => {
-                    debouncedUpdateMarkers();
-                    adjustMarkerSize(map.getZoom());
-                    // console.log('Zoom Level:', map.getZoom());
-                    // console.log('Map Bounds:', map.getBounds());
-                });
-
-                // Handle map reset or view changes
-                map.on('reset', () => {
-                    adjustMarkerSize(map.getZoom());
-                });
-
-                // Adjust markers on reset
-                map.on('reset', () => adjustMarkerSize(map.getZoom()));
-
-                // Feature 4: Add GT logo markers
+                // Add GT logo markers
                 gtLogoMarkers.forEach(marker => {
                     marker.getElement().style.visibility = 'visible';
                 });
 
-                // Load custom marker image for state markers
+                // // Load custom marker image for state markers
                 map.loadImage('./img/gtLogo.png', (error, image) => {
                     if (error) {
                         console.error('Error loading image:', error);
@@ -953,35 +1022,31 @@ document.addEventListener("DOMContentLoaded", () => {
                         map.addImage('custom-marker', image, { sdf: false });
                     }
 
+                    // Filter state marker locations to include only those with facilities
+                    const filteredStateMarkers = centerStateMarkerLocation.filter(location =>
+                        facilitiesData.some(facility => facility.region_id === location.region_id)
+                    );
+
+                    // Add state markers source
                     map.addSource('state-markers', {
                         type: 'geojson',
                         data: {
                             type: 'FeatureCollection',
-                            features: Array.from(new Set(facilitiesData.map(f => f.region_id)))
-                                .filter(regionId => regionId)
-                                .map(regionId => {
-                                    const stateFacilities = facilitiesData.filter(f => f.region_id === regionId);
-                                    const stateCenter = stateFacilities.length
-                                        ? [stateFacilities[0].longitude, stateFacilities[0].latitude]
-                                        : null;
-
-                                    return stateCenter
-                                        ? {
-                                            type: 'Feature',
-                                            properties: { region_id: regionId },
-                                            geometry: {
-                                                type: 'Point',
-                                                coordinates: stateCenter
-                                            }
-                                        }
-                                        : null;
-                                })
-                                .filter(f => f)
-                        }
+                            features: filteredStateMarkers.map(location => ({
+                                type: 'Feature',
+                                properties: {
+                                    region_id: location.region_id,
+                                    name: location.name,
+                                },
+                                geometry: {
+                                    type: 'Point',
+                                    coordinates: location.lngLat,
+                                },
+                            })),
+                        },
                     });
 
-
-                    // layer for the state "G" markers
+                    // Layer for the state "G" markers
                     map.addLayer({
                         id: 'state-markers',
                         type: 'symbol',
@@ -989,12 +1054,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         layout: {
                             'icon-image': 'custom-marker',
                             'icon-size': 0.08,
-                            'visibility': 'visible'
-                        }
+                            'visibility': 'visible',
+                        },
                     });
-
-                    // Ensure state-markers are visible immediately after initialization
-                    // setLayerVisibility('state-markers', 'visible');
 
                     // Add source and layer for location markers
 
@@ -1033,44 +1095,80 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
                     });
 
-                    // Idle event to ensure correct visibility after the globe rotation
                     map.on('idle', () => {
-                        if (map.getZoom() <= 3) {
+                        const currentZoom = map.getZoom();
+
+                        // Ensure currentRegion has a valid value
+                        if (!currentRegion) {
+                            console.warn('currentRegion is not defined; defaulting to "usa".');
+                            currentRegion = 'usa';
+                        }
+
+                        // Default threshold for state marker visibility
+                        let markerZoomThreshold = 3;
+
+                        // Adjust the threshold based on the active region
+                        switch (currentRegion) {
+                            case 'usa':
+                                markerZoomThreshold = 4.5;
+                                break;
+                            case 'uk':
+                                markerZoomThreshold = 5;
+                                break;
+                            case 'italy':
+                                markerZoomThreshold = 6;
+                                break;
+                            case 'aruba':
+                                markerZoomThreshold = 7;
+                                break;
+                            case 'canada':
+                                markerZoomThreshold = 7;
+                                break;
+                            default:
+                                console.warn(`No zoom threshold defined for region: ${currentRegion}`);
+                                markerZoomThreshold = 3; // Fallback to default
+                        }
+
+                        // Toggle visibility based on zoom level
+                        if (currentZoom <= markerZoomThreshold) {
                             toggleVisibility(['state-markers'], 'visible');
                             toggleVisibility(['location-markers', 'clusters', 'unclustered-point', 'cluster-count'], 'none');
+                        } else {
+                            toggleVisibility(['state-markers'], 'none');
                         }
                     });
+
 
                     // Handle state marker clicks
                     map.on('click', 'state-markers', (e) => {
                         const clickedStateId = e.features[0].properties.region_id;
-                        const stateFacilities = facilitiesData.filter(f => f.region_id === clickedStateId);
 
-                        // Fly to the state bounds
-                        const bounds = new mapboxgl.LngLatBounds();
-                        stateFacilities.forEach(facility => bounds.extend([facility.longitude, facility.latitude]));
-                        map.fitBounds(bounds, { padding: 50, maxZoom: 12, duration: 2000 });
-
-                        // // Hide state markers and show location markers
-                        // toggleVisibility(['state-markers'], 'none');
-                        // toggleVisibility(['location-markers'], 'visible');
-
-                        // Update the sidebar with state facilities
-                        populateSidebar(clickedStateId, e.features[0].properties.name, stateFacilities);
+                        handleStateClick(clickedStateId, facilitiesData);
                     });
 
-                    // Ensure proper visibility toggles when clicking outside of state markers
-                    map.on('click', (e) => {
-                        const features = map.queryRenderedFeatures(e.point, {
-                            layers: ['state-markers', 'clusters', 'unclustered-point', 'cluster-count']
-                        });
 
+                    map.on('click', (e) => {
+                        const features = map.queryRenderedFeatures(e.point, { layers: ['state-markers'] });
                         if (!features.length) {
-                            toggleVisibility(['state-markers'], 'visible');
-                            toggleVisibility(['location-markers'], 'none');
-                            map.easeTo({ duration: 2000 });
+                            // Clear all markers
+                            locationMarkers.forEach(marker => marker.remove());
+                            // locationMarkers = [];
+                    
+                            // Reset to default view
+                            setLayerVisibility('state-markers', 'visible');
+                            map.flyTo({
+                                center: INITIAL_CENTER,
+                                zoom: INITIAL_ZOOM,
+                                pitch: 0,
+                                bearing: 0,
+                            });
+                    
+                            // Hide sidebar and back button
+                            sidebar.style.display = 'none';
+                            backButton.style.display = 'none';
                         }
                     });
+                    
                 })
 
                 // markers for each facility
@@ -1152,40 +1250,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     return marker;
                 });
 
-
-                // Toggle Marker Visibility
+                //Function for Zoom-Based Marker Visibility
                 function toggleMarkers() {
                     const zoomLevel = map.getZoom();
-                    const minZoomToShowMarkers = 4; // For programmatic markers
-                    const minZoomForLocationMarkers = 6; // For layer-based markers
+                    const minZoomToShowMarkers = 6;
 
-                    // Handle programmatic markers
-                    if (markers && markers.length > 0) {
-                        markers.forEach(marker => {
-                            if (zoomLevel >= minZoomToShowMarkers && !marker._map) {
-                                marker.addTo(map);
-                            } else if (zoomLevel < minZoomToShowMarkers && marker._map) {
-                                marker.remove();
-                            }
-                        });
-                    }
-
-                    // Handle layer-based markers and clusters
-                    if (zoomLevel < minZoomForLocationMarkers) {
-                        // Show state markers, hide location markers, and clusters
-                        setLayerVisibility('state-markers', 'visible');
-                        setLayerVisibility('location-markers', 'none');
-                        setLayerVisibility('clusters', 'none');
-                        setLayerVisibility('cluster-count', 'none');
-                        setLayerVisibility('unclustered-point', 'none');
-                    } else {
-                        // Show location markers and clusters, hide state markers
-                        setLayerVisibility('state-markers', 'none');
-                        setLayerVisibility('location-markers', 'visible');
-                        setLayerVisibility('clusters', 'visible');
-                        setLayerVisibility('cluster-count', 'visible');
-                        setLayerVisibility('unclustered-point', 'visible');
-                    }
+                    markers.forEach(marker => {
+                        if (zoomLevel >= minZoomToShowMarkers && !marker._map) {
+                            marker.addTo(map);
+                        } else if (zoomLevel < minZoomToShowMarkers && marker._map) {
+                            marker.remove();
+                        }
+                    });
                 }
 
                 // Attach 'zoomend' event to adjust markers based on zoom level
@@ -1273,18 +1349,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     });
                 }
 
-                ['us-states', 'canada-regions', 'aruba-region', 'italy-regions', 'uk-regions'].forEach(region => {
-                    // console.log(`Applying styles for ${region}`);
-                    addHoverOutlineLayer(map, `${region}-line-hover`, region);
-                    addRegionLayer(map, region, region, regionsWithFacilities);
-                    addRegionInteractions(map, `${region}-fill`, region, regionsWithFacilities);
-                });
 
-                // console.log('Current layer order:', map.getStyle().layers.map(layer => layer.id));
-                // addGeoJSONSource(map, 'us-states', '/data/us-states.geojson', 'id');
-                // console.log("Sources after adding 'us-states':", map.getStyle().sources);
-
-
+        ['us-states', 'canada-regions', 'aruba-region', 'italy-regions', 'uk-regions'].forEach(region => {
+            // console.log(`Applying styles for ${region}`);
+            addHoverOutlineLayer(map, `${region}-line-hover`, region);
+            addRegionLayer(map, region, region, regionsWithFacilities);
+            addRegionInteractions(map, `${region}-fill`, region, regionsWithFacilities);
+        });
                 //Cluster Source and Layer Styling
                 // Set up cluster source for hospitals
                 map.addSource('hospitals', {
@@ -1372,24 +1443,20 @@ document.addEventListener("DOMContentLoaded", () => {
                         'circle-radius': 3,
                     },
                     layout: {
-                        'visibility': 'none' 
+                        'visibility': 'none'
                     }
                 });
 
-                // Adjust visibility based on zoom level
-                map.on('zoomend', () => {
-                    const zoomLevel = map.getZoom();
-                    if (zoomLevel < 6) {
-                        setLayerVisibility('clusters', 'none');
-                        setLayerVisibility('cluster-count', 'none');
-                        setLayerVisibility('unclustered-point', 'none');
-                    } else {
-                        setLayerVisibility('clusters', 'visible');
-                        setLayerVisibility('cluster-count', 'visible');
-                        setLayerVisibility('unclustered-point', 'visible');
-                    }
-                });
-
+           
+          // Marker size adjustment based on zoom
+map.on('zoomend', () => {
+    const zoomLevel = map.getZoom();
+    adjustMarkerSize(zoomLevel); 
+    toggleMarkers();
+    setLayerVisibility('state-markers', 'visible');
+    setLayerVisibility('location-markers', 'none');
+});
+                
                 // Click event to show facility information in popup
                 map.on('click', 'unclustered-point', (e) => {
                     const coordinates = e.features[0].geometry.coordinates.slice();
@@ -1433,10 +1500,10 @@ document.addEventListener("DOMContentLoaded", () => {
                         // Deselect previously selected state if any
                         if (selectedStateId !== null) {
                             // map.setFeatureState({ source: '{ layerId, sourceId }', id: selectedStateId }, { selected: false }); 
-                            
+
                             ///source: 'us-states', id: selectedStateId
 
-                             map.setFeatureState({ source: '{ sourceId }', id: selectedStateId }, { selected: false });
+                            map.setFeatureState({ source: '{ sourceId }', id: selectedStateId }, { selected: false });
                         }
                         selectedStateId = null;
                         return;
@@ -1662,11 +1729,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         const regions = {
-            usa: { center: [-101.714859, 40.710884], zoom: 3.5, pitch: 0 },
+            usa: { center: [-101.714859, 40.710884], zoom: 4, pitch: 0 },
             uk: { center: [360.242386, 51.633362], zoom: 4, pitch: 15 },
             italy: { center: [12.563553, 42.798676], zoom: 4, pitch: 45 },
             canada: { center: [-106.3468, 56.1304], zoom: 3, pitch: 0 },
-            aruba: { center: [-70.027, 12.5246], zoom: 10, pitch: 45 }
+            aruba: { center: [-70.027, 12.5246], zoom: 9, pitch: 45 }
         };
 
         function flyToRegion(region) {
@@ -1679,18 +1746,31 @@ document.addEventListener("DOMContentLoaded", () => {
             map.flyTo({
                 center,
                 zoom,
-                pitch: 0,
+                pitch: regions[region].pitch, // Use region-specific pitch
                 bearing: 0,
                 duration: 2000,
-                easing: (t) => t * (2 - t)
+                easing: (t) => t * (2 - t),
             });
+
+            // Update the current region
+            currentRegion = region;
+
+            // Adjust marker visibility based on zoom threshold
+            const markerZoomThreshold = currentRegion === 'usa' ? 4 : 5;
+            const currentZoom = map.getZoom();
+
+            if (currentZoom <= markerZoomThreshold) {
+                toggleVisibility(['state-markers'], 'visible');
+                toggleVisibility(['location-markers', 'clusters', 'unclustered-point', 'cluster-count'], 'none');
+            } else {
+                toggleVisibility(['state-markers'], 'none');
+            }
 
             // Highlight active button
             document.querySelectorAll(".region-button").forEach(button => button.classList.remove("active"));
             document.getElementById(`fly-to-${region}`).classList.add("active");
         }
 
-        // Attach event listeners dynamically
         Object.keys(regions).forEach(region => {
             document.getElementById(`fly-to-${region}`).addEventListener("click", () => flyToRegion(region));
         });
