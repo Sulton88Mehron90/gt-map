@@ -1272,8 +1272,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 // show regions and states
                 function addRegionLayer(map, layerId, sourceId, regionsWithFacilities) {
                     const hoverColor = '#05aaff';
-                    const selectedColor = '#d3d3d3'; 
-                    // const selectedColor = '#F8F9FA'
+                    const selectedColor = '#704214'; 
+                    // const selectedColor = '#F8F9FA' //gray
+                    // const selectedColor = '#05aaff' 
 
                     if (map.getLayer(`${layerId}-fill`)) {
                         // console.warn(`Layer with id "${layerId}-fill" already exists. Skipping addition.`);
@@ -1294,13 +1295,12 @@ document.addEventListener("DOMContentLoaded", () => {
                                 // Default color for regions without facilities
                                 '#d3d3d3'
                             ],
-                            // 'fill-opacity': 0.6
                             'fill-opacity': [
             'case',
             // Increase transparency for selected regions
-            ['boolean', ['feature-state', 'selected'], false], 0.1, // 30% opacity for selected regions
+            ['boolean', ['feature-state', 'selected'], false], 0.3, // 30% opacity for selected regions
             ['boolean', ['feature-state', 'hover'], false], 0.6, // 60% opacity for hovered regions
-            0.8 // Default opacity for other regions
+            0.8 
         ]
                         }
                     });
