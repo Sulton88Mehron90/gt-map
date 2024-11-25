@@ -41,7 +41,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let markers = [];
     let markersData = [];
     let markersDataReady = false;
-    //Initialize Facilities Data and Set Variables
     let facilitiesData = [];
     const regionsWithFacilities = new Set();
     const statesWithFacilities = new Set();
@@ -342,32 +341,6 @@ document.addEventListener("DOMContentLoaded", () => {
     backButton.style.display = 'none';
     document.querySelector('.sidebar-header').appendChild(backButton);
 
-    function resetToSessionView() {
-        if (sessionStartingView) {
-            const isMobile = window.innerWidth <= 780;
-            const zoomLevel = isMobile ? sessionStartingView.zoom - 1 : sessionStartingView.zoom;
-    
-            // Fly to the original session view
-            map.flyTo({
-                center: sessionStartingView.center,
-                zoom: zoomLevel,
-                pitch: sessionStartingView.pitch,
-                bearing: sessionStartingView.bearing,
-            });
-    
-            // Adjust marker size and visibility for the new zoom level
-            adjustMarkerSize(zoomLevel);
-            // toggleMarkers();
-    
-            // Update UI elements
-            backButton.style.display = 'none';
-            gtLogo.style.display = 'block';
-            sessionStartingView = null;
-        }
-    }    
-
-    backButton.addEventListener('click', resetToSessionView);
-
     //Map Resize on Load and Window Resize
     window.addEventListener("load", () => map.resize());
     map.on("load", () => setTimeout(() => map.resize(), 100));
@@ -628,281 +601,215 @@ document.addEventListener("DOMContentLoaded", () => {
     // Debounce updateMarkers for better performance
     // const debouncedUpdateMarkers = debounce(updateMarkers, 300);
 
-    // function handleStateClick(clickedRegionId, facilitiesData) {
-    //  console.log(`Clicked Region ID: ${clickedRegionId}`);
-
-    //   // Store the current view if not already stored
-    //   if (!sessionStartingView) {
-    //     sessionStartingView = {
-    //         center: map.getCenter(),
-    //         zoom: map.getZoom(),
-    //         pitch: map.getPitch(),
-    //         bearing: map.getBearing(),
-    //     };
-    //     console.log('Stored session view:', sessionStartingView);
-    // }
-
-    //     // Show only location markers for the clicked region
-    //     locationMarkers.forEach(marker => {
-    //         const markerRegionId = marker.getElement().getAttribute('data-region-id');
-    //         if (markerRegionId === clickedRegionId) {
-    //             if (!marker._map) {
-    //                 marker.addTo(map); 
-    //             }
-    //         } else {
-    //             if (marker._map) {
-    //                 marker.remove();
-    //             }
-    //         }
-    //     });
-
-    //     // Filter facilities for the clicked state
-    //     const stateFacilities = facilitiesData.filter(facility => facility.region_id === clickedRegionId);
-
-    //     // Handle case where no facilities are found
-    //     if (stateFacilities.length === 0) {
-    //         console.warn(`No facilities found for region ID: ${clickedRegionId}`);
-    //         if (!sessionStartingView) {
-    //             sessionStartingView = {
-    //                 center: map.getCenter(),
-    //                 zoom: map.getZoom(),
-    //                 pitch: map.getPitch(),
-    //                 bearing: map.getBearing(),
-    //             };
-    //             console.log('Stored session view:', sessionStartingView);
-    //         }
-    //         return; 
-    //     }
-
-    //     // Custom zoom levels for specific regions
-    // let customZoom = 6; 
-    // if (clickedRegionId === 'AW') customZoom = 9; // Aruba
-    // else if (clickedRegionId === 'IT') customZoom = 10; // Italy
-    // else if (clickedRegionId === 'ENG') customZoom = 7; // UK (England)
-
-    // // Zoom into the bounds of the state
-    // const stateBounds = new mapboxgl.LngLatBounds();
-    // stateFacilities.forEach(facility => {
-    //     stateBounds.extend([facility.longitude, facility.latitude]);
-    // });
-
-    // map.fitBounds(stateBounds, {
-    //     padding: 50,
-    //     maxZoom: customZoom,
-    //     duration: 2000,
-    // });
-
-    //     // Show the back button
-    //     backButton.style.display = 'block';
-    // }
-
-    // function handleStateClick(clickedRegionId, facilitiesData) {
-    //     console.log(`Clicked Region ID: ${clickedRegionId}`);
-    
-    //     // Store the current view if not already stored
-    //     if (!sessionStartingView) {
-    //         sessionStartingView = {
-    //             center: map.getCenter(),
-    //             zoom: map.getZoom(),
-    //             pitch: map.getPitch(),
-    //             bearing: map.getBearing(),
-    //         };
-    //         console.log('Stored session view:', sessionStartingView);
-    //     }
-    
-    //     // Show only location markers for the clicked region
-    //     locationMarkers.forEach(marker => {
-    //         const markerRegionId = marker.getElement().getAttribute('data-region-id');
-    //         if (markerRegionId === clickedRegionId && !marker._map) {
-    //             marker.addTo(map);
-    //         } else if (markerRegionId !== clickedRegionId && marker._map) {
-    //             marker.remove();
-    //         }
-    //     });
-    
-    //     // Filter facilities for the clicked state
-    //     const stateFacilities = facilitiesData.filter(facility => facility.region_id === clickedRegionId);
-    
-    //     // Handle case where no facilities are found or empty clicks
-    //     map.on('click', (e) => {
-    //         const features = map.queryRenderedFeatures(e.point, { layers: ['state-markers'] });
-    
-    //         if (!features.length) {
-    //             console.warn('Empty click detected: No region or facility clicked.');
-    
-    //             // Reset to the view of the current region using flyToRegion
-    //             if (currentRegion) {
-    //                 flyToRegion(currentRegion);
-    //             } else {
-    //                 flyToRegion('usa'); // Default to USA if no currentRegion is set
-    //             }
-    //             return;
-    //         }   
-    
-    //         // Proceed with regular region click handling
-    //         const clickedRegionId = features[0].properties.region_id;
-    //         handleStateClick(clickedRegionId, facilitiesData);
-    //     });
-    
-    //     // Custom zoom levels for specific regions
-    //     const regionZoomLevels = {
-    //         AW: 10,
-    //         IT: 6,
-    //         ENG: 8,
-    //         CAN: 3,
-    //         default: 6,
-    //     };
-    //     const customZoom = regionZoomLevels[clickedRegionId] || regionZoomLevels.default;
-    
-    //     // Zoom into the bounds of the state
-    //     const stateBounds = new mapboxgl.LngLatBounds();
-    //     stateFacilities.forEach(facility => {
-    //         if (facility.longitude && facility.latitude) {
-    //             stateBounds.extend([facility.longitude, facility.latitude]);
-    //         } else {
-    //             console.warn(`Skipping facility with missing coordinates:`, facility);
-    //         }
-    //     });
-    
-    //     map.fitBounds(stateBounds, {
-    //         padding: 50,
-    //         maxZoom: customZoom,
-    //         duration: 2000,
-    //     });
-    
-    //     // Show the back button
-    //     backButton.style.display = 'block';
-    // }
-    
-
-// regions
-const regions = {
-    usa: { center: [-101.714859, 40.710884], zoom: 4, pitch: 0 },
-    uk: { center: [360.242386, 51.633362], zoom: 4, pitch: 15 },
-    italy: { center: [12.563553, 42.798676], zoom: 4, pitch: 45 },
-    canada: { center: [-106.3468, 56.1304], zoom: 3, pitch: 0 },
-    aruba: { center: [-70.027, 12.5246], zoom: 10, pitch: 45 }
-};
-
-// flyToRegion function
-function flyToRegion(region) {
-    if (!regions[region]) {
-        console.error(`Region "${region}" is not defined.`);
-        return;
-    }
-
-    const { center, zoom, pitch } = regions[region];
-    map.flyTo({
-        center,
-        zoom,
-        pitch,
-        bearing: 0,
-        duration: 2000,
-        easing: (t) => t * (2 - t),
+    // Fly-to buttons for navigating regions
+    document.getElementById("fit-to-usa").addEventListener("click", () => {
+        map.fitBounds([
+            [-165.031128, 65.476793],
+            [-81.131287, 26.876143]
+        ]);
     });
 
-    //current region
-    currentRegion = region;
-
-    // Adjust marker visibility based on zoom threshold
-    const markerZoomThreshold = currentRegion === 'usa' ? 4 : 5;
-    const currentZoom = map.getZoom();
-
-    if (currentZoom <= markerZoomThreshold) {
-        toggleVisibility(['state-markers'], 'visible');
-        toggleVisibility(['location-markers', 'clusters', 'unclustered-point', 'cluster-count'], 'none');
-    } else {
-        toggleVisibility(['state-markers'], 'none');
-    }
-
-    // Highlight active button
-    document.querySelectorAll(".region-button").forEach(button => button.classList.remove("active"));
-    document.getElementById(`fly-to-${region}`).classList.add("active");
-}
-
-// handleStateClick
-function handleStateClick(clickedRegionId, facilitiesData) {
-    console.log(`Clicked Region ID: ${clickedRegionId}`);
-
-    // Store the current view if not already stored
-    if (!sessionStartingView) {
-        sessionStartingView = {
-            center: map.getCenter(),
-            zoom: map.getZoom(),
-            pitch: map.getPitch(),
-            bearing: map.getBearing(),
+    function updateMarkerVisibility(region, zoomLevel) {
+        const regionZoomThresholds = {
+            usa: 4,
+            uk: 5,
+            italy: 6,
+            canada: 3,
+            aruba: 10,
         };
-        console.log('Stored session view:', sessionStartingView);
+
+        const markerZoomThreshold = regionZoomThresholds[region] || 4; // Default threshold for USA
+        if (zoomLevel <= markerZoomThreshold) {
+            toggleVisibility(['state-markers'], 'visible');
+            toggleVisibility(['location-markers', 'clusters', 'unclustered-point', 'cluster-count'], 'none');
+        } else {
+            toggleVisibility(['state-markers'], 'none');
+            toggleVisibility(['location-markers'], 'visible');
+        }
     }
 
-    // Show only location markers for the clicked region
-    locationMarkers.forEach(marker => {
-        const markerRegionId = marker.getElement().getAttribute('data-region-id');
-        if (markerRegionId === clickedRegionId && !marker._map) {
-            marker.addTo(map);
-        } else if (markerRegionId !== clickedRegionId && marker._map) {
-            marker.remove();
-        }
-    });
+    const regionZoomThresholds = {
+        usa: 4,
+        uk: 5,
+        italy: 6,
+        canada: 3,
+        aruba: 10,
+    };
 
-    // Filter facilities for the clicked state
-    const stateFacilities = facilitiesData.filter(facility => facility.region_id === clickedRegionId);
+    function resetToSessionView() {
+        if (sessionStartingView) {
+            const isMobile = window.innerWidth <= 780;
+            const zoomThreshold = regionZoomThresholds[currentRegion] || 4;
+            const zoomLevel = Math.max(
+                isMobile ? sessionStartingView.zoom - 1 : sessionStartingView.zoom,
+                zoomThreshold
+            );
 
-    // Handle case where no facilities are found or empty clicks
-    map.on('click', (e) => {
-        const features = map.queryRenderedFeatures(e.point, { layers: ['state-markers'] });
+            // Fly to the sessionStartingView
+            map.flyTo({
+                center: sessionStartingView.center,
+                zoom: zoomLevel,
+                pitch: sessionStartingView.pitch,
+                bearing: sessionStartingView.bearing,
+                duration: 2000,
+            });
 
-        if (!features.length) {
-            console.warn('Empty click detected: No region or facility clicked.');
+            // Adjust marker size and ensure visibility
+            adjustMarkerSize(zoomLevel);
+            updateMarkerVisibility(currentRegion, zoomLevel);
 
-            // Reset to the view of the current region using flyToRegion
+            // Hide back button and reset session view
+            backButton.style.display = 'none';
+            sessionStartingView = null;
+        } else {
+            console.warn('No previous view stored in sessionStartingView. Resetting to current region.');
             if (currentRegion) {
                 flyToRegion(currentRegion);
             } else {
-                flyToRegion('usa'); // Default to USA if no currentRegion is set
+                flyToRegion('usa');
             }
+        }
+    }
+
+    backButton.addEventListener('click', resetToSessionView);
+
+    const sidebarCloseButton = document.getElementById('close-sidebar');
+    if (sidebarCloseButton) {
+        sidebarCloseButton.addEventListener('click', () => {
+            sidebar.style.display = 'none';
+            resetToSessionView();
+        });
+    } else {
+        console.warn('Sidebar close button not found.');
+    }
+
+    // regions
+    const regions = {
+        usa: { center: [-101.714859, 40.710884], zoom: 4, pitch: 0 },
+        uk: { center: [360.242386, 51.633362], zoom: 4, pitch: 15 },
+        italy: { center: [12.563553, 42.798676], zoom: 4, pitch: 45 },
+        canada: { center: [-106.3468, 56.1304], zoom: 3, pitch: 0 },
+        aruba: { center: [-70.027, 12.5246], zoom: 10, pitch: 45 }
+    };
+
+    // flyToRegion function
+    function flyToRegion(region) {
+        if (!regions[region]) {
+            console.error(`Region "${region}" is not defined.`);
             return;
         }
 
-        // Proceed with regular region click handling
-        const clickedRegionId = features[0].properties.region_id;
-        handleStateClick(clickedRegionId, facilitiesData);
-    });
+        const { center, zoom, pitch } = regions[region];
+        map.flyTo({
+            center,
+            zoom,
+            pitch,
+            bearing: 0,
+            duration: 2000,
+            easing: (t) => t * (2 - t),
+        });
 
-    // Custom zoom levels for specific regions
-    const regionZoomLevels = {
-        AW: 10,
-        IT: 6,
-        ENG: 8,
-        CAN: 3,
-        default: 6,
-    };
-    const customZoom = regionZoomLevels[clickedRegionId] || regionZoomLevels.default;
+        //current region
+        currentRegion = region;
 
-    // Zoom into the bounds of the state
-    const stateBounds = new mapboxgl.LngLatBounds();
-    stateFacilities.forEach(facility => {
-        if (facility.longitude && facility.latitude) {
-            stateBounds.extend([facility.longitude, facility.latitude]);
+        // Adjust marker visibility based on zoom threshold
+        const markerZoomThreshold = currentRegion === 'usa' ? 4 : 5;
+        const currentZoom = map.getZoom();
+
+        if (currentZoom <= markerZoomThreshold) {
+            toggleVisibility(['state-markers'], 'visible');
+            toggleVisibility(['location-markers', 'clusters', 'unclustered-point', 'cluster-count'], 'none');
         } else {
-            console.warn(`Skipping facility with missing coordinates:`, facility);
+            toggleVisibility(['state-markers'], 'none');
         }
+
+        // Highlight active button
+        document.querySelectorAll(".region-button").forEach(button => button.classList.remove("active"));
+        document.getElementById(`fly-to-${region}`).classList.add("active");
+    }
+
+    // handleStateClick
+    function handleStateClick(clickedRegionId, facilitiesData) {
+        console.log(`Clicked Region ID: ${clickedRegionId}`);
+
+        // Store the current view if not already stored
+        if (!sessionStartingView) {
+            sessionStartingView = {
+                center: map.getCenter(),
+                zoom: map.getZoom(),
+                pitch: map.getPitch(),
+                bearing: map.getBearing(),
+            };
+            console.log('Stored session view:', sessionStartingView);
+        }
+
+        // Show only location markers for the clicked region
+        locationMarkers.forEach(marker => {
+            const markerRegionId = marker.getElement().getAttribute('data-region-id');
+            if (markerRegionId === clickedRegionId && !marker._map) {
+                marker.addTo(map);
+            } else if (markerRegionId !== clickedRegionId && marker._map) {
+                marker.remove();
+            }
+        });
+
+        // Filter facilities for the clicked state
+        const stateFacilities = facilitiesData.filter(facility => facility.region_id === clickedRegionId);
+
+        // Handle case where no facilities are found or empty clicks
+        map.on('click', (e) => {
+            const features = map.queryRenderedFeatures(e.point, { layers: ['state-markers'] });
+
+            if (!features.length) {
+                console.warn('Empty click detected: No region or facility clicked.');
+
+                // Reset to the view of the current region using flyToRegion
+                if (currentRegion) {
+                    flyToRegion(currentRegion);
+                } else {
+                    flyToRegion('usa'); // Default to USA if no currentRegion is set
+                }
+                return;
+            }
+
+            // Proceed with regular region click handling
+            const clickedRegionId = features[0].properties.region_id;
+            handleStateClick(clickedRegionId, facilitiesData);
+        });
+
+        // Custom zoom levels for specific regions
+        const regionZoomLevels = {
+            AW: 10,
+            IT: 6,
+            ENG: 8,
+            CAN: 3,
+            default: 6,
+        };
+        const customZoom = regionZoomLevels[clickedRegionId] || regionZoomLevels.default;
+
+        // Zoom into the bounds of the state
+        const stateBounds = new mapboxgl.LngLatBounds();
+        stateFacilities.forEach(facility => {
+            if (facility.longitude && facility.latitude) {
+                stateBounds.extend([facility.longitude, facility.latitude]);
+            } else {
+                console.warn(`Skipping facility with missing coordinates:`, facility);
+            }
+        });
+
+        map.fitBounds(stateBounds, {
+            padding: 50,
+            maxZoom: customZoom,
+            duration: 2000,
+        });
+
+        // Show the back button
+        backButton.style.display = 'block';
+    }
+
+    Object.keys(regions).forEach(region => {
+        document.getElementById(`fly-to-${region}`).addEventListener("click", () => flyToRegion(region));
     });
-
-    map.fitBounds(stateBounds, {
-        padding: 50,
-        maxZoom: customZoom,
-        duration: 2000,
-    });
-
-    // Show the back button
-    backButton.style.display = 'block';
-}
-
-// Attach region buttons
-Object.keys(regions).forEach(region => {
-    document.getElementById(`fly-to-${region}`).addEventListener("click", () => flyToRegion(region));
-});
 
 
     // Sets up a click event for a specified region layer.
@@ -970,14 +877,14 @@ Object.keys(regions).forEach(region => {
         // Start globe rotation
         startInitialRotation();
 
-// Explicitly set visibility for initial layers
-setTimeout(() => {
-    setLayerVisibility('state-markers', 'visible');
-    setLayerVisibility('location-markers', 'none');
-    setLayerVisibility('clusters', 'none');
-    setLayerVisibility('cluster-count', 'none');
-    setLayerVisibility('unclustered-point', 'none');
-}, 0);
+        // Explicitly set visibility for initial layers
+        setTimeout(() => {
+            setLayerVisibility('state-markers', 'visible');
+            setLayerVisibility('location-markers', 'none');
+            setLayerVisibility('clusters', 'none');
+            setLayerVisibility('cluster-count', 'none');
+            setLayerVisibility('unclustered-point', 'none');
+        }, 0);
 
         // Idle event to recheck visibility after rotation
         map.on('idle', () => {
@@ -1048,9 +955,9 @@ setTimeout(() => {
                     // Set click events and interactions
                     setRegionClickEvent(sourceId, 'id', 'name');
                     addRegionInteractions(map, `${layerId}-fill`, sourceId, regionsWithFacilities);
-});
+                });
 
- // Populate markersData
+                // Populate markersData
                 markersData = facilities.map(facility => ({
                     lng: facility.longitude,
                     lat: facility.latitude,
@@ -1097,7 +1004,7 @@ setTimeout(() => {
                     marker.getElement().style.visibility = 'visible';
                 });
 
-// Load custom marker image for state markers
+                // Load custom marker image for state markers
                 map.loadImage('./img/gtLogo.png', (error, image) => {
                     if (error) {
                         console.error('Error loading image:', error);
@@ -1212,7 +1119,7 @@ setTimeout(() => {
                                 break;
                             default:
                                 console.warn(`No zoom threshold defined for region: ${currentRegion}`);
-                                markerZoomThreshold = 3; 
+                                markerZoomThreshold = 3;
                         }
 
                         // Toggle visibility based on zoom level
@@ -1237,7 +1144,7 @@ setTimeout(() => {
                         if (!features.length) {
                             // Clear all markers
                             locationMarkers.forEach(marker => marker.remove());
-                    
+
                             // // Reset to default view
                             // setLayerVisibility('state-markers', 'visible');
                             // map.flyTo({
@@ -1246,13 +1153,13 @@ setTimeout(() => {
                             //     pitch: 0,
                             //     bearing: 0,
                             // });
-                    
+
                             // Hide sidebar and back button
                             sidebar.style.display = 'none';
                             backButton.style.display = 'none';
                         }
                     });
-                    
+
                 })
 
                 // markers for each facility
@@ -1433,17 +1340,16 @@ setTimeout(() => {
                     });
                 }
 
+                ['us-states', 'canada-regions', 'aruba-region', 'italy-regions', 'uk-regions'].forEach(region => {
+                    // console.log(`Applying styles for ${region}`);
+                    addHoverOutlineLayer(map, `${region}-line-hover`, region);
+                    addRegionLayer(map, region, region, regionsWithFacilities);
+                    addRegionInteractions(map, `${region}-fill`, region, regionsWithFacilities);
+                });
 
-        ['us-states', 'canada-regions', 'aruba-region', 'italy-regions', 'uk-regions'].forEach(region => {
-            // console.log(`Applying styles for ${region}`);
-            addHoverOutlineLayer(map, `${region}-line-hover`, region);
-            addRegionLayer(map, region, region, regionsWithFacilities);
-            addRegionInteractions(map, `${region}-fill`, region, regionsWithFacilities);
-        });
-
-        // console.log('Current layer order:', map.getStyle().layers.map(layer => layer.id));
-        // addGeoJSONSource(map, 'us-states', '/data/us-states.geojson', 'id');
-        // console.log("Sources after adding 'us-states':", map.getStyle().sources);
+                // console.log('Current layer order:', map.getStyle().layers.map(layer => layer.id));
+                // addGeoJSONSource(map, 'us-states', '/data/us-states.geojson', 'id');
+                // console.log("Sources after adding 'us-states':", map.getStyle().sources);
 
                 //Cluster Source and Layer Styling
                 // Set up cluster source for hospitals
@@ -1536,14 +1442,14 @@ setTimeout(() => {
                     }
                 });
 
-           
-// Marker size adjustment based on zoom
-map.on('zoomend', () => {
-    const zoomLevel = map.getZoom();
-    adjustMarkerSize(zoomLevel); 
-    toggleMarkers();
-});
-                
+
+                // Marker size adjustment based on zoom
+                map.on('zoomend', () => {
+                    const zoomLevel = map.getZoom();
+                    adjustMarkerSize(zoomLevel);
+                    toggleMarkers();
+                });
+
                 // Click event to show facility information in popup
                 map.on('click', 'unclustered-point', (e) => {
                     const coordinates = e.features[0].geometry.coordinates.slice();
@@ -1798,61 +1704,6 @@ map.on('zoomend', () => {
             selectedStateId = null;
         }
         document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
-
-        // Fly-to buttons for navigating regions
-        document.getElementById("fit-to-usa").addEventListener("click", () => {
-            map.fitBounds([
-                [-165.031128, 65.476793],
-                [-81.131287, 26.876143]
-            ]);
-        });
-
-        // const regions = {
-        //     usa: { center: [-101.714859, 40.710884], zoom: 4, pitch: 0 },
-        //     uk: { center: [360.242386, 51.633362], zoom: 4, pitch: 15 },
-        //     italy: { center: [12.563553, 42.798676], zoom: 4, pitch: 45 },
-        //     canada: { center: [-106.3468, 56.1304], zoom: 3, pitch: 0 },
-        //     aruba: { center: [-70.027, 12.5246], zoom: 10, pitch: 45 }
-        // };
-
-        // function flyToRegion(region) {
-        //     if (!regions[region]) {
-        //         console.error(`Region "${region}" is not defined.`);
-        //         return;
-        //     }
-
-        //     const { center, zoom } = regions[region];
-        //     map.flyTo({
-        //         center,
-        //         zoom,
-        //         pitch: regions[region].pitch, 
-        //         bearing: 0,
-        //         duration: 2000,
-        //         easing: (t) => t * (2 - t),
-        //     });
-
-        //     // Update the current region
-        //     currentRegion = region;
-
-        //     // Adjust marker visibility based on zoom threshold
-        //     const markerZoomThreshold = currentRegion === 'usa' ? 4 : 5;
-        //     const currentZoom = map.getZoom();
-
-        //     if (currentZoom <= markerZoomThreshold) {
-        //         toggleVisibility(['state-markers'], 'visible');
-        //         toggleVisibility(['location-markers', 'clusters', 'unclustered-point', 'cluster-count'], 'none');
-        //     } else {
-        //         toggleVisibility(['state-markers'], 'none');
-        //     }
-
-        //     // Highlight active button
-        //     document.querySelectorAll(".region-button").forEach(button => button.classList.remove("active"));
-        //     document.getElementById(`fly-to-${region}`).classList.add("active");
-        // }
-
-        // Object.keys(regions).forEach(region => {
-        //     document.getElementById(`fly-to-${region}`).addEventListener("click", () => flyToRegion(region));
-        // });
 
         // Drag Initialization and Threshold Handling
         let isDragging = false;

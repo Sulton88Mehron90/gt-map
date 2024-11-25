@@ -41,7 +41,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let markers = [];
     let markersData = [];
     let markersDataReady = false;
-    //Initialize Facilities Data and Set Variables
     let facilitiesData = [];
     const regionsWithFacilities = new Set();
     const statesWithFacilities = new Set();
@@ -203,7 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const geocoderInput = geocoderContainer.querySelector('input[type="text"]');
                 if (geocoderInput) {
                     geocoderInput.focus();
-                    observer.disconnect(); // Stop observing once input is found and focused
+                    observer.disconnect(); 
                 }
             });
 
@@ -335,38 +334,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let sessionStartingView = null;
 
-    // Configure the "Back" button
+    //"Back" button
     backButton.id = 'back-button';
     backButton.classList.add('round-button');
     backButton.innerHTML = '<i class="fas fa-arrow-left"></i>';
     backButton.style.display = 'none';
     document.querySelector('.sidebar-header').appendChild(backButton);
-
-    function resetToSessionView() {
-        if (sessionStartingView) {
-            const isMobile = window.innerWidth <= 780;
-            const zoomLevel = isMobile ? sessionStartingView.zoom - 1 : sessionStartingView.zoom;
-
-            // Fly to the original session view
-            map.flyTo({
-                center: sessionStartingView.center,
-                zoom: zoomLevel,
-                pitch: sessionStartingView.pitch,
-                bearing: sessionStartingView.bearing,
-            });
-
-            // Adjust marker size and visibility for the new zoom level
-            adjustMarkerSize(zoomLevel);
-            // toggleMarkers();
-
-            // Update UI elements
-            backButton.style.display = 'none';
-            gtLogo.style.display = 'block';
-            sessionStartingView = null;
-        }
-    }
-
-    backButton.addEventListener('click', resetToSessionView);
 
     //Map Resize on Load and Window Resize
     window.addEventListener("load", () => map.resize());
@@ -382,7 +355,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 data: dataUrl,
                 promoteId: promoteId,
             });
-            //     console.log(`Source with ID "${sourceId}" added successfully.`);
+        //console.log(`Source with ID "${sourceId}" added successfully.`);
         }
         // else {
         //     console.warn(`Source with ID "${sourceId}" already exists. Skipping addition.`);
@@ -636,6 +609,80 @@ document.addEventListener("DOMContentLoaded", () => {
         ]);
     });
 
+    function updateMarkerVisibility(region, zoomLevel) {
+        const regionZoomThresholds = {
+            usa: 4,
+            uk: 5,
+            italy: 6,
+            canada: 3,
+            aruba: 10,
+        };
+
+        const markerZoomThreshold = regionZoomThresholds[region] || 4;
+        if (zoomLevel <= markerZoomThreshold) {
+            toggleVisibility(['state-markers'], 'visible');
+            toggleVisibility(['location-markers', 'clusters', 'unclustered-point', 'cluster-count'], 'none');
+        } else {
+            toggleVisibility(['state-markers'], 'none');
+            toggleVisibility(['location-markers'], 'visible');
+        }
+    }
+
+    const regionZoomThresholds = {
+        usa: 4,
+        uk: 5,
+        italy: 6,
+        canada: 3,
+        aruba: 10,
+    };
+
+    function resetToSessionView() {
+        if (sessionStartingView) {
+            const isMobile = window.innerWidth <= 780;
+            const zoomThreshold = regionZoomThresholds[currentRegion] || 4;
+            const zoomLevel = Math.max(
+                isMobile ? sessionStartingView.zoom - 1 : sessionStartingView.zoom,
+                zoomThreshold
+            );
+
+            // Fly to the sessionStartingView
+            map.flyTo({
+                center: sessionStartingView.center,
+                zoom: zoomLevel,
+                pitch: sessionStartingView.pitch,
+                bearing: sessionStartingView.bearing,
+                duration: 2000,
+            });
+
+            // Adjust marker size and visibility
+            adjustMarkerSize(zoomLevel);
+            updateMarkerVisibility(currentRegion, zoomLevel);
+
+            // Hide back button and reset session view
+            backButton.style.display = 'none';
+            sessionStartingView = null;
+        } else {
+            console.warn('No previous view stored in sessionStartingView. Resetting to current region.');
+            if (currentRegion) {
+                flyToRegion(currentRegion);
+            } else {
+                flyToRegion('usa');
+            }
+        }
+    }
+
+    backButton.addEventListener('click', resetToSessionView);
+
+    const sidebarCloseButton = document.getElementById('close-sidebar');
+    if (sidebarCloseButton) {
+        sidebarCloseButton.addEventListener('click', () => {
+            sidebar.style.display = 'none';
+            resetToSessionView();
+        });
+    } else {
+        console.warn('Sidebar close button not found.');
+    }
+
     // regions
     const regions = {
         usa: { center: [-101.714859, 40.710884], zoom: 4, pitch: 0 },
@@ -756,11 +803,9 @@ document.addEventListener("DOMContentLoaded", () => {
             duration: 2000,
         });
 
-        // Show the back button
         backButton.style.display = 'block';
     }
 
-    // Attach region buttons
     Object.keys(regions).forEach(region => {
         document.getElementById(`fly-to-${region}`).addEventListener("click", () => flyToRegion(region));
     });
@@ -1053,7 +1098,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         // Default threshold for state marker visibility
                         let markerZoomThreshold = 3;
 
-                        // Adjust the threshold based on the active region
+                        // Threshold based on the active region
                         switch (currentRegion) {
                             case 'usa':
                                 markerZoomThreshold = 4.5;
@@ -1197,7 +1242,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 //Function for Zoom-Based Marker Visibility
                 function toggleMarkers() {
                     const zoomLevel = map.getZoom();
-                    const minZoomToShowMarkers = 6;
+                    const minZoomToShowMarkers = 5.8;
 
                     markers.forEach(marker => {
                         if (zoomLevel >= minZoomToShowMarkers && !marker._map) {
@@ -1214,7 +1259,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Initial call to set visibility based on the starting zoom level
                 toggleMarkers();
 
-                // show regions and states
+                //show regions and states
                 function addRegionLayer(map, layerId, sourceId, regionsWithFacilities) {
                     const hoverColor = '#05aaff';
                     const selectedColor = '#ff8502';
@@ -1394,7 +1439,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         'visibility': 'none'
                     }
                 });
-
 
                 // Marker size adjustment based on zoom
                 map.on('zoomend', () => {
@@ -1648,6 +1692,115 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             });
         }
+
+        // function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
+        //     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        //     const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
+
+        //     // Applying hover effect only to regions with facilities
+        //     const applyHover = (regionId) => {
+        //         if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
+        //             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
+        //         }
+        //         hoveredRegionId = regionId;
+        //         if (hoveredRegionId !== selectedRegionId) {
+        //             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: true });
+        //         }
+        //     };
+
+        //     const clearHover = () => {
+        //         if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
+        //             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
+        //         }
+        //         hoveredRegionId = null;
+        //     };
+
+        //     // Touch and hover interactions
+        //     if (isTouchDevice) {
+        //         map.on('touchstart', layerId, (e) => {
+        //             const regionId = e.features[0].id;
+        //             if (regionsWithFacilities.has(regionId)) {
+        //                 if (hoveredRegionId === regionId) {
+        //                     selectRegion(regionId);
+        //                 } else {
+        //                     applyHover(regionId);
+        //                 }
+        //             }
+        //         });
+
+        //         map.on('touchend', layerId, clearHover);
+        //         map.on('touchcancel', layerId, clearHover);
+        //     } else {
+        //         map.on(hoverEvent, layerId, (e) => {
+        //             const regionId = e.features[0].id;
+        //             applyHover(regionId);
+        //         });
+
+        //         map.on('mouseleave', layerId, clearHover);
+        //     }
+
+        //     // Function to select a region
+        //     function selectRegion(regionId) {
+        //         clearRegionSelection();
+
+        //         selectedRegionId = regionId;
+        //         map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: true });
+
+        //         // Populate the sidebar for the selected region
+        //         loadFacilitiesData()
+        //             .then((facilities) => {
+        //                 const regionName = map.queryRenderedFeatures({ layers: [layerId] })
+        //                     .find((feature) => feature.properties.id === regionId)?.properties.name;
+        //                 if (regionName) {
+        //                     populateSidebar(regionId, regionName, facilities);
+        //                 }
+        //             })
+        //             .catch((error) => {
+        //                 console.error('Error loading facilities data:', error);
+        //             });
+        //     }
+
+        //     // Clear selection when clicking outside regions
+        //     map.on('click', (e) => {
+        //         const features = map.queryRenderedFeatures(e.point, { layers: [layerId] });
+        //         if (features.length === 0) {
+        //             clearRegionSelection();
+        //         }
+        //     });
+
+        //     // Clear region selection and markers
+        //     function clearRegionSelection() {
+        //         clearHover();
+
+        //         if (selectedRegionId !== null) {
+        //             map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: false });
+        //             selectedRegionId = null;
+        //         }
+
+        //         locationMarkers.forEach(marker => marker.remove());
+        //         locationMarkers = [];
+        //     }
+
+        //     // Attach clearRegionSelection to sidebar close button
+        //     document.getElementById('close-sidebar').addEventListener('click', () => {
+        //         clearRegionSelection();
+        //         closeSidebar();
+        //     });
+
+        //     // Reset Button Functionality
+        //     const resetButton = document.getElementById("reset-view");
+        //     resetButton.addEventListener("click", () => {
+        //         clearRegionSelection();
+        //         closeSidebar();
+        //         map.flyTo({
+        //             center: INITIAL_CENTER,
+        //             zoom: INITIAL_ZOOM,
+        //             pitch: 0,
+        //             bearing: 0,
+        //             duration: 1000,
+        //         });
+        //     });
+        // }
 
         function closeSidebar() {
             sidebar.style.display = 'none';
