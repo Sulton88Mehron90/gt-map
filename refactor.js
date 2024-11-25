@@ -47,6 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let selectedStateId = null;
     const logoUrl = './img/gtLogo.png';
     let currentRegion = 'usa';
+    let interactionTimeout;
 
     // Toggle visibility for elements (markers or layers)
     function toggleVisibility(layerIds, visibility) {
@@ -82,12 +83,10 @@ document.addEventListener("DOMContentLoaded", () => {
     map.on('moveend', () => {
         userInteracting = false;
 
-        // Only spin the globe if the user hasn't interacted
         if (!hasInteracted) {
             spinGlobe();
         }
 
-        // Update markers after the map moves
         updateMarkers();
     });
 
@@ -140,29 +139,51 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Function to handle first interaction, hiding GT logos and showing clusters
-    function onFirstInteraction() {
-        if (!hasInteracted) {
-            hasInteracted = true;
+    function manageGTLogosVisibility(visible) {
+        gtLogoMarkers.forEach(marker => {
+            const element = marker.getElement();
+            element.style.visibility = visible ? 'visible' : 'hidden';
 
-            // Hide GT logos permanently after the first interaction
-            gtLogoMarkers.forEach(marker => {
-                marker.getElement().style.visibility = 'hidden';
-            });
-
-            // Clusters become visible after zoom or interaction
-            if (map.getZoom() >= 6) {
-                setLayerVisibility('clusters', 'visible');
-                setLayerVisibility('cluster-count', 'visible');
-                setLayerVisibility('unclustered-point', 'visible');
+            if (!visible && marker._map) {
+                marker.remove();
+            } else if (visible && !marker._map) {
+                marker.addTo(map);
             }
-        }
+        });
+
+        console.log(visible ? 'GT logos shown.' : 'GT logos hidden.');
     }
 
-    //Event listeners to trigger onFirstInteraction only once
-    map.on('mousedown', onFirstInteraction);
-    map.on('zoom', onFirstInteraction);
-    map.on('drag', onFirstInteraction);
+
+    function onUserInteraction(eventType) {
+        if (!hasInteracted) {
+            hasInteracted = true;
+            console.log(`User started interaction: ${eventType}`);
+        }
+
+        userInteracting = true;
+
+        manageGTLogosVisibility(false);
+
+        // Show clusters if zoom threshold is met
+        if (eventType === 'zoom' && map.getZoom() >= 6) {
+            toggleVisibility(['clusters', 'cluster-count', 'unclustered-point'], 'visible');
+        }
+
+    }
+
+    ['mousedown', 'dragstart', 'zoomstart', 'touchstart', 'click'].forEach(event => {
+        map.on(event, () => {
+            onUserInteraction(event);
+        });
+    });
+
+    // Ensure GT logos are also hidden when using buttons
+    document.querySelectorAll('.region-button').forEach(button => {
+        button.addEventListener('click', () => {
+            onUserInteraction('button');
+        });
+    });
 
     // Debounce Function Definition
     function debounce(func, delay) {
@@ -202,7 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const geocoderInput = geocoderContainer.querySelector('input[type="text"]');
                 if (geocoderInput) {
                     geocoderInput.focus();
-                    observer.disconnect(); // Stop observing once input is found and focused
+                    observer.disconnect();
                 }
             });
 
@@ -334,7 +355,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let sessionStartingView = null;
 
-    // Configure the "Back" button
+    //"Back" button
     backButton.id = 'back-button';
     backButton.classList.add('round-button');
     backButton.innerHTML = '<i class="fas fa-arrow-left"></i>';
@@ -355,7 +376,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 data: dataUrl,
                 promoteId: promoteId,
             });
-            //     console.log(`Source with ID "${sourceId}" added successfully.`);
+            //console.log(`Source with ID "${sourceId}" added successfully.`);
         }
         // else {
         //     console.warn(`Source with ID "${sourceId}" already exists. Skipping addition.`);
@@ -618,7 +639,7 @@ document.addEventListener("DOMContentLoaded", () => {
             aruba: 10,
         };
 
-        const markerZoomThreshold = regionZoomThresholds[region] || 4; // Default threshold for USA
+        const markerZoomThreshold = regionZoomThresholds[region] || 4;
         if (zoomLevel <= markerZoomThreshold) {
             toggleVisibility(['state-markers'], 'visible');
             toggleVisibility(['location-markers', 'clusters', 'unclustered-point', 'cluster-count'], 'none');
@@ -631,7 +652,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const regionZoomThresholds = {
         usa: 4,
         uk: 5,
-        italy: 6,
+        italy: 5,
         canada: 3,
         aruba: 10,
     };
@@ -654,7 +675,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 duration: 2000,
             });
 
-            // Adjust marker size and ensure visibility
+            // Adjust marker size and visibility
             adjustMarkerSize(zoomLevel);
             updateMarkerVisibility(currentRegion, zoomLevel);
 
@@ -683,7 +704,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.warn('Sidebar close button not found.');
     }
 
-    // regions
+    // Regions
     const regions = {
         usa: { center: [-101.714859, 40.710884], zoom: 4, pitch: 0 },
         uk: { center: [360.242386, 51.633362], zoom: 4, pitch: 15 },
@@ -803,14 +824,12 @@ document.addEventListener("DOMContentLoaded", () => {
             duration: 2000,
         });
 
-        // Show the back button
         backButton.style.display = 'block';
     }
 
     Object.keys(regions).forEach(region => {
         document.getElementById(`fly-to-${region}`).addEventListener("click", () => flyToRegion(region));
     });
-
 
     // Sets up a click event for a specified region layer.
     // On click, fetches and displays facility data in the sidebar for the clicked region.
@@ -951,10 +970,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     // Add region layer and hover outline
                     addRegionLayer(map, layerId, sourceId, regionsWithFacilities);
                     addHoverOutlineLayer(map, `${layerId}-line-hover`, sourceId);
+                    addRegionInteractions(map, `${layerId}-fill`, sourceId, regionsWithFacilities);
 
                     // Set click events and interactions
                     setRegionClickEvent(sourceId, 'id', 'name');
-                    addRegionInteractions(map, `${layerId}-fill`, sourceId, regionsWithFacilities);
                 });
 
                 // Populate markersData
@@ -1100,7 +1119,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         // Default threshold for state marker visibility
                         let markerZoomThreshold = 3;
 
-                        // Adjust the threshold based on the active region
+                        // Threshold based on the active region
                         switch (currentRegion) {
                             case 'usa':
                                 markerZoomThreshold = 4.5;
@@ -1142,18 +1161,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     map.on('click', (e) => {
                         const features = map.queryRenderedFeatures(e.point, { layers: ['state-markers'] });
                         if (!features.length) {
-                            // Clear all markers
                             locationMarkers.forEach(marker => marker.remove());
-
-                            // // Reset to default view
-                            // setLayerVisibility('state-markers', 'visible');
-                            // map.flyTo({
-                            //     center: INITIAL_CENTER,
-                            //     zoom: INITIAL_ZOOM,
-                            //     pitch: 0,
-                            //     bearing: 0,
-                            // });
-
                             // Hide sidebar and back button
                             sidebar.style.display = 'none';
                             backButton.style.display = 'none';
@@ -1244,7 +1252,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 //Function for Zoom-Based Marker Visibility
                 function toggleMarkers() {
                     const zoomLevel = map.getZoom();
-                    const minZoomToShowMarkers = 6;
+                    const minZoomToShowMarkers = 5.8;
 
                     markers.forEach(marker => {
                         if (zoomLevel >= minZoomToShowMarkers && !marker._map) {
@@ -1289,6 +1297,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
                     });
                 }
+
 
                 function addHoverOutlineLayer(map, layerId, sourceId) {
                     if (map.getLayer(layerId)) {
@@ -1442,7 +1451,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 });
 
-
                 // Marker size adjustment based on zoom
                 map.on('zoomend', () => {
                     const zoomLevel = map.getZoom();
@@ -1590,6 +1598,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 errorMessage.innerText = 'Failed to load facility data. Please try again later.';
             });
 
+
         function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
             const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
             const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
@@ -1696,6 +1705,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
 
+   
         function closeSidebar() {
             sidebar.style.display = 'none';
             if (selectedStateId !== null) {
@@ -1704,6 +1714,16 @@ document.addEventListener("DOMContentLoaded", () => {
             selectedStateId = null;
         }
         document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
+
+        function closeSidebar() {
+            sidebar.style.display = 'none';
+            if (selectedStateId !== null) {
+                map.setFeatureState({ source: 'us-states', id: selectedStateId }, { selected: false });
+            }
+            selectedStateId = null;
+        }
+        document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
+
 
         // Drag Initialization and Threshold Handling
         let isDragging = false;
