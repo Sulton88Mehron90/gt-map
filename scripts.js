@@ -630,14 +630,15 @@ document.addEventListener("DOMContentLoaded", () => {
         ]);
     });
 
+    const regionZoomThresholds = {
+        usa: 4,
+        uk: 5,
+        italy: 6,
+        canada: 3,
+        aruba: 10,
+    };
+
     function updateMarkerVisibility(region, zoomLevel) {
-        const regionZoomThresholds = {
-            usa: 4,
-            uk: 5,
-            italy: 6,
-            canada: 3,
-            aruba: 10,
-        };
 
         const markerZoomThreshold = regionZoomThresholds[region] || 4;
         if (zoomLevel <= markerZoomThreshold) {
@@ -648,15 +649,7 @@ document.addEventListener("DOMContentLoaded", () => {
             toggleVisibility(['location-markers'], 'visible');
         }
     }
-
-    const regionZoomThresholds = {
-        usa: 4,
-        uk: 5,
-        italy: 5,
-        canada: 3,
-        aruba: 10,
-    };
-
+  
     function resetToSessionView() {
         if (sessionStartingView) {
             const isMobile = window.innerWidth <= 780;
@@ -1272,7 +1265,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 // show regions and states
                 function addRegionLayer(map, layerId, sourceId, regionsWithFacilities) {
                     const hoverColor = '#05aaff';
-                    const selectedColor = '#704214'; 
+                    const selectedColor = '#6E7F80'; //disaturated blue
+                    // const selectedColor = '#A2C4A5'; //Muted Green
                     // const selectedColor = '#F8F9FA' //gray
                     // const selectedColor = '#05aaff' 
 
@@ -1298,7 +1292,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             'fill-opacity': [
             'case',
             // Increase transparency for selected regions
-            ['boolean', ['feature-state', 'selected'], false], 0.3, // 30% opacity for selected regions
+            ['boolean', ['feature-state', 'selected'], false], 0.1, // 30% opacity for selected regions
             ['boolean', ['feature-state', 'hover'], false], 0.6, // 60% opacity for hovered regions
             0.8 
         ]
