@@ -677,70 +677,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // function resetToSessionView() {
-    //     if (sessionStartingView) {
-    //         const isMobile = window.innerWidth <= 780;
-    //         const zoomThreshold = regionZoomThresholds[currentRegion] || 4;
-    //         const zoomLevel = Math.max(
-    //             isMobile ? sessionStartingView.zoom - 1 : sessionStartingView.zoom,
-    //             zoomThreshold
-    //         );
-
-    //         // // Fly to the sessionStartingView
-    //         // map.flyTo({
-    //         //     center: sessionStartingView.center,
-    //         //     zoom: zoomLevel,
-    //         //     pitch: sessionStartingView.pitch,
-    //         //     bearing: sessionStartingView.bearing,
-    //         //     duration: 2000,
-    //         // });
-
-    //         if (currentRegion === 'usa' && window.innerWidth <= 480) {
-    //             // Adjust to contiguous USA bounds for small screens
-
-    //             map.fitBounds(contiguousUSABounds, {
-    //                 padding: 20,
-    //                 maxZoom: 4.5,
-    //                 duration: 2000,
-    //             });
-    //         } else {
-    //             // Fly to the sessionStartingView
-    //             map.flyTo({
-    //                 center: sessionStartingView.center,
-    //                 zoom: zoomLevel,
-    //                 pitch: sessionStartingView.pitch,
-    //                 bearing: sessionStartingView.bearing,
-    //                 duration: 2000,
-    //             });
-    //         }
-
-    //         // Adjust marker size and visibility dynamically
-    //         if (window.innerWidth <= 480) {
-    //             // For small screens, ensure location markers are visible at higher zoom levels
-    //             const visibility = zoomLevel >= 4 ? 'visible' : 'none';
-    //             toggleVisibility(['location-markers'], visibility);
-    //             console.log(`Location markers visibility set to: ${visibility} for zoom level ${zoomLevel}`);
-    //         } else {
-    //             // Default behavior for larger screens
-    //             updateMarkerVisibility(currentRegion, zoomLevel);
-    //         }
-    //         adjustMarkerSize(zoomLevel);
-
-
-    //         // Hide back button and reset session view
-    //         backButton.style.display = 'none';
-    //         sessionStartingView = null;
-    //     } else {
-    //         console.warn('No previous view stored in sessionStartingView. Resetting to current region.');
-    //         if (currentRegion) {
-    //             flyToRegion(currentRegion);
-    //         } else {
-    //             flyToRegion('usa');
-    //         }
-    //     }
-    // }
-
-
     function resetToSessionView() {
         if (sessionStartingView) {
             // Validate that the stored region matches the current region
@@ -1818,9 +1754,134 @@ map.on('zoomend', manageZoomWarning);
             });
 
         // without zooming logic in it.
+        // function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
+        //     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        //     const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
+        
+        //     const applyHover = (regionId) => {
+        //         // Clear previous hover
+        //         if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
+        //             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
+        //         }
+        
+        //         // Set new hover
+        //         hoveredRegionId = regionId;
+        //         if (hoveredRegionId !== selectedRegionId) {
+        //             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: true });
+        //         }
+        //     };
+        
+        //     const clearHover = () => {
+        //         if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
+        //             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
+        //         }
+        //         hoveredRegionId = null;
+        //     };
+        
+        //     const selectRegion = (regionId) => {
+        //         // Clear previous selection
+        //         clearRegionSelection();
+        
+        //         // Set new selection
+        //         selectedRegionId = regionId;
+        //         map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: true });
+        
+        //         console.log(`Region selected: ${regionId}`);
+        //     };
+        
+        //     const clearRegionSelection = () => {
+        //         // Clear hover and selection
+        //         if (hoveredRegionId !== null) {
+        //             map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
+        //         }
+        //         if (selectedRegionId !== null) {
+        //             map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: false });
+        //         }
+        //         hoveredRegionId = null;
+        //         selectedRegionId = null;
+        //     };
+        
+        //     // Hover interactions for all regions (including those without facilities)
+        //     if (isTouchDevice) {
+        //         map.on('touchstart', layerId, (e) => {
+        //             const regionId = e.features[0].id;
+        //             if (regionsWithFacilities.has(regionId)) {
+        //                 if (hoveredRegionId === regionId) {
+        //                     selectRegion(regionId);
+        //                 } else {
+        //                     applyHover(regionId);
+        //                 }
+        //             } else {
+        //                 applyHover(regionId);
+        //             }
+        //         });
+        
+        //         map.on('touchend', layerId, clearHover);
+        //         map.on('touchcancel', layerId, clearHover);
+        //     } else {
+        //         map.on(hoverEvent, layerId, (e) => {
+        //             const regionId = e.features[0].id;
+        //             applyHover(regionId); 
+        //         });
+        
+        //         map.on('mouseleave', layerId, clearHover);
+        //     }
+
+        //     // Click interactions for regions with facilities
+        //     map.on('click', layerId, (e) => {
+        //         const regionId = e.features[0].id;
+        //         if (regionsWithFacilities.has(regionId)) {
+        //             selectRegion(regionId);
+        //         } else {
+        //             console.warn(`Clicked region "${regionId}" does not have facilities.`);
+        //         }
+        //     });
+        
+        //     // Clear selection when clicking outside any region
+        //     map.on('click', (e) => {
+        //         const features = map.queryRenderedFeatures(e.point, { layers: [layerId] });
+        //         if (features.length === 0) {
+        //             clearRegionSelection();
+        //         }
+        //     });
+        
+        //     // Clear hover on zoom
+        //     map.on('zoomstart', () => {
+        //         clearHover();
+        //     });
+        
+        //     // Attach region clear to sidebar close button
+        //     const closeSidebarButton = document.getElementById('close-sidebar');
+        //     if (closeSidebarButton) {
+        //         closeSidebarButton.addEventListener('click', () => {
+        //             clearRegionSelection();
+        //             closeSidebar();
+        //         });
+        //     }
+        
+        //     // Reset button to clear state and reset the map view
+        //     const resetButton = document.getElementById("reset-view");
+        //     if (resetButton) {
+        //         resetButton.addEventListener("click", () => {
+        //             clearRegionSelection();
+        //             closeSidebar();
+        //             map.flyTo({
+        //                 center: INITIAL_CENTER,
+        //                 zoom: INITIAL_ZOOM,
+        //                 pitch: 0,
+        //                 bearing: 0,
+        //                 duration: 1000
+        //             });
+        //         });
+        //     }
+        // }        
+
         function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
             const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
             const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
+        
+            let hoveredRegionId = null;
+            let selectedRegionId = null;
         
             const applyHover = (regionId) => {
                 // Clear previous hover
@@ -1885,17 +1946,18 @@ map.on('zoomend', manageZoomWarning);
             } else {
                 map.on(hoverEvent, layerId, (e) => {
                     const regionId = e.features[0].id;
-                    applyHover(regionId); 
+                    applyHover(regionId);
                 });
         
                 map.on('mouseleave', layerId, clearHover);
             }
-
+        
             // Click interactions for regions with facilities
             map.on('click', layerId, (e) => {
                 const regionId = e.features[0].id;
+        
                 if (regionsWithFacilities.has(regionId)) {
-                    selectRegion(regionId);
+                    selectRegion(regionId); // Select the clicked region
                 } else {
                     console.warn(`Clicked region "${regionId}" does not have facilities.`);
                 }
@@ -1905,7 +1967,7 @@ map.on('zoomend', manageZoomWarning);
             map.on('click', (e) => {
                 const features = map.queryRenderedFeatures(e.point, { layers: [layerId] });
                 if (features.length === 0) {
-                    clearRegionSelection();
+                    clearRegionSelection(); // Clear selection if no region is clicked
                 }
             });
         
@@ -1918,7 +1980,7 @@ map.on('zoomend', manageZoomWarning);
             const closeSidebarButton = document.getElementById('close-sidebar');
             if (closeSidebarButton) {
                 closeSidebarButton.addEventListener('click', () => {
-                    clearRegionSelection();
+                    clearRegionSelection(); // Clear region selection when the sidebar closes
                     closeSidebar();
                 });
             }
@@ -1927,27 +1989,19 @@ map.on('zoomend', manageZoomWarning);
             const resetButton = document.getElementById("reset-view");
             if (resetButton) {
                 resetButton.addEventListener("click", () => {
-                    clearRegionSelection();
+                    clearRegionSelection(); 
                     closeSidebar();
                     map.flyTo({
                         center: INITIAL_CENTER,
                         zoom: INITIAL_ZOOM,
                         pitch: 0,
                         bearing: 0,
-                        duration: 1000
+                        duration: 1000,
                     });
                 });
             }
-        }        
-
-        function closeSidebar() {
-            sidebar.style.display = 'none';
-            if (selectedStateId !== null) {
-                map.setFeatureState({ source: 'us-states', id: selectedStateId }, { selected: false });
-            }
-            selectedStateId = null;
         }
-        document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
+        
 
         function closeSidebar() {
             sidebar.style.display = 'none';
