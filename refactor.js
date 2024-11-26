@@ -52,7 +52,6 @@ document.addEventListener("DOMContentLoaded", () => {
         [-124.848974, 24.396308],
         [-66.93457, 49.384358],
     ];
-    
 
     // Toggle visibility for elements (markers or layers)
     function toggleVisibility(layerIds, visibility) {
@@ -261,22 +260,36 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("Back to Top button not found!");
     }
 
-    // toggle the back-to-top button visibility
     function toggleBackToTopButton() {
-        const isCollapsed = sidebar.classList.contains('collapsed');
+        const isCollapsed = sidebar.classList.contains("collapsed");
         const isScrollable = sidebar.scrollHeight > sidebar.clientHeight;
         const isSmallScreen = window.innerWidth <= 480;
-
-        // Force recalculation of sidebar dimensions to ensure accuracy
-        sidebar.style.height = 'auto';
-
-        // Show button only if the sidebar is expanded and scrollable
+    
+        // Show button only if the sidebar is not collapsed and has scrollable content
         if (!isCollapsed && (isScrollable || isSmallScreen)) {
-            backToTopButton.style.display = 'block';
+            backToTopButton.style.display = "block";
         } else {
-            backToTopButton.style.display = 'none';
+            backToTopButton.style.display = "none";
         }
     }
+    
+
+    // // toggle the back-to-top button visibility
+    // function toggleBackToTopButton() {
+    //     const isCollapsed = sidebar.classList.contains('collapsed');
+    //     const isScrollable = sidebar.scrollHeight > sidebar.clientHeight;
+    //     const isSmallScreen = window.innerWidth <= 480;
+
+    //     // Force recalculation of sidebar dimensions to ensure accuracy
+    //     sidebar.style.height = 'auto';
+
+    //     // Show button only if the sidebar is expanded and scrollable
+    //     if (!isCollapsed && (isScrollable || isSmallScreen)) {
+    //         backToTopButton.style.display = 'block';
+    //     } else {
+    //         backToTopButton.style.display = 'none';
+    //     }
+    // }
 
     // Observer to monitor sidebar content changes for the back-to-top button
     const observer = new MutationObserver(toggleBackToTopButton);
@@ -293,35 +306,35 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }, { passive: false });
 
-    // Sidebar minimize/expand button logic
-    function toggleBackToTopButton() {
-        const isCollapsed = sidebar.classList.contains('collapsed');
-        const isScrollable = sidebar.scrollHeight > sidebar.clientHeight;
-        const isSmallScreen = window.innerWidth <= 480;
+    // // Sidebar minimize/expand button logic
+    // function toggleBackToTopButton() {
+    //     const isCollapsed = sidebar.classList.contains('collapsed');
+    //     const isScrollable = sidebar.scrollHeight > sidebar.clientHeight;
+    //     const isSmallScreen = window.innerWidth <= 480;
 
-        // Always hide the button when the sidebar is collapsed
-        if (isCollapsed) {
-            backToTopButton.style.display = 'none';
-            return;
-        }
+    //     // Always hide the button when the sidebar is collapsed
+    //     if (isCollapsed) {
+    //         backToTopButton.style.display = 'none';
+    //         return;
+    //     }
 
-        // On small screens, show the button only if the sidebar is scrollable
-        if (isSmallScreen) {
-            if (isScrollable) {
-                backToTopButton.style.display = 'block';
-            } else {
-                backToTopButton.style.display = 'none';
-            }
-            return;
-        }
+    //     // On small screens, show the button only if the sidebar is scrollable
+    //     if (isSmallScreen) {
+    //         if (isScrollable) {
+    //             backToTopButton.style.display = 'block';
+    //         } else {
+    //             backToTopButton.style.display = 'none';
+    //         }
+    //         return;
+    //     }
 
-        // On larger screens, show the button only if the sidebar is expanded and scrollable
-        if (isScrollable) {
-            backToTopButton.style.display = 'block';
-        } else {
-            backToTopButton.style.display = 'none';
-        }
-    }
+    //     // On larger screens, show the button only if the sidebar is expanded and scrollable
+    //     if (isScrollable) {
+    //         backToTopButton.style.display = 'block';
+    //     } else {
+    //         backToTopButton.style.display = 'none';
+    //     }
+    // }
 
     document.getElementById('minimize-sidebar').addEventListener('click', () => {
         sidebar.classList.toggle('collapsed');
@@ -345,17 +358,43 @@ document.addEventListener("DOMContentLoaded", () => {
             minimizeIcon.classList.remove('fa-chevron-down');
             minimizeIcon.classList.add('fa-chevron-up');
         }
-    });
 
-    sidebar.addEventListener('touchstart', (event) => {
-        if (!sidebar.classList.contains('collapsed')) {
+        // Event listener for sidebar minimize/expand button
+const minimizeButton = document.getElementById("minimize-sidebar");
+if (minimizeButton) {
+    minimizeButton.addEventListener("click", () => {
+        sidebar.classList.toggle("collapsed");
+        toggleBackToTopButton(); // Ensure the button visibility is updated
+    });
+}
+
+    });
+// Event listener for touchstart on the sidebar (for mobile)
+sidebar.addEventListener(
+    "touchstart",
+    () => {
+        if (!sidebar.classList.contains("collapsed")) {
             toggleBackToTopButton();
         }
-    }, { passive: false });
+    },
+    { passive: true }
+);
 
-    sidebar.addEventListener('touchend', () => {
+// Event listener for touchend on the sidebar
+sidebar.addEventListener(
+    "touchend",
+    () => {
         toggleBackToTopButton();
-    }, { passive: true });
+    },
+    { passive: true }
+);
+
+// Optional: Recalculate button visibility on window resize
+window.addEventListener("resize", toggleBackToTopButton);
+
+// Ensure the button visibility is set correctly on load
+toggleBackToTopButton();
+
 
     let sessionStartingView = null;
 
@@ -538,30 +577,6 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log(`Adjusted marker size to: ${size}px at zoom level ${zoomLevel}`);
     }
 
-
-    // function adjustMarkerSize(zoomLevel) {
-    //     const isSmallScreen = window.innerWidth <= 480;
-
-    //     // Refined size scaling for small screens
-    //     const baseSize = isSmallScreen ? 8 : 10;       // Minimum marker size
-    //     const maxSize = isSmallScreen ? 24 : 20;      // Maximum marker size
-    //     const scalingFactor = isSmallScreen ? 3 : 2;  // Increase scaling for small screens
-
-    //     const size = Math.max(baseSize, Math.min(maxSize, zoomLevel * scalingFactor));
-
-    //     document.querySelectorAll('.custom-marker').forEach(marker => {
-    //         marker.style.width = `${size}px`;
-    //         marker.style.height = `${size}px`;
-    //     });
-
-    //     console.log(`Adjusted marker size to: ${size}px at zoom level ${zoomLevel}`);
-    // }
-
-
-
-    // Custom marker creation with a popup. offset with this function.
-    
-    
     function createCustomMarker(lng, lat, popupContent, regionId) {
         // Create a custom marker element
         const markerElement = document.createElement('div');
@@ -687,7 +702,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     isMobile ? sessionStartingView.zoom - 1 : sessionStartingView.zoom,
                     zoomThreshold
                 );
-    
+
                 if (currentRegion === 'usa' && window.innerWidth <= 480) {
                     // Adjust to contiguous USA bounds for small screens
                     map.fitBounds(contiguousUSABounds, {
@@ -705,7 +720,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         duration: 2000,
                     });
                 }
-    
+
                 // Adjust marker visibility dynamically
                 if (window.innerWidth <= 480) {
                     const visibility = zoomLevel >= 4 ? 'visible' : 'none';
@@ -714,14 +729,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 } else {
                     updateMarkerVisibility(currentRegion, zoomLevel);
                 }
-    
+
                 adjustMarkerSize(zoomLevel);
             } else {
                 // Reset to the current region if the stored region doesn't match
                 console.warn('Stored region does not match the current region. Resetting to the current region.');
                 flyToRegion(currentRegion);
             }
-    
+
             // Clear the session view and hide the back button
             backButton.style.display = 'none';
             sessionStartingView = null;
@@ -730,7 +745,7 @@ document.addEventListener("DOMContentLoaded", () => {
             flyToRegion(currentRegion || 'usa');
         }
     }
-    
+
 
 
     backButton.addEventListener('click', resetToSessionView);
@@ -816,7 +831,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 easing: (t) => t * (2 - t),
             });
         }
-     
+
         //current region
         currentRegion = region;
 
@@ -895,7 +910,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (currentRegion) {
                     flyToRegion(currentRegion);
                 } else {
-                    flyToRegion('usa'); 
+                    flyToRegion('usa');
                 }
                 return;
             }
@@ -939,37 +954,37 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-// zoom warning visibility and tooltip
-function manageZoomWarning() {
-    const zoomLevel = map.getZoom();
-    const isSmallScreen = window.innerWidth <= 480;
-    const zoomThreshold = 5;
+    // zoom warning visibility and tooltip
+    function manageZoomWarning() {
+        const zoomLevel = map.getZoom();
+        const isSmallScreen = window.innerWidth <= 480;
+        const zoomThreshold = 5;
 
-    const zoomWarning = document.getElementById('zoom-warning');
-    if (!zoomWarning) return;
+        const zoomWarning = document.getElementById('zoom-warning');
+        if (!zoomWarning) return;
 
-    if (isSmallScreen && zoomLevel < zoomThreshold) {
-        zoomWarning.style.display = 'block';
-    } else {
-        zoomWarning.style.display = 'none';
+        if (isSmallScreen && zoomLevel < zoomThreshold) {
+            zoomWarning.style.display = 'block';
+        } else {
+            zoomWarning.style.display = 'none';
+        }
     }
-}
 
-// hover tooltip logic
-const zoomWarningIcon = document.getElementById('zoom-warning-icon');
-const zoomTooltip = document.getElementById('zoom-tooltip');
+    // hover tooltip logic
+    const zoomWarningIcon = document.getElementById('zoom-warning-icon');
+    const zoomTooltip = document.getElementById('zoom-tooltip');
 
-if (zoomWarningIcon) {
-    zoomWarningIcon.addEventListener('mouseenter', () => {
-        if (zoomTooltip) zoomTooltip.style.display = 'block';
-    });
+    if (zoomWarningIcon) {
+        zoomWarningIcon.addEventListener('mouseenter', () => {
+            if (zoomTooltip) zoomTooltip.style.display = 'block';
+        });
 
-    zoomWarningIcon.addEventListener('mouseleave', () => {
-        if (zoomTooltip) zoomTooltip.style.display = 'none';
-    });
-}
+        zoomWarningIcon.addEventListener('mouseleave', () => {
+            if (zoomTooltip) zoomTooltip.style.display = 'none';
+        });
+    }
 
-map.on('zoomend', manageZoomWarning);
+    map.on('zoomend', manageZoomWarning);
 
     // Sets up a click event for a specified region layer.
     // On click, fetches and displays facility data in the sidebar for the clicked region.
@@ -1080,9 +1095,9 @@ map.on('zoomend', manageZoomWarning);
             }
 
 
-    // Initialize zoom warning visibility and tooltip logic
-        manageZoomWarning();
- 
+            // Initialize zoom warning visibility and tooltip logic
+            manageZoomWarning();
+
 
             // Adjust visibility based on zoom level and thresholds
             if (currentZoom <= 3) {
@@ -1421,7 +1436,7 @@ map.on('zoomend', manageZoomWarning);
                     } else {
                         toggleMarkers();
                     }
-                }); 
+                });
 
                 // show regions and states
                 function addRegionLayer(map, layerId, sourceId, regionsWithFacilities) {
@@ -1757,41 +1772,38 @@ map.on('zoomend', manageZoomWarning);
         function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
             const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
             const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
-        
-            let hoveredRegionId = null;
-            let selectedRegionId = null;
-        
+
             const applyHover = (regionId) => {
                 // Clear previous hover
                 if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
                     map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
                 }
-        
+
                 // Set new hover
                 hoveredRegionId = regionId;
                 if (hoveredRegionId !== selectedRegionId) {
                     map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: true });
                 }
             };
-        
+
             const clearHover = () => {
                 if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
                     map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
                 }
                 hoveredRegionId = null;
             };
-        
+
             const selectRegion = (regionId) => {
                 // Clear previous selection
                 clearRegionSelection();
-        
+
                 // Set new selection
                 selectedRegionId = regionId;
                 map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: true });
-        
+
                 console.log(`Region selected: ${regionId}`);
             };
-        
+
             const clearRegionSelection = () => {
                 // Clear hover and selection
                 if (hoveredRegionId !== null) {
@@ -1803,7 +1815,7 @@ map.on('zoomend', manageZoomWarning);
                 hoveredRegionId = null;
                 selectedRegionId = null;
             };
-        
+
             // Hover interactions for all regions (including those without facilities)
             if (isTouchDevice) {
                 map.on('touchstart', layerId, (e) => {
@@ -1818,7 +1830,7 @@ map.on('zoomend', manageZoomWarning);
                         applyHover(regionId);
                     }
                 });
-        
+
                 map.on('touchend', layerId, clearHover);
                 map.on('touchcancel', layerId, clearHover);
             } else {
@@ -1826,21 +1838,21 @@ map.on('zoomend', manageZoomWarning);
                     const regionId = e.features[0].id;
                     applyHover(regionId);
                 });
-        
+
                 map.on('mouseleave', layerId, clearHover);
             }
-        
+
             // Click interactions for regions with facilities
             map.on('click', layerId, (e) => {
                 const regionId = e.features[0].id;
-        
+
                 if (regionsWithFacilities.has(regionId)) {
                     selectRegion(regionId); // Select the clicked region
                 } else {
                     console.warn(`Clicked region "${regionId}" does not have facilities.`);
                 }
             });
-        
+
             // Clear selection when clicking outside any region
             map.on('click', (e) => {
                 const features = map.queryRenderedFeatures(e.point, { layers: [layerId] });
@@ -1848,12 +1860,12 @@ map.on('zoomend', manageZoomWarning);
                     clearRegionSelection(); // Clear selection if no region is clicked
                 }
             });
-        
+
             // Clear hover on zoom
             map.on('zoomstart', () => {
                 clearHover();
             });
-        
+
             // Attach region clear to sidebar close button
             const closeSidebarButton = document.getElementById('close-sidebar');
             if (closeSidebarButton) {
@@ -1862,12 +1874,12 @@ map.on('zoomend', manageZoomWarning);
                     closeSidebar();
                 });
             }
-        
+
             // Reset button to clear state and reset the map view
             const resetButton = document.getElementById("reset-view");
             if (resetButton) {
                 resetButton.addEventListener("click", () => {
-                    clearRegionSelection(); 
+                    clearRegionSelection();
                     closeSidebar();
                     map.flyTo({
                         center: INITIAL_CENTER,
@@ -1879,7 +1891,7 @@ map.on('zoomend', manageZoomWarning);
                 });
             }
         }
-        
+
 
         function closeSidebar() {
             sidebar.style.display = 'none';
@@ -1970,3 +1982,4 @@ map.on('zoomend', manageZoomWarning);
         });
     })
 });
+

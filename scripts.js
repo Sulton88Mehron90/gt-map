@@ -53,7 +53,6 @@ document.addEventListener("DOMContentLoaded", () => {
         [-66.93457, 49.384358],
     ];
 
-
     // Toggle visibility for elements (markers or layers)
     function toggleVisibility(layerIds, visibility) {
         layerIds.forEach(layerId => {
@@ -261,22 +260,36 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("Back to Top button not found!");
     }
 
-    // toggle the back-to-top button visibility
     function toggleBackToTopButton() {
-        const isCollapsed = sidebar.classList.contains('collapsed');
+        const isCollapsed = sidebar.classList.contains("collapsed");
         const isScrollable = sidebar.scrollHeight > sidebar.clientHeight;
         const isSmallScreen = window.innerWidth <= 480;
-
-        // Force recalculation of sidebar dimensions to ensure accuracy
-        sidebar.style.height = 'auto';
-
-        // Show button only if the sidebar is expanded and scrollable
+    
+        // Show button only if the sidebar is not collapsed and has scrollable content
         if (!isCollapsed && (isScrollable || isSmallScreen)) {
-            backToTopButton.style.display = 'block';
+            backToTopButton.style.display = "block";
         } else {
-            backToTopButton.style.display = 'none';
+            backToTopButton.style.display = "none";
         }
     }
+    
+
+    // // toggle the back-to-top button visibility
+    // function toggleBackToTopButton() {
+    //     const isCollapsed = sidebar.classList.contains('collapsed');
+    //     const isScrollable = sidebar.scrollHeight > sidebar.clientHeight;
+    //     const isSmallScreen = window.innerWidth <= 480;
+
+    //     // Force recalculation of sidebar dimensions to ensure accuracy
+    //     sidebar.style.height = 'auto';
+
+    //     // Show button only if the sidebar is expanded and scrollable
+    //     if (!isCollapsed && (isScrollable || isSmallScreen)) {
+    //         backToTopButton.style.display = 'block';
+    //     } else {
+    //         backToTopButton.style.display = 'none';
+    //     }
+    // }
 
     // Observer to monitor sidebar content changes for the back-to-top button
     const observer = new MutationObserver(toggleBackToTopButton);
@@ -293,35 +306,35 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }, { passive: false });
 
-    // Sidebar minimize/expand button logic
-    function toggleBackToTopButton() {
-        const isCollapsed = sidebar.classList.contains('collapsed');
-        const isScrollable = sidebar.scrollHeight > sidebar.clientHeight;
-        const isSmallScreen = window.innerWidth <= 480;
+    // // Sidebar minimize/expand button logic
+    // function toggleBackToTopButton() {
+    //     const isCollapsed = sidebar.classList.contains('collapsed');
+    //     const isScrollable = sidebar.scrollHeight > sidebar.clientHeight;
+    //     const isSmallScreen = window.innerWidth <= 480;
 
-        // Always hide the button when the sidebar is collapsed
-        if (isCollapsed) {
-            backToTopButton.style.display = 'none';
-            return;
-        }
+    //     // Always hide the button when the sidebar is collapsed
+    //     if (isCollapsed) {
+    //         backToTopButton.style.display = 'none';
+    //         return;
+    //     }
 
-        // On small screens, show the button only if the sidebar is scrollable
-        if (isSmallScreen) {
-            if (isScrollable) {
-                backToTopButton.style.display = 'block';
-            } else {
-                backToTopButton.style.display = 'none';
-            }
-            return;
-        }
+    //     // On small screens, show the button only if the sidebar is scrollable
+    //     if (isSmallScreen) {
+    //         if (isScrollable) {
+    //             backToTopButton.style.display = 'block';
+    //         } else {
+    //             backToTopButton.style.display = 'none';
+    //         }
+    //         return;
+    //     }
 
-        // On larger screens, show the button only if the sidebar is expanded and scrollable
-        if (isScrollable) {
-            backToTopButton.style.display = 'block';
-        } else {
-            backToTopButton.style.display = 'none';
-        }
-    }
+    //     // On larger screens, show the button only if the sidebar is expanded and scrollable
+    //     if (isScrollable) {
+    //         backToTopButton.style.display = 'block';
+    //     } else {
+    //         backToTopButton.style.display = 'none';
+    //     }
+    // }
 
     document.getElementById('minimize-sidebar').addEventListener('click', () => {
         sidebar.classList.toggle('collapsed');
@@ -345,17 +358,43 @@ document.addEventListener("DOMContentLoaded", () => {
             minimizeIcon.classList.remove('fa-chevron-down');
             minimizeIcon.classList.add('fa-chevron-up');
         }
-    });
 
-    sidebar.addEventListener('touchstart', (event) => {
-        if (!sidebar.classList.contains('collapsed')) {
+        // Event listener for sidebar minimize/expand button
+const minimizeButton = document.getElementById("minimize-sidebar");
+if (minimizeButton) {
+    minimizeButton.addEventListener("click", () => {
+        sidebar.classList.toggle("collapsed");
+        toggleBackToTopButton(); // Ensure the button visibility is updated
+    });
+}
+
+    });
+// Event listener for touchstart on the sidebar (for mobile)
+sidebar.addEventListener(
+    "touchstart",
+    () => {
+        if (!sidebar.classList.contains("collapsed")) {
             toggleBackToTopButton();
         }
-    }, { passive: false });
+    },
+    { passive: true }
+);
 
-    sidebar.addEventListener('touchend', () => {
+// Event listener for touchend on the sidebar
+sidebar.addEventListener(
+    "touchend",
+    () => {
         toggleBackToTopButton();
-    }, { passive: true });
+    },
+    { passive: true }
+);
+
+// Optional: Recalculate button visibility on window resize
+window.addEventListener("resize", toggleBackToTopButton);
+
+// Ensure the button visibility is set correctly on load
+toggleBackToTopButton();
+
 
     let sessionStartingView = null;
 
@@ -571,59 +610,73 @@ document.addEventListener("DOMContentLoaded", () => {
         return marker;
     }
 
-    // markers dynamically based on map bounds
-    function updateMarkers() {
-        if (!markersDataReady) {
-            // console.warn('Markers data is not ready yet. Skipping updateMarkers.');
-            return;
-        }
+// Debounce utility function
+function debounce(func, delay) {
+    let timeout;
+    return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), delay);
+    };
+}
 
-        // console.log('updateMarkers called');
-
-        // Check if markersData is available
-        if (!markersData || markersData.length === 0) {
-            console.warn('Markers Data is empty. Skipping updateMarkers.');
-            return;
-        }
-
-        const bounds = map.getBounds();
-        if (!bounds || !bounds._sw || !bounds._ne) {
-            // console.error('Invalid map bounds:', bounds);
-            return;
-        }
-
-        // console.log('Map Bounds:', bounds);
-
-        // Remove existing markers from the map
-        markers.forEach(marker => marker.remove());
-        markers = [];
-
-        // Deduplicate markersData
-        const uniqueMarkers = markersData.filter(
-            (marker, index, self) =>
-                index === self.findIndex(m => m.lng === marker.lng && m.lat === marker.lat)
-        );
-
-        // console.log(`Total Markers Data: ${markersData.length}`);
-        // console.log(`Markers added: ${markers.length}`);
-        // console.log(`Unique Markers to Add: ${uniqueMarkers.length}`);
-
-        // Add markers within visible bounds
-        uniqueMarkers.forEach(markerData => {
-            const { lng, lat, popupContent } = markerData;
-
-            if (bounds.contains([lng, lat])) {
-                // console.log(`Adding marker at: ${lng}, ${lat}`);
-                const marker = createCustomMarker(lng, lat, popupContent).addTo(map);
-                markers.push(marker);
-            }
-        });
-
-        // console.log(`Markers added: ${markers.length}`);
+// Original updateMarkers function
+function updateMarkers() {
+    if (!markersDataReady) {
+        // console.warn('Markers data is not ready yet. Skipping updateMarkers.');
+        return;
     }
 
-    // Debounce updateMarkers for better performance
-    // const debouncedUpdateMarkers = debounce(updateMarkers, 300);
+    // console.log('updateMarkers called');
+
+    // Check if markersData is available
+    if (!markersData || markersData.length === 0) {
+        console.warn('Markers Data is empty. Skipping updateMarkers.');
+        return;
+    }
+
+    const bounds = map.getBounds();
+    if (!bounds || !bounds._sw || !bounds._ne) {
+        // console.error('Invalid map bounds:', bounds);
+        return;
+    }
+
+    // console.log('Map Bounds:', bounds);
+
+    // Remove existing markers from the map
+    markers.forEach(marker => marker.remove());
+    markers = [];
+
+    // Deduplicate markersData
+    const uniqueMarkers = markersData.filter(
+        (marker, index, self) =>
+            index === self.findIndex(m => m.lng === marker.lng && m.lat === marker.lat)
+    );
+
+    // console.log(`Total Markers Data: ${markersData.length}`);
+    // console.log(`Markers added: ${markers.length}`);
+    // console.log(`Unique Markers to Add: ${uniqueMarkers.length}`);
+
+    // Add markers within visible bounds
+    uniqueMarkers.forEach(markerData => {
+        const { lng, lat, popupContent } = markerData;
+
+        if (bounds.contains([lng, lat])) {
+            // console.log(`Adding marker at: ${lng}, ${lat}`);
+            const marker = createCustomMarker(lng, lat, popupContent).addTo(map);
+            markers.push(marker);
+        }
+    });
+
+    // console.log(`Markers added: ${markers.length}`);
+}
+
+// Debounce the `updateMarkers` function
+const debouncedUpdateMarkers = debounce(updateMarkers, 300);
+
+// Map events now use the debounced version of `updateMarkers`
+map.on('zoomend', debouncedUpdateMarkers);
+map.on('moveend', debouncedUpdateMarkers);
+
 
     // Fly-to buttons for navigating regions
     document.getElementById("fit-to-usa").addEventListener("click", () => {
@@ -1733,9 +1786,6 @@ document.addEventListener("DOMContentLoaded", () => {
         function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
             const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
             const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
-
-            let hoveredRegionId = null;
-            let selectedRegionId = null;
 
             const applyHover = (regionId) => {
                 // Clear previous hover

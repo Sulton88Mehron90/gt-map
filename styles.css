@@ -697,8 +697,16 @@ hospital-list-sidebar.collapsed #close-sidebar {
         overflow-y: auto;
     }
 
+
+    #hospital-list-sidebar.collapsed h2,
+    #hospital-list-sidebar.collapsed ul,
+    #hospital-list-sidebar.collapsed .count-display,
+    #back-to-top-button.show {
+        display: none !important;
+    }
+
     #back-to-top-button {
-        /* position: fixed; */
+        display: none !important;
         bottom: 10px;
         right: 10px;
         z-index: 999;
@@ -708,13 +716,10 @@ hospital-list-sidebar.collapsed #close-sidebar {
         display: none;
         position: absolute;
         margin-right: 9px;
-    }
-
-    #back-button i {
-        margin-top: -1px;
-        position: relative;
-        top: -5px;
-        padding-bottom: 0;
+        margin-left: 4px;
+        top: 18px;
+        z-index: 15;
+        font-size: 0.8rem;
     }
 
     #hospital-list-sidebar h2 {
@@ -751,45 +756,39 @@ hospital-list-sidebar.collapsed #close-sidebar {
         width: 60px;
     }
 
-    #back-button {
-        display: block;
-        font-size: 0.8rem;
-        left: 190px;
+    /* Positioning for the warning icon */
+    #zoom-warning {
+        position: absolute;
+        top: 50px;
+        left: 726px;
+        z-index: 1000;
     }
 
-/* Positioning for the warning icon */
-#zoom-warning {
-    position: absolute;
-    top: 50px;
-    left: 726px; 
-    z-index: 1000;
-}
+    /* Styling for the warning icon */
+    #zoom-warning-icon {
+        width: 15px;
+        height: 15px;
+        cursor: pointer;
+    }
 
-/* Styling for the warning icon */
-#zoom-warning-icon {
-    width: 15px;
-    height: 15px;
-    cursor: pointer;
-}
+    /* Tooltip visibility on hover */
+    #zoom-warning:hover #zoom-tooltip {
+        display: block;
+        transition: opacity 0.3s;
+    }
 
-/* Tooltip visibility on hover */
-#zoom-warning:hover #zoom-tooltip {
-    display: block;
-    transition: opacity 0.3s;
-}
-
-/* Styling for the tooltip */
-#zoom-tooltip {
-    display: none;  
-    position: absolute;
-    top: -5px; 
-    left: -255px; 
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 10px;
-}
+    /* Styling for the tooltip */
+    #zoom-tooltip {
+        display: none;
+        position: absolute;
+        top: -5px;
+        left: -255px;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 10px;
+    }
 
 }
 
@@ -805,17 +804,30 @@ hospital-list-sidebar.collapsed #close-sidebar {
         overflow-y: auto;
     }
 
+
+    #hospital-list-sidebar.collapsed h2,
+    #hospital-list-sidebar.collapsed ul,
+    #hospital-list-sidebar.collapsed .count-display,
+    #back-to-top-button.show {
+        display: none !important;
+    }
+
     #back-to-top-button {
-        /* position: fixed; */
+        display: none !important;
         bottom: 10px;
         right: 10px;
         z-index: 999;
     }
 
     #back-button {
+        left: 21.2%;
         display: none;
         position: absolute;
-        left: 18%;
+        margin-right: 9px;
+        margin-left: 4px;
+        top: 18px;
+        z-index: 15;
+        font-size: 0.8rem;
     }
 
     #back-button i {
@@ -861,40 +873,39 @@ hospital-list-sidebar.collapsed #close-sidebar {
         width: 30px;
     }
 
+    /* Positioning for the warning icon */
+    #zoom-warning {
+        position: absolute;
+        top: 50px;
+        left: 334px;
+        z-index: 1000;
+    }
 
-/* Positioning for the warning icon */
-#zoom-warning {
-    position: absolute;
-    top: 50px;
-    left: 334px; 
-    z-index: 1000;
-}
+    /* Styling for the warning icon */
+    #zoom-warning-icon {
+        width: 15px;
+        height: 15px;
+        cursor: pointer;
+    }
 
-/* Styling for the warning icon */
-#zoom-warning-icon {
-    width: 15px;
-    height: 15px;
-    cursor: pointer;
-}
+    /* Tooltip visibility on hover */
+    #zoom-warning:hover #zoom-tooltip {
+        display: block;
+        transition: opacity 0.3s;
+    }
 
-/* Tooltip visibility on hover */
-#zoom-warning:hover #zoom-tooltip {
-    display: block;
-    transition: opacity 0.3s;
-}
-
-/* Styling for the tooltip */
-#zoom-tooltip {
-    display: none;  
-    position: absolute;
-    top: -5px; 
-    left: -255px; 
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 10px;
-}
+    /* Styling for the tooltip */
+    #zoom-tooltip {
+        display: none;
+        position: absolute;
+        top: -5px;
+        left: -255px;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 10px;
+    }
 
 }
 
@@ -917,59 +928,69 @@ hospital-list-sidebar.collapsed #close-sidebar {
         overflow-y: auto;
     }
 
+    #hospital-list-sidebar.collapsed h2,
+    #hospital-list-sidebar.collapsed ul,
+    #hospital-list-sidebar.collapsed .count-display,
+    #back-to-top-button.show {
+        display: none !important;
+    }
+
     #back-to-top-button {
+        display: none !important;
         bottom: 10px;
         right: 10px;
         z-index: 999;
+        margin-left: 60px;
     }
 
     #back-button {
-        right: -15px;
+        /* right: 25px; */
+        left: 39px;
         display: none;
         position: absolute;
+        margin-right: 48px;
+        margin-left: 1px;
+        top: 18px;
+        z-index: 15;
+        font-size: 0.8rem;
     }
 
     #home-logo {
         width: 40px;
     }
 
-    #back-to-top-button {
-        margin-left: 60px;
+    /* Positioning for the warning icon */
+    #zoom-warning {
+        position: absolute;
+        top: 50px;
+        left: 278px;
+        z-index: 1000;
     }
 
+    /* Styling for the warning icon */
+    #zoom-warning-icon {
+        width: 15px;
+        height: 15px;
+        cursor: pointer;
+    }
 
-/* Positioning for the warning icon */
-#zoom-warning {
-    position: absolute;
-    top: 50px;
-    left: 278px; 
-    z-index: 1000;
-}
+    /* Tooltip visibility on hover */
+    #zoom-warning:hover #zoom-tooltip {
+        display: block;
+        transition: opacity 0.3s;
+    }
 
-/* Styling for the warning icon */
-#zoom-warning-icon {
-    width: 15px;
-    height: 15px;
-    cursor: pointer;
-}
-
-/* Tooltip visibility on hover */
-#zoom-warning:hover #zoom-tooltip {
-    display: block;
-    transition: opacity 0.3s;
-}
-
-/* Styling for the tooltip */
-#zoom-tooltip {
-    display: none;  
-    position: absolute;
-    top: -5px; 
-    left: -255px; 
-    background-color: rgba(0, 0, 0, 0.8);
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 10px;
-}
+    /* Styling for the tooltip */
+    #zoom-tooltip {
+        display: none;
+        position: absolute;
+        top: -5px;
+        left: -255px;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 10px;
+    }
 
 }
