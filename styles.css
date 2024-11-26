@@ -756,6 +756,41 @@ hospital-list-sidebar.collapsed #close-sidebar {
         font-size: 0.8rem;
         left: 190px;
     }
+
+/* Positioning for the warning icon */
+#zoom-warning {
+    position: absolute;
+    top: 50px;
+    left: 726px; 
+    z-index: 1000;
+}
+
+/* Styling for the warning icon */
+#zoom-warning-icon {
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+}
+
+/* Tooltip visibility on hover */
+#zoom-warning:hover #zoom-tooltip {
+    display: block;
+    transition: opacity 0.3s;
+}
+
+/* Styling for the tooltip */
+#zoom-tooltip {
+    display: none;  
+    position: absolute;
+    top: -5px; 
+    left: -255px; 
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 10px;
+}
+
 }
 
 @media (max-width: 480px) {
@@ -826,6 +861,41 @@ hospital-list-sidebar.collapsed #close-sidebar {
         width: 30px;
     }
 
+
+/* Positioning for the warning icon */
+#zoom-warning {
+    position: absolute;
+    top: 50px;
+    left: 334px; 
+    z-index: 1000;
+}
+
+/* Styling for the warning icon */
+#zoom-warning-icon {
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+}
+
+/* Tooltip visibility on hover */
+#zoom-warning:hover #zoom-tooltip {
+    display: block;
+    transition: opacity 0.3s;
+}
+
+/* Styling for the tooltip */
+#zoom-tooltip {
+    display: none;  
+    position: absolute;
+    top: -5px; 
+    left: -255px; 
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 10px;
+}
+
 }
 
 @media (max-width: 320px) {
@@ -866,4 +936,40 @@ hospital-list-sidebar.collapsed #close-sidebar {
     #back-to-top-button {
         margin-left: 60px;
     }
+
+
+/* Positioning for the warning icon */
+#zoom-warning {
+    position: absolute;
+    top: 50px;
+    left: 278px; 
+    z-index: 1000;
+}
+
+/* Styling for the warning icon */
+#zoom-warning-icon {
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+}
+
+/* Tooltip visibility on hover */
+#zoom-warning:hover #zoom-tooltip {
+    display: block;
+    transition: opacity 0.3s;
+}
+
+/* Styling for the tooltip */
+#zoom-tooltip {
+    display: none;  
+    position: absolute;
+    top: -5px; 
+    left: -255px; 
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 10px;
+}
+
 }
