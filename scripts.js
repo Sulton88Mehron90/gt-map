@@ -155,13 +155,13 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        console.log(visible ? 'GT logos shown.' : 'GT logos hidden.');
+        // console.log(visible ? 'GT logos shown.' : 'GT logos hidden.');
     }
 
     function onUserInteraction(eventType) {
         if (!hasInteracted) {
             hasInteracted = true;
-            console.log(`User started interaction: ${eventType}`);
+            // console.log(`User started interaction: ${eventType}`);
         }
 
         userInteracting = true;
@@ -264,7 +264,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const isCollapsed = sidebar.classList.contains("collapsed");
         const isScrollable = sidebar.scrollHeight > sidebar.clientHeight;
         const isSmallScreen = window.innerWidth <= 480;
-    
+
         // Show button only if the sidebar is not collapsed and has scrollable content
         if (!isCollapsed && (isScrollable || isSmallScreen)) {
             backToTopButton.style.display = "block";
@@ -272,24 +272,6 @@ document.addEventListener("DOMContentLoaded", () => {
             backToTopButton.style.display = "none";
         }
     }
-    
-
-    // // toggle the back-to-top button visibility
-    // function toggleBackToTopButton() {
-    //     const isCollapsed = sidebar.classList.contains('collapsed');
-    //     const isScrollable = sidebar.scrollHeight > sidebar.clientHeight;
-    //     const isSmallScreen = window.innerWidth <= 480;
-
-    //     // Force recalculation of sidebar dimensions to ensure accuracy
-    //     sidebar.style.height = 'auto';
-
-    //     // Show button only if the sidebar is expanded and scrollable
-    //     if (!isCollapsed && (isScrollable || isSmallScreen)) {
-    //         backToTopButton.style.display = 'block';
-    //     } else {
-    //         backToTopButton.style.display = 'none';
-    //     }
-    // }
 
     // Observer to monitor sidebar content changes for the back-to-top button
     const observer = new MutationObserver(toggleBackToTopButton);
@@ -305,36 +287,6 @@ document.addEventListener("DOMContentLoaded", () => {
             toggleBackToTopButton();
         }
     }, { passive: false });
-
-    // // Sidebar minimize/expand button logic
-    // function toggleBackToTopButton() {
-    //     const isCollapsed = sidebar.classList.contains('collapsed');
-    //     const isScrollable = sidebar.scrollHeight > sidebar.clientHeight;
-    //     const isSmallScreen = window.innerWidth <= 480;
-
-    //     // Always hide the button when the sidebar is collapsed
-    //     if (isCollapsed) {
-    //         backToTopButton.style.display = 'none';
-    //         return;
-    //     }
-
-    //     // On small screens, show the button only if the sidebar is scrollable
-    //     if (isSmallScreen) {
-    //         if (isScrollable) {
-    //             backToTopButton.style.display = 'block';
-    //         } else {
-    //             backToTopButton.style.display = 'none';
-    //         }
-    //         return;
-    //     }
-
-    //     // On larger screens, show the button only if the sidebar is expanded and scrollable
-    //     if (isScrollable) {
-    //         backToTopButton.style.display = 'block';
-    //     } else {
-    //         backToTopButton.style.display = 'none';
-    //     }
-    // }
 
     document.getElementById('minimize-sidebar').addEventListener('click', () => {
         sidebar.classList.toggle('collapsed');
@@ -360,40 +312,40 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // Event listener for sidebar minimize/expand button
-const minimizeButton = document.getElementById("minimize-sidebar");
-if (minimizeButton) {
-    minimizeButton.addEventListener("click", () => {
-        sidebar.classList.toggle("collapsed");
-        toggleBackToTopButton(); // Ensure the button visibility is updated
-    });
-}
-
-    });
-// Event listener for touchstart on the sidebar (for mobile)
-sidebar.addEventListener(
-    "touchstart",
-    () => {
-        if (!sidebar.classList.contains("collapsed")) {
-            toggleBackToTopButton();
+        const minimizeButton = document.getElementById("minimize-sidebar");
+        if (minimizeButton) {
+            minimizeButton.addEventListener("click", () => {
+                sidebar.classList.toggle("collapsed");
+                toggleBackToTopButton(); // Ensure the button visibility is updated
+            });
         }
-    },
-    { passive: true }
-);
 
-// Event listener for touchend on the sidebar
-sidebar.addEventListener(
-    "touchend",
-    () => {
-        toggleBackToTopButton();
-    },
-    { passive: true }
-);
+    });
+    // Event listener for touchstart on the sidebar (for mobile)
+    sidebar.addEventListener(
+        "touchstart",
+        () => {
+            if (!sidebar.classList.contains("collapsed")) {
+                toggleBackToTopButton();
+            }
+        },
+        { passive: true }
+    );
 
-// Optional: Recalculate button visibility on window resize
-window.addEventListener("resize", toggleBackToTopButton);
+    // Event listener for touchend on the sidebar
+    sidebar.addEventListener(
+        "touchend",
+        () => {
+            toggleBackToTopButton();
+        },
+        { passive: true }
+    );
 
-// Ensure the button visibility is set correctly on load
-toggleBackToTopButton();
+    // Optional: Recalculate button visibility on window resize
+    window.addEventListener("resize", toggleBackToTopButton);
+
+    // Ensure the button visibility is set correctly on load
+    toggleBackToTopButton();
 
 
     let sessionStartingView = null;
@@ -610,72 +562,72 @@ toggleBackToTopButton();
         return marker;
     }
 
-// Debounce utility function
-function debounce(func, delay) {
-    let timeout;
-    return function (...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), delay);
-    };
-}
-
-// Original updateMarkers function
-function updateMarkers() {
-    if (!markersDataReady) {
-        // console.warn('Markers data is not ready yet. Skipping updateMarkers.');
-        return;
+    // Debounce utility function
+    function debounce(func, delay) {
+        let timeout;
+        return function (...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), delay);
+        };
     }
 
-    // console.log('updateMarkers called');
-
-    // Check if markersData is available
-    if (!markersData || markersData.length === 0) {
-        console.warn('Markers Data is empty. Skipping updateMarkers.');
-        return;
-    }
-
-    const bounds = map.getBounds();
-    if (!bounds || !bounds._sw || !bounds._ne) {
-        // console.error('Invalid map bounds:', bounds);
-        return;
-    }
-
-    // console.log('Map Bounds:', bounds);
-
-    // Remove existing markers from the map
-    markers.forEach(marker => marker.remove());
-    markers = [];
-
-    // Deduplicate markersData
-    const uniqueMarkers = markersData.filter(
-        (marker, index, self) =>
-            index === self.findIndex(m => m.lng === marker.lng && m.lat === marker.lat)
-    );
-
-    // console.log(`Total Markers Data: ${markersData.length}`);
-    // console.log(`Markers added: ${markers.length}`);
-    // console.log(`Unique Markers to Add: ${uniqueMarkers.length}`);
-
-    // Add markers within visible bounds
-    uniqueMarkers.forEach(markerData => {
-        const { lng, lat, popupContent } = markerData;
-
-        if (bounds.contains([lng, lat])) {
-            // console.log(`Adding marker at: ${lng}, ${lat}`);
-            const marker = createCustomMarker(lng, lat, popupContent).addTo(map);
-            markers.push(marker);
+    // Original updateMarkers function
+    function updateMarkers() {
+        if (!markersDataReady) {
+            // console.warn('Markers data is not ready yet. Skipping updateMarkers.');
+            return;
         }
-    });
 
-    // console.log(`Markers added: ${markers.length}`);
-}
+        // console.log('updateMarkers called');
 
-// Debounce the `updateMarkers` function
-const debouncedUpdateMarkers = debounce(updateMarkers, 300);
+        // Check if markersData is available
+        if (!markersData || markersData.length === 0) {
+            console.warn('Markers Data is empty. Skipping updateMarkers.');
+            return;
+        }
 
-// Map events now use the debounced version of `updateMarkers`
-map.on('zoomend', debouncedUpdateMarkers);
-map.on('moveend', debouncedUpdateMarkers);
+        const bounds = map.getBounds();
+        if (!bounds || !bounds._sw || !bounds._ne) {
+            // console.error('Invalid map bounds:', bounds);
+            return;
+        }
+
+        // console.log('Map Bounds:', bounds);
+
+        // Remove existing markers from the map
+        markers.forEach(marker => marker.remove());
+        markers = [];
+
+        // Deduplicate markersData
+        const uniqueMarkers = markersData.filter(
+            (marker, index, self) =>
+                index === self.findIndex(m => m.lng === marker.lng && m.lat === marker.lat)
+        );
+
+        // console.log(`Total Markers Data: ${markersData.length}`);
+        // console.log(`Markers added: ${markers.length}`);
+        // console.log(`Unique Markers to Add: ${uniqueMarkers.length}`);
+
+        // Add markers within visible bounds
+        uniqueMarkers.forEach(markerData => {
+            const { lng, lat, popupContent } = markerData;
+
+            if (bounds.contains([lng, lat])) {
+                // console.log(`Adding marker at: ${lng}, ${lat}`);
+                const marker = createCustomMarker(lng, lat, popupContent).addTo(map);
+                markers.push(marker);
+            }
+        });
+
+        // console.log(`Markers added: ${markers.length}`);
+    }
+
+    // Debounce the `updateMarkers` function
+    const debouncedUpdateMarkers = debounce(updateMarkers, 300);
+
+    // Map events now use the debounced version of `updateMarkers`
+    map.on('zoomend', debouncedUpdateMarkers);
+    map.on('moveend', debouncedUpdateMarkers);
 
 
     // Fly-to buttons for navigating regions
@@ -760,8 +712,6 @@ map.on('moveend', debouncedUpdateMarkers);
         }
     }
 
-
-
     backButton.addEventListener('click', resetToSessionView);
 
     const sidebarCloseButton = document.getElementById('close-sidebar');
@@ -789,17 +739,6 @@ map.on('moveend', debouncedUpdateMarkers);
             console.error(`Region "${region}" is not defined.`);
             return;
         }
-
-        // const { center, zoom, pitch } = regions[region];
-
-        // map.flyTo({
-        //     center,
-        //     zoom,
-        //     pitch,
-        //     bearing: 0,
-        //     duration: 2000,
-        //     easing: (t) => t * (2 - t),
-        // });
 
         const { center, zoom, pitch } = regions[region];
 
@@ -870,7 +809,6 @@ map.on('moveend', debouncedUpdateMarkers);
         document.getElementById(`fly-to-${region}`).classList.add("active");
     }
 
-    // handleStateClick
     function handleStateClick(clickedRegionId, facilitiesData) {
         console.log(`Clicked Region ID: ${clickedRegionId}`);
 
@@ -881,24 +819,16 @@ map.on('moveend', debouncedUpdateMarkers);
                 zoom: map.getZoom(),
                 pitch: map.getPitch(),
                 bearing: map.getBearing(),
-                region: currentRegion
+                region: currentRegion,
             };
-            console.log('Stored session view:', sessionStartingView);
         }
 
-        // For the USA region on small screens, focus on the contiguous states
-        if (clickedRegionId === 'usa' && window.innerWidth <= 480) {
-
-            map.fitBounds(contiguousUSABounds, {
-                padding: 20,
-                maxZoom: 4.5,
-                duration: 2000,
-            });
-
-            backButton.style.display = 'block';
+        // Check if the clicked region has facilities
+        const stateFacilities = facilitiesData.filter(facility => facility.region_id === clickedRegionId);
+        if (!stateFacilities.length) {
+            console.warn(`Region "${clickedRegionId}" does not have facilities.`);
             return;
         }
-
 
         // Show only location markers for the clicked region
         locationMarkers.forEach(marker => {
@@ -908,30 +838,6 @@ map.on('moveend', debouncedUpdateMarkers);
             } else if (markerRegionId !== clickedRegionId && marker._map) {
                 marker.remove();
             }
-        });
-
-        // Filter facilities for the clicked state
-        const stateFacilities = facilitiesData.filter(facility => facility.region_id === clickedRegionId);
-
-        // Handle case where no facilities are found or empty clicks
-        map.on('click', (e) => {
-            const features = map.queryRenderedFeatures(e.point, { layers: ['state-markers'] });
-
-            if (!features.length) {
-                console.warn('Empty click detected: No region or facility clicked.');
-
-                // Reset to the view of the current region using flyToRegion
-                if (currentRegion) {
-                    flyToRegion(currentRegion);
-                } else {
-                    flyToRegion('usa');
-                }
-                return;
-            }
-
-            // Proceed with regular region click handling
-            const clickedRegionId = features[0].properties.region_id;
-            handleStateClick(clickedRegionId, facilitiesData);
         });
 
         // Custom zoom levels for specific regions
@@ -944,7 +850,7 @@ map.on('moveend', debouncedUpdateMarkers);
         };
         const customZoom = regionZoomLevels[clickedRegionId] || regionZoomLevels.default;
 
-        // Zoom into the bounds of the state
+        // Zoom into the bounds of the region
         const stateBounds = new mapboxgl.LngLatBounds();
         stateFacilities.forEach(facility => {
             if (facility.longitude && facility.latitude) {
@@ -1021,8 +927,7 @@ map.on('moveend', debouncedUpdateMarkers);
                 return;
             }
 
-            // Proceed with facility-related behavior
-            console.log(`Region clicked: ${regionName} (ID: ${clickedRegionId})`);
+            // console.log(`Region clicked: ${regionName} (ID: ${clickedRegionId})`);
 
             // Fetch facilities data
             loadFacilitiesData()
@@ -1108,10 +1013,9 @@ map.on('moveend', debouncedUpdateMarkers);
                     markerZoomThreshold = 3;
             }
 
-
             // Initialize zoom warning visibility and tooltip logic
             manageZoomWarning();
-
+            // clearRegionSelection(); // Clear any lingering states on map load
 
             // Adjust visibility based on zoom level and thresholds
             if (currentZoom <= 3) {
@@ -1144,7 +1048,7 @@ map.on('moveend', debouncedUpdateMarkers);
                     const regionId = facility.region_id ? facility.region_id.toUpperCase() : null;
                     if (regionId) {
                         regionsWithFacilities.add(regionId);
-                        console.log("regionsWithFacilities:", Array.from(regionsWithFacilities));
+                        // console.log("regionsWithFacilities:", Array.from(regionsWithFacilities));
                     }
 
                     const stateOrRegion = facility.location.split(', ')[1];
@@ -1446,7 +1350,7 @@ map.on('moveend', debouncedUpdateMarkers);
                     if (window.innerWidth <= 480 && currentRegion === 'canada') {
                         const visibility = zoomLevel >= 5 ? 'visible' : 'none';
                         toggleVisibility(['location-markers'], visibility);
-                        console.log(`Canada markers visibility set to: ${visibility} at zoom level ${zoomLevel}`);
+                        // console.log(`Canada markers visibility set to: ${visibility} at zoom level ${zoomLevel}`);
                     } else {
                         toggleMarkers();
                     }
@@ -1666,113 +1570,100 @@ map.on('moveend', debouncedUpdateMarkers);
                     });
                 });
 
+                // Handle clicks on states/regions dynamically
+                ['us-states', 'canada-regions', 'aruba-region', 'italy-regions', 'uk-regions'].forEach(layerId => {
+                    map.on('click', `${layerId}-fill`, (e) => {
+                        const clickedRegionId = e.features[0].properties.id;
+                        const clickedRegionName = e.features[0].properties.name;
 
-                // Click event on state to display sidebar list of facilities
-                map.on('click', '${layerId}-fill', (e) => {
-                    const clickedStateId = e.features[0].properties.id;
+                        // Deselect all previously selected regions
+                        ['us-states', 'canada-regions', 'aruba-region', 'italy-regions', 'uk-regions'].forEach(clearLayerId => {
+                            if (selectedRegionId) {
+                                map.setFeatureState({ source: clearLayerId, id: selectedRegionId }, { selected: false });
+                            }
+                        });
 
-                    // Check if the clicked state has facilities
-                    if (!statesWithFacilities.has(clickedStateId)) {
-                        // Hide sidebar if state doesn't have facilities
-                        document.getElementById('hospital-list-sidebar').style.display = 'none';
-
-                        // Deselect previously selected state if any
-                        if (selectedStateId !== null) {
-                            // map.setFeatureState({ source: '{ layerId, sourceId }', id: selectedStateId }, { selected: false }); 
-
-                            ///source: 'us-states', id: selectedStateId
-
-                            map.setFeatureState({ source: '{ sourceId }', id: selectedStateId }, { selected: false });
+                        // Check if the clicked region has facilities
+                        if (!regionsWithFacilities.has(clickedRegionId)) {
+                            console.warn(`Region "${clickedRegionName}" with ID ${clickedRegionId} does not have facilities.`);
+                            // Hide the sidebar and reset the selected region ID
+                            document.getElementById('hospital-list-sidebar').style.display = 'none';
+                            selectedRegionId = null;
+                            return;
                         }
-                        selectedStateId = null;
-                        return;
-                    }
 
-                    // Deselect previously selected state
-                    if (selectedStateId !== null) {
-                        map.setFeatureState({ source: '{ layerId, sourceId }', id: selectedStateId }, { selected: false });
-                    }
+                        // Set the clicked region as selected
+                        selectedRegionId = clickedRegionId;
+                        map.setFeatureState({ source: layerId, id: selectedRegionId }, { selected: true });
 
-                    // Set the clicked state as selected
-                    selectedStateId = clickedStateId;
-                    map.setFeatureState({ source: '{ layerId, sourceId }', id: selectedStateId }, { selected: true });
+                        // Load and display facilities for the selected region
+                        const regionFacilities = facilitiesData.filter(facility => facility.region_id === clickedRegionId);
 
-                    // Display facilities in the sidebar
-                    const stateName = e.features[0].properties.name;
-                    const stateHospitals = facilities.filter(hospital => hospital.location.includes(clickedStateId));
+                        const list = document.getElementById('hospital-list');
+                        list.innerHTML = '';
 
-                    const list = document.getElementById('hospital-list');
-                    list.innerHTML = '';
+                        // Update sidebar title
+                        const title = sidebar.querySelector('h2');
+                        title.innerText = `Facilities Using Goliath's Solutions in ${clickedRegionName}`;
 
-                    // Update sidebar title with state name
-                    const title = sidebar.querySelector('h2');
-                    title.innerText = `Facilities Using Goliath's Solutions in ${stateName}`;
+                        // Remove existing count display and calculate total
+                        const existingCountDisplay = sidebar.querySelector('.count-display');
+                        if (existingCountDisplay) existingCountDisplay.remove();
 
-                    // Remove any existing count display
-                    const existingCountDisplay = sidebar.querySelector('.count-display');
-                    if (existingCountDisplay) existingCountDisplay.remove();
+                        const totalFacilityCount = regionFacilities.reduce(
+                            (sum, facility) => sum + (facility.hospital_count || 1),
+                            0
+                        );
 
-                    // Calculate the total facility count for the clicked state
-                    const totalFacilityCount = stateHospitals.reduce((sum, hospital) => sum + (hospital.hospital_count || 1), 0);
+                        // Display facility count
+                        const countDisplay = document.createElement('p');
+                        countDisplay.classList.add('count-display');
+                        countDisplay.innerHTML = `Total Facilities: <span style="color: #ff8502;">${totalFacilityCount}</span>`;
+                        countDisplay.style.fontWeight = 'bold';
+                        countDisplay.style.color = '#FFFFFF';
+                        countDisplay.style.marginTop = '10px';
+                        list.before(countDisplay);
 
-                    // Display facility count
-                    const countDisplay = document.createElement('p');
-                    countDisplay.classList.add('count-display');
-                    // countDisplay.innerHTML = `Total Facilities: <span style="color: #ff8502;">${stateHospitals.length}</span>`;
-
-                    // Update the sidebar count display to show the actual number of facilities
-                    countDisplay.innerHTML = `Total Facilities: <span style="color: #ff8502;">${totalFacilityCount}</span>`;
-                    countDisplay.style.fontWeight = 'bold';
-                    countDisplay.style.color = '#FFFFFF';
-                    countDisplay.style.marginTop = '10px';
-                    list.before(countDisplay);
-
-                    if (stateHospitals.length > 0) {
-                        stateHospitals.forEach(hospital => {
+                        // Populate sidebar with facilities
+                        regionFacilities.forEach(facility => {
                             const listItem = document.createElement('li');
-
-                            // Select the appropriate EHR logo based on the ehr_system value
                             let ehrLogo;
-                            switch (hospital.ehr_system) {
+                            switch (facility.ehr_system) {
                                 case 'Cerner':
                                     ehrLogo = '<img src="./img/cerner-logo.png" alt="Cerner logo" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%;">';
                                     break;
                                 case 'Epic':
-                                    ehrLogo = `<img src="./img/epic-logo.png" alt="Epic logo" style="width: 20px; height: 18px; vertical-align: middle; margin-right: 5px;">`;
+                                    ehrLogo = '<img src="./img/epic-logo.png" alt="Epic logo" style="width: 20px; height: 18px; vertical-align: middle; margin-right: 5px;">';
                                     break;
                                 case 'Meditech':
                                     ehrLogo = '<img src="./img/meditech-logo.png" alt="Meditech logo" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%;">';
                                     break;
                                 default:
                                     ehrLogo = '';
-                                    break;
                             }
 
                             listItem.innerHTML = `
-    <div>
-        <i class="fas fa-hospital-symbol"></i> 
-        <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
-            ${hospital.hospital_name}
-        </strong>
-    </div>
-    ${hospital.parent_company ? `<div><strong>Parent Company:</strong> ${hospital.parent_company}</div>` : ""}
-    <div>${hospital.location}</div>
-    <div><strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}</div>
-    <div><strong>Hospital Count:</strong> ${hospital.hospital_count || 1}</div>
-`;
-                            // Add a special note if this is the CommonSpirit Health Headquarters
-                            if (hospital.hospital_name === "CommonSpirit Health Headquarters") {
-                                listItem.innerHTML += `<br><strong style="color: #ff8502;">Note:</strong> CommonSpirit Health operates over 140 hospitals across 21 states. 
-<a href="https://www.commonspirit.org/" target="_blank" style="color: #06b4fd;">Visit Website</a>`;
-                            }
-
+                <div>
+                    <i class="fas fa-hospital-symbol"></i> 
+                    <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
+                        ${facility.hospital_name}
+                    </strong>
+                </div>
+                ${facility.parent_company ? `<div><strong>Parent Company:</strong> ${facility.parent_company}</div>` : ""}
+                <div>${facility.location}</div>
+                <div><strong>EHR System:</strong> ${ehrLogo} ${facility.ehr_system !== "Epic" ? facility.ehr_system : ""}</div>
+                <div><strong>Hospital Count:</strong> ${facility.hospital_count || 1}</div>
+            `;
                             list.appendChild(listItem);
                         });
 
-                        sidebar.style.display = 'block';
-                    } else {
-                        sidebar.style.display = 'none';
-                    }
+                        // Show sidebar
+                        if (regionFacilities.length > 0) {
+                            sidebar.style.display = 'block';
+                        } else {
+                            sidebar.style.display = 'none';
+                        }
+                    });
                 });
             })
             .catch(error => {
@@ -1782,67 +1673,60 @@ map.on('moveend', debouncedUpdateMarkers);
                 errorMessage.innerText = 'Failed to load facility data. Please try again later.';
             });
 
-        // without zooming logic in it.     
         function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
             const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
             const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
 
+            // Apply hover effect
             const applyHover = (regionId) => {
-                // Clear previous hover
-                if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
+                if (hoveredRegionId && hoveredRegionId !== selectedRegionId) {
                     map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
                 }
-
-                // Set new hover
                 hoveredRegionId = regionId;
                 if (hoveredRegionId !== selectedRegionId) {
                     map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: true });
                 }
             };
 
+            // Clear hover effect
             const clearHover = () => {
-                if (hoveredRegionId !== null && hoveredRegionId !== selectedRegionId) {
+                if (hoveredRegionId && hoveredRegionId !== selectedRegionId) {
                     map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
                 }
                 hoveredRegionId = null;
-            };
-
-            const selectRegion = (regionId) => {
-                // Clear previous selection
-                clearRegionSelection();
-
-                // Set new selection
-                selectedRegionId = regionId;
-                map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: true });
-
-                console.log(`Region selected: ${regionId}`);
             };
 
             const clearRegionSelection = () => {
-                // Clear hover and selection
-                if (hoveredRegionId !== null) {
-                    map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
-                }
-                if (selectedRegionId !== null) {
-                    map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: false });
-                }
-                hoveredRegionId = null;
+                console.log('Clearing region selection and hover');
+                const regionSources = ['us-states', 'canada-regions', 'aruba-region', 'italy-regions', 'uk-regions'];
+
+                regionSources.forEach((sourceId) => {
+                    if (selectedRegionId) {
+                        map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: false });
+                    }
+                    if (hoveredRegionId) {
+                        map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
+                    }
+                });
+
                 selectedRegionId = null;
+                hoveredRegionId = null;
             };
 
-            // Hover interactions for all regions (including those without facilities)
+            // Select a region
+            const selectRegion = (regionId) => {
+                if (regionId === selectedRegionId) return;
+                clearRegionSelection();
+                selectedRegionId = regionId;
+                map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: true });
+                console.log(`Region ${regionId} selected.`);
+            };
+
+            // Add hover interactions for all regions
             if (isTouchDevice) {
                 map.on('touchstart', layerId, (e) => {
                     const regionId = e.features[0].id;
-                    if (regionsWithFacilities.has(regionId)) {
-                        if (hoveredRegionId === regionId) {
-                            selectRegion(regionId);
-                        } else {
-                            applyHover(regionId);
-                        }
-                    } else {
-                        applyHover(regionId);
-                    }
+                    applyHover(regionId);
                 });
 
                 map.on('touchend', layerId, clearHover);
@@ -1856,12 +1740,13 @@ map.on('moveend', debouncedUpdateMarkers);
                 map.on('mouseleave', layerId, clearHover);
             }
 
-            // Click interactions for regions with facilities
+            // Add click interactions
             map.on('click', layerId, (e) => {
                 const regionId = e.features[0].id;
 
                 if (regionsWithFacilities.has(regionId)) {
-                    selectRegion(regionId); // Select the clicked region
+                    console.log(`Clicked Region ID: ${regionId}`);
+                    selectRegion(regionId);
                 } else {
                     console.warn(`Clicked region "${regionId}" does not have facilities.`);
                 }
@@ -1870,31 +1755,31 @@ map.on('moveend', debouncedUpdateMarkers);
             // Clear selection when clicking outside any region
             map.on('click', (e) => {
                 const features = map.queryRenderedFeatures(e.point, { layers: [layerId] });
-                if (features.length === 0) {
-                    clearRegionSelection(); // Clear selection if no region is clicked
+                if (!features.length) {
+                    console.log('Empty click detected. Clearing selection.');
+                    clearRegionSelection();
                 }
             });
 
-            // Clear hover on zoom
-            map.on('zoomstart', () => {
-                clearHover();
-            });
+            // Clear hover on zoom start
+            map.on('zoomstart', clearHover);
 
-            // Attach region clear to sidebar close button
+            // Attach region clearing to sidebar close button
             const closeSidebarButton = document.getElementById('close-sidebar');
-            if (closeSidebarButton) {
+            if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
                 closeSidebarButton.addEventListener('click', () => {
-                    clearRegionSelection(); // Clear region selection when the sidebar closes
-                    closeSidebar();
+                    console.log('Sidebar closed. Clearing selection and hover.');
+                    clearRegionSelection();
                 });
+                closeSidebarButton.setAttribute('data-listener-attached', 'true');
             }
 
-            // Reset button to clear state and reset the map view
-            const resetButton = document.getElementById("reset-view");
+            // Attach region clearing to reset button
+            const resetButton = document.getElementById('reset-view');
             if (resetButton) {
-                resetButton.addEventListener("click", () => {
+                resetButton.addEventListener('click', () => {
+                    console.log('Reset button clicked. Clearing selection and resetting view.');
                     clearRegionSelection();
-                    closeSidebar();
                     map.flyTo({
                         center: INITIAL_CENTER,
                         zoom: INITIAL_ZOOM,
@@ -1905,8 +1790,6 @@ map.on('moveend', debouncedUpdateMarkers);
                 });
             }
         }
-
-
         function closeSidebar() {
             sidebar.style.display = 'none';
             if (selectedStateId !== null) {
@@ -1917,7 +1800,6 @@ map.on('moveend', debouncedUpdateMarkers);
         document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
 
 
-        // Drag Initialization and Threshold Handling
         let isDragging = false;
         let startX, startY, initialLeft, initialTop;
         const dragThreshold = 5;
