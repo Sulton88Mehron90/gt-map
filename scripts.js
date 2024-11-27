@@ -5,12 +5,18 @@ import { centerStateMarkerLocation } from './data/centerStateMarkerLocation.js';
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
 // Constants
-const INITIAL_CENTER = [-75.4265, 40.0428]; // Coordinates for Berwyn, PA
-const INITIAL_ZOOM = 1;
+// const INITIAL_CENTER = [-75.4265, 40.0428]; // Coordinates for Berwyn, PA
+// const INITIAL_ZOOM = 1;
 
 // Map Initialization on DOMContentLoaded
 document.addEventListener("DOMContentLoaded", () => {
-    const sidebar = document.getElementById("hospital-list-sidebar");
+    // 1. for transition
+const INITIAL_CENTER = [-75.4265, 40.0428];
+const INITIAL_ZOOM = 1; 
+const USA_CENTER = [-98.5795, 39.8283];
+const USA_ZOOM = 4;
+let globeSpinning = true;
+
     const map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/light-v11',
@@ -19,6 +25,87 @@ document.addEventListener("DOMContentLoaded", () => {
         center: INITIAL_CENTER,
     });
 
+ //2. for transition
+//  function spinGlobe() {
+//     if (globeSpinning) {
+//         const center = map.getCenter();
+//         center.lng -= 360 / 240;
+//         map.easeTo({ center, duration: 1000, easing: (n) => n });
+//     }
+// }
+
+//setTimeout(() => spinGlobe(), 5000);
+
+// Spin the globe a little bit and quickly transition to USA
+function spinGlobe() {
+    if (globeSpinning && map) {
+        const center = map.getCenter();
+        if (center) {
+            // center.lng -= 360 / 240; // Slowly rotate
+            // map.easeTo({ center, duration: 100, easing: (n) => n }); // Quick spin
+            center.lng -= 360 / 80; // Slower rotation adjustment for smoothness
+            // map.easeTo({ center, duration: 100, easing: (t) => t }); // Faster and smoother spin
+        }
+    }
+}
+
+// Start spinning right away
+const spinInterval = setInterval(() => {
+    if (globeSpinning) spinGlobe();
+}, 50); // Very short interval for smooth spinning
+
+
+// Start spinning right away for 2 seconds
+// setTimeout(() => spinGlobe(), 100);
+
+//3. for transition
+// setTimeout(() => {
+//     globeSpinning = false; 
+//     map.flyTo({
+//         center: USA_CENTER,
+//         zoom: USA_ZOOM,
+//         duration: 3000,
+//         essential: true,
+//     });
+// }, 10000); // Transition after 10 seconds
+
+// // Transition to the USA center after a brief spin
+// setTimeout(() => {
+//     globeSpinning = false; // Stop globe spin
+//     map.flyTo({
+//         center: USA_CENTER,
+//         zoom: USA_ZOOM,
+//         duration: 2000, // Smooth transition to USA map
+//         essential: true, // Essential for immediate transition
+//         easing: (n) => n, // Smooth easing
+//     });
+// }, 2000); // Transition to USA map after 2 seconds
+
+
+// Transition to the USA view after 1 second of spinning
+setTimeout(() => {
+    globeSpinning = false; // Stop spinning
+    clearInterval(spinInterval); // Clear spinning interval
+    map.flyTo({
+        center: USA_CENTER,
+        zoom: USA_ZOOM,
+        duration: 1500, // Smooth and quick transition
+        essential: true, // Ensure the transition completes
+        easing: (t) => t * (2 - t), // Ease-in-out effect
+    });
+}, 1000); // Transition after 1 second
+
+//4. for transition
+['mousedown', 'dragstart', 'touchstart'].forEach(event => {
+    map.on(event, () => {
+        globeSpinning = false;
+    });
+});
+    // map navigation controls
+    map.addControl(new mapboxgl.NavigationControl());
+    // map.scrollZoom.disable();
+
+    const sidebar = document.getElementById("hospital-list-sidebar");
     const sidebarHeader = document.querySelector(".sidebar-header");
     const backToTopButton = document.getElementById('back-to-top-button');
 
@@ -28,17 +115,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const gtLogo = document.querySelector('.sidebar-logo');
     const backButton = document.createElement('button');
 
-
-    // map navigation controls
-    map.addControl(new mapboxgl.NavigationControl());
-    // map.scrollZoom.disable();
+    // // map navigation controls
+    // map.addControl(new mapboxgl.NavigationControl());
+    // // map.scrollZoom.disable();
 
     // Global variables
     let userInteracting = false;
     let hasInteracted = false;
     let hoveredRegionId = null;
     let selectedRegionId = null;
-    let selectedRegionSource = null;
     let locationMarkers = [];
     let markers = [];
     let markersData = [];
@@ -63,13 +148,13 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    function spinGlobe() {
-        if (!userInteracting && map.getZoom() < 5) {
-            const center = map.getCenter();
-            center.lng -= 360 / 240;
-            map.easeTo({ center, duration: 1000, easing: (n) => n });
-        }
-    }
+    // function spinGlobe() {
+    //     if (!userInteracting && map.getZoom() < 5) {
+    //         const center = map.getCenter();
+    //         center.lng -= 360 / 240;
+    //         map.easeTo({ center, duration: 1000, easing: (n) => n });
+    //     }
+    // }
 
     // Trigger spinGlobe only under certain conditions
     setTimeout(() => {
@@ -1815,10 +1900,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 resetButton.setAttribute('data-listener-attached', 'true');
                 resetButton.addEventListener('click', () => {
                     console.log('Reset button clicked. Clearing selection and resetting view.');
+            
                     clearRegionSelection();
                     map.flyTo({
-                        center: [0, 0], // Update to your desired initial view center
-                        zoom: 2, // Update to your desired initial zoom level
+                        center: INITIAL_CENTER, // Coordinates for Berwyn, PA
+                        zoom: INITIAL_ZOOM,
                         pitch: 0,
                         bearing: 0,
                         duration: 1000,
