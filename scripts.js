@@ -4,18 +4,39 @@ import { loadFacilitiesData } from './data/dataLoader.js';
 import { centerStateMarkerLocation } from './data/centerStateMarkerLocation.js';
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
-// Constants
-// const INITIAL_CENTER = [-75.4265, 40.0428]; // Coordinates for Berwyn, PA
-// const INITIAL_ZOOM = 1;
+// Constants for transition
+const INITIAL_CENTER = [-75.4265, 40.0428]; // Initial center (Berwyn, PA)
+const INITIAL_ZOOM = 1;
+const USA_CENTER = [-98.5795, 39.8283];
+const USA_ZOOM = getInitialZoom();
+
+// Initial zoom based on screen width
+function getInitialZoom() {
+    if (window.innerWidth <= 480) {
+        return 2;
+    } else if (window.innerWidth <= 768) {
+        return 3;
+    }
+    return 4;
+}
+
+let globeSpinning = true;
+
+function showSpinner() {
+    console.log('Spinner shown');
+    const spinner = document.getElementById('loading-spinner');
+    spinner.style.display = 'block';
+}
+
+function hideSpinner() {
+    console.log('Spinner hidden');
+    const spinner = document.getElementById('loading-spinner');
+    spinner.style.display = 'none';
+}
 
 // Map Initialization on DOMContentLoaded
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. for transition
-const INITIAL_CENTER = [-75.4265, 40.0428];
-const INITIAL_ZOOM = 1; 
-const USA_CENTER = [-98.5795, 39.8283];
-const USA_ZOOM = 4;
-let globeSpinning = true;
+    showSpinner();
 
     const map = new mapboxgl.Map({
         container: 'map',
@@ -25,85 +46,46 @@ let globeSpinning = true;
         center: INITIAL_CENTER,
     });
 
- //2. for transition
-//  function spinGlobe() {
-//     if (globeSpinning) {
-//         const center = map.getCenter();
-//         center.lng -= 360 / 240;
-//         map.easeTo({ center, duration: 1000, easing: (n) => n });
-//     }
-// }
-
-//setTimeout(() => spinGlobe(), 5000);
-
-// Spin the globe a little bit and quickly transition to USA
-function spinGlobe() {
-    if (globeSpinning && map) {
-        const center = map.getCenter();
-        if (center) {
-            // center.lng -= 360 / 240; // Slowly rotate
-            // map.easeTo({ center, duration: 100, easing: (n) => n }); // Quick spin
-            center.lng -= 360 / 80; // Slower rotation adjustment for smoothness
-            // map.easeTo({ center, duration: 100, easing: (t) => t }); // Faster and smoother spin
+    // Spin the globe
+    function spinGlobe() {
+        if (globeSpinning && map) {
+            const center = map.getCenter();
+            if (center) {
+                center.lng -= 360 / 80;
+                // map.easeTo({ center, duration: 1000, easing: (t) => t }); // Faster and smoother spin
+            }
         }
     }
-}
 
-// Start spinning right away
-const spinInterval = setInterval(() => {
-    if (globeSpinning) spinGlobe();
-}, 50); // Very short interval for smooth spinning
+    // Start spinning immediately
+    const spinInterval = setInterval(() => {
+        if (globeSpinning) spinGlobe();
+    }, 50);
 
-
-// Start spinning right away for 2 seconds
-// setTimeout(() => spinGlobe(), 100);
-
-//3. for transition
-// setTimeout(() => {
-//     globeSpinning = false; 
-//     map.flyTo({
-//         center: USA_CENTER,
-//         zoom: USA_ZOOM,
-//         duration: 3000,
-//         essential: true,
-//     });
-// }, 10000); // Transition after 10 seconds
-
-// // Transition to the USA center after a brief spin
-// setTimeout(() => {
-//     globeSpinning = false; // Stop globe spin
-//     map.flyTo({
-//         center: USA_CENTER,
-//         zoom: USA_ZOOM,
-//         duration: 2000, // Smooth transition to USA map
-//         essential: true, // Essential for immediate transition
-//         easing: (n) => n, // Smooth easing
-//     });
-// }, 2000); // Transition to USA map after 2 seconds
-
-
-// Transition to the USA view after 1 second of spinning
-setTimeout(() => {
-    globeSpinning = false; // Stop spinning
-    clearInterval(spinInterval); // Clear spinning interval
-    map.flyTo({
-        center: USA_CENTER,
-        zoom: USA_ZOOM,
-        duration: 1500, // Smooth and quick transition
-        essential: true, // Ensure the transition completes
-        easing: (t) => t * (2 - t), // Ease-in-out effect
-    });
-}, 1000); // Transition after 1 second
-
-//4. for transition
-['mousedown', 'dragstart', 'touchstart'].forEach(event => {
-    map.on(event, () => {
+    // Transition to the USA map after 1 second of spinning
+    setTimeout(() => {
         globeSpinning = false;
+        clearInterval(spinInterval);
+        map.flyTo({
+            center: USA_CENTER,
+            zoom: USA_ZOOM,
+            duration: 1500,
+            essential: true,
+            easing: (t) => t * (2 - t),
+        });
+    }, 1000);
+
+    // Stop spinning if the user interacts with the map
+    ['mousedown', 'dragstart', 'touchstart'].forEach(event => {
+        map.on(event, () => {
+            globeSpinning = false;
+            clearInterval(spinInterval);
+        });
     });
-});
-    // map navigation controls
+
+    // Map navigation controls (zoom and rotate)
     map.addControl(new mapboxgl.NavigationControl());
-    // map.scrollZoom.disable();
+    map.scrollZoom.disable();
 
     const sidebar = document.getElementById("hospital-list-sidebar");
     const sidebarHeader = document.querySelector(".sidebar-header");
@@ -114,10 +96,6 @@ setTimeout(() => {
     });
     const gtLogo = document.querySelector('.sidebar-logo');
     const backButton = document.createElement('button');
-
-    // // map navigation controls
-    // map.addControl(new mapboxgl.NavigationControl());
-    // // map.scrollZoom.disable();
 
     // Global variables
     let userInteracting = false;
@@ -138,6 +116,7 @@ setTimeout(() => {
         [-124.848974, 24.396308],
         [-66.93457, 49.384358],
     ];
+    // clearRegionSelection()// this is just to show the spinner to Ted
 
     // Toggle visibility for elements (markers or layers)
     function toggleVisibility(layerIds, visibility) {
@@ -147,14 +126,6 @@ setTimeout(() => {
             }
         });
     }
-
-    // function spinGlobe() {
-    //     if (!userInteracting && map.getZoom() < 5) {
-    //         const center = map.getCenter();
-    //         center.lng -= 360 / 240;
-    //         map.easeTo({ center, duration: 1000, easing: (n) => n });
-    //     }
-    // }
 
     // Trigger spinGlobe only under certain conditions
     setTimeout(() => {
@@ -258,7 +229,6 @@ setTimeout(() => {
         if (eventType === 'zoom' && map.getZoom() >= 6) {
             toggleVisibility(['clusters', 'cluster-count', 'unclustered-point'], 'visible');
         }
-
     }
 
     ['mousedown', 'dragstart', 'zoomstart', 'touchstart', 'click'].forEach(event => {
@@ -267,7 +237,7 @@ setTimeout(() => {
         });
     });
 
-    // Ensure GT logos are also hidden when using buttons
+    // GT logos are also hidden when using buttons
     document.querySelectorAll('.region-button').forEach(button => {
         button.addEventListener('click', () => {
             onUserInteraction('button');
@@ -288,7 +258,7 @@ setTimeout(() => {
     const geocoderContainer = document.getElementById("geocoder-container");
     let geocoder;
 
-    // Define debounced toggle function
+    // Debounced toggle function
     const debouncedGeocoderToggle = debounce(() => {
         // Toggle display for geocoder container and toggle button
         geocoderContainer.style.display = geocoderContainer.style.display === "none" ? "block" : "none";
@@ -427,12 +397,11 @@ setTimeout(() => {
         { passive: true }
     );
 
-    // Optional: Recalculate button visibility on window resize
+    //Recalculate button visibility on window resize
     window.addEventListener("resize", toggleBackToTopButton);
 
     // Ensure the button visibility is set correctly on load
     toggleBackToTopButton();
-
 
     let sessionStartingView = null;
 
@@ -494,7 +463,7 @@ setTimeout(() => {
 
         // Use a Map to group hospitals by parent_company
         const uniqueHealthSystems = new Map();
-        let totalHospitalCount = 0; // Initialize total count
+        let totalHospitalCount = 0;
 
         regionHospitals.forEach(hospital => {
             const parentCompany = hospital.parent_company || hospital.hospital_name;
@@ -585,9 +554,10 @@ setTimeout(() => {
         adjustSidebarHeight();
     }
 
-    // Define a centralized error message handler
+    // Centralized error message handler
     function displayErrorMessage(error) {
         console.error('Error loading facilities data:', error);
+        hideSpinner();
         const errorMessage = document.getElementById('error-message');
         if (errorMessage) {
             errorMessage.style.display = 'block';
@@ -628,9 +598,6 @@ setTimeout(() => {
         markerElement.style.backgroundPosition = 'center';
         markerElement.style.borderRadius = '50%';
         markerElement.setAttribute('data-region-id', regionId);
-        // markerElement.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.8)';
-        // markerElement.style.boxShadow = '4px 4px 10px rgba(0, 0, 0, 0.5)'; // Larger, softer shadow
-        // markerElement.style.boxShadow = '0px 0px 6px rgba(0, 0, 0, 1)';    // Glow effect
 
         // console.log(`createCustomMarker created with data-region-id: ${regionId}`);
         //regionId....?
@@ -714,7 +681,6 @@ setTimeout(() => {
     // Map events now use the debounced version of `updateMarkers`
     map.on('zoomend', debouncedUpdateMarkers);
     map.on('moveend', debouncedUpdateMarkers);
-
 
     // Fly-to buttons for navigating regions
     document.getElementById("fit-to-usa").addEventListener("click", () => {
@@ -959,7 +925,6 @@ setTimeout(() => {
         document.getElementById(`fly-to-${region}`).addEventListener("click", () => flyToRegion(region));
     });
 
-
     // zoom warning visibility and tooltip
     function manageZoomWarning() {
         const zoomLevel = map.getZoom();
@@ -1018,6 +983,8 @@ setTimeout(() => {
             // Fetch facilities data
             loadFacilitiesData()
                 .then(facilities => {
+                    showSpinner();
+
                     // Call handleStateClick to add markers and zoom into the state
                     handleStateClick(clickedRegionId, facilities);
 
@@ -1030,11 +997,16 @@ setTimeout(() => {
                 })
                 .catch(error => {
                     console.error('Error fetching facilities data:', error);
+                    displayErrorMessage(error);
+                })
+                .finally(() => {
+                    hideSpinner();
                 });
         });
     }
 
     map.on('load', () => {
+        showSpinner();
         // console.log('Map fully loaded');
         map.setFog({});
 
@@ -1101,7 +1073,7 @@ setTimeout(() => {
 
             // Initialize zoom warning visibility and tooltip logic
             manageZoomWarning();
-            // clearRegionSelection(); // Clear any lingering states on map load
+            // clearRegionSelection();
 
             // Adjust visibility based on zoom level and thresholds
             if (currentZoom <= 3) {
@@ -1119,12 +1091,11 @@ setTimeout(() => {
             }
         });
 
-        // imported loadFacilitiesData function  
+        // imported loadFacilitiesData function
         loadFacilitiesData()
             .then(facilities => {
                 addFacilityMarkersWithOffsets(map, facilities);
                 // console.log("Facilities data loaded:", facilities);
-
                 updateMarkers();
 
                 facilitiesData = facilities;
@@ -1375,9 +1346,6 @@ setTimeout(() => {
                     markerElement.style.borderRadius = '50%';
                     markerElement.style.backgroundSize = 'cover';
                     markerElement.setAttribute('data-region-id', region_id);
-                    // markerElement.style.boxShadow = '2px 2px 5px rgba(0, 0, 0, 0.8)';
-                    // markerElement.style.boxShadow = '4px 4px 10px rgba(0, 0, 0, 0.5)'; // Larger, softer shadow
-                    // markerElement.style.boxShadow = '0px 0px 6px rgba(0, 0, 0, 1)';    // Glow effect
 
                     // console.log(`under markers created with data-region-id: ${region_id}`);
 
@@ -1751,14 +1719,16 @@ setTimeout(() => {
                         }
                     });
                 });
+
             })
             .catch(error => {
+                // Log error and display error message
                 console.error('Error loading facilities data:', error);
-                const errorMessage = document.getElementById('error-message');
-                errorMessage.style.display = 'block';
-                errorMessage.innerText = 'Failed to load facility data. Please try again later.';
+                displayErrorMessage(error);
+            })
+            .finally(() => {
+                hideSpinner();
             });
-
 
         function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
             const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
@@ -1900,10 +1870,10 @@ setTimeout(() => {
                 resetButton.setAttribute('data-listener-attached', 'true');
                 resetButton.addEventListener('click', () => {
                     console.log('Reset button clicked. Clearing selection and resetting view.');
-            
+
                     clearRegionSelection();
                     map.flyTo({
-                        center: INITIAL_CENTER, // Coordinates for Berwyn, PA
+                        center: INITIAL_CENTER,
                         zoom: INITIAL_ZOOM,
                         pitch: 0,
                         bearing: 0,

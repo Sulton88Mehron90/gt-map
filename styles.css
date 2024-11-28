@@ -688,15 +688,78 @@ hospital-list-sidebar.collapsed #close-sidebar {
     height: 35px;
 }
 
+/* Spinner container */
+#loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(240, 240, 240, 0.9);
+    z-index: 1000;
+}
+
+/* Spinner element */
+.spinner {
+    border-top: 4px solid #ff8502;
+    /* border-top: 3.6px solid #0f2744; */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite, color-change 3s ease-in-out infinite;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Keyframe for spinning animation */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Keyframe for color-change animation */
+@keyframes color-change {
+    0% {
+        border-top-color: #0f2744;
+    }
+
+    33% {
+        border-top-color: #ff8502;
+    }
+
+    66% {
+        border-top-color: #f5f5f5;
+    }
+
+    100% {
+        border-top-color: #0f2744;
+    }
+}
+
+
 /* Responsive Styles */
 
 @media (max-width: 768px) {
+    #map {
+        height: 100vh;
+        width: 100vw;
+    }
+
     #hospital-list-sidebar {
         width: 60%;
         max-height: 50vh;
         overflow-y: auto;
     }
-
 
     #hospital-list-sidebar.collapsed h2,
     #hospital-list-sidebar.collapsed ul,
@@ -789,7 +852,6 @@ hospital-list-sidebar.collapsed #close-sidebar {
         border-radius: 5px;
         font-size: 10px;
     }
-
 }
 
 @media (max-width: 480px) {
@@ -803,7 +865,6 @@ hospital-list-sidebar.collapsed #close-sidebar {
         max-height: 50vh;
         overflow-y: auto;
     }
-
 
     #hospital-list-sidebar.collapsed h2,
     #hospital-list-sidebar.collapsed ul,
@@ -910,6 +971,11 @@ hospital-list-sidebar.collapsed #close-sidebar {
 }
 
 @media (max-width: 320px) {
+    #map {
+        height: calc(100vh - 50px);
+        width: 100%;
+    }
+
     #hospital-list li {
         font-size: 0.75rem;
     }
