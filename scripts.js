@@ -2,37 +2,46 @@
 import { MAPBOX_TOKEN } from './config.js';
 import { loadFacilitiesData } from './data/dataLoader.js';
 import { centerStateMarkerLocation } from './data/centerStateMarkerLocation.js';
+
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
-// Constants for transition
+// Constants for Map Configuration
 const INITIAL_CENTER = [-75.4265, 40.0428]; // Initial center (Berwyn, PA)
 const INITIAL_ZOOM = 1;
 const USA_CENTER = [-98.5795, 39.8283];
 const USA_ZOOM = getInitialZoom();
+let spinnerVisible = false;
+let globeSpinning = true;
 
 // Initial zoom based on screen width
 function getInitialZoom() {
-    if (window.innerWidth <= 480) {
-        return 2;
-    } else if (window.innerWidth <= 768) {
-        return 3;
-    }
+    if (window.innerWidth <= 480) return 2;
+    if (window.innerWidth <= 768) return 3;
     return 4;
 }
 
-let globeSpinning = true;
-
+// Spinner Functions
 function showSpinner() {
-    console.log('Spinner shown');
-    const spinner = document.getElementById('loading-spinner');
-    spinner.style.display = 'block';
+    if (!spinnerVisible) {
+        console.log('Spinner shown');
+        document.getElementById('loading-spinner').style.display = 'block';
+        spinnerVisible = true;
+    }
 }
 
 function hideSpinner() {
-    console.log('Spinner hidden');
-    const spinner = document.getElementById('loading-spinner');
-    spinner.style.display = 'none';
+    if (spinnerVisible) {
+        console.log('Spinner hidden');
+        document.getElementById('loading-spinner').style.display = 'none';
+        spinnerVisible = false;
+    }
 }
+
+// Variables for Interaction States
+let selectedRegionId = null;
+let hoveredRegionId = null;
+let facilitiesData = [];
+let locationMarkers = [];
 
 // Map Initialization on DOMContentLoaded
 document.addEventListener("DOMContentLoaded", () => {
@@ -100,13 +109,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Global variables
     let userInteracting = false;
     let hasInteracted = false;
-    let hoveredRegionId = null;
-    let selectedRegionId = null;
-    let locationMarkers = [];
     let markers = [];
     let markersData = [];
     let markersDataReady = false;
-    let facilitiesData = [];
     const regionsWithFacilities = new Set();
     const statesWithFacilities = new Set();
     let selectedStateId = null;
@@ -121,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Toggle visibility for elements (markers or layers)
     function toggleVisibility(layerIds, visibility) {
         layerIds.forEach(layerId => {
-            if (map.getLayer(layerId)) {
+            if (map.getLayer(layerId)) {    
                 map.setLayoutProperty(layerId, 'visibility', visibility);
             }
         });
@@ -1299,6 +1304,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
                     });
 
+
+
                 })
 
                 // markers for each facility
@@ -1845,14 +1852,34 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
 
-            // Clear selection when clicking outside any region
-            map.on('click', (e) => {
-                const features = map.queryRenderedFeatures(e.point, { layers: [layerId] });
-                if (!features.length) {
-                    console.log('Empty click detected. No region selected.');
-                    clearRegionSelection();
-                }
-            });
+
+
+// Clear selection and reset view when clicking outside any region
+map.on('click', (e) => {
+    const features = map.queryRenderedFeatures(e.point, { layers: [layerId] });
+
+    if (!features.length) {
+        console.log('Empty click detected. No region selected.');
+
+        // Clear region selection
+        clearRegionSelection();
+
+        // Reset to default view (reuse existing logic)
+        resetToSessionView(); // Or flyToRegion('usa') if that's the function managing the default state
+
+        // Ensure state markers are visible
+        setLayerVisibility('state-markers', 'visible');
+        toggleVisibility(['location-markers', 'clusters', 'cluster-count', 'unclustered-point'], 'none');
+
+        // Hide sidebar and back button
+        sidebar.style.display = 'none';
+        backButton.style.display = 'none';
+    }
+});
+
+
+
+
 
             // Attach clear interactions to sidebar close button
             const closeSidebarButton = document.getElementById('close-sidebar');
