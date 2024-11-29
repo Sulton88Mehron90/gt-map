@@ -622,16 +622,97 @@ hospital-list-sidebar.collapsed #close-sidebar {
     transition: transform 1s ease-out;
 }
 
-#error-message {
-    background-color: #ffe6e6;
-    color: red;
-    padding: 10px;
-    margin: 10px auto;
-    width: 90%;
+/* Default styling for the error message container */
+.error-code {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 10px;
     text-align: center;
-    border: 1px solid #ff5c5c;
+}
+
+/* "Error Code:" text in white */
+.error-code-label {
+    color: white;
+}
+
+/* Error numbers (e.g., 404, 500) in red */
+.error-code-number {
+    color: red;
+    font-weight: bold;
+}
+
+.not-found-page-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    color: #333;
+    background: linear-gradient(145deg, #040028, #0a0909);
+}
+
+.not-found-heading {
+    font-size: 2.5rem;
+    color: #ff8502;
+    /* color: #ff0000; */
+    margin-bottom: 1rem;
+}
+
+.not-found-handling h3 {
+    font-size: 1.2rem;
+    /* color: #555; */
+    color: white;
+}
+
+.error404-go-home-button {
+    background-color: #ff8502;
+    color: white;
+    border: none;
+    padding: 10px 20px;
     border-radius: 5px;
-    display: none;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.error404-go-home-button:hover {
+    background-color: #e57300;
+    transform: scale(1.05);
+}
+
+.goliath-fact-container {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    text-align: left;
+}
+
+.goliath-fact-heading {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.goliath-fact {
+    font-size: 1rem;
+    color: #555;
+}
+
+.image-container {
+    margin-top: 1.5rem;
+}
+
+.goliath-image {
+    /* max-width: 100%; */
+    max-width: 60%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* GT Marker Style one GT per region */

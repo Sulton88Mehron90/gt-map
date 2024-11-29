@@ -1,123 +1,171 @@
-    <!DOCTYPE html>
-    <html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <title>Goliath Technologies Map</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        <link rel="icon" href="./img/gtLogo.png" type="image/png">
-        <link href="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-        <link rel="stylesheet" href="styles.css">
-        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-        <!-- <script src="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js"></script> -->
-        <script src="https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.js"></script>
-        <script
-            src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.min.js"></script>
-        <link rel="stylesheet"
-            href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.css"
-            type="text/css">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <title>Goliath Technologies Map</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="icon" href="./img/gtLogo.png" type="image/png">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <!-- <script src="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js"></script> -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.js"></script>
+    <script
+        src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet"
+        href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.css"
+        type="text/css">
+</head>
 
-    <body>
+<body>
 
-        <div id="error-message" style="display: none; color: red; text-align: center; margin-top: 10px;"></div>
+    <div id="error-page" style="display: none;">
+        <div class="not-found-page-container">
+            <!-- <h1 class="not-found-heading">Oops! Something Went Wrong</h1> -->
+            <h1 class="not-found-heading">Something Went Wrong</h1>
+            <div class="not-found-handling">
+                <h3>An error occurred. Please try again later or return to the home page.</h3>
+                <!-- Dynamically inserted error code -->
+                <p id="error-number">
+                    <span class="error-code-label">Error Code:</span>
+                    <span class="error-code-number"></span>
+                </p>
+            </div>
+            <a href="https://goliathtechnologies.com/" class="error404-navlink">
+                <button class="error404-go-home-button">Return to Home Page</button>
+            </a>
+            <div class="goliath-fact-container" aria-live="polite">
+                <h2 class="goliath-fact-heading">Did You Know?</h2>
+                <p class="goliath-fact" id="goliath-fact"></p>
+            </div>
+            <div class="image-container">
+                <div><img src="./img/howGworks-removebg-preview.png" alt="Goliath Technologies" class="goliath-image">
+                </div>
+                <!-- <div> <img src="./img/certifiedEng-removebg-preview.png" alt="Goliath Technologies" class="goliath-image"></div> -->
+            </div>
+        </div>
+    </div>
 
-        <div id="hospital-list-sidebar" style="display: none;">
-            <div class="sidebar-header">
-                <!-- <a href="https://goliathtechnologies.com/" target="_blank">
+
+
+    <div id="hospital-list-sidebar" style="display: none;">
+        <div class="sidebar-header">
+            <!-- <a href="https://goliathtechnologies.com/" target="_blank">
                     <img src="./img/gtLogo.png" alt="Goliath Technologies Logo" class="sidebar-logo">
                 </a> -->
 
-                <a href="https://goliathtechnologies.com/" target="_blank">
-                    <img src="./img/gtLogo.png" alt="Goliath Technologies Logo" class="sidebar-logo" loading="lazy">
-                </a>
-                
+            <a href="https://goliathtechnologies.com/" target="_blank">
+                <img src="./img/gtLogo.png" alt="Goliath Technologies Logo" class="sidebar-logo" loading="lazy">
+            </a>
 
-                <div class="button-group">
-                    <button id="minimize-sidebar" aria-label="Minimize Sidebar" class="round-button">
-                        <i class="fas fa-chevron-up"></i>
-                    </button>
-                    <button id="close-sidebar" aria-label="Close Sidebar" class="round-button" tabindex="0">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
+
+            <div class="button-group">
+                <button id="minimize-sidebar" aria-label="Minimize Sidebar" class="round-button">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
+                <button id="close-sidebar" aria-label="Close Sidebar" class="round-button" tabindex="0">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            <h2>Current Locations Using Goliath's Solutions</h2>
-            <ul id="hospital-list"></ul>
-            <button id="back-to-top-button" class="round-button" aria-label="Back to Top">
-                <i class="fas fa-arrow-up"></i>
-            </button>
-
-            <!-- <div id="sidebar-resizer"></div> -->
         </div>
-            <div class="mapbox-button-group">
-                <!-- <button id="fly-to-usa" class="fly-to-button fly-to-usa"></button> -->
-                <div class="flip-button" id="fly-to-usa" role="button" aria-label="Fly to USA">
-                    <span class="flip-front"></span>
-                    <span class="flip-back">USA</span>
-                </div>
-        
-                <!-- <button id="fly-to-uk" class="fly-to-button fly-to-uk"></button> -->
-                <div class="flip-button" id="fly-to-uk" role="button" aria-label="Fly to UK">
-                    <span class="flip-front"></span>
-                    <span class="flip-back">UK</span>
-                </div>
-        
-                <!-- <button id="fly-to-italy" class="fly-to-button fly-to-italy"></button> -->
-                <div class="flip-button" id="fly-to-italy" role="button" aria-label="Fly to Italy">
-                    <span class="flip-front"></span>
-                    <span class="flip-back">ITLY</span>
-                </div>
-        
-                <!-- <button id="fly-to-canada" class="fly-to-button fly-to-canada"></button> -->
-                <div class="flip-button" id="fly-to-canada" role="button" aria-label="Fly to Canada">
-                    <span class="flip-front"></span>
-                    <span class="flip-back">CAN</span>
-                </div>
-        
-                <!-- <button id="fly-to-aruba" class="fly-to-button fly-to-aruba"></button> -->
-                <div class="flip-button" id="fly-to-aruba" role="button" aria-label="Fly to Aruba">
-                    <span class="flip-front"></span>
-                    <span class="flip-back">ARB</span>
-                </div>
-        
-                <button id="fit-to-usa" class="fit-to-button fit-to-usa" aria-label="Fit to USA View"></button>
-        
+        <h2>Current Locations Using Goliath's Solutions</h2>
+        <ul id="hospital-list"></ul>
+        <button id="back-to-top-button" class="round-button" aria-label="Back to Top">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+
+        <!-- <div id="sidebar-resizer"></div> -->
+    </div>
+    <div class="mapbox-button-group">
+        <!-- <button id="fly-to-usa" class="fly-to-button fly-to-usa"></button> -->
+        <div class="flip-button" id="fly-to-usa" role="button" aria-label="Fly to USA">
+            <span class="flip-front"></span>
+            <span class="flip-back">USA</span>
+        </div>
+
+        <!-- <button id="fly-to-uk" class="fly-to-button fly-to-uk"></button> -->
+        <div class="flip-button" id="fly-to-uk" role="button" aria-label="Fly to UK">
+            <span class="flip-front"></span>
+            <span class="flip-back">UK</span>
+        </div>
+
+        <!-- <button id="fly-to-italy" class="fly-to-button fly-to-italy"></button> -->
+        <div class="flip-button" id="fly-to-italy" role="button" aria-label="Fly to Italy">
+            <span class="flip-front"></span>
+            <span class="flip-back">ITLY</span>
+        </div>
+
+        <!-- <button id="fly-to-canada" class="fly-to-button fly-to-canada"></button> -->
+        <div class="flip-button" id="fly-to-canada" role="button" aria-label="Fly to Canada">
+            <span class="flip-front"></span>
+            <span class="flip-back">CAN</span>
+        </div>
+
+        <!-- <button id="fly-to-aruba" class="fly-to-button fly-to-aruba"></button> -->
+        <div class="flip-button" id="fly-to-aruba" role="button" aria-label="Fly to Aruba">
+            <span class="flip-front"></span>
+            <span class="flip-back">ARB</span>
+        </div>
+
+        <button id="fit-to-usa" class="fit-to-button fit-to-usa" aria-label="Fit to USA View"></button>
+
         <button id="reset-view" aria-label="Reset Map View">
             <i class="fas fa-sync-alt" aria-hidden="true"></i>
         </button>
 
-            <div id="geocoder-container" style="display: none;"></div>
-            <button id="toggle-geocoder">
-                <i class="fas fa-search"></i>
-            </button>
-        </div>
+        <div id="geocoder-container" style="display: none;"></div>
+        <button id="toggle-geocoder">
+            <i class="fas fa-search"></i>
+        </button>
+    </div>
 
-        <div id="zoom-warning">
-            <div>
-                <img src="/img/warning.png" alt="Warning" id="zoom-warning-icon">
-                <div id="zoom-tooltip">
-                    Zoom in with the + button to view location markers.
-                </div>
+    <div id="zoom-warning">
+        <div>
+            <img src="/img/warning.png" alt="Warning" id="zoom-warning-icon">
+            <div id="zoom-tooltip">
+                Zoom in with the + button to view location markers.
             </div>
         </div>
+    </div>
 
 
-        <div id="loading-spinner" style="display: none;">
-            <div class="spinner"></div>
-        </div>
+    <div id="loading-spinner" style="display: none;">
+        <div class="spinner"></div>
+    </div>
 
-        <!-- Map container -->
-        <div id="map"></div>
+    <!-- Map container -->
+    <div id="map"></div>
 
-        <a href="https://goliathtechnologies.com/" target="_blank" id="home-logo">
-            <img src="./img/goliath-logo.png" alt="Goliath Technologies Logo" loading="lazy">
-        </a>
-        
+    <a href="https://goliathtechnologies.com/" target="_blank" id="home-logo">
+        <img src="./img/goliath-logo.png" alt="Goliath Technologies Logo" loading="lazy">
+    </a>
 
-        <!-- <script type="module" src="refactor.js"></script> -->
-        <script type="module" src="scripts.js"></script>
-    </body>
 
-    </html>
+    <script type="module">
+        import { displayErrorMessage } from './scripts.js';
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // Simulate different error types
+            const simulateError = async (url) => {
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        throw { response }; // Simulating an error object with response
+                    }
+                } catch (error) {
+                    console.log("Caught error:", error);
+                    displayErrorMessage(error, "Test Error Context");
+                }
+            };
+
+            // Uncomment one of these lines to test different scenarios
+            // simulateError('https://jsonplaceholder.typicode.com/invalid-endpoint'); // 404
+            // simulateError('https://example.com/simulate-500'); // Simulate 500 error (mock server)
+        });
+    </script>
+
+</body>
+
+</html>

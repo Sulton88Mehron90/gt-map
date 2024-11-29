@@ -13,6 +13,70 @@ const USA_ZOOM = getInitialZoom();
 let spinnerVisible = false;
 let globeSpinning = true;
 
+// Centralized error message handler with dynamic error code
+export function displayErrorMessage(error, context = "An unexpected error occurred") {
+    console.log('displayErrorMessage called with:', error, context);
+
+    // Hide spinner if active
+    hideSpinner();
+
+    // Hide main content
+    const mapContainer = document.getElementById('map');
+    const sidebar = document.getElementById('hospital-list-sidebar');
+    const buttonGroup = document.querySelector('.mapbox-button-group');
+
+    if (mapContainer) mapContainer.style.display = 'none';
+    if (sidebar) sidebar.style.display = 'none';
+    if (buttonGroup) buttonGroup.style.display = 'none';
+
+    // Display error page
+    const errorPage = document.getElementById('error-page');
+    const errorCodeLabel = document.querySelector('#error-number .error-code-label');
+    const errorCodeNumber = document.querySelector('#error-number .error-code-number');
+
+    if (errorPage) {
+        errorPage.style.display = 'block';
+
+        // Set error code dynamically
+        if (errorCodeLabel) {
+            errorCodeLabel.innerText = "Error Code:";
+        }
+
+        if (errorCodeNumber) {
+            if (error.response && error.response.status) {
+                errorCodeNumber.innerText = error.response.status; // HTTP status code
+            } else if (error.code) {
+                errorCodeNumber.innerText = error.code; // Specific error code if available
+            } else {
+                errorCodeNumber.innerText = "Unknown"; // Default fallback
+            }
+        }
+
+        // Add a random fact about Goliath Technologies
+        const goliathInformativeFacts = [
+            "Goliath Technologies leverages AI and automation to help IT professionals proactively troubleshoot and resolve performance issues before they impact users.",
+            "Goliath Technologies ensures clinicians have seamless access to EHR systems like Epic, Cerner, Allscripts, and MEDITECH, so they can focus on patient care.",
+            "Goliath Technologies provides end-user experience monitoring for hybrid multi-cloud environments, helping IT professionals manage performance across complex infrastructures.",
+            "Trusted by industry leaders like Oracle Health, Google, and Children's National, Goliath Technologies provides cutting-edge solutions for performance monitoring.",
+            "Vitaly Petrovsky from Maimonides Medical Center praises Goliath for providing end-to-end visibility and resolving performance issues in complex Citrix setups.",
+        ];
+
+        const randomFact = goliathInformativeFacts[Math.floor(Math.random() * goliathInformativeFacts.length)];
+        const refFactContainer = document.getElementById('goliath-fact');
+        if (refFactContainer) refFactContainer.innerText = randomFact;
+    }
+}
+
+// Debug mode flag
+const DEBUG_MODE = true; // Set to false in production
+
+// Logging utility function
+function log(message, level = 'info') {
+    if (DEBUG_MODE || level === 'warn') {
+        console[level](message);
+    }
+}
+
 // Initial zoom based on screen width
 function getInitialZoom() {
     if (window.innerWidth <= 480) return 2;
@@ -390,6 +454,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
     });
+
     // Event listener for touchstart on the sidebar (for mobile)
     sidebar.addEventListener(
         "touchstart",
@@ -437,6 +502,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 data: dataUrl,
                 promoteId: promoteId,
             });
+
             //console.log(`Source with ID "${sourceId}" added successfully.`);
         }
         // else {
@@ -564,17 +630,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         sidebar.style.display = uniqueHealthSystems.size > 0 ? 'block' : 'none';
         adjustSidebarHeight();
-    }
-
-    // Centralized error message handler
-    function displayErrorMessage(error) {
-        console.error('Error loading facilities data:', error);
-        hideSpinner();
-        const errorMessage = document.getElementById('error-message');
-        if (errorMessage) {
-            errorMessage.style.display = 'block';
-            errorMessage.innerText = 'Failed to load facility data. Please try again later.';
-        }
     }
 
     // Debounce utility function to limit execution frequency
@@ -973,28 +1028,21 @@ document.addEventListener("DOMContentLoaded", () => {
     //responsible for attaching a click event to a specific region layer on the map.  
     function setRegionClickEvent(regionSource, regionIdProp, regionNameProp) {
         map.on('click', (e) => {
-            // Check if the click is on a region or state layer
             const features = map.queryRenderedFeatures(e.point, { layers: [`${regionSource}-fill`] });
-
+    
             if (features.length > 0) {
                 const clickedRegionId = features[0].properties[regionIdProp];
                 const regionName = features[0].properties[regionNameProp];
-
-                // Check if the clicked region has facilities
+    
                 if (!regionsWithFacilities.has(clickedRegionId)) {
-                    console.warn(`Region "${regionName}" with ID ${clickedRegionId} does not have facilities.`);
-
-                    // Close the sidebar if it is open
+                    log(`Region "${regionName}" with ID ${clickedRegionId} does not have facilities.`, 'warn');
+    
                     const sidebar = document.getElementById('hospital-list-sidebar');
-                    if (sidebar) {
-                        sidebar.style.display = 'none';
-                    }
-
-                    // Ensure all state markers remain visible
+                    if (sidebar) sidebar.style.display = 'none';
+    
                     toggleVisibility(['state-markers'], 'visible');
                     toggleVisibility(['location-markers', 'clusters', 'cluster-count', 'unclustered-point'], 'none');
-
-                    // Adjust zoom level based on the region's custom zoom
+    
                     const regionZoomLevels = {
                         AW: 10,
                         IT: 6,
@@ -1003,7 +1051,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         default: 4,
                     };
                     const customZoom = regionZoomLevels[clickedRegionId] || regionZoomLevels.default;
-
+    
                     map.flyTo({
                         center: map.getCenter(),
                         zoom: customZoom,
@@ -1011,19 +1059,16 @@ document.addEventListener("DOMContentLoaded", () => {
                         essential: true,
                         easing: (t) => t * (2 - t),
                     });
-
-                    return; // Exit since there are no facilities to display
+    
+                    return;
                 }
-
-                // Handle regions with facilities
+    
                 loadFacilitiesData()
                     .then(facilities => {
                         showSpinner();
-
-                        // Call handleStateClick to add markers and zoom into the state
+                        log(`Loading facilities for region: ${clickedRegionId}`, 'info');
+    
                         handleStateClick(clickedRegionId, facilities);
-
-                        // Update the sidebar with facility details for the selected state
                         populateSidebar(
                             clickedRegionId,
                             regionName,
@@ -1031,27 +1076,22 @@ document.addEventListener("DOMContentLoaded", () => {
                         );
                     })
                     .catch(error => {
-                        console.error('Error fetching facilities data:', error);
+                        log('Error fetching facilities data:', 'warn');
+                        log(error, 'warn');
                         displayErrorMessage(error);
                     })
                     .finally(() => {
                         hideSpinner();
                     });
             } else {
-                // Handle clicks outside regions or states
-                console.warn('Clicked outside any region or state.');
-
-                // Hide the sidebar
+                log('Clicked outside any region or state.', 'warn');
+    
                 const sidebar = document.getElementById('hospital-list-sidebar');
-                if (sidebar) {
-                    sidebar.style.display = 'none';
-                }
-
-                // Ensure all state markers are visible
+                if (sidebar) sidebar.style.display = 'none';
+    
                 toggleVisibility(['state-markers'], 'visible');
                 toggleVisibility(['location-markers', 'clusters', 'cluster-count', 'unclustered-point'], 'none');
-
-                // Adjust zoom level to show the whole map or current region
+    
                 const regionZoomLevels = {
                     usa: 4,
                     uk: 5,
@@ -1060,7 +1100,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     aruba: 10,
                 };
                 const defaultZoom = regionZoomLevels[currentRegion] || 4;
-
+    
                 map.flyTo({
                     center: regions[currentRegion]?.center || map.getCenter(),
                     zoom: defaultZoom,
@@ -1070,29 +1110,29 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             }
         });
-    }
+    }    
+
     //the initialization point for actions and event handlers that require the map to be fully loaded. 
     map.on('load', () => {
-
         showSpinner();
-        // console.log('Map fully loaded');
+        // log('Map fully loaded', 'info');
         map.setFog({});
 
     //US map view is centered even if the globe was spinning or reset
-    if (globeSpinning && map) {
+    let globeSpinning = false;
+    let isFirstLoad = true; 
+
+    if (isFirstLoad) {
+        log('First map load: Flying to USA view', 'info');
         map.flyTo({
             center: USA_CENTER,
             zoom: USA_ZOOM,
             duration: 1500,
         });
-        globeSpinning = false;  // Reset the flag
+        isFirstLoad = false;
+        globeSpinning = false; // Ensure globe stops spinning after initial load
     } else {
-        // immediate transition
-        map.flyTo({
-            center: USA_CENTER,
-            zoom: USA_ZOOM,
-            duration: 0,
-        });
+        log('Subsequent load: Preserving current map view', 'info');
     }
         // Add GeoJSON sources
         const sources = [
