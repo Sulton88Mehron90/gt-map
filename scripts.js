@@ -51,8 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
         container: 'map',
         style: 'mapbox://styles/mapbox/light-v11',
         projection: 'globe',
-        zoom: INITIAL_ZOOM,
-        center: INITIAL_CENTER,
+        center: USA_CENTER,
+        zoom: USA_ZOOM,
     });
 
     // Spin the Globe
@@ -1073,10 +1073,27 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     //the initialization point for actions and event handlers that require the map to be fully loaded. 
     map.on('load', () => {
+
         showSpinner();
         // console.log('Map fully loaded');
         map.setFog({});
 
+    //US map view is centered even if the globe was spinning or reset
+    if (globeSpinning && map) {
+        map.flyTo({
+            center: USA_CENTER,
+            zoom: USA_ZOOM,
+            duration: 1500,
+        });
+        globeSpinning = false;  // Reset the flag
+    } else {
+        // immediate transition
+        map.flyTo({
+            center: USA_CENTER,
+            zoom: USA_ZOOM,
+            duration: 0,
+        });
+    }
         // Add GeoJSON sources
         const sources = [
             { id: 'us-states', url: '/data/us-states.geojson' },

@@ -970,72 +970,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     map.on('zoomend', manageZoomWarning);
 
-    //responsible for attaching a click event to a specific region layer on the map. 
-    //   function setRegionClickEvent(regionSource, regionIdProp, regionNameProp) {
-    //         map.on('click', `${regionSource}-fill`, (e) => {
-    //             const clickedRegionId = e.features[0].properties[regionIdProp];
-    //             const regionName = e.features[0].properties[regionNameProp];
-
-    //             // Check if the clicked region has facilities
-    //             if (!regionsWithFacilities.has(clickedRegionId)) {
-    //                 console.warn(`Region "${regionName}" with ID ${clickedRegionId} does not have facilities.`);
-
-    //                 // Close the sidebar if it is open
-    //                 const sidebar = document.getElementById('hospital-list-sidebar');
-    //                 if (sidebar) {
-    //                     sidebar.style.display = 'none';
-    //                 }
-
-    //                 // Ensure all state markers remain visible
-    //                 toggleVisibility(['state-markers'], 'visible');
-    //                 toggleVisibility(['location-markers', 'clusters', 'cluster-count', 'unclustered-point'], 'none');
-
-    //                 // Adjust zoom level based on the region's custom zoom
-    //                 const regionZoomLevels = {
-    //                     AW: 10,
-    //                     IT: 6,
-    //                     ENG: 8,
-    //                     CAN: 3,
-    //                     default: 4,
-    //                 };
-    //                 const customZoom = regionZoomLevels[clickedRegionId] || regionZoomLevels.default;
-
-    //                 map.flyTo({
-    //                     center: map.getCenter(),
-    //                     zoom: customZoom,
-    //                     duration: 2000,
-    //                     essential: true,
-    //                     easing: (t) => t * (2 - t),
-    //                 });
-
-    //                 return; // Exit since there are no facilities to display
-    //             }
-
-    //             // Fetch facilities data for regions with facilities
-    //             loadFacilitiesData()
-    //                 .then(facilities => {
-    //                     showSpinner();
-
-    //                     // Call handleStateClick to add markers and zoom into the state
-    //                     handleStateClick(clickedRegionId, facilities);
-
-    //                     // Update the sidebar with facility details for the selected state
-    //                     populateSidebar(
-    //                         clickedRegionId,
-    //                         regionName,
-    //                         facilities.filter(facility => facility.region_id === clickedRegionId)
-    //                     );
-    //                 })
-    //                 .catch(error => {
-    //                     console.error('Error fetching facilities data:', error);
-    //                     displayErrorMessage(error);
-    //                 })
-    //                 .finally(() => {
-    //                     hideSpinner();
-    //                 });
-    //         });
-    //     }    
-
+    //responsible for attaching a click event to a specific region layer on the map.  
     function setRegionClickEvent(regionSource, regionIdProp, regionNameProp) {
         map.on('click', (e) => {
             // Check if the click is on a region or state layer
