@@ -28,7 +28,7 @@ import { fetchAndCache, getCachedData, isCacheStale, preCacheFiles, clearCache }
         console.log('Is facilities cache stale?', isStale);
 
         // Clear cache when user completes their session
-        window.addEventListener('beforeunload', clearCache); 
+        window.addEventListener('beforeunload', clearCache);
     } catch (error) {
         console.error('Error during initialization:', error);
     }
@@ -75,11 +75,11 @@ export function displayErrorMessage(error, context = "An unexpected error occurr
 
         if (errorCodeNumber) {
             if (error.response && error.response.status) {
-                errorCodeNumber.innerText = error.response.status; // HTTP status code
+                errorCodeNumber.innerText = error.response.status; 
             } else if (error.code) {
-                errorCodeNumber.innerText = error.code; // Specific error code if available
+                errorCodeNumber.innerText = error.code; 
             } else {
-                errorCodeNumber.innerText = "Unknown"; // Default fallback
+                errorCodeNumber.innerText = "Unknown"; 
             }
         }
 
@@ -780,11 +780,13 @@ document.addEventListener("DOMContentLoaded", () => {
     map.on('zoomend', debouncedUpdateMarkers);
     map.on('moveend', debouncedUpdateMarkers);
 
-    // Fly-to buttons for navigating regions
-    document.getElementById("fit-to-usa").addEventListener("click", () => {
+    // Fit-to-USA Button
+    document.getElementById('fit-to-usa').addEventListener('click', () => {
+        console.log('Fit-to-USA button clicked.');
+        resetToSessionView()
         map.fitBounds([
             [-165.031128, 65.476793],
-            [-81.131287, 26.876143]
+            [-81.131287, 26.876143],
         ]);
     });
 
@@ -808,7 +810,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    //reset the map view based on the previously stored session view
+    // reset the map view based on the previously stored session view
     function resetToSessionView() {
         if (sessionStartingView) {
             // Validate that the stored region matches the current region
@@ -865,15 +867,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     backButton.addEventListener('click', resetToSessionView);
 
-    const sidebarCloseButton = document.getElementById('close-sidebar');
-    if (sidebarCloseButton) {
-        sidebarCloseButton.addEventListener('click', () => {
-            sidebar.style.display = 'none';
-            resetToSessionView();
-        });
-    } else {
-        console.warn('Sidebar close button not found.');
-    }
 
     // Regions
     const regions = {
@@ -1060,20 +1053,20 @@ document.addEventListener("DOMContentLoaded", () => {
     function setRegionClickEvent(regionSource, regionIdProp, regionNameProp) {
         map.on('click', (e) => {
             const features = map.queryRenderedFeatures(e.point, { layers: [`${regionSource}-fill`] });
-    
+
             if (features.length > 0) {
                 const clickedRegionId = features[0].properties[regionIdProp];
                 const regionName = features[0].properties[regionNameProp];
-    
+
                 if (!regionsWithFacilities.has(clickedRegionId)) {
                     log(`Region "${regionName}" with ID ${clickedRegionId} does not have facilities.`, 'warn');
-    
+
                     const sidebar = document.getElementById('hospital-list-sidebar');
                     if (sidebar) sidebar.style.display = 'none';
-    
+
                     toggleVisibility(['state-markers'], 'visible');
                     toggleVisibility(['location-markers', 'clusters', 'cluster-count', 'unclustered-point'], 'none');
-    
+
                     const regionZoomLevels = {
                         AW: 10,
                         IT: 6,
@@ -1082,7 +1075,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         default: 4,
                     };
                     const customZoom = regionZoomLevels[clickedRegionId] || regionZoomLevels.default;
-    
+
                     map.flyTo({
                         center: map.getCenter(),
                         zoom: customZoom,
@@ -1090,15 +1083,15 @@ document.addEventListener("DOMContentLoaded", () => {
                         essential: true,
                         easing: (t) => t * (2 - t),
                     });
-    
+
                     return;
                 }
-    
+
                 loadFacilitiesData()
                     .then(facilities => {
                         showSpinner();
                         log(`Loading facilities for region: ${clickedRegionId}`, 'info');
-    
+
                         handleStateClick(clickedRegionId, facilities);
                         populateSidebar(
                             clickedRegionId,
@@ -1116,13 +1109,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     });
             } else {
                 log('Clicked outside any region or state.', 'warn');
-    
+
                 const sidebar = document.getElementById('hospital-list-sidebar');
                 if (sidebar) sidebar.style.display = 'none';
-    
+
                 toggleVisibility(['state-markers'], 'visible');
                 toggleVisibility(['location-markers', 'clusters', 'cluster-count', 'unclustered-point'], 'none');
-    
+
                 const regionZoomLevels = {
                     usa: 4,
                     uk: 5,
@@ -1131,7 +1124,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     aruba: 10,
                 };
                 const defaultZoom = regionZoomLevels[currentRegion] || 4;
-    
+
                 map.flyTo({
                     center: regions[currentRegion]?.center || map.getCenter(),
                     zoom: defaultZoom,
@@ -1141,7 +1134,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             }
         });
-    }    
+    }
 
     //the initialization point for actions and event handlers that require the map to be fully loaded. 
     map.on('load', () => {
@@ -1149,22 +1142,21 @@ document.addEventListener("DOMContentLoaded", () => {
         // log('Map fully loaded', 'info');
         map.setFog({});
 
-    //US map view is centered even if the globe was spinning or reset
-    let globeSpinning = false;
-    let isFirstLoad = true; 
-
-    if (isFirstLoad) {
-        log('First map load: Flying to USA view', 'info');
-        map.flyTo({
-            center: USA_CENTER,
-            zoom: USA_ZOOM,
-            duration: 1500,
-        });
-        isFirstLoad = false;
+        //US map view is centered even if the globe was spinning or reset
         globeSpinning = false; // Ensure globe stops spinning after initial load
-    } else {
-        log('Subsequent load: Preserving current map view', 'info');
-    }
+        let isFirstLoad = true;
+
+        if (isFirstLoad) {
+            log('First map load: Flying to USA view', 'info');
+            map.flyTo({
+                center: USA_CENTER,
+                zoom: USA_ZOOM,
+                duration: 1500,
+            });
+            isFirstLoad = false;
+        } else {
+            log('Subsequent load: Preserving current map view', 'info');
+        }
         // Add GeoJSON sources
         const sources = [
             { id: 'us-states', url: '/data/us-states.geojson' },
@@ -1999,24 +1991,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
 
-            // Attach clear interactions to sidebar close button
+            // Sidebar Close Button. Attach clear interactions to sidebar close button
             const closeSidebarButton = document.getElementById('close-sidebar');
             if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
                 closeSidebarButton.setAttribute('data-listener-attached', 'true');
                 closeSidebarButton.addEventListener('click', () => {
+                    // sidebar.style.display = 'none';
                     console.log('Sidebar closed. Clearing selection and hover.');
                     clearRegionSelection();
+                    resetToSessionView();
                 });
             }
 
-            // Attach clear interactions to reset button
+            // Reset Button
             const resetButton = document.getElementById('reset-view');
             if (resetButton && !resetButton.hasAttribute('data-listener-attached')) {
                 resetButton.setAttribute('data-listener-attached', 'true');
                 resetButton.addEventListener('click', () => {
-                    console.log('Reset button clicked. Clearing selection and resetting view.');
-
+                    console.log('Reset button clicked.');
                     clearRegionSelection();
+                    resetToSessionView()
                     map.flyTo({
                         center: INITIAL_CENTER,
                         zoom: INITIAL_ZOOM,
@@ -2029,6 +2023,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             map.on('zoomstart', clearHover);
         }
+
         //hide the sidebar and update the state of the map
         function closeSidebar() {
             sidebar.style.display = 'none';
