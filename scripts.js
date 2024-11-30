@@ -2,6 +2,37 @@
 import { MAPBOX_TOKEN } from './config.js';
 import { loadFacilitiesData } from './data/dataLoader.js';
 import { centerStateMarkerLocation } from './data/centerStateMarkerLocation.js';
+import { fetchAndCache, getCachedData, isCacheStale, preCacheFiles, clearCache } from './cache.js';
+
+(async () => {
+    // List of files to cache (including JSON, GeoJSON, and JS files)
+    const filesToCache = [
+        { url: './data/facilities.json', key: 'facilities' },
+        { url: './data/us-states.geojson', key: 'usStates' },
+        { url: './data/uk-regions.geojson', key: 'ukRegions' },
+        { url: './data/italy-regions.geojson', key: 'italyRegions' },
+        { url: './data/canada-regions.geojson', key: 'canadaRegions' },
+        { url: './data/aruba-region.geojson', key: 'arubaRegion' }
+    ];
+
+    try {
+        // Pre-cache all files with a 24-hour expiry
+        await preCacheFiles(filesToCache, 24);
+
+        // cached data
+        const facilities = getCachedData('facilities');
+        console.log('Cached facilities:', facilities);
+
+        // Checking if the 'facilities' cache is stale (older than 24 hours)
+        const isStale = isCacheStale('facilities', 24);
+        console.log('Is facilities cache stale?', isStale);
+
+        // Clear cache when user completes their session
+        window.addEventListener('beforeunload', clearCache); 
+    } catch (error) {
+        console.error('Error during initialization:', error);
+    }
+})();
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
