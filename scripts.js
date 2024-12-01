@@ -42,7 +42,8 @@ const INITIAL_ZOOM = 1;
 const USA_CENTER = [-98.5795, 39.8283];
 const USA_ZOOM = getInitialZoom();
 let spinnerVisible = false;
-let globeSpinning = true;
+// let globeSpinning = true;
+
 
 // Centralized error message handler with dynamic error code
 export function displayErrorMessage(error, context = "An unexpected error occurred") {
@@ -99,7 +100,7 @@ export function displayErrorMessage(error, context = "An unexpected error occurr
 }
 
 // Debug mode flag
-const DEBUG_MODE = true; // Set to false in production
+const DEBUG_MODE = true;
 
 // Logging utility function
 function log(message, level = 'info') {
@@ -137,6 +138,8 @@ let selectedRegionId = null;
 let hoveredRegionId = null;
 let facilitiesData = [];
 let locationMarkers = [];
+// Define regionSources
+const regionSources = ['us-states', 'canada-regions', 'aruba-region', 'italy-regions', 'uk-regions'];
 
 // Map Initialization on DOMContentLoaded
 document.addEventListener("DOMContentLoaded", () => {
@@ -151,41 +154,41 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Spin the Globe
-    function spinGlobe() {
-        if (globeSpinning && map) {
-            const center = map.getCenter();
-            if (center) {
-                center.lng -= 360 / 80;
-                // map.easeTo({ center, duration: 1000, easing: (t) => t }); // Faster and smoother spin
-            }
-        }
-    }
+    // function spinGlobe() {
+    //     if (globeSpinning && map) {
+    //         const center = map.getCenter();
+    //         if (center) {
+    //             center.lng -= 360 / 80;
+    //             // map.easeTo({ center, duration: 1000, easing: (t) => t }); // Faster and smoother spin
+    //         }
+    //     }
+    // }
 
     // Start spinning immediately
-    const spinInterval = setInterval(() => {
-        if (globeSpinning) spinGlobe();
-    }, 50);
+    // const spinInterval = setInterval(() => {
+    //     if (globeSpinning) spinGlobe();
+    // }, 50);
 
-    // Transition to the USA map after 1 second of spinning
-    setTimeout(() => {
-        globeSpinning = false;
-        clearInterval(spinInterval);
-        map.flyTo({
-            center: USA_CENTER,
-            zoom: USA_ZOOM,
-            duration: 1500,
-            essential: true,
-            easing: (t) => t * (2 - t),
-        });
-    }, 1000);
+    // // Transition to the USA map after 1 second of spinning
+    // setTimeout(() => {
+    //     globeSpinning = false;
+    //     clearInterval(spinInterval);
+    //     map.flyTo({
+    //         center: USA_CENTER,
+    //         zoom: USA_ZOOM,
+    //         duration: 1500,
+    //         essential: true,
+    //         easing: (t) => t * (2 - t),
+    //     });
+    // }, 1000);
 
-    // Stop spinning if the user interacts with the map
-    ['mousedown', 'dragstart', 'touchstart'].forEach(event => {
-        map.on(event, () => {
-            globeSpinning = false;
-            clearInterval(spinInterval);
-        });
-    });
+    // // Stop spinning if the user interacts with the map
+    // ['mousedown', 'dragstart', 'touchstart'].forEach(event => {
+    //     map.on(event, () => {
+    //         globeSpinning = false;
+    //         clearInterval(spinInterval);
+    //     });
+    // });
 
     // Map navigation controls (zoom and rotate)
     map.addControl(new mapboxgl.NavigationControl());
@@ -204,8 +207,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Global variable
     // Interaction State Variables:
-    let userInteracting = false;
-    let hasInteracted = false;
+    // let userInteracting = false;
+    // let hasInteracted = false;
     //Markers and Data Management:
     let markers = [];
     let markersData = [];
@@ -237,29 +240,29 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Trigger spinGlobe only under certain conditions
-    setTimeout(() => {
-        if (!userInteracting && !hasInteracted) spinGlobe();
-    }, 5000);
+    // // Trigger spinGlobe only under certain conditions
+    // setTimeout(() => {
+    //     if (!userInteracting && !hasInteracted) spinGlobe();
+    // }, 5000);
 
-    // Event listeners for user interaction
-    map.on('mousedown', () => {
-        userInteracting = true;
-        hasInteracted = true;
-    });
-    map.on('dragstart', () => {
-        userInteracting = true;
-        hasInteracted = true;
-    });
-    map.on('moveend', () => {
-        userInteracting = false;
+    // // Event listeners for user interaction
+    // map.on('mousedown', () => {
+    //     userInteracting = true;
+    //     hasInteracted = true;
+    // });
+    // map.on('dragstart', () => {
+    //     userInteracting = true;
+    //     hasInteracted = true;
+    // });
+    // map.on('moveend', () => {
+    //     userInteracting = false;
 
-        if (!hasInteracted) {
-            spinGlobe();
-        }
+    //     if (!hasInteracted) {
+    //         spinGlobe();
+    //     }
 
-        updateMarkers();
-    });
+    //     updateMarkers();
+    // });
 
     // Function to manage visibility explicitly
     function setLayerVisibility(layerId, visibility) {
@@ -268,91 +271,94 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function startInitialRotation() {
-        map.easeTo({
-            center: INITIAL_CENTER,
-            zoom: INITIAL_ZOOM,
-            duration: 3000,
-            easing: (t) => t * (2 - t),
-        });
-    }
-    // GT logo markers for countries
-    const countries = [
-        { name: 'USA', lngLat: [-80.147085, 30.954096] }, // gt office Near by location
-        { name: 'UK', lngLat: [-1.654816, 52.181932] },
-        { name: 'Aruba', lngLat: [-69.952269, 12.512168] },
-        { name: 'Canada', lngLat: [-106.728058, 57.922142] },
-        { name: 'Italy', lngLat: [12.465363, 42.835192] },
-    ];
+    // function startInitialRotation() {
+    //     map.easeTo({
+    //         center: INITIAL_CENTER,
+    //         zoom: INITIAL_ZOOM,
+    //         duration: 3000,
+    //         easing: (t) => t * (2 - t),
+    //     });
+    // }
 
-    // GT logo markers, making them initially visible
-    const gtLogoMarkers = countries.map(country => {
-        const logoElement = document.createElement('div');
-        logoElement.className = 'company-logo';
-        logoElement.style.backgroundImage = 'url(./img/gtLogo.png)';
-        const marker = new mapboxgl.Marker(logoElement, {
-            rotationAlignment: 'map',
-            offset: [0, -15],
-        }).setLngLat(country.lngLat).addTo(map);
+    // // GT logo markers for countries
+    // const countries = [
+    //     { name: 'USA', lngLat: [-80.147085, 30.954096] }, // gt office Near by location
+    //     { name: 'UK', lngLat: [-1.654816, 52.181932] },
+    //     { name: 'Aruba', lngLat: [-69.952269, 12.512168] },
+    //     { name: 'Canada', lngLat: [-106.728058, 57.922142] },
+    //     { name: 'Italy', lngLat: [12.465363, 42.835192] },
+    // ];
 
-        // Set initial visibility
-        marker.getElement().style.visibility = 'visible';
-        return marker;
-    });
+    // // GT logo markers, making them initially visible
+    // const gtLogoMarkers = countries.map(country => {
+    //     const logoElement = document.createElement('div');
+    //     logoElement.className = 'company-logo';
+    //     logoElement.style.backgroundImage = 'url(./img/gtLogo.png)';
+    //     const marker = new mapboxgl.Marker(logoElement, {
+    //         rotationAlignment: 'map',
+    //         offset: [0, -15],
+    //     }).setLngLat(country.lngLat).addTo(map);
 
-    // Hide clusters on sourcedata load event to ensure they are hidden initially
-    map.on('sourcedata', (e) => {
-        if (!hasInteracted && e.isSourceLoaded) {
-            setLayerVisibility('clusters', 'none');
-            setLayerVisibility('cluster-count', 'none');
-            setLayerVisibility('unclustered-point', 'none');
-            setLayerVisibility('state-markers', 'none');
-        }
-    });
+    //     // Set initial visibility
+    //     marker.getElement().style.visibility = 'visible';
+    //     return marker;
+    // });
 
-    function manageGTLogosVisibility(visible) {
-        gtLogoMarkers.forEach(marker => {
-            const element = marker.getElement();
-            element.style.visibility = visible ? 'visible' : 'hidden';
+    // // Hide clusters on sourcedata load event to ensure they are hidden initially
+    // map.on('sourcedata', (e) => {
+    //     if (!hasInteracted && e.isSourceLoaded) {
+    //         setLayerVisibility('clusters', 'none');
+    //         setLayerVisibility('cluster-count', 'none');
+    //         setLayerVisibility('unclustered-point', 'none');
+    //         setLayerVisibility('state-markers', 'none');
+    //     }
+    // });
 
-            if (!visible && marker._map) {
-                marker.remove();
-            } else if (visible && !marker._map) {
-                marker.addTo(map);
-            }
-        });
+    // function manageGTLogosVisibility(visible) {
+    //     gtLogoMarkers.forEach(marker => {
+    //         const element = marker.getElement();
+    //         element.style.visibility = visible ? 'visible' : 'hidden';
 
-        // console.log(visible ? 'GT logos shown.' : 'GT logos hidden.');
-    }
+    //         if (!visible && marker._map) {
+    //             marker.remove();
+    //         } else if (visible && !marker._map) {
+    //             marker.addTo(map);
+    //         }
+    //     });
 
-    function onUserInteraction(eventType) {
-        if (!hasInteracted) {
-            hasInteracted = true;
-            // console.log(`User started interaction: ${eventType}`);
-        }
+    //     // console.log(visible ? 'GT logos shown.' : 'GT logos hidden.');
+    // }
 
-        userInteracting = true;
+    // function onUserInteraction(eventType) {
+    //     if (!hasInteracted) {
+    //         hasInteracted = true;
+    //         // console.log(`User started interaction: ${eventType}`);
+    //     }
 
-        manageGTLogosVisibility(false);
+    //     userInteracting = true;
 
-        // Show clusters if zoom threshold is met
-        if (eventType === 'zoom' && map.getZoom() >= 6) {
-            toggleVisibility(['clusters', 'cluster-count', 'unclustered-point'], 'visible');
-        }
-    }
+    //     manageGTLogosVisibility(false);
 
-    ['mousedown', 'dragstart', 'zoomstart', 'touchstart', 'click'].forEach(event => {
-        map.on(event, () => {
-            onUserInteraction(event);
-        });
-    });
+    //     // Show clusters if zoom threshold is met
+    //     if (eventType === 'zoom' && map.getZoom() >= 6) {
+    //         toggleVisibility(['clusters', 'cluster-count', 'unclustered-point'], 'visible');
+    //     }
+    // }
 
-    // GT logos are also hidden when using buttons
-    document.querySelectorAll('.region-button').forEach(button => {
-        button.addEventListener('click', () => {
-            onUserInteraction('button');
-        });
-    });
+
+
+    // ['mousedown', 'dragstart', 'zoomstart', 'touchstart', 'click'].forEach(event => {
+    //     map.on(event, () => {
+    //         onUserInteraction(event);
+    //     });
+    // });
+
+    // // GT logos are also hidden when using buttons
+    // document.querySelectorAll('.region-button').forEach(button => {
+    //     button.addEventListener('click', () => {
+    //         onUserInteraction('button');
+    //     });
+    // });
 
     // Debounce Function Definition
     function debounce(func, delay) {
@@ -919,7 +925,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Regions
     const regions = {
-        usa: { center: [-101.714859, 40.710884], zoom: 4, pitch: 0 },
+        // usa: { center: [-101.714859, 40.710884], zoom: 4, pitch: 0 },
+        usa: { center: [-98.5795, 39.8283], zoom: 4, pitch: 0 },
         uk: { center: [360.242386, 51.633362], zoom: 4, pitch: 15 },
         italy: { center: [12.563553, 42.798676], zoom: 4, pitch: 45 },
         canada: { center: [-106.3468, 56.1304], zoom: 3, pitch: 0 },
@@ -1191,8 +1198,11 @@ document.addEventListener("DOMContentLoaded", () => {
         // log('Map fully loaded', 'info');
         map.setFog({});
 
+        // Set flat projection
+        // map.setProjection('mercator');
+
         //US map view is centered even if the globe was spinning or reset
-        globeSpinning = false; // Ensure globe stops spinning after initial load
+        // globeSpinning = false; // Ensure globe stops spinning after initial load
         let isFirstLoad = true;
 
         if (isFirstLoad) {
@@ -1200,12 +1210,15 @@ document.addEventListener("DOMContentLoaded", () => {
             map.flyTo({
                 center: USA_CENTER,
                 zoom: USA_ZOOM,
+                pitch: 0,
+                bearing: 0,
                 duration: 1500,
             });
             isFirstLoad = false;
         } else {
             log('Subsequent load: Preserving current map view', 'info');
         }
+
         // Add GeoJSON sources
         const sources = [
             { id: 'us-states', url: '/data/us-states.geojson' },
@@ -1222,7 +1235,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         // Start globe rotation
-        startInitialRotation();
+        // startInitialRotation();
 
         // Explicitly set visibility for initial layers
         setTimeout(() => {
@@ -1243,7 +1256,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             // Default threshold for state marker visibility
-            let markerZoomThreshold = 3;
+            let markerZoomThreshold = 4;
 
             // Threshold based on the active region
             switch (currentRegion) {
@@ -1262,9 +1275,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 case 'canada':
                     markerZoomThreshold = 7;
                     break;
+                case 'reset':
+                    markerZoomThreshold = 1;
+                    break;
+                case 'fitToUSA':
+                    markerZoomThreshold = 2;
+                    break;
                 default:
                     console.warn(`No zoom threshold defined for region: ${currentRegion}`);
-                    markerZoomThreshold = 3;
+                    markerZoomThreshold = 4;
             }
 
             // Initialize zoom warning visibility and tooltip logic
@@ -1387,10 +1406,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Initial render of markers
                 updateMarkers();
 
-                // Add GT logo markers
-                gtLogoMarkers.forEach(marker => {
-                    marker.getElement().style.visibility = 'visible';
-                });
+                // // Add GT logo markers
+                // gtLogoMarkers.forEach(marker => {
+                //     marker.getElement().style.visibility = 'visible';
+                // });
 
                 // Load custom marker image for state markers
                 map.loadImage('./img/gtLogo.png', (error, image) => {
@@ -1958,7 +1977,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 console.log('Clearing region selection and hover');
-                const regionSources = ['us-states', 'canada-regions', 'aruba-region', 'italy-regions', 'uk-regions'];
+                // const regionSources = ['us-states', 'canada-regions', 'aruba-region', 'italy-regions', 'uk-regions'];
 
                 regionSources.forEach((regionSource) => {
                     if (selectedRegionId) {
@@ -2051,6 +2070,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             }
 
+            // Fit-to-USA Button
+            document.getElementById('fit-to-usa').addEventListener('click', () => {
+                console.log('Fit-to-USA button clicked.');
+                clearRegionSelection();
+                resetToSessionView()
+                closeSidebar()
+                lastAction = 'fitToUSA';
+                map.fitBounds([
+                    [-165.031128, 65.476793],
+                    [-81.131287, 26.876143],
+                ]);
+            });
+
             // Reset Button
             const resetButton = document.getElementById('reset-view');
             if (resetButton && !resetButton.hasAttribute('data-listener-attached')) {
@@ -2060,7 +2092,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     clearRegionSelection();
                     resetToSessionView()
                     closeSidebar()
-                    lastAction = 'reset'; // Track reset action
+                    lastAction = 'reset';
                     map.flyTo({
                         center: INITIAL_CENTER,
                         zoom: INITIAL_ZOOM,
@@ -2074,27 +2106,26 @@ document.addEventListener("DOMContentLoaded", () => {
             map.on('zoomstart', clearHover);
         }
 
-        // Fit-to-USA Button
-        document.getElementById('fit-to-usa').addEventListener('click', () => {
-            console.log('Fit-to-USA button clicked.');
-            resetToSessionView()
-            closeSidebar()
-            lastAction = 'fitToUSA';
-            map.fitBounds([
-                [-165.031128, 65.476793],
-                [-81.131287, 26.876143],
-            ]);
-        });
-
         //hide the sidebar and update the state of the map
+
         function closeSidebar() {
+            // Hide the sidebar
             sidebar.style.display = 'none';
-            if (selectedStateId !== null) {
-                map.setFeatureState({ source: 'us-states', id: selectedStateId }, { selected: false });
-            }
+
+            // Deselect the feature state for all regions
+            regionSources.forEach(sourceId => {
+                if (selectedStateId !== null) {
+                    map.setFeatureState({ source: sourceId, id: selectedStateId }, { selected: false });
+                }
+            });
+
+            // Reset the selected state
             selectedStateId = null;
         }
+
+        // Attach event listener to the close button
         document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
+
 
         //drag-and-drop functionality for an element
         let isDragging = false;
