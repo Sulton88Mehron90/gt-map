@@ -223,9 +223,9 @@ document.addEventListener("DOMContentLoaded", () => {
         [-66.93457, 49.384358],
     ];
     let sessionStartingView = null;
-     // Tracks the last action performed (reset or fit-to-USA)
+    // Tracks the last action performed (reset or fit-to-USA)
     let lastAction = null;
-    
+
     // clearRegionSelection()// this is just to show the spinner to Ted
 
     // Toggle visibility for elements (markers or layers)
@@ -367,18 +367,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const geocoderToggle = document.getElementById("toggle-geocoder");
     const geocoderContainer = document.getElementById("geocoder-container");
     let geocoder;
-     // Debounced toggle function
+    // Debounced toggle function
     const debouncedGeocoderToggle = debounce(() => {
         geocoderContainer.style.display = geocoderContainer.style.display === "none" ? "block" : "none";
         geocoderToggle.style.display = geocoderContainer.style.display === "none" ? "flex" : "none";
-    // Initialize geocoder only when container is displayed
+        // Initialize geocoder only when container is displayed
         if (!geocoder && geocoderContainer.style.display === "block") {
             geocoder = new MapboxGeocoder({
                 accessToken: mapboxgl.accessToken,
                 mapboxgl: mapboxgl
             });
             geocoderContainer.appendChild(geocoder.onAdd(map));
-    
+
             // Add MutationObserver to detect input addition
             const observer = new MutationObserver(() => {
                 const geocoderInput = geocoderContainer.querySelector('input[type="text"]');
@@ -387,7 +387,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     observer.disconnect();
                 }
             });
-      // Observe changes in the geocoderContainer
+            // Observe changes in the geocoderContainer
             observer.observe(geocoderContainer, { childList: true, subtree: true });
         } else if (geocoderContainer.style.display === "none" && geocoder) {
             geocoder.onRemove();
@@ -398,15 +398,15 @@ document.addEventListener("DOMContentLoaded", () => {
     geocoderToggle.addEventListener("click", (e) => {
         e.stopPropagation();
         debouncedGeocoderToggle();
-    });    
+    });
 
-// Outside Click Detection for Geocoder
-document.addEventListener("click", (event) => {
-    if (!geocoderContainer.contains(event.target) && event.target !== geocoderToggle) {
-        geocoderContainer.style.display = "none";
-        geocoderToggle.style.display = "flex";
-    }
-});
+    // Outside Click Detection for Geocoder
+    document.addEventListener("click", (event) => {
+        if (!geocoderContainer.contains(event.target) && event.target !== geocoderToggle) {
+            geocoderContainer.style.display = "none";
+            geocoderToggle.style.display = "flex";
+        }
+    });
 
     // Check if elements are found
     if (!sidebar) {
@@ -546,12 +546,12 @@ document.addEventListener("click", (event) => {
         }
     }
 
+    //populate the sidebar function
     function populateSidebar(regionId, regionName, facilities) {
         const list = document.getElementById('hospital-list');
         list.innerHTML = '';
 
         const title = sidebar.querySelector('h2');
-        // title.innerText = `Facilities Using Goliath's Solutions in ${regionName}`;
         title.innerHTML = `Facilities Using Goliath's Solutions in <span style="color: #ff8502;">${regionName}</span>`;
 
         const existingCountDisplay = sidebar.querySelector('.count-display');
@@ -635,6 +635,7 @@ document.addEventListener("click", (event) => {
                     };
                 }
 
+                // Fly to the hospital's location
                 map.flyTo({
                     center: [hospital.longitude, hospital.latitude],
                     zoom: 12,
@@ -645,7 +646,9 @@ document.addEventListener("click", (event) => {
                     easing: (t) => t * (2 - t),
                 });
 
+                // Show the back button and hide the home logo
                 backButton.style.display = 'block';
+                gtLogo.style.display = 'none'; // Ensure home logo is hidden
             });
 
             list.appendChild(listItem);
@@ -653,9 +656,28 @@ document.addEventListener("click", (event) => {
 
         sidebar.style.display = uniqueHealthSystems.size > 0 ? 'block' : 'none';
         adjustSidebarHeight();
+
+        // Back button logic
+        backButton.addEventListener('click', () => {
+            if (sessionStartingView) {
+                map.flyTo({
+                    center: sessionStartingView.center,
+                    zoom: sessionStartingView.zoom,
+                    pitch: sessionStartingView.pitch,
+                    bearing: sessionStartingView.bearing,
+                    essential: true,
+                    duration: 2000,
+                    easing: (t) => t * (2 - t),
+                });
+            }
+
+            // Hide the back button and show the home logo again
+            backButton.style.display = 'none';
+            gtLogo.style.display = 'block'; // Ensure home logo reappears
+        });
     }
 
-    // Debounce utility function to limit execution frequency
+    // Debounce utility function to limit execution frequency 
     function debounce(func, delay) {
         let timeout;
         return function (...args) {
@@ -778,7 +800,7 @@ document.addEventListener("click", (event) => {
         italy: 6,
         canada: 3,
         aruba: 10,
-        reset: 1, 
+        reset: 1,
         fitToUSA: 3,
     };
 
@@ -815,8 +837,8 @@ document.addEventListener("click", (event) => {
                 if (lastAction === 'fitToUSA') {
                     console.log('Returning to Fit-to-USA view...');
                     map.fitBounds([
-                        [-165.031128, 65.476793], 
-                        [-81.131287, 26.876143], 
+                        [-165.031128, 65.476793],
+                        [-81.131287, 26.876143],
                     ], {
                         padding: 20,
                         maxZoom: zoomThreshold,
@@ -2057,7 +2079,7 @@ document.addEventListener("click", (event) => {
             console.log('Fit-to-USA button clicked.');
             resetToSessionView()
             closeSidebar()
-            lastAction = 'fitToUSA'; 
+            lastAction = 'fitToUSA';
             map.fitBounds([
                 [-165.031128, 65.476793],
                 [-81.131287, 26.876143],

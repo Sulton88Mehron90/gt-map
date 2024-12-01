@@ -528,9 +528,15 @@ hospital-list-sidebar.collapsed #close-sidebar {
     opacity: 1;
 }
 
+/* Default styles for large screens */
 #back-button {
     display: none;
     position: absolute;
+    margin-right: 9px;
+    margin-left: 4px;
+    top: 18px;
+    z-index: 15;
+    font-size: 0.8rem;
 }
 
 #back-button i {
@@ -872,11 +878,12 @@ hospital-list-sidebar.collapsed #close-sidebar {
     #back-button {
         display: none;
         position: absolute;
-        margin-right: 9px;
-        margin-left: 4px;
-        top: 18px;
-        z-index: 15;
         font-size: 0.8rem;
+        top: 20px;
+        left: 142px;
+        margin-right: 0;
+        margin-left: 0;
+        z-index: 20;
     }
 
     #hospital-list-sidebar h2 {
@@ -975,14 +982,14 @@ hospital-list-sidebar.collapsed #close-sidebar {
     }
 
     #back-button {
-        left: 21.2%;
         display: none;
         position: absolute;
-        margin-right: 9px;
-        margin-left: 4px;
-        top: 18px;
-        z-index: 15;
         font-size: 0.8rem;
+        top: 20px;
+        left: 57.6px;
+        margin-right: 0;
+        margin-left: 0;
+        z-index: 20;
     }
 
     #back-button i {
@@ -1032,7 +1039,7 @@ hospital-list-sidebar.collapsed #close-sidebar {
     #zoom-warning {
         position: absolute;
         top: 50px;
-        left: 334px;
+        left: 384px;
         z-index: 1000;
     }
 
@@ -1104,15 +1111,14 @@ hospital-list-sidebar.collapsed #close-sidebar {
     }
 
     #back-button {
-        /* right: 25px; */
-        left: 39px;
         display: none;
         position: absolute;
-        margin-right: 48px;
-        margin-left: 1px;
-        top: 18px;
-        z-index: 15;
         font-size: 0.8rem;
+        top: 20px;
+        left: 40px;
+        margin-right: 0;
+        margin-left: 0;
+        z-index: 20;
     }
 
     #home-logo {
