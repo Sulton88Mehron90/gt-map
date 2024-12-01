@@ -202,7 +202,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const gtLogo = document.querySelector('.sidebar-logo');
     const backButton = document.createElement('button');
 
-
     // Global variable
     // Interaction State Variables:
     let userInteracting = false;
@@ -368,56 +367,46 @@ document.addEventListener("DOMContentLoaded", () => {
     const geocoderToggle = document.getElementById("toggle-geocoder");
     const geocoderContainer = document.getElementById("geocoder-container");
     let geocoder;
-
-    // Debounced toggle function
+     // Debounced toggle function
     const debouncedGeocoderToggle = debounce(() => {
-        // Toggle display for geocoder container and toggle button
         geocoderContainer.style.display = geocoderContainer.style.display === "none" ? "block" : "none";
         geocoderToggle.style.display = geocoderContainer.style.display === "none" ? "flex" : "none";
-
-        // Initialize geocoder only when container is displayed
+    // Initialize geocoder only when container is displayed
         if (!geocoder && geocoderContainer.style.display === "block") {
             geocoder = new MapboxGeocoder({
                 accessToken: mapboxgl.accessToken,
-                mapboxgl: mapboxgl,
-                marker: {
-                    // color: '#ff8502' // Set GT color
-                    color: 'red'
-                }
+                mapboxgl: mapboxgl
             });
-
             geocoderContainer.appendChild(geocoder.onAdd(map));
-
-            // MutationObserver to detect when the input is added
+    
+            // Add MutationObserver to detect input addition
             const observer = new MutationObserver(() => {
                 const geocoderInput = geocoderContainer.querySelector('input[type="text"]');
                 if (geocoderInput) {
-                    geocoderInput.focus();
+                    geocoderInput.focus(); // Focus the input to show the caret
                     observer.disconnect();
                 }
             });
-
-            // Observe changes in the geocoderContainer
+      // Observe changes in the geocoderContainer
             observer.observe(geocoderContainer, { childList: true, subtree: true });
         } else if (geocoderContainer.style.display === "none" && geocoder) {
             geocoder.onRemove();
             geocoder = null;
         }
     }, 300);
-
     // Event Listener for Geocoder Toggle
     geocoderToggle.addEventListener("click", (e) => {
         e.stopPropagation();
         debouncedGeocoderToggle();
-    });
+    });    
 
-    // Outside Click Detection for Geocoder
-    document.addEventListener("click", (event) => {
-        if (!geocoderContainer.contains(event.target) && event.target !== geocoderToggle) {
-            geocoderContainer.style.display = "none";
-            geocoderToggle.style.display = "flex";
-        }
-    });
+// Outside Click Detection for Geocoder
+document.addEventListener("click", (event) => {
+    if (!geocoderContainer.contains(event.target) && event.target !== geocoderToggle) {
+        geocoderContainer.style.display = "none";
+        geocoderToggle.style.display = "flex";
+    }
+});
 
     // Check if elements are found
     if (!sidebar) {
