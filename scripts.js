@@ -75,11 +75,11 @@ export function displayErrorMessage(error, context = "An unexpected error occurr
 
         if (errorCodeNumber) {
             if (error.response && error.response.status) {
-                errorCodeNumber.innerText = error.response.status; 
+                errorCodeNumber.innerText = error.response.status;
             } else if (error.code) {
-                errorCodeNumber.innerText = error.code; 
+                errorCodeNumber.innerText = error.code;
             } else {
-                errorCodeNumber.innerText = "Unknown"; 
+                errorCodeNumber.innerText = "Unknown";
             }
         }
 
@@ -224,6 +224,9 @@ document.addEventListener("DOMContentLoaded", () => {
         [-66.93457, 49.384358],
     ];
     let sessionStartingView = null;
+     // Tracks the last action performed (reset or fit-to-USA)
+    let lastAction = null;
+    
     // clearRegionSelection()// this is just to show the spinner to Ted
 
     // Toggle visibility for elements (markers or layers)
@@ -780,22 +783,14 @@ document.addEventListener("DOMContentLoaded", () => {
     map.on('zoomend', debouncedUpdateMarkers);
     map.on('moveend', debouncedUpdateMarkers);
 
-    // Fit-to-USA Button
-    document.getElementById('fit-to-usa').addEventListener('click', () => {
-        console.log('Fit-to-USA button clicked.');
-        resetToSessionView()
-        map.fitBounds([
-            [-165.031128, 65.476793],
-            [-81.131287, 26.876143],
-        ]);
-    });
-
     const regionZoomThresholds = {
         usa: 4,
         uk: 5,
         italy: 6,
         canada: 3,
         aruba: 10,
+        reset: 1, 
+        fitToUSA: 3,
     };
 
     function updateMarkerVisibility(region, zoomLevel) {
@@ -816,13 +811,38 @@ document.addEventListener("DOMContentLoaded", () => {
             // Validate that the stored region matches the current region
             if (sessionStartingView.region === currentRegion) {
                 const isMobile = window.innerWidth <= 780;
-                const zoomThreshold = regionZoomThresholds[currentRegion] || 4;
+
+                // Handle reset and fit-to-USA actions with their specific thresholds
+                const zoomThreshold =
+                    lastAction === 'reset' ? regionZoomThresholds.reset :
+                        lastAction === 'fitToUSA' ? regionZoomThresholds.fitToUSA :
+                            regionZoomThresholds[currentRegion] || 4;
+
                 const zoomLevel = Math.max(
                     isMobile ? sessionStartingView.zoom - 1 : sessionStartingView.zoom,
                     zoomThreshold
                 );
 
-                if (currentRegion === 'usa' && window.innerWidth <= 480) {
+                if (lastAction === 'fitToUSA') {
+                    console.log('Returning to Fit-to-USA view...');
+                    map.fitBounds([
+                        [-165.031128, 65.476793], 
+                        [-81.131287, 26.876143], 
+                    ], {
+                        padding: 20,
+                        maxZoom: zoomThreshold,
+                        duration: 2000,
+                    });
+                } else if (lastAction === 'reset') {
+                    console.log('Returning to Reset view...');
+                    map.flyTo({
+                        center: INITIAL_CENTER,
+                        zoom: zoomThreshold,
+                        pitch: 0,
+                        bearing: 0,
+                        duration: 2000,
+                    });
+                } else if (currentRegion === 'usa' && window.innerWidth <= 480) {
                     // Adjust to contiguous USA bounds for small screens
                     map.fitBounds(contiguousUSABounds, {
                         padding: 20,
@@ -855,18 +875,36 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.warn('Stored region does not match the current region. Resetting to the current region.');
                 flyToRegion(currentRegion);
             }
-
-            // Clear the session view and hide the back button
-            backButton.style.display = 'none';
-            sessionStartingView = null;
         } else {
+            // Handle cases where no previous session view is stored
             console.warn('No previous view stored in sessionStartingView. Resetting to current region.');
-            flyToRegion(currentRegion || 'usa');
+
+            if (lastAction === 'fitToUSA') {
+                console.log('Returning to Fit-to-USA view...');
+                map.fitBounds([
+                    [-165.031128, 65.476793],
+                    [-81.131287, 26.876143],
+                ], {
+                    padding: 20,
+                    maxZoom: regionZoomThresholds.fitToUSA,
+                    duration: 2000,
+                });
+            } else if (lastAction === 'reset') {
+                console.log('Returning to Reset view...');
+                map.flyTo({
+                    center: INITIAL_CENTER,
+                    zoom: regionZoomThresholds.reset,
+                    pitch: 0,
+                    bearing: 0,
+                    duration: 2000,
+                });
+            } else {
+                flyToRegion(currentRegion || 'usa');
+            }
         }
     }
 
     backButton.addEventListener('click', resetToSessionView);
-
 
     // Regions
     const regions = {
@@ -1881,7 +1919,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
             const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
 
-
             // Apply hover effect
             const applyHover = (regionId) => {
                 if (hoveredRegionId && hoveredRegionId !== selectedRegionId) {
@@ -2011,6 +2048,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     console.log('Reset button clicked.');
                     clearRegionSelection();
                     resetToSessionView()
+                    closeSidebar()
+                    lastAction = 'reset'; // Track reset action
                     map.flyTo({
                         center: INITIAL_CENTER,
                         zoom: INITIAL_ZOOM,
@@ -2023,6 +2062,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
             map.on('zoomstart', clearHover);
         }
+
+        // Fit-to-USA Button
+        document.getElementById('fit-to-usa').addEventListener('click', () => {
+            console.log('Fit-to-USA button clicked.');
+            resetToSessionView()
+            closeSidebar()
+            lastAction = 'fitToUSA'; 
+            map.fitBounds([
+                [-165.031128, 65.476793],
+                [-81.131287, 26.876143],
+            ]);
+        });
 
         //hide the sidebar and update the state of the map
         function closeSidebar() {

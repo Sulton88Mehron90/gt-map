@@ -2,6 +2,37 @@
 import { MAPBOX_TOKEN } from './config.js';
 import { loadFacilitiesData } from './data/dataLoader.js';
 import { centerStateMarkerLocation } from './data/centerStateMarkerLocation.js';
+import { fetchAndCache, getCachedData, isCacheStale, preCacheFiles, clearCache } from './cache.js';
+
+(async () => {
+    // List of files to cache (including JSON, GeoJSON, and JS files)
+    const filesToCache = [
+        { url: './data/facilities.json', key: 'facilities' },
+        { url: './data/us-states.geojson', key: 'usStates' },
+        { url: './data/uk-regions.geojson', key: 'ukRegions' },
+        { url: './data/italy-regions.geojson', key: 'italyRegions' },
+        { url: './data/canada-regions.geojson', key: 'canadaRegions' },
+        { url: './data/aruba-region.geojson', key: 'arubaRegion' }
+    ];
+
+    try {
+        // Pre-cache all files with a 24-hour expiry
+        await preCacheFiles(filesToCache, 24);
+
+        // cached data
+        const facilities = getCachedData('facilities');
+        console.log('Cached facilities:', facilities);
+
+        // Checking if the 'facilities' cache is stale (older than 24 hours)
+        const isStale = isCacheStale('facilities', 24);
+        console.log('Is facilities cache stale?', isStale);
+
+        // Clear cache when user completes their session
+        window.addEventListener('beforeunload', clearCache);
+    } catch (error) {
+        console.error('Error during initialization:', error);
+    }
+})();
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
@@ -12,6 +43,70 @@ const USA_CENTER = [-98.5795, 39.8283];
 const USA_ZOOM = getInitialZoom();
 let spinnerVisible = false;
 let globeSpinning = true;
+
+// Centralized error message handler with dynamic error code
+export function displayErrorMessage(error, context = "An unexpected error occurred") {
+    console.log('displayErrorMessage called with:', error, context);
+
+    // Hide spinner if active
+    hideSpinner();
+
+    // Hide main content
+    const mapContainer = document.getElementById('map');
+    const sidebar = document.getElementById('hospital-list-sidebar');
+    const buttonGroup = document.querySelector('.mapbox-button-group');
+
+    if (mapContainer) mapContainer.style.display = 'none';
+    if (sidebar) sidebar.style.display = 'none';
+    if (buttonGroup) buttonGroup.style.display = 'none';
+
+    // Display error page
+    const errorPage = document.getElementById('error-page');
+    const errorCodeLabel = document.querySelector('#error-number .error-code-label');
+    const errorCodeNumber = document.querySelector('#error-number .error-code-number');
+
+    if (errorPage) {
+        errorPage.style.display = 'block';
+
+        // Set error code dynamically
+        if (errorCodeLabel) {
+            errorCodeLabel.innerText = "Error Code:";
+        }
+
+        if (errorCodeNumber) {
+            if (error.response && error.response.status) {
+                errorCodeNumber.innerText = error.response.status;
+            } else if (error.code) {
+                errorCodeNumber.innerText = error.code;
+            } else {
+                errorCodeNumber.innerText = "Unknown";
+            }
+        }
+
+        // Add a random fact about Goliath Technologies
+        const goliathInformativeFacts = [
+            "Goliath Technologies leverages AI and automation to help IT professionals proactively troubleshoot and resolve performance issues before they impact users.",
+            "Goliath Technologies ensures clinicians have seamless access to EHR systems like Epic, Cerner, Allscripts, and MEDITECH, so they can focus on patient care.",
+            "Goliath Technologies provides end-user experience monitoring for hybrid multi-cloud environments, helping IT professionals manage performance across complex infrastructures.",
+            "Trusted by industry leaders like Oracle Health, Google, and Children's National, Goliath Technologies provides cutting-edge solutions for performance monitoring.",
+            "Vitaly Petrovsky from Maimonides Medical Center praises Goliath for providing end-to-end visibility and resolving performance issues in complex Citrix setups.",
+        ];
+
+        const randomFact = goliathInformativeFacts[Math.floor(Math.random() * goliathInformativeFacts.length)];
+        const refFactContainer = document.getElementById('goliath-fact');
+        if (refFactContainer) refFactContainer.innerText = randomFact;
+    }
+}
+
+// Debug mode flag
+const DEBUG_MODE = true; // Set to false in production
+
+// Logging utility function
+function log(message, level = 'info') {
+    if (DEBUG_MODE || level === 'warn') {
+        console[level](message);
+    }
+}
 
 // Initial zoom based on screen width
 function getInitialZoom() {
@@ -51,8 +146,8 @@ document.addEventListener("DOMContentLoaded", () => {
         container: 'map',
         style: 'mapbox://styles/mapbox/light-v11',
         projection: 'globe',
-        zoom: INITIAL_ZOOM,
-        center: INITIAL_CENTER,
+        center: USA_CENTER,
+        zoom: USA_ZOOM,
     });
 
     // Spin the Globe
@@ -129,6 +224,9 @@ document.addEventListener("DOMContentLoaded", () => {
         [-66.93457, 49.384358],
     ];
     let sessionStartingView = null;
+     // Tracks the last action performed (reset or fit-to-USA)
+    let lastAction = null;
+    
     // clearRegionSelection()// this is just to show the spinner to Ted
 
     // Toggle visibility for elements (markers or layers)
@@ -390,6 +488,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
     });
+
     // Event listener for touchstart on the sidebar (for mobile)
     sidebar.addEventListener(
         "touchstart",
@@ -437,6 +536,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 data: dataUrl,
                 promoteId: promoteId,
             });
+
             //console.log(`Source with ID "${sourceId}" added successfully.`);
         }
         // else {
@@ -566,17 +666,6 @@ document.addEventListener("DOMContentLoaded", () => {
         adjustSidebarHeight();
     }
 
-    // Centralized error message handler
-    function displayErrorMessage(error) {
-        console.error('Error loading facilities data:', error);
-        hideSpinner();
-        const errorMessage = document.getElementById('error-message');
-        if (errorMessage) {
-            errorMessage.style.display = 'block';
-            errorMessage.innerText = 'Failed to load facility data. Please try again later.';
-        }
-    }
-
     // Debounce utility function to limit execution frequency
     function debounce(func, delay) {
         let timeout;
@@ -694,20 +783,14 @@ document.addEventListener("DOMContentLoaded", () => {
     map.on('zoomend', debouncedUpdateMarkers);
     map.on('moveend', debouncedUpdateMarkers);
 
-    // Fly-to buttons for navigating regions
-    document.getElementById("fit-to-usa").addEventListener("click", () => {
-        map.fitBounds([
-            [-165.031128, 65.476793],
-            [-81.131287, 26.876143]
-        ]);
-    });
-
     const regionZoomThresholds = {
         usa: 4,
         uk: 5,
         italy: 6,
         canada: 3,
         aruba: 10,
+        reset: 1,     // Reset button zoom level
+        fitToUSA: 3,  // Fit-to-USA button zoom level
     };
 
     function updateMarkerVisibility(region, zoomLevel) {
@@ -722,19 +805,100 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    //reset the map view based on the previously stored session view
+    // reset the map view based on the previously stored session view
+    // function resetToSessionView() {
+    //     if (sessionStartingView) {
+    //         // Validate that the stored region matches the current region
+    //         if (sessionStartingView.region === currentRegion) {
+    //             const isMobile = window.innerWidth <= 780;
+    //             const zoomThreshold = regionZoomThresholds[currentRegion] || 4;
+    //             const zoomLevel = Math.max(
+    //                 isMobile ? sessionStartingView.zoom - 1 : sessionStartingView.zoom,
+    //                 zoomThreshold
+    //             );
+
+    //             if (currentRegion === 'usa' && window.innerWidth <= 480) {
+    //                 // Adjust to contiguous USA bounds for small screens
+    //                 map.fitBounds(contiguousUSABounds, {
+    //                     padding: 20,
+    //                     maxZoom: 4.5,
+    //                     duration: 2000,
+    //                 });
+    //             } else {
+    //                 // Fly to the sessionStartingView
+    //                 map.flyTo({
+    //                     center: sessionStartingView.center,
+    //                     zoom: zoomLevel,
+    //                     pitch: sessionStartingView.pitch,
+    //                     bearing: sessionStartingView.bearing,
+    //                     duration: 2000,
+    //                 });
+    //             }
+
+    //             // Adjust marker visibility dynamically
+    //             if (window.innerWidth <= 480) {
+    //                 const visibility = zoomLevel >= 4 ? 'visible' : 'none';
+    //                 toggleVisibility(['location-markers'], visibility);
+    //                 console.log(`Location markers visibility set to: ${visibility} for zoom level ${zoomLevel}`);
+    //             } else {
+    //                 updateMarkerVisibility(currentRegion, zoomLevel);
+    //             }
+
+    //             adjustMarkerSize(zoomLevel);
+    //         } else {
+    //             // Reset to the current region if the stored region doesn't match
+    //             console.warn('Stored region does not match the current region. Resetting to the current region.');
+    //             flyToRegion(currentRegion);
+    //         }
+
+    //         // Clear the session view and hide the back button
+    //         backButton.style.display = 'none';
+    //         sessionStartingView = null;
+    //     } else {
+    //         console.warn('No previous view stored in sessionStartingView. Resetting to current region.');
+    //         flyToRegion(currentRegion || 'usa');
+    //     }
+    // }
+
+
+    // reset the map view based on the previously stored session view
     function resetToSessionView() {
         if (sessionStartingView) {
             // Validate that the stored region matches the current region
             if (sessionStartingView.region === currentRegion) {
                 const isMobile = window.innerWidth <= 780;
-                const zoomThreshold = regionZoomThresholds[currentRegion] || 4;
+
+                // Handle reset and fit-to-USA actions with their specific thresholds
+                const zoomThreshold =
+                    lastAction === 'reset' ? regionZoomThresholds.reset :
+                        lastAction === 'fitToUSA' ? regionZoomThresholds.fitToUSA :
+                            regionZoomThresholds[currentRegion] || 4;
+
                 const zoomLevel = Math.max(
                     isMobile ? sessionStartingView.zoom - 1 : sessionStartingView.zoom,
                     zoomThreshold
                 );
 
-                if (currentRegion === 'usa' && window.innerWidth <= 480) {
+                if (lastAction === 'fitToUSA') {
+                    console.log('Returning to Fit-to-USA view...');
+                    map.fitBounds([
+                        [-165.031128, 65.476793], // Southwest corner
+                        [-81.131287, 26.876143],  // Northeast corner
+                    ], {
+                        padding: 20,
+                        maxZoom: zoomThreshold, // Use the Fit-to-USA zoom level
+                        duration: 2000,
+                    });
+                } else if (lastAction === 'reset') {
+                    console.log('Returning to Reset view...');
+                    map.flyTo({
+                        center: INITIAL_CENTER,
+                        zoom: zoomThreshold, // Use the Reset zoom level
+                        pitch: 0,
+                        bearing: 0,
+                        duration: 2000,
+                    });
+                } else if (currentRegion === 'usa' && window.innerWidth <= 480) {
                     // Adjust to contiguous USA bounds for small screens
                     map.fitBounds(contiguousUSABounds, {
                         padding: 20,
@@ -767,27 +931,38 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.warn('Stored region does not match the current region. Resetting to the current region.');
                 flyToRegion(currentRegion);
             }
-
-            // Clear the session view and hide the back button
-            backButton.style.display = 'none';
-            sessionStartingView = null;
         } else {
+            // Handle cases where no previous session view is stored
             console.warn('No previous view stored in sessionStartingView. Resetting to current region.');
-            flyToRegion(currentRegion || 'usa');
+
+            if (lastAction === 'fitToUSA') {
+                console.log('Returning to Fit-to-USA view...');
+                map.fitBounds([
+                    [-165.031128, 65.476793],
+                    [-81.131287, 26.876143],
+                ], {
+                    padding: 20,
+                    maxZoom: regionZoomThresholds.fitToUSA,
+                    duration: 2000,
+                });
+            } else if (lastAction === 'reset') {
+                console.log('Returning to Reset view...');
+                map.flyTo({
+                    center: INITIAL_CENTER,
+                    zoom: regionZoomThresholds.reset,
+                    pitch: 0,
+                    bearing: 0,
+                    duration: 2000,
+                });
+            } else {
+                flyToRegion(currentRegion || 'usa');
+            }
         }
     }
 
+
     backButton.addEventListener('click', resetToSessionView);
 
-    const sidebarCloseButton = document.getElementById('close-sidebar');
-    if (sidebarCloseButton) {
-        sidebarCloseButton.addEventListener('click', () => {
-            sidebar.style.display = 'none';
-            resetToSessionView();
-        });
-    } else {
-        console.warn('Sidebar close button not found.');
-    }
 
     // Regions
     const regions = {
@@ -973,28 +1148,21 @@ document.addEventListener("DOMContentLoaded", () => {
     //responsible for attaching a click event to a specific region layer on the map.  
     function setRegionClickEvent(regionSource, regionIdProp, regionNameProp) {
         map.on('click', (e) => {
-            // Check if the click is on a region or state layer
             const features = map.queryRenderedFeatures(e.point, { layers: [`${regionSource}-fill`] });
 
             if (features.length > 0) {
                 const clickedRegionId = features[0].properties[regionIdProp];
                 const regionName = features[0].properties[regionNameProp];
 
-                // Check if the clicked region has facilities
                 if (!regionsWithFacilities.has(clickedRegionId)) {
-                    console.warn(`Region "${regionName}" with ID ${clickedRegionId} does not have facilities.`);
+                    log(`Region "${regionName}" with ID ${clickedRegionId} does not have facilities.`, 'warn');
 
-                    // Close the sidebar if it is open
                     const sidebar = document.getElementById('hospital-list-sidebar');
-                    if (sidebar) {
-                        sidebar.style.display = 'none';
-                    }
+                    if (sidebar) sidebar.style.display = 'none';
 
-                    // Ensure all state markers remain visible
                     toggleVisibility(['state-markers'], 'visible');
                     toggleVisibility(['location-markers', 'clusters', 'cluster-count', 'unclustered-point'], 'none');
 
-                    // Adjust zoom level based on the region's custom zoom
                     const regionZoomLevels = {
                         AW: 10,
                         IT: 6,
@@ -1012,18 +1180,15 @@ document.addEventListener("DOMContentLoaded", () => {
                         easing: (t) => t * (2 - t),
                     });
 
-                    return; // Exit since there are no facilities to display
+                    return;
                 }
 
-                // Handle regions with facilities
                 loadFacilitiesData()
                     .then(facilities => {
                         showSpinner();
+                        log(`Loading facilities for region: ${clickedRegionId}`, 'info');
 
-                        // Call handleStateClick to add markers and zoom into the state
                         handleStateClick(clickedRegionId, facilities);
-
-                        // Update the sidebar with facility details for the selected state
                         populateSidebar(
                             clickedRegionId,
                             regionName,
@@ -1031,27 +1196,22 @@ document.addEventListener("DOMContentLoaded", () => {
                         );
                     })
                     .catch(error => {
-                        console.error('Error fetching facilities data:', error);
+                        log('Error fetching facilities data:', 'warn');
+                        log(error, 'warn');
                         displayErrorMessage(error);
                     })
                     .finally(() => {
                         hideSpinner();
                     });
             } else {
-                // Handle clicks outside regions or states
-                console.warn('Clicked outside any region or state.');
+                log('Clicked outside any region or state.', 'warn');
 
-                // Hide the sidebar
                 const sidebar = document.getElementById('hospital-list-sidebar');
-                if (sidebar) {
-                    sidebar.style.display = 'none';
-                }
+                if (sidebar) sidebar.style.display = 'none';
 
-                // Ensure all state markers are visible
                 toggleVisibility(['state-markers'], 'visible');
                 toggleVisibility(['location-markers', 'clusters', 'cluster-count', 'unclustered-point'], 'none');
 
-                // Adjust zoom level to show the whole map or current region
                 const regionZoomLevels = {
                     usa: 4,
                     uk: 5,
@@ -1071,12 +1231,28 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+
     //the initialization point for actions and event handlers that require the map to be fully loaded. 
     map.on('load', () => {
         showSpinner();
-        // console.log('Map fully loaded');
+        // log('Map fully loaded', 'info');
         map.setFog({});
 
+        //US map view is centered even if the globe was spinning or reset
+        globeSpinning = false; // Ensure globe stops spinning after initial load
+        let isFirstLoad = true;
+
+        if (isFirstLoad) {
+            log('First map load: Flying to USA view', 'info');
+            map.flyTo({
+                center: USA_CENTER,
+                zoom: USA_ZOOM,
+                duration: 1500,
+            });
+            isFirstLoad = false;
+        } else {
+            log('Subsequent load: Preserving current map view', 'info');
+        }
         // Add GeoJSON sources
         const sources = [
             { id: 'us-states', url: '/data/us-states.geojson' },
@@ -1911,24 +2087,28 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
 
-            // Attach clear interactions to sidebar close button
+            // Sidebar Close Button. Attach clear interactions to sidebar close button
             const closeSidebarButton = document.getElementById('close-sidebar');
             if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
                 closeSidebarButton.setAttribute('data-listener-attached', 'true');
                 closeSidebarButton.addEventListener('click', () => {
+                    // sidebar.style.display = 'none';
                     console.log('Sidebar closed. Clearing selection and hover.');
                     clearRegionSelection();
+                    resetToSessionView();
                 });
             }
 
-            // Attach clear interactions to reset button
+            // Reset Button
             const resetButton = document.getElementById('reset-view');
             if (resetButton && !resetButton.hasAttribute('data-listener-attached')) {
                 resetButton.setAttribute('data-listener-attached', 'true');
                 resetButton.addEventListener('click', () => {
-                    console.log('Reset button clicked. Clearing selection and resetting view.');
-
+                    console.log('Reset button clicked.');
                     clearRegionSelection();
+                    resetToSessionView()
+                    closeSidebar()
+                    lastAction = 'reset'; // Track reset action
                     map.flyTo({
                         center: INITIAL_CENTER,
                         zoom: INITIAL_ZOOM,
@@ -1941,6 +2121,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
             map.on('zoomstart', clearHover);
         }
+
+        // Fit-to-USA Button
+        document.getElementById('fit-to-usa').addEventListener('click', () => {
+            console.log('Fit-to-USA button clicked.');
+            resetToSessionView()
+            closeSidebar()
+            lastAction = 'fitToUSA'; // Track fit-to-USA action
+            map.fitBounds([
+                [-165.031128, 65.476793],
+                [-81.131287, 26.876143],
+            ]);
+        });
+
         //hide the sidebar and update the state of the map
         function closeSidebar() {
             sidebar.style.display = 'none';
