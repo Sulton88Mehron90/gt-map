@@ -42,8 +42,6 @@ const INITIAL_ZOOM = 1;
 const USA_CENTER = [-98.5795, 39.8283];
 const USA_ZOOM = getInitialZoom();
 let spinnerVisible = false;
-// let globeSpinning = true;
-
 
 // Centralized error message handler with dynamic error code
 export function displayErrorMessage(error, context = "An unexpected error occurred") {
@@ -153,43 +151,6 @@ document.addEventListener("DOMContentLoaded", () => {
         zoom: USA_ZOOM,
     });
 
-    // Spin the Globe
-    // function spinGlobe() {
-    //     if (globeSpinning && map) {
-    //         const center = map.getCenter();
-    //         if (center) {
-    //             center.lng -= 360 / 80;
-    //             // map.easeTo({ center, duration: 1000, easing: (t) => t }); // Faster and smoother spin
-    //         }
-    //     }
-    // }
-
-    // Start spinning immediately
-    // const spinInterval = setInterval(() => {
-    //     if (globeSpinning) spinGlobe();
-    // }, 50);
-
-    // // Transition to the USA map after 1 second of spinning
-    // setTimeout(() => {
-    //     globeSpinning = false;
-    //     clearInterval(spinInterval);
-    //     map.flyTo({
-    //         center: USA_CENTER,
-    //         zoom: USA_ZOOM,
-    //         duration: 1500,
-    //         essential: true,
-    //         easing: (t) => t * (2 - t),
-    //     });
-    // }, 1000);
-
-    // // Stop spinning if the user interacts with the map
-    // ['mousedown', 'dragstart', 'touchstart'].forEach(event => {
-    //     map.on(event, () => {
-    //         globeSpinning = false;
-    //         clearInterval(spinInterval);
-    //     });
-    // });
-
     // Map navigation controls (zoom and rotate)
     map.addControl(new mapboxgl.NavigationControl());
     map.scrollZoom.disable();
@@ -206,9 +167,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const backButton = document.createElement('button');
 
     // Global variable
-    // Interaction State Variables:
-    // let userInteracting = false;
-    // let hasInteracted = false;
     //Markers and Data Management:
     let markers = [];
     let markersData = [];
@@ -240,125 +198,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // // Trigger spinGlobe only under certain conditions
-    // setTimeout(() => {
-    //     if (!userInteracting && !hasInteracted) spinGlobe();
-    // }, 5000);
-
-    // // Event listeners for user interaction
-    // map.on('mousedown', () => {
-    //     userInteracting = true;
-    //     hasInteracted = true;
-    // });
-    // map.on('dragstart', () => {
-    //     userInteracting = true;
-    //     hasInteracted = true;
-    // });
-    // map.on('moveend', () => {
-    //     userInteracting = false;
-
-    //     if (!hasInteracted) {
-    //         spinGlobe();
-    //     }
-
-    //     updateMarkers();
-    // });
-
     // Function to manage visibility explicitly
     function setLayerVisibility(layerId, visibility) {
         if (map.getLayer(layerId)) {
             map.setLayoutProperty(layerId, 'visibility', visibility);
         }
     }
-
-    // function startInitialRotation() {
-    //     map.easeTo({
-    //         center: INITIAL_CENTER,
-    //         zoom: INITIAL_ZOOM,
-    //         duration: 3000,
-    //         easing: (t) => t * (2 - t),
-    //     });
-    // }
-
-    // // GT logo markers for countries
-    // const countries = [
-    //     { name: 'USA', lngLat: [-80.147085, 30.954096] }, // gt office Near by location
-    //     { name: 'UK', lngLat: [-1.654816, 52.181932] },
-    //     { name: 'Aruba', lngLat: [-69.952269, 12.512168] },
-    //     { name: 'Canada', lngLat: [-106.728058, 57.922142] },
-    //     { name: 'Italy', lngLat: [12.465363, 42.835192] },
-    // ];
-
-    // // GT logo markers, making them initially visible
-    // const gtLogoMarkers = countries.map(country => {
-    //     const logoElement = document.createElement('div');
-    //     logoElement.className = 'company-logo';
-    //     logoElement.style.backgroundImage = 'url(./img/gtLogo.png)';
-    //     const marker = new mapboxgl.Marker(logoElement, {
-    //         rotationAlignment: 'map',
-    //         offset: [0, -15],
-    //     }).setLngLat(country.lngLat).addTo(map);
-
-    //     // Set initial visibility
-    //     marker.getElement().style.visibility = 'visible';
-    //     return marker;
-    // });
-
-    // // Hide clusters on sourcedata load event to ensure they are hidden initially
-    // map.on('sourcedata', (e) => {
-    //     if (!hasInteracted && e.isSourceLoaded) {
-    //         setLayerVisibility('clusters', 'none');
-    //         setLayerVisibility('cluster-count', 'none');
-    //         setLayerVisibility('unclustered-point', 'none');
-    //         setLayerVisibility('state-markers', 'none');
-    //     }
-    // });
-
-    // function manageGTLogosVisibility(visible) {
-    //     gtLogoMarkers.forEach(marker => {
-    //         const element = marker.getElement();
-    //         element.style.visibility = visible ? 'visible' : 'hidden';
-
-    //         if (!visible && marker._map) {
-    //             marker.remove();
-    //         } else if (visible && !marker._map) {
-    //             marker.addTo(map);
-    //         }
-    //     });
-
-    //     // console.log(visible ? 'GT logos shown.' : 'GT logos hidden.');
-    // }
-
-    // function onUserInteraction(eventType) {
-    //     if (!hasInteracted) {
-    //         hasInteracted = true;
-    //         // console.log(`User started interaction: ${eventType}`);
-    //     }
-
-    //     userInteracting = true;
-
-    //     manageGTLogosVisibility(false);
-
-    //     // Show clusters if zoom threshold is met
-    //     if (eventType === 'zoom' && map.getZoom() >= 6) {
-    //         toggleVisibility(['clusters', 'cluster-count', 'unclustered-point'], 'visible');
-    //     }
-    // }
-
-
-
-    // ['mousedown', 'dragstart', 'zoomstart', 'touchstart', 'click'].forEach(event => {
-    //     map.on(event, () => {
-    //         onUserInteraction(event);
-    //     });
-    // });
-
-    // // GT logos are also hidden when using buttons
-    // document.querySelectorAll('.region-button').forEach(button => {
-    //     button.addEventListener('click', () => {
-    //         onUserInteraction('button');
-    //     });
-    // });
 
     // Debounce Function Definition
     function debounce(func, delay) {
@@ -381,7 +226,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!geocoder && geocoderContainer.style.display === "block") {
             geocoder = new MapboxGeocoder({
                 accessToken: mapboxgl.accessToken,
-                mapboxgl: mapboxgl
+                mapboxgl: mapboxgl,
+                marker: {
+                    color: 'red'
+                }
             });
             geocoderContainer.appendChild(geocoder.onAdd(map));
 
@@ -389,7 +237,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const observer = new MutationObserver(() => {
                 const geocoderInput = geocoderContainer.querySelector('input[type="text"]');
                 if (geocoderInput) {
-                    geocoderInput.focus(); // Focus the input to show the caret
+                    geocoderInput.focus();
                     observer.disconnect();
                 }
             });
@@ -1201,8 +1049,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Set flat projection
         // map.setProjection('mercator');
 
-        //US map view is centered even if the globe was spinning or reset
-        // globeSpinning = false; // Ensure globe stops spinning after initial load
+        //US map view
         let isFirstLoad = true;
 
         if (isFirstLoad) {
@@ -1233,9 +1080,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 addGeoJSONSource(map, id, url, 'id');
             }
         });
-
-        // Start globe rotation
-        // startInitialRotation();
 
         // Explicitly set visibility for initial layers
         setTimeout(() => {
@@ -1406,11 +1250,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Initial render of markers
                 updateMarkers();
 
-                // // Add GT logo markers
-                // gtLogoMarkers.forEach(marker => {
-                //     marker.getElement().style.visibility = 'visible';
-                // });
-
                 // Load custom marker image for state markers
                 map.loadImage('./img/gtLogo.png', (error, image) => {
                     if (error) {
@@ -1539,7 +1378,6 @@ document.addEventListener("DOMContentLoaded", () => {
     Address: ${hospital_address}<br>
     Hospital Count: <strong>${hospital_count}</strong>
     `;
-
                     // "note" If this is the CommonSpirit Health Headquarters
                     if (hospital_name === "CommonSpirit Health Headquarters") {
                         popupContent += `<br><strong style="color: #ff8502">Note:</strong> CommonSpirit Health operates over 140 hospitals across 21 states. 
@@ -2063,9 +1901,10 @@ document.addEventListener("DOMContentLoaded", () => {
             if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
                 closeSidebarButton.setAttribute('data-listener-attached', 'true');
                 closeSidebarButton.addEventListener('click', () => {
-                    // sidebar.style.display = 'none';
+                    sidebar.style.display = 'none';
                     console.log('Sidebar closed. Clearing selection and hover.');
                     clearRegionSelection();
+                    closeSidebar()
                     resetToSessionView();
                 });
             }
@@ -2107,7 +1946,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         //hide the sidebar and update the state of the map
-
         function closeSidebar() {
             // Hide the sidebar
             sidebar.style.display = 'none';
@@ -2125,7 +1963,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Attach event listener to the close button
         document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
-
 
         //drag-and-drop functionality for an element
         let isDragging = false;
