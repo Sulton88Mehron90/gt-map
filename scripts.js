@@ -21,11 +21,11 @@ import { fetchAndCache, getCachedData, isCacheStale, preCacheFiles, clearCache }
 
         // cached data
         const facilities = getCachedData('facilities');
-        console.log('Cached facilities:', facilities);
+        // console.log('Cached facilities:', facilities);
 
         // Checking if the 'facilities' cache is stale (older than 24 hours)
         const isStale = isCacheStale('facilities', 24);
-        console.log('Is facilities cache stale?', isStale);
+        // console.log('Is facilities cache stale?', isStale);
 
         // Clear cache when user completes their session
         window.addEventListener('beforeunload', clearCache);
@@ -88,7 +88,6 @@ export function displayErrorMessage(error, context = "An unexpected error occurr
             "Goliath Technologies ensures clinicians have seamless access to EHR systems like Epic, Cerner, Allscripts, and MEDITECH, so they can focus on patient care.",
             "Goliath Technologies provides end-user experience monitoring for hybrid multi-cloud environments, helping IT professionals manage performance across complex infrastructures.",
             "Trusted by industry leaders like Oracle Health, Google, and Children's National, Goliath Technologies provides cutting-edge solutions for performance monitoring.",
-            "Vitaly Petrovsky from Maimonides Medical Center praises Goliath for providing end-to-end visibility and resolving performance issues in complex Citrix setups.",
         ];
 
         const randomFact = goliathInformativeFacts[Math.floor(Math.random() * goliathInformativeFacts.length)];
@@ -164,7 +163,8 @@ document.addEventListener("DOMContentLoaded", () => {
         event.stopPropagation();
     });
     const gtLogo = document.querySelector('.sidebar-logo');
-    const backButton = document.createElement('button');
+    // const backButton = document.createElement('button');
+    const backButton = document.getElementById('back-button');
 
     // Global variable
     //Markers and Data Management:
@@ -186,6 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let sessionStartingView = null;
     // Tracks the last action performed (reset or fit-to-USA)
     let lastAction = null;
+    let isFirstLoad = true;
 
     // clearRegionSelection()// this is just to show the spinner to Ted
 
@@ -357,13 +358,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Ensure the button visibility is set correctly on load
     toggleBackToTopButton();
-
-    //"Back" button
-    backButton.id = 'back-button';
-    backButton.classList.add('round-button');
-    backButton.innerHTML = '<i class="fas fa-arrow-left"></i>';
-    backButton.style.display = 'none';
-    document.querySelector('.sidebar-header').appendChild(backButton);
 
     //Map Resize on Load and Window Resize
     window.addEventListener("load", () => map.resize());
@@ -558,7 +552,6 @@ document.addEventListener("DOMContentLoaded", () => {
         markerElement.style.width = '12px';
         markerElement.style.height = '12px';
         markerElement.style.backgroundImage = `url('./img/gtLogo.png')`;
-        // markerElement.style.backgroundImage = `url('./img/blueDot')`;
         markerElement.style.backgroundSize = '50%';
         markerElement.style.backgroundRepeat = 'no-repeat';
         markerElement.style.backgroundPosition = 'center';
@@ -729,7 +722,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (window.innerWidth <= 480) {
                     const visibility = zoomLevel >= 4 ? 'visible' : 'none';
                     toggleVisibility(['location-markers'], visibility);
-                    console.log(`Location markers visibility set to: ${visibility} for zoom level ${zoomLevel}`);
+                    // console.log(`Location markers visibility set to: ${visibility} for zoom level ${zoomLevel}`);
                 } else {
                     updateMarkerVisibility(currentRegion, zoomLevel);
                 }
@@ -737,12 +730,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 adjustMarkerSize(zoomLevel);
             } else {
                 // Reset to the current region if the stored region doesn't match
-                console.warn('Stored region does not match the current region. Resetting to the current region.');
+                // console.warn('Stored region does not match the current region. Resetting to the current region.');
                 flyToRegion(currentRegion);
             }
         } else {
             // Handle cases where no previous session view is stored
-            console.warn('No previous view stored in sessionStartingView. Resetting to current region.');
+            // console.warn('No previous view stored in sessionStartingView. Resetting to current region.');
 
             if (lastAction === 'fitToUSA') {
                 console.log('Returning to Fit-to-USA view...');
@@ -858,7 +851,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     //function handles the click event on a region (state) and adjusts the map accordingly.
     function handleStateClick(clickedRegionId, facilitiesData) {
-        console.log(`Clicked Region ID: ${clickedRegionId}`);
+        // console.log(`Clicked Region ID: ${clickedRegionId}`);
 
         // Store the current view if not already stored
         if (!sessionStartingView) {
@@ -1049,8 +1042,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Set flat projection
         // map.setProjection('mercator');
 
-        //US map view
-        let isFirstLoad = true;
+        //let isFirstLoad = true; // Declare outside the callback
 
         if (isFirstLoad) {
             log('First map load: Flying to USA view', 'info');
@@ -1089,6 +1081,25 @@ document.addEventListener("DOMContentLoaded", () => {
             setLayerVisibility('cluster-count', 'none');
             setLayerVisibility('unclustered-point', 'none');
         }, 0);
+
+        // Debounce the idle event to reduce the frequency of computations.
+        // const debouncedIdleHandler = debounce(() => {
+        //     const currentZoom = map.getZoom();
+        //     const markerZoomThreshold = getZoomThreshold(currentRegion);
+
+        //     if (currentZoom <= markerZoomThreshold) {
+        //         toggleVisibility(['state-markers'], 'visible');
+        //         toggleVisibility(['location-markers'], 'none');
+        //     } else {
+        //         toggleVisibility(['state-markers'], 'none');
+        //         toggleVisibility(['location-markers'], 'visible');
+        //     }
+
+        //     manageZoomWarning();
+        // }, 300);
+
+        // map.on('idle', debouncedIdleHandler);
+
 
         map.on('idle', () => {
             const currentZoom = map.getZoom();
@@ -1340,7 +1351,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         handleStateClick(clickedStateId, facilitiesData);
                     });
-
 
                     map.on('click', (e) => {
                         const features = map.queryRenderedFeatures(e.point, { layers: ['state-markers'] });
@@ -1663,17 +1673,36 @@ document.addEventListener("DOMContentLoaded", () => {
                         .addTo(map);
                 });
 
-                // Handle cluster click to expand zoom level
-                map.on('click', 'clusters', (e) => {
-                    const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
-                    const clusterId = features[0].properties.cluster_id;
+                //Cluster Zoom Throttling. check if i need this.
+                const debouncedExpandCluster = debounce((clusterId, coordinates) => {
                     map.getSource('hospitals').getClusterExpansionZoom(clusterId, (err, zoom) => {
                         if (err) return;
                         map.easeTo({
-                            center: features[0].geometry.coordinates,
+                            center: coordinates,
                             zoom: zoom
                         });
                     });
+                }, 300);
+
+                map.on('click', 'clusters', (e) => {
+                    const clusterId = e.features[0].properties.cluster_id;
+                    const coordinates = e.features[0].geometry.coordinates;
+                    debouncedExpandCluster(clusterId, coordinates);
+                });
+
+                // Handle cluster click to expand zoom level
+                map.on('click', 'clusters', (e) => {
+                    const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+                    // const clusterId = features[0].properties.cluster_id;
+                    map.getSource('hospitals').setClusterRadius(zoomLevel < 5 ? 100 : 50);
+
+                    // map.getSource('hospitals').getClusterExpansionZoom(clusterId, (err, zoom) => {
+                    //     if (err) return;
+                    //     map.easeTo({
+                    //         center: features[0].geometry.coordinates,
+                    //         zoom: zoom
+                    //     });
+                    // });
                 });
 
                 // Handle clicks on states/regions dynamically
@@ -1807,16 +1836,36 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
             // Clear region selection
-            const clearRegionSelection = () => {
+            // const clearRegionSelection = () => {
 
+            //     if (!selectedRegionId && !hoveredRegionId) {
+            //         console.log('No region currently selected or hovered. Skipping clear.');
+            //         return;
+            //     }
+
+            //     console.log('Clearing region selection and hover');
+            //     // const regionSources = ['us-states', 'canada-regions', 'aruba-region', 'italy-regions', 'uk-regions'];
+
+            //     regionSources.forEach((regionSource) => {
+            //         if (selectedRegionId) {
+            //             map.setFeatureState({ source: regionSource, id: selectedRegionId }, { selected: false });
+            //         }
+            //         if (hoveredRegionId) {
+            //             map.setFeatureState({ source: regionSource, id: hoveredRegionId }, { hover: false });
+            //         }
+            //     });
+
+            //     selectedRegionId = null;
+            //     hoveredRegionId = null;
+            // };
+
+            const clearRegionSelection = () => {
                 if (!selectedRegionId && !hoveredRegionId) {
                     console.log('No region currently selected or hovered. Skipping clear.');
                     return;
                 }
 
                 console.log('Clearing region selection and hover');
-                // const regionSources = ['us-states', 'canada-regions', 'aruba-region', 'italy-regions', 'uk-regions'];
-
                 regionSources.forEach((regionSource) => {
                     if (selectedRegionId) {
                         map.setFeatureState({ source: regionSource, id: selectedRegionId }, { selected: false });
@@ -1877,14 +1926,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
+            // Attach hover interactions
             map.on(hoverEvent, layerId, (e) => {
                 const regionId = e.features[0].id;
-                applyHover(regionId);
+                if (regionId) {
+                    applyHover(regionId);
+                }
             });
-
             map.on('mouseleave', layerId, clearHover);
 
-            // Attach click interactions
+
+            // // Attach click interactions
             map.on('click', layerId, (e) => {
                 const regionId = e.features[0].id;
 
@@ -1894,7 +1946,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 } else {
                     console.warn(`Clicked region "${regionId}" does not have facilities.`);
                 }
+
+                // console.log(`Hovered Region: ${hoveredRegionId}, Selected Region: ${selectedRegionId}`);
+
+                // map.on('mousemove', () => {
+                //     console.log(`Hovered Region: ${hoveredRegionId}, Selected Region: ${selectedRegionId}`);
             });
+
 
             // Sidebar Close Button. Attach clear interactions to sidebar close button
             const closeSidebarButton = document.getElementById('close-sidebar');
@@ -1947,7 +2005,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         //hide the sidebar and update the state of the map
         function closeSidebar() {
-            // Hide the sidebar
+            const sidebar = document.getElementById('hospital-list-sidebar');
+            if (!sidebar) {
+                console.warn('Sidebar element not found.');
+                return;
+            }
+
             sidebar.style.display = 'none';
 
             // Deselect the feature state for all regions
@@ -1957,12 +2020,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
 
-            // Reset the selected state
+            if (selectedStateId) {
+                console.log(`Clearing selected state for Italy and UK.`);
+                map.setFeatureState({ source: 'italy-regions', id: selectedStateId }, { selected: false });
+                map.setFeatureState({ source: 'uk-regions', id: selectedStateId }, { selected: false });
+            }
+
+
+            // Resets the selected state
             selectedStateId = null;
         }
 
         // Attach event listener to the close button
         document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
+
+
 
         //drag-and-drop functionality for an element
         let isDragging = false;

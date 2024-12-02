@@ -24,7 +24,7 @@
     <div id="error-page" style="display: none;">
         <div class="not-found-page-container">
             <!-- <h1 class="not-found-heading">Oops! Something Went Wrong</h1> -->
-            <h1 class="not-found-heading">Something Went Wrong</h1>
+            <h1 class="not-found-heading">Oops! Something went wrong on our end.</h1>
             <div class="not-found-handling">
                 <h3>An error occurred. Please try again later or return to the home page.</h3>
                 <!-- Dynamically inserted error code -->
@@ -48,19 +48,19 @@
         </div>
     </div>
 
-
-
     <div id="hospital-list-sidebar" style="display: none;">
         <div class="sidebar-header">
-            <!-- <a href="https://goliathtechnologies.com/" target="_blank">
-                    <img src="./img/gtLogo.png" alt="Goliath Technologies Logo" class="sidebar-logo">
-                </a> -->
-
-            <a href="https://goliathtechnologies.com/" target="_blank">
-                <img src="./img/gtLogo.png" alt="Goliath Technologies Logo" class="sidebar-logo" loading="lazy">
-            </a>
-
-
+            <div class="logo-container">
+                <!-- Logo -->
+                <a href="https://goliathtechnologies.com/" target="_blank">
+                    <img src="./img/gtLogo.png" alt="Goliath Technologies Logo" class="sidebar-logo" loading="lazy">
+                </a>
+                <!-- Back Button -->
+                <button id="back-button" class="round-button" aria-label="Back">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+            <!-- Minimize and Close Buttons -->
             <div class="button-group">
                 <button id="minimize-sidebar" aria-label="Minimize Sidebar" class="round-button">
                     <i class="fas fa-chevron-up"></i>
@@ -70,13 +70,15 @@
                 </button>
             </div>
         </div>
+        <!-- Sidebar Content -->
         <h2>Current Locations Using Goliath's Solutions</h2>
         <ul id="hospital-list"></ul>
+        <!-- Back to Top Button -->
         <button id="back-to-top-button" class="round-button" aria-label="Back to Top">
             <i class="fas fa-arrow-up"></i>
         </button>
 
-        <!-- <div id="sidebar-resizer"></div> -->
+
     </div>
     <div class="mapbox-button-group">
         <!-- <button id="fly-to-usa" class="fly-to-button fly-to-usa"></button> -->
@@ -142,8 +144,8 @@
         <img src="./img/goliath-logo.png" alt="Goliath Technologies Logo" loading="lazy">
     </a>
 
-     <!-- <script type="module" src="refactor.js"></script> -->
-     <!-- <script type="module" src="scripts.js"></script> -->
+    <!-- <script type="module" src="refactor.js"></script> -->
+    <!-- <script type="module" src="scripts.js"></script> -->
 
     <script type="module">
         import { displayErrorMessage } from './scripts.js';
