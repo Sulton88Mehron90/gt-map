@@ -678,80 +678,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // reset the map view based on the previously stored session view
     function resetToSessionView() {
+        console.log('Resetting to session view...');
         if (sessionStartingView) {
-            // Validate that the stored region matches the current region
+            const isMobile = window.innerWidth <= 780;
+            const zoomThreshold =
+                lastAction === 'reset' ? regionZoomThresholds.reset :
+                    lastAction === 'fitToUSA' ? regionZoomThresholds.fitToUSA :
+                        regionZoomThresholds[currentRegion] || regionZoomThresholds.default || 4;
+
+            const adjustedZoom = isMobile ? sessionStartingView.zoom - 1 : sessionStartingView.zoom;
+            const zoomLevel = Math.max(adjustedZoom, zoomThreshold);
+
             if (sessionStartingView.region === currentRegion) {
-                const isMobile = window.innerWidth <= 780;
-
-                // Handle reset and fit-to-USA actions with their specific thresholds
-                const zoomThreshold =
-                    lastAction === 'reset' ? regionZoomThresholds.reset :
-                        lastAction === 'fitToUSA' ? regionZoomThresholds.fitToUSA :
-                            regionZoomThresholds[currentRegion] || 4;
-
-                const zoomLevel = Math.max(
-                    isMobile ? sessionStartingView.zoom - 1 : sessionStartingView.zoom,
-                    zoomThreshold
-                );
-
-                if (lastAction === 'fitToUSA') {
-                    console.log('Returning to Fit-to-USA view...');
-                    map.fitBounds([
-                        [-165.031128, 65.476793],
-                        [-81.131287, 26.876143],
-                    ], {
-                        padding: 20,
-                        maxZoom: zoomThreshold,
-                        duration: 2000,
-                    });
-                } else if (lastAction === 'reset') {
-                    console.log('Returning to Reset view...');
-                    map.flyTo({
-                        center: INITIAL_CENTER,
-                        zoom: zoomThreshold,
-                        pitch: 0,
-                        bearing: 0,
-                        duration: 2000,
-                    });
-                } else if (currentRegion === 'usa' && window.innerWidth <= 480) {
-                    // Adjust to contiguous USA bounds for small screens
-                    map.fitBounds(contiguousUSABounds, {
-                        padding: 20,
-                        maxZoom: 4.5,
-                        duration: 2000,
-                    });
-                } else {
-                    // Fly to the sessionStartingView
-                    map.flyTo({
-                        center: sessionStartingView.center,
-                        zoom: zoomLevel,
-                        pitch: sessionStartingView.pitch,
-                        bearing: sessionStartingView.bearing,
-                        duration: 2000,
-                    });
-                }
-
-                // Adjust marker visibility dynamically
-                if (window.innerWidth <= 480) {
-                    const visibility = zoomLevel >= 4 ? 'visible' : 'none';
-                    toggleVisibility(['location-markers'], visibility);
-                    // console.log(`Location markers visibility set to: ${visibility} for zoom level ${zoomLevel}`);
-                } else {
-                    updateMarkerVisibility(currentRegion, zoomLevel);
-                }
-
-                adjustMarkerSize(zoomLevel);
+                console.log(`Returning to sessionStartingView: ${JSON.stringify(sessionStartingView)}`);
+                map.flyTo({
+                    center: sessionStartingView.center,
+                    zoom: zoomLevel,
+                    pitch: sessionStartingView.pitch,
+                    bearing: sessionStartingView.bearing,
+                    duration: 2000,
+                });
             } else {
-                // Reset to the current region if the stored region doesn't match
-                // console.warn('Stored region does not match the current region. Resetting to the current region.');
+                console.warn('Stored region does not match current region. Resetting to current region.');
                 flyToRegion(currentRegion);
             }
         } else {
-            // Handle cases where no previous session view is stored
-            // console.warn('No previous view stored in sessionStartingView. Resetting to current region.');
-
+            console.warn('No sessionStartingView found. Defaulting to current region.');
             if (lastAction === 'fitToUSA') {
-                console.log('Returning to Fit-to-USA view...');
+                console.log('Returning to Fit-to-USA view.');
                 map.fitBounds([
                     [-165.031128, 65.476793],
                     [-81.131287, 26.876143],
@@ -761,7 +715,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     duration: 2000,
                 });
             } else if (lastAction === 'reset') {
-                console.log('Returning to Reset view...');
+                console.log('Returning to Reset view.');
                 map.flyTo({
                     center: INITIAL_CENTER,
                     zoom: regionZoomThresholds.reset,
@@ -770,12 +724,21 @@ document.addEventListener("DOMContentLoaded", () => {
                     duration: 2000,
                 });
             } else {
+                console.warn('No last action specified. Defaulting to current region.');
                 flyToRegion(currentRegion || 'usa');
             }
         }
+
+        // Ensure marker visibility and size are consistent
+        const zoomLevel = map.getZoom();
+        updateMarkerVisibility(currentRegion, zoomLevel);
+        adjustMarkerSize(zoomLevel);
     }
 
-    backButton.addEventListener('click', resetToSessionView);
+    backButton.addEventListener('click', () => {
+        console.log('Back button clicked. Resetting to session view.');
+        resetToSessionView();
+    });
 
     // Regions
     const regions = {
@@ -1326,7 +1289,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     });
 
                     // Add source and layer for location markers
-
                     map.addSource('location-markers', {
                         type: 'geojson',
                         data: {
@@ -1849,25 +1811,42 @@ document.addEventListener("DOMContentLoaded", () => {
                 hoveredRegionId = null;
             };
 
+            //Clear selection
             const clearRegionSelection = () => {
+                console.log('Attempting to clear region and hover selections.');
+
+                // Check if there is any region to clear
                 if (!selectedRegionId && !hoveredRegionId) {
-                    console.log('No region currently selected or hovered. Skipping clear.');
+                    console.log('No region currently selected or hovered. Nothing to clear.');
                     return;
                 }
 
-                // console.log('Clearing region selection and hover');
+                // Iterate through region sources and clear selected/hovered states
                 regionSources.forEach((regionSource) => {
                     if (selectedRegionId) {
+                        console.log(`Clearing selection for region ID: ${selectedRegionId} on source: ${regionSource}`);
                         map.setFeatureState({ source: regionSource, id: selectedRegionId }, { selected: false });
                     }
                     if (hoveredRegionId) {
+                        console.log(`Clearing hover for region ID: ${hoveredRegionId} on source: ${regionSource}`);
                         map.setFeatureState({ source: regionSource, id: hoveredRegionId }, { hover: false });
                     }
                 });
 
+                // Reset IDs after clearing
                 selectedRegionId = null;
                 hoveredRegionId = null;
+
+                console.log('Region selection and hover states cleared successfully.');
             };
+
+            document.getElementById('close-sidebar').addEventListener('click', () => {
+                console.log('Closing sidebar. Clearing selection...');
+                clearRegionSelection();
+                closeSidebar();
+                resetToSessionView();
+                console.log('After close button click:', { selectedRegionId, hoveredRegionId });
+            });
 
             // Select a region
             const selectRegion = (regionId) => {
@@ -1891,7 +1870,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // Add logic to populate facilities in the sidebar
                 const list = document.getElementById('hospital-list');
-                list.innerHTML = ''; 
+                list.innerHTML = '';
 
                 const facilitiesInRegion = facilitiesData.filter(
                     (facility) => facility.region_id === regionId
@@ -1943,26 +1922,34 @@ document.addEventListener("DOMContentLoaded", () => {
                 //     console.log(`Hovered Region: ${hoveredRegionId}, Selected Region: ${selectedRegionId}`);
             });
 
-
             // Sidebar Close Button. Attach clear interactions to sidebar close button
             const closeSidebarButton = document.getElementById('close-sidebar');
             if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
                 closeSidebarButton.setAttribute('data-listener-attached', 'true');
                 closeSidebarButton.addEventListener('click', () => {
+                    console.log('Sidebar closed via close button.');
                     sidebar.style.display = 'none';
-                    console.log('Sidebar closed. Clearing selection and hover.');
                     clearRegionSelection();
-                    closeSidebar()
-                    resetToSessionView();
+
+                    if (sessionStartingView) {
+                        resetToSessionView();
+                    } else {
+                        console.warn('No sessionStartingView found. Staying in the current view.');
+                    }
                 });
             }
 
             // Fit-to-USA Button
             document.getElementById('fit-to-usa').addEventListener('click', () => {
                 console.log('Fit-to-USA button clicked.');
-                clearRegionSelection();
-                resetToSessionView()
-                closeSidebar()
+                sessionStartingView = {
+                    center: map.getCenter(),
+                    zoom: map.getZoom(),
+                    pitch: map.getPitch(),
+                    bearing: map.getBearing(),
+                };
+                closeSidebar();
+                clearRegionSelection()
                 lastAction = 'fitToUSA';
                 map.fitBounds([
                     [-165.031128, 65.476793],
@@ -1976,9 +1963,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 resetButton.setAttribute('data-listener-attached', 'true');
                 resetButton.addEventListener('click', () => {
                     console.log('Reset button clicked.');
-                    clearRegionSelection();
-                    resetToSessionView()
-                    closeSidebar()
+                    sessionStartingView = {
+                        center: map.getCenter(),
+                        zoom: map.getZoom(),
+                        pitch: map.getPitch(),
+                        bearing: map.getBearing(),
+                    };
+                    closeSidebar();
+                    clearRegionSelection()
                     lastAction = 'reset';
                     map.flyTo({
                         center: INITIAL_CENTER,
@@ -1989,7 +1981,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     });
                 });
             }
-
             map.on('zoomstart', clearHover);
         }
 
@@ -2010,19 +2001,31 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
 
-            // if (selectedStateId) {
-            //     console.log(`Clearing selected state for Italy and UK.`);
-            //     map.setFeatureState({ source: 'italy-regions', id: selectedStateId }, { selected: false });
-            //     map.setFeatureState({ source: 'uk-regions', id: selectedStateId }, { selected: false });
-            // }
-
-
-            // Resets the selected state
             selectedStateId = null;
+
+            // Navigate back to sessionStartingView if it exists
+            if (sessionStartingView) {
+                map.flyTo({
+                    center: sessionStartingView.center,
+                    zoom: sessionStartingView.zoom,
+                    pitch: sessionStartingView.pitch,
+                    bearing: sessionStartingView.bearing,
+                    essential: true,
+                    duration: 1000,
+                });
+            } else {
+                console.log('No sessionStartingView found. Staying in the current view.');
+            }
         }
 
-        // Attach event listener to the close button
-        document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
+        const closeSidebarButton = document.getElementById('close-sidebar');
+        if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
+            closeSidebarButton.setAttribute('data-listener-attached', 'true');
+            closeSidebarButton.addEventListener('click', () => {
+                console.log('Sidebar closed via close button.');
+                closeSidebar();
+            });
+        }
 
         //drag-and-drop functionality for an element
         let isDragging = false;
