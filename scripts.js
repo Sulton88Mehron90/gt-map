@@ -13,7 +13,7 @@ import { fetchAndCache, getCachedData, isCacheStale, preCacheFiles, clearCache }
         { url: './data/italy-regions.geojson', key: 'italyRegions' },
         { url: './data/canada-regions.geojson', key: 'canadaRegions' },
         { url: './data/aruba-region.geojson', key: 'arubaRegion' }
-    ];
+    ]
 
     try {
         // Pre-cache all files with a 24-hour expiry
@@ -655,18 +655,20 @@ document.addEventListener("DOMContentLoaded", () => {
     map.on('moveend', debouncedUpdateMarkers);
 
     const regionZoomThresholds = {
-        usa: 4,
+        usa: 4.5,
         uk: 5,
         italy: 6,
-        canada: 3,
         aruba: 10,
+        canada: 7,
         reset: 1,
-        fitToUSA: 3,
+        fitToUSA: 2,
+        default: 4,
     };
 
     function updateMarkerVisibility(region, zoomLevel) {
+        const markerZoomThreshold = regionZoomThresholds[region] || 'usa' ? 4 : 5;
+        const currentZoom = map.getZoom();
 
-        const markerZoomThreshold = regionZoomThresholds[region] || 4;
         if (zoomLevel <= markerZoomThreshold) {
             toggleVisibility(['state-markers'], 'visible');
             toggleVisibility(['location-markers', 'clusters', 'unclustered-point', 'cluster-count'], 'none');
@@ -678,7 +680,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // reset the map view based on the previously stored session view
     function resetToSessionView() {
-        console.log('Resetting to session view...');
+        // console.log('Resetting to session view...');
         if (sessionStartingView) {
             const isMobile = window.innerWidth <= 780;
             const zoomThreshold =
@@ -690,7 +692,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const zoomLevel = Math.max(adjustedZoom, zoomThreshold);
 
             if (sessionStartingView.region === currentRegion) {
-                console.log(`Returning to sessionStartingView: ${JSON.stringify(sessionStartingView)}`);
+                // console.log(`Returning to sessionStartingView: ${JSON.stringify(sessionStartingView)}`);
                 map.flyTo({
                     center: sessionStartingView.center,
                     zoom: zoomLevel,
@@ -705,7 +707,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             console.warn('No sessionStartingView found. Defaulting to current region.');
             if (lastAction === 'fitToUSA') {
-                console.log('Returning to Fit-to-USA view.');
+                // console.log('Returning to Fit-to-USA view.');
                 map.fitBounds([
                     [-165.031128, 65.476793],
                     [-81.131287, 26.876143],
@@ -715,7 +717,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     duration: 2000,
                 });
             } else if (lastAction === 'reset') {
-                console.log('Returning to Reset view.');
+                // console.log('Returning to Reset view.');
                 map.flyTo({
                     center: INITIAL_CENTER,
                     zoom: regionZoomThresholds.reset,
@@ -736,18 +738,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     backButton.addEventListener('click', () => {
-        console.log('Back button clicked. Resetting to session view.');
+        // console.log('Back button clicked. Resetting to session view.');
         resetToSessionView();
     });
 
     // Regions
     const regions = {
-        // usa: { center: [-101.714859, 40.710884], zoom: 4, pitch: 0 },
         usa: { center: [-98.5795, 39.8283], zoom: 4, pitch: 0 },
         uk: { center: [360.242386, 51.633362], zoom: 4, pitch: 15 },
         italy: { center: [12.563553, 42.798676], zoom: 4, pitch: 45 },
         canada: { center: [-106.3468, 56.1304], zoom: 3, pitch: 0 },
-        aruba: { center: [-70.027, 12.5246], zoom: 10, pitch: 45 }
+        aruba: { center: [-70.027, 12.5246], zoom: 10, pitch: 45 },
+        reset: { center: [0, 0], zoom: 1, pitch: 0 },
+        fitToUSA: { center: [-98.5795, 39.8283], zoom: 3, pitch: 0 },
     };
 
     // flyToRegion function
@@ -781,17 +784,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 [-70.062056, 12.406293], // Southwest corner
                 [-69.876820, 12.623324], // Northeast corner
             ],
+            reset: null,
+            fitToUSA: [
+                [-165.031128, 65.476793], // Southwest corner
+                [-81.131287, 26.876143], // Northeast corner
+            ],
         };
 
         // Check for small screens and adjust bounds for regions
         if (window.innerWidth <= 480 && regionBounds[region]) {
             map.fitBounds(regionBounds[region], {
-                padding: 20,   // Smaller padding for small screens
-                maxZoom: 4.5,  // Adjust zoom level for small screens
+                padding: 20, 
+                maxZoom: 4.5,
                 duration: 2000,
             });
         } else {
-            // Default flyTo logic for non-small screens or regions without bounds
+            // Default flyTo logic
             map.flyTo({
                 center,
                 zoom,
@@ -825,6 +833,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll(".region-button").forEach(button => button.classList.remove("active"));
         document.getElementById(`fly-to-${region}`).classList.add("active");
     }
+    
     //function handles the click event on a region (state) and adjusts the map accordingly.
     function handleStateClick(clickedRegionId, facilitiesData) {
         // console.log(`Clicked Region ID: ${clickedRegionId}`);
@@ -887,7 +896,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     Object.keys(regions).forEach(region => {
-        document.getElementById(`fly-to-${region}`).addEventListener("click", () => flyToRegion(region));
+        const button = document.getElementById(`fly-to-${region}`);
+        if (button) {
+            button.addEventListener("click", () => flyToRegion(region));
+        }
     });
 
     // zoom warning visibility and tooltip
@@ -1060,25 +1072,6 @@ document.addEventListener("DOMContentLoaded", () => {
             setLayerVisibility('cluster-count', 'none');
             setLayerVisibility('unclustered-point', 'none');
         }, 0);
-
-        // Debounce the idle event to reduce the frequency of computations.
-        // const debouncedIdleHandler = debounce(() => {
-        //     const currentZoom = map.getZoom();
-        //     const markerZoomThreshold = getZoomThreshold(currentRegion);
-
-        //     if (currentZoom <= markerZoomThreshold) {
-        //         toggleVisibility(['state-markers'], 'visible');
-        //         toggleVisibility(['location-markers'], 'none');
-        //     } else {
-        //         toggleVisibility(['state-markers'], 'none');
-        //         toggleVisibility(['location-markers'], 'visible');
-        //     }
-
-        //     manageZoomWarning();
-        // }, 300);
-
-        // map.on('idle', debouncedIdleHandler);
-
 
         map.on('idle', () => {
             const currentZoom = map.getZoom();
@@ -1904,8 +1897,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             map.on('mouseleave', layerId, clearHover);
 
-
-            // // Attach click interactions
+            // Attach click interactions
             map.on('click', layerId, (e) => {
                 const regionId = e.features[0].id;
 
@@ -1918,8 +1910,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // console.log(`Hovered Region: ${hoveredRegionId}, Selected Region: ${selectedRegionId}`);
 
-                // map.on('mousemove', () => {
-                //     console.log(`Hovered Region: ${hoveredRegionId}, Selected Region: ${selectedRegionId}`);
             });
 
             // Sidebar Close Button. Attach clear interactions to sidebar close button
