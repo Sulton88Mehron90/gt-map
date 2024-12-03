@@ -1,6 +1,4 @@
-/**
- * Cache Management for Local Storage
- */
+//Cache Management for Local Storage
 
 // Fetch data from URL and cache it in localStorage
 export async function fetchAndCache(url, key) {
@@ -22,7 +20,7 @@ export async function fetchAndCache(url, key) {
         const data = await response.json();
         try {
             localStorage.setItem(key, JSON.stringify({ data, timestamp: Date.now() }));
-            // console.log(`Cache set: ${key}`);
+            console.log(`Cache set: ${key}`);
         } catch (error) {
             console.error(`Failed to cache data for ${key}:`, error);
             throw error;
@@ -43,7 +41,7 @@ export function getCachedData(key) {
         return null;
     }
     try {
-        // console.log(`Cache retrieved: ${key}`);
+        console.log(`Cache retrieved: ${key}`);
         return JSON.parse(cached).data;
     } catch (e) {
         console.error(`Failed to parse cache for ${key}. Clearing it.`, e);
@@ -61,7 +59,7 @@ export function isCacheStale(key, maxAgeInHours = 24) {
         const { timestamp } = JSON.parse(cached);
         const age = (Date.now() - timestamp) / (1000 * 60 * 60); // Age in hours
         const isStale = age > maxAgeInHours;
-        // console.log(`Cache ${key} is ${isStale ? 'stale' : 'fresh'}`);
+        console.log(`Cache ${key} is ${isStale ? 'stale' : 'fresh'}`);
         return isStale;
     } catch (e) {
         console.error(`Failed to check staleness for ${key}. Clearing it.`, e);
@@ -87,7 +85,7 @@ export async function preCacheFiles(files, maxAgeInHours = 24) {
     for (const { url, key } of files) {
         try {
             if (isCacheStale(key, maxAgeInHours)) {
-                // console.log(`Fetching and caching: ${key}`);
+                console.log(`Fetching and caching: ${key}`);
                 await fetchAndCache(url, key);
             } else {
                 console.log(`Skipping fetch for fresh cache: ${key}`);

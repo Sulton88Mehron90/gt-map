@@ -14,18 +14,18 @@ import { fetchAndCache, getCachedData, isCacheStale, preCacheFiles, clearCache }
         { url: './data/canada-regions.geojson', key: 'canadaRegions' },
         { url: './data/aruba-region.geojson', key: 'arubaRegion' }
     ]
-
+    
     try {
         // Pre-cache all files with a 24-hour expiry
         await preCacheFiles(filesToCache, 24);
 
         // cached data
         const facilities = getCachedData('facilities');
-        // console.log('Cached facilities:', facilities);
+        console.log('Cached facilities:', facilities);
 
         // Checking if the 'facilities' cache is stale (older than 24 hours)
         const isStale = isCacheStale('facilities', 24);
-        // console.log('Is facilities cache stale?', isStale);
+        console.log('Is facilities cache stale?', isStale);
 
         // Clear cache when user completes their session
         window.addEventListener('beforeunload', clearCache);
@@ -384,12 +384,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 promoteId: promoteId,
             });
 
-            //console.log(`Source with ID "${sourceId}" added successfully.`);
+            console.log(`Source with ID "${sourceId}" added successfully.`);
         }
         // else {
-        //     console.warn(`Source with ID "${sourceId}" already exists. Skipping addition.`);
+            console.warn(`Source with ID "${sourceId}" already exists. Skipping addition.`);
         // }
-        // console.log('Current sources:', map.getStyle().sources);
+        console.log('Current sources:', map.getStyle().sources);
     }
 
     // Adjusting sidebar height based on content size
@@ -599,7 +599,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Original updateMarkers function
     function updateMarkers() {
         if (!markersDataReady) {
-            // console.warn('Markers data is not ready yet. Skipping updateMarkers.');
+            console.warn('Markers data is not ready yet. Skipping updateMarkers.');
             return;
         }
 
@@ -613,7 +613,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const bounds = map.getBounds();
         if (!bounds || !bounds._sw || !bounds._ne) {
-            // console.error('Invalid map bounds:', bounds);
+            console.error('Invalid map bounds:', bounds);
             return;
         }
 
@@ -665,18 +665,44 @@ document.addEventListener("DOMContentLoaded", () => {
         default: 4,
     };
 
+   // Handle visibility updates more robustly:
     function updateMarkerVisibility(region, zoomLevel) {
-        const markerZoomThreshold = regionZoomThresholds[region] || 'usa' ? 4 : 5;
-        const currentZoom = map.getZoom();
-
-        if (zoomLevel <= markerZoomThreshold) {
-            toggleVisibility(['state-markers'], 'visible');
-            toggleVisibility(['location-markers', 'clusters', 'unclustered-point', 'cluster-count'], 'none');
-        } else {
-            toggleVisibility(['state-markers'], 'none');
-            toggleVisibility(['location-markers'], 'visible');
-        }
+        const threshold = regionZoomThresholds[region] || regionZoomThresholds.default;
+        const layersToShow = zoomLevel > threshold ? ['location-markers'] : ['state-markers'];
+        const layersToHide = zoomLevel > threshold ? ['state-markers'] : ['location-markers'];
+    
+        layersToShow.forEach(layer => toggleVisibility([layer], 'visible'));
+        layersToHide.forEach(layer => toggleVisibility([layer], 'none'));
     }
+    
+
+    // function updateMarkerVisibility(region, zoomLevel) {
+    //     const markerZoomThreshold = regionZoomThresholds[region] || 'usa' ? 4 : 5;
+    //     const currentZoom = map.getZoom();
+
+    //     if (zoomLevel <= markerZoomThreshold) {
+    //         toggleVisibility(['state-markers'], 'visible');
+    //         toggleVisibility(['location-markers', 'clusters', 'unclustered-point', 'cluster-count'], 'none');
+    //     } else {
+    //         toggleVisibility(['state-markers'], 'none');
+    //         toggleVisibility(['location-markers'], 'visible');
+    //     }
+    // }
+
+// Add a buffer to marker size calculation to avoid frequent size changes during small zoom level adjustments.
+// Cache the current zoom level to prevent redundant updates if the zoom hasn’t changed.
+
+//     let lastZoomLevel = null;
+// function adjustMarkerSize(zoomLevel) {
+//     if (lastZoomLevel === zoomLevel) return;
+//     lastZoomLevel = zoomLevel;
+//     const size = Math.max(6, Math.min(20, zoomLevel * 3));
+//     document.querySelectorAll('.custom-marker').forEach(marker => {
+//         marker.style.width = `${size}px`;
+//         marker.style.height = `${size}px`;
+//     });
+//     console.log(`Adjusted marker size to: ${size}px at zoom level ${zoomLevel}`);
+// }
 
     // reset the map view based on the previously stored session view
     function resetToSessionView() {
@@ -688,7 +714,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     lastAction === 'fitToUSA' ? regionZoomThresholds.fitToUSA :
                         regionZoomThresholds[currentRegion] || regionZoomThresholds.default || 4;
 
-            const adjustedZoom = isMobile ? sessionStartingView.zoom - 1 : sessionStartingView.zoom;
+            // const adjustedZoom = isMobile ? sessionStartingView.zoom - 1 : sessionStartingView.zoom;
+            const adjustedZoom = sessionStartingView.zoom - (isMobile ? 1 : 0);
+
             const zoomLevel = Math.max(adjustedZoom, zoomThreshold);
 
             if (sessionStartingView.region === currentRegion) {
@@ -701,8 +729,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     duration: 2000,
                 });
             } else {
-                console.warn('Stored region does not match current region. Resetting to current region.');
+                // console.warn('Stored region does not match current region. Resetting to current region.');
                 flyToRegion(currentRegion);
+
+                // console.warn(`[Reset View] ${message}`, { region: currentRegion, action: lastAction });
+
             }
         } else {
             console.warn('No sessionStartingView found. Defaulting to current region.');
@@ -814,7 +845,9 @@ document.addEventListener("DOMContentLoaded", () => {
         currentRegion = region;
 
         // Adjust marker visibility based on zoom threshold
-        const markerZoomThreshold = currentRegion === 'usa' ? 4 : 5;
+        // const markerZoomThreshold = currentRegion === 'usa' ? 4 : 5;
+        const markerZoomThreshold = regionZoomThresholds[region] || regionZoomThresholds.default;
+
         const currentZoom = map.getZoom();
 
         if (currentZoom <= markerZoomThreshold) {
@@ -959,6 +992,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     toggleVisibility(['state-markers'], 'visible');
                     toggleVisibility(['location-markers', 'clusters', 'cluster-count', 'unclustered-point'], 'none');
 
+                    // function getRegionZoomLevel(regionId) {
+                    //     const regionZoomLevels = {
+                    //         USA: 4,
+                    //         ENG: 5,
+                    //         IT: 6,
+                    //         CAN: 3,
+                    //         AW: 10,
+                    //         default: 4,
+                    //     };
+                    //     return regionZoomLevels[regionId] || regionZoomLevels.default;
+                    // }
+                    
                     const regionZoomLevels = {
                         AW: 10,
                         IT: 6,
@@ -1112,6 +1157,21 @@ document.addEventListener("DOMContentLoaded", () => {
                     console.warn(`No zoom threshold defined for region: ${currentRegion}`);
                     markerZoomThreshold = 4;
             }
+
+            // function getZoomThreshold(region) {
+            //     const thresholds = {
+            //         usa: 4.5,
+            //         uk: 5,
+            //         italy: 6,
+            //         aruba: 10,
+            //         canada: 7,
+            //         reset: 1,
+            //         fitToUSA: 2,
+            //     };
+            //     return thresholds[region] || 4; // Default threshold
+            // }
+            // const markerZoomThreshold = getZoomThreshold(currentRegion);
+
 
             // Initialize zoom warning visibility and tooltip logic
             manageZoomWarning();
@@ -1450,7 +1510,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     // const selectedColor = '#05aaff' 
 
                     if (map.getLayer(`${layerId}-fill`)) {
-                        // console.warn(`Layer with id "${layerId}-fill" already exists. Skipping addition.`);
+                        console.warn(`Layer with id "${layerId}-fill" already exists. Skipping addition.`);
                         return;
                     }
 
@@ -1481,7 +1541,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 function addHoverOutlineLayer(map, layerId, sourceId) {
                     if (map.getLayer(layerId)) {
-                        // console.warn(`Layer with id "${layerId}" already exists. Skipping addition.`);
+                        console.warn(`Layer with id "${layerId}" already exists. Skipping addition.`);
                         return;
                     }
 
@@ -1805,33 +1865,23 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
             //Clear selection
-            const clearRegionSelection = () => {
-                console.log('Attempting to clear region and hover selections.');
-
-                // Check if there is any region to clear
-                if (!selectedRegionId && !hoveredRegionId) {
-                    console.log('No region currently selected or hovered. Nothing to clear.');
-                    return;
-                }
-
-                // Iterate through region sources and clear selected/hovered states
-                regionSources.forEach((regionSource) => {
-                    if (selectedRegionId) {
-                        console.log(`Clearing selection for region ID: ${selectedRegionId} on source: ${regionSource}`);
+            function clearRegionSelection() {
+                if (selectedRegionId) {
+                    regionSources.forEach((regionSource) => {
                         map.setFeatureState({ source: regionSource, id: selectedRegionId }, { selected: false });
-                    }
-                    if (hoveredRegionId) {
-                        console.log(`Clearing hover for region ID: ${hoveredRegionId} on source: ${regionSource}`);
+                    });
+                    selectedRegionId = null;
+                }
+                if (hoveredRegionId) {
+                    regionSources.forEach((regionSource) => {
                         map.setFeatureState({ source: regionSource, id: hoveredRegionId }, { hover: false });
-                    }
-                });
-
-                // Reset IDs after clearing
-                selectedRegionId = null;
-                hoveredRegionId = null;
-
-                console.log('Region selection and hover states cleared successfully.');
-            };
+                    });
+                    hoveredRegionId = null;
+                }
+            
+                // Reset the lastAction to avoid unexpected state changes
+                lastAction = null;
+            }
 
             document.getElementById('close-sidebar').addEventListener('click', () => {
                 console.log('Closing sidebar. Clearing selection...');
@@ -1912,56 +1962,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
             });
 
-            // Sidebar Close Button. Attach clear interactions to sidebar close button
-            const closeSidebarButton = document.getElementById('close-sidebar');
-            if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
-                closeSidebarButton.setAttribute('data-listener-attached', 'true');
-                closeSidebarButton.addEventListener('click', () => {
-                    console.log('Sidebar closed via close button.');
-                    sidebar.style.display = 'none';
-                    clearRegionSelection();
-
-                    if (sessionStartingView) {
-                        resetToSessionView();
-                    } else {
-                        console.warn('No sessionStartingView found. Staying in the current view.');
-                    }
-                });
-            }
-
-            // Fit-to-USA Button
-            document.getElementById('fit-to-usa').addEventListener('click', () => {
-                console.log('Fit-to-USA button clicked.');
-                sessionStartingView = {
-                    center: map.getCenter(),
-                    zoom: map.getZoom(),
-                    pitch: map.getPitch(),
-                    bearing: map.getBearing(),
-                };
-                closeSidebar();
-                clearRegionSelection()
-                lastAction = 'fitToUSA';
-                map.fitBounds([
-                    [-165.031128, 65.476793],
-                    [-81.131287, 26.876143],
-                ]);
-            });
-
-            // Reset Button
-            const resetButton = document.getElementById('reset-view');
-            if (resetButton && !resetButton.hasAttribute('data-listener-attached')) {
-                resetButton.setAttribute('data-listener-attached', 'true');
-                resetButton.addEventListener('click', () => {
-                    console.log('Reset button clicked.');
-                    sessionStartingView = {
-                        center: map.getCenter(),
-                        zoom: map.getZoom(),
-                        pitch: map.getPitch(),
-                        bearing: map.getBearing(),
-                    };
-                    closeSidebar();
-                    clearRegionSelection()
-                    lastAction = 'reset';
+// Sidebar Close Button. Attach clear interactions to sidebar close button
+            document.getElementById('close-sidebar').addEventListener('click', () => {
+                clearRegionSelection();
+                sidebar.style.display = 'none';
+            
+                // Determine the view to revert to based on `lastAction`
+                if (lastAction === 'fitToUSA') {
+                    map.fitBounds([
+                        [-165.031128, 65.476793],
+                        [-81.131287, 26.876143],
+                    ]);
+                } else if (lastAction === 'reset') {
                     map.flyTo({
                         center: INITIAL_CENTER,
                         zoom: INITIAL_ZOOM,
@@ -1969,10 +1981,56 @@ document.addEventListener("DOMContentLoaded", () => {
                         bearing: 0,
                         duration: 1000,
                     });
-                });
-            }
-            map.on('zoomstart', clearHover);
-        }
+                } else if (sessionStartingView) {
+                    map.flyTo({
+                        center: sessionStartingView.center,
+                        zoom: sessionStartingView.zoom,
+                        pitch: sessionStartingView.pitch,
+                        bearing: sessionStartingView.bearing,
+                        duration: 1000,
+                    });
+                } else {
+                    console.warn('No valid view to revert to.');
+                }
+            });
+            
+            // Fit-to-USA Button
+            document.getElementById('fit-to-usa').addEventListener('click', () => {
+                sessionStartingView = {
+                    center: map.getCenter(),
+                    zoom: map.getZoom(),
+                    pitch: map.getPitch(),
+                    bearing: map.getBearing(),
+                };
+                closeSidebar();
+                clearRegionSelection();
+                lastAction = 'fitToUSA';
+                map.fitBounds([
+                    [-165.031128, 65.476793],
+                    [-81.131287, 26.876143],
+                ]);
+            });
+            
+        // Reset Button
+        document.getElementById('reset-view').addEventListener('click', () => {
+            sessionStartingView = {
+                center: map.getCenter(),
+                zoom: map.getZoom(),
+                pitch: map.getPitch(),
+                bearing: map.getBearing(),
+            };
+            closeSidebar();
+            clearRegionSelection();
+            lastAction = 'reset';
+            map.flyTo({
+                center: INITIAL_CENTER,
+                zoom: INITIAL_ZOOM,
+                pitch: 0,
+                bearing: 0,
+                duration: 1000,
+            });
+        });
+    }
 
         //hide the sidebar and update the state of the map
         function closeSidebar() {
