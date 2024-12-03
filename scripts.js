@@ -98,11 +98,22 @@ export function displayErrorMessage(error, context = "An unexpected error occurr
 
 // Debug mode flag
 const DEBUG_MODE = true;
+let lastWarningMessage = '';
 
 // Logging utility function
 function log(message, level = 'info') {
-    if (DEBUG_MODE || level === 'warn') {
-        console[level](message);
+    const validLevels = ['info', 'warn', 'error', 'debug'];
+
+    // Validate the log level
+    if (!validLevels.includes(level)) {
+        console.warn(`Invalid log level: ${level}. Defaulting to 'info'.`);
+        level = 'info';
+    }
+
+    if (DEBUG_MODE || level !== 'info') {
+        if (level === 'warn' && message === lastWarningMessage) return;
+        console[level](`[${level.toUpperCase()}] ${message}`);
+        if (level === 'warn') lastWarningMessage = message;
     }
 }
 
@@ -946,24 +957,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     map.on('zoomend', manageZoomWarning);
 
-    //responsible for attaching a click event to a specific region layer on the map.  
+    //responsible for attaching a click event to a specific region layer on the map.
     function setRegionClickEvent(regionSource, regionIdProp, regionNameProp) {
         map.on('click', (e) => {
             const features = map.queryRenderedFeatures(e.point, { layers: [`${regionSource}-fill`] });
-
+    
             if (features.length > 0) {
                 const clickedRegionId = features[0].properties[regionIdProp];
                 const regionName = features[0].properties[regionNameProp];
-
+    
                 if (!regionsWithFacilities.has(clickedRegionId)) {
                     log(`Region "${regionName}" with ID ${clickedRegionId} does not have facilities.`, 'warn');
-
+    
                     const sidebar = document.getElementById('hospital-list-sidebar');
                     if (sidebar) sidebar.style.display = 'none';
-
+    
                     toggleVisibility(['state-markers'], 'visible');
                     toggleVisibility(['location-markers', 'clusters', 'cluster-count', 'unclustered-point'], 'none');
-
+    
                     const regionZoomLevels = {
                         AW: 10,
                         IT: 6,
@@ -972,7 +983,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         default: 4,
                     };
                     const customZoom = regionZoomLevels[clickedRegionId] || regionZoomLevels.default;
-
+    
                     map.flyTo({
                         center: map.getCenter(),
                         zoom: customZoom,
@@ -980,23 +991,22 @@ document.addEventListener("DOMContentLoaded", () => {
                         essential: true,
                         easing: (t) => t * (2 - t),
                     });
-
                     return;
                 }
-
+    
                 loadFacilitiesData()
-                    .then(facilities => {
+                    .then((facilities) => {
                         showSpinner();
                         log(`Loading facilities for region: ${clickedRegionId}`, 'info');
-
+    
                         handleStateClick(clickedRegionId, facilities);
                         populateSidebar(
                             clickedRegionId,
                             regionName,
-                            facilities.filter(facility => facility.region_id === clickedRegionId)
+                            facilities.filter((facility) => facility.region_id === clickedRegionId)
                         );
                     })
-                    .catch(error => {
+                    .catch((error) => {
                         log('Error fetching facilities data:', 'warn');
                         log(error, 'warn');
                         displayErrorMessage(error);
@@ -1005,14 +1015,13 @@ document.addEventListener("DOMContentLoaded", () => {
                         hideSpinner();
                     });
             } else {
-                log('Clicked outside any region or state.', 'warn');
-
+                // Handle clicks outside any region
                 const sidebar = document.getElementById('hospital-list-sidebar');
                 if (sidebar) sidebar.style.display = 'none';
-
+    
                 toggleVisibility(['state-markers'], 'visible');
                 toggleVisibility(['location-markers', 'clusters', 'cluster-count', 'unclustered-point'], 'none');
-
+    
                 const regionZoomLevels = {
                     usa: 4,
                     uk: 5,
@@ -1021,7 +1030,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     aruba: 10,
                 };
                 const defaultZoom = regionZoomLevels[currentRegion] || 4;
-
+    
                 map.flyTo({
                     center: regions[currentRegion]?.center || map.getCenter(),
                     zoom: defaultZoom,
@@ -1032,7 +1041,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
-
+    
     //the initialization point for actions and event handlers that require the map to be fully loaded. 
     map.on('load', () => {
         showSpinner();
@@ -1835,37 +1844,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 hoveredRegionId = null;
             };
 
-            // Clear region selection
-            // const clearRegionSelection = () => {
-
-            //     if (!selectedRegionId && !hoveredRegionId) {
-            //         console.log('No region currently selected or hovered. Skipping clear.');
-            //         return;
-            //     }
-
-            //     console.log('Clearing region selection and hover');
-            //     // const regionSources = ['us-states', 'canada-regions', 'aruba-region', 'italy-regions', 'uk-regions'];
-
-            //     regionSources.forEach((regionSource) => {
-            //         if (selectedRegionId) {
-            //             map.setFeatureState({ source: regionSource, id: selectedRegionId }, { selected: false });
-            //         }
-            //         if (hoveredRegionId) {
-            //             map.setFeatureState({ source: regionSource, id: hoveredRegionId }, { hover: false });
-            //         }
-            //     });
-
-            //     selectedRegionId = null;
-            //     hoveredRegionId = null;
-            // };
-
             const clearRegionSelection = () => {
                 if (!selectedRegionId && !hoveredRegionId) {
                     console.log('No region currently selected or hovered. Skipping clear.');
                     return;
                 }
 
-                console.log('Clearing region selection and hover');
+                // console.log('Clearing region selection and hover');
                 regionSources.forEach((regionSource) => {
                     if (selectedRegionId) {
                         map.setFeatureState({ source: regionSource, id: selectedRegionId }, { selected: false });
@@ -1882,19 +1867,19 @@ document.addEventListener("DOMContentLoaded", () => {
             // Select a region
             const selectRegion = (regionId) => {
                 if (regionId === selectedRegionId) {
-                    console.log(`Region ${regionId} already selected. Skipping.`);
+                    // console.log(`Region ${regionId} already selected. Skipping.`);
                     return;
                 }
                 clearRegionSelection();
                 selectedRegionId = regionId;
                 map.setFeatureState({ source: sourceId, id: selectedRegionId }, { selected: true });
-                console.log(`Region ${regionId} selected.`);
+                // console.log(`Region ${regionId} selected.`);
                 updateSidebarForRegion(regionId);
             };
 
             // Update sidebar with selected region information
             const updateSidebarForRegion = (regionId) => {
-                console.log(`Updating sidebar for region: ${regionId}`);
+                // console.log(`Updating sidebar for region: ${regionId}`);
                 const sidebar = document.getElementById('hospital-list-sidebar');
                 const title = sidebar.querySelector('h2');
                 title.innerText = `Facilities in Region ${regionId}`;
@@ -1941,7 +1926,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const regionId = e.features[0].id;
 
                 if (regionsWithFacilities.has(regionId)) {
-                    console.log(`Clicked Region ID: ${regionId}`);
+                    // console.log(`Clicked Region ID: ${regionId}`);
                     selectRegion(regionId);
                 } else {
                     console.warn(`Clicked region "${regionId}" does not have facilities.`);
@@ -2020,11 +2005,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
 
-            if (selectedStateId) {
-                console.log(`Clearing selected state for Italy and UK.`);
-                map.setFeatureState({ source: 'italy-regions', id: selectedStateId }, { selected: false });
-                map.setFeatureState({ source: 'uk-regions', id: selectedStateId }, { selected: false });
-            }
+            // if (selectedStateId) {
+            //     console.log(`Clearing selected state for Italy and UK.`);
+            //     map.setFeatureState({ source: 'italy-regions', id: selectedStateId }, { selected: false });
+            //     map.setFeatureState({ source: 'uk-regions', id: selectedStateId }, { selected: false });
+            // }
 
 
             // Resets the selected state
@@ -2033,8 +2018,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Attach event listener to the close button
         document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
-
-
 
         //drag-and-drop functionality for an element
         let isDragging = false;
