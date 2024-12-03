@@ -174,7 +174,6 @@ document.addEventListener("DOMContentLoaded", () => {
         event.stopPropagation();
     });
     const gtLogo = document.querySelector('.sidebar-logo');
-    // const backButton = document.createElement('button');
     const backButton = document.getElementById('back-button');
 
     // Global variable
@@ -405,7 +404,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    //populate the sidebar function
+    //populate the sidebar function.
     function populateSidebar(regionId, regionName, facilities) {
         const list = document.getElementById('hospital-list');
         list.innerHTML = '';
@@ -435,7 +434,7 @@ document.addEventListener("DOMContentLoaded", () => {
             } else {
                 uniqueHealthSystems.set(parentCompany, {
                     ...hospital,
-                    hospital_count: hospital.hospital_count || 1, // Initialize count
+                    hospital_count: hospital.hospital_count || 1,
                 });
             }
 
@@ -484,15 +483,14 @@ document.addEventListener("DOMContentLoaded", () => {
             <div><strong>Hospital Count:</strong> ${hospital.hospital_count || 1}</div>
             `;
 
-            listItem.querySelector('.clickable-hospital').addEventListener('click', () => {
-                if (!sessionStartingView) {
-                    sessionStartingView = {
-                        center: map.getCenter(),
-                        zoom: map.getZoom(),
-                        pitch: map.getPitch(),
-                        bearing: map.getBearing(),
-                    };
-                }
+            listItem.addEventListener('click', () => {
+                // Update session view before flying to facility
+                sessionStartingView = {
+                    center: map.getCenter(),
+                    zoom: map.getZoom(),
+                    pitch: map.getPitch(),
+                    bearing: map.getBearing(),
+                };
 
                 // Fly to the hospital's location
                 map.flyTo({
@@ -500,14 +498,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     zoom: 12,
                     pitch: 45,
                     bearing: 0,
-                    essential: true,
                     duration: 2000,
                     easing: (t) => t * (2 - t),
                 });
 
                 // Show the back button and hide the home logo
                 backButton.style.display = 'block';
-                gtLogo.style.display = 'none'; // Ensure home logo is hidden
+                gtLogo.style.display = 'none';
             });
 
             list.appendChild(listItem);
@@ -524,15 +521,20 @@ document.addEventListener("DOMContentLoaded", () => {
                     zoom: sessionStartingView.zoom,
                     pitch: sessionStartingView.pitch,
                     bearing: sessionStartingView.bearing,
-                    essential: true,
                     duration: 2000,
                     easing: (t) => t * (2 - t),
                 });
-            }
 
-            // Hide the back button and show the home logo again
-            backButton.style.display = 'none';
-            gtLogo.style.display = 'block'; // Ensure home logo reappears
+                // Reset session view after use
+                sessionStartingView = null;
+
+                // Hide the back button and show the home logo again
+                backButton.style.display = 'none';
+                gtLogo.style.display = 'block';
+            } else {
+                console.warn('No previous session view stored. Falling back to default region.');
+                flyToRegion(currentRegion || 'usa');
+            }
         });
     }
 
@@ -961,20 +963,27 @@ document.addEventListener("DOMContentLoaded", () => {
     function setRegionClickEvent(regionSource, regionIdProp, regionNameProp) {
         map.on('click', (e) => {
             const features = map.queryRenderedFeatures(e.point, { layers: [`${regionSource}-fill`] });
-    
+
             if (features.length > 0) {
                 const clickedRegionId = features[0].properties[regionIdProp];
                 const regionName = features[0].properties[regionNameProp];
-    
+
+                sessionStartingView = {
+                    center: map.getCenter(),
+                    zoom: map.getZoom(),
+                    pitch: map.getPitch(),
+                    bearing: map.getBearing(),
+                };
+
                 if (!regionsWithFacilities.has(clickedRegionId)) {
                     log(`Region "${regionName}" with ID ${clickedRegionId} does not have facilities.`, 'warn');
-    
+
                     const sidebar = document.getElementById('hospital-list-sidebar');
                     if (sidebar) sidebar.style.display = 'none';
-    
+
                     toggleVisibility(['state-markers'], 'visible');
                     toggleVisibility(['location-markers', 'clusters', 'cluster-count', 'unclustered-point'], 'none');
-    
+
                     const regionZoomLevels = {
                         AW: 10,
                         IT: 6,
@@ -983,7 +992,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         default: 4,
                     };
                     const customZoom = regionZoomLevels[clickedRegionId] || regionZoomLevels.default;
-    
+
                     map.flyTo({
                         center: map.getCenter(),
                         zoom: customZoom,
@@ -993,12 +1002,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     });
                     return;
                 }
-    
+
                 loadFacilitiesData()
                     .then((facilities) => {
                         showSpinner();
                         log(`Loading facilities for region: ${clickedRegionId}`, 'info');
-    
+
                         handleStateClick(clickedRegionId, facilities);
                         populateSidebar(
                             clickedRegionId,
@@ -1018,10 +1027,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Handle clicks outside any region
                 const sidebar = document.getElementById('hospital-list-sidebar');
                 if (sidebar) sidebar.style.display = 'none';
-    
+
                 toggleVisibility(['state-markers'], 'visible');
                 toggleVisibility(['location-markers', 'clusters', 'cluster-count', 'unclustered-point'], 'none');
-    
+
                 const regionZoomLevels = {
                     usa: 4,
                     uk: 5,
@@ -1030,7 +1039,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     aruba: 10,
                 };
                 const defaultZoom = regionZoomLevels[currentRegion] || 4;
-    
+
                 map.flyTo({
                     center: regions[currentRegion]?.center || map.getCenter(),
                     zoom: defaultZoom,
@@ -1041,7 +1050,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
-    
+
     //the initialization point for actions and event handlers that require the map to be fully loaded. 
     map.on('load', () => {
         showSpinner();
@@ -1050,8 +1059,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Set flat projection
         // map.setProjection('mercator');
-
-        //let isFirstLoad = true; // Declare outside the callback
 
         if (isFirstLoad) {
             log('First map load: Flying to USA view', 'info');
@@ -1409,8 +1416,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     // Create a custom marker element
                     const markerElement = document.createElement('div');
                     markerElement.className = 'custom-marker';
-                    // markerElement.style.backgroundImage = `url('./img/redDot.png')`;
-                    // markerElement.style.backgroundImage = `url('./img/orangeDot.png')`;
                     markerElement.style.backgroundImage = `url('./img/gtLogo.png')`;
                     markerElement.style.width = '12px';
                     markerElement.style.height = '12px';
@@ -1886,7 +1891,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // Add logic to populate facilities in the sidebar
                 const list = document.getElementById('hospital-list');
-                list.innerHTML = ''; // Clear existing entries
+                list.innerHTML = ''; 
 
                 const facilitiesInRegion = facilitiesData.filter(
                     (facility) => facility.region_id === regionId
