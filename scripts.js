@@ -308,49 +308,91 @@ document.addEventListener("DOMContentLoaded", () => {
     observer.observe(sidebar, { childList: true, subtree: true });
 
     // Event listener for back-to-top button scroll
-    backToTopButton.addEventListener('click', () => {
-        sidebar.scrollTo({ top: 0, behavior: "smooth" });
-    });
+    
+    // backToTopButton.addEventListener('click', () => {
+    //     sidebar.scrollTo({ top: 0, behavior: "smooth" });
+    // });
 
-    sidebar.addEventListener('touchstart', () => {
-        if (!sidebar.classList.contains('collapsed')) {
-            toggleBackToTopButton();
-        }
-    }, { passive: false });
+    // sidebar.addEventListener('touchstart', () => {
+    //     if (!sidebar.classList.contains('collapsed')) {
+    //         toggleBackToTopButton();
+    //     }
+    // }, { passive: false });
 
-    document.getElementById('minimize-sidebar').addEventListener('click', () => {
-        sidebar.classList.toggle('collapsed');
+    // document.getElementById('minimize-sidebar').addEventListener('click', () => {
+    //     sidebar.classList.toggle('collapsed');
 
-        // Reset sidebar scroll state after minimizing or reopening
-        if (!sidebar.classList.contains('collapsed')) {
+    //     // Reset sidebar scroll state after minimizing or reopening
+    //     if (!sidebar.classList.contains('collapsed')) {
+    //         sidebar.scrollTo(0, 0);
+    //     }
+
+    //     // delay to recalculate dimensions accurately after transition
+    //     setTimeout(() => {
+    //         toggleBackToTopButton();
+    //     }, 200);
+
+    //     // minimize icon based on sidebar state
+    //     const minimizeIcon = document.getElementById('minimize-sidebar').querySelector('i');
+    //     if (sidebar.classList.contains('collapsed')) {
+    //         minimizeIcon.classList.remove('fa-chevron-up');
+    //         minimizeIcon.classList.add('fa-chevron-down');
+    //     } else {
+    //         minimizeIcon.classList.remove('fa-chevron-down');
+    //         minimizeIcon.classList.add('fa-chevron-up');
+    //     }
+
+    //     // Event listener for sidebar minimize/expand button
+    //     const minimizeButton = document.getElementById("minimize-sidebar");
+    //     if (minimizeButton) {
+    //         minimizeButton.addEventListener("click", () => {
+    //             sidebar.classList.toggle("collapsed");
+    //             toggleBackToTopButton();
+    //         });
+    //     }
+
+    // });
+
+    // Event listener for back-to-top button scroll
+backToTopButton.addEventListener('click', () => {
+    sidebar.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+// Sidebar touch event listener for back-to-top button visibility
+sidebar.addEventListener('scroll', () => {
+    if (!sidebar.classList.contains('collapsed')) {
+        toggleBackToTopButton();
+    }
+}, { passive: true });
+
+// Sidebar minimize/expand functionality
+const minimizeButton = document.getElementById("minimize-sidebar");
+if (minimizeButton) {
+    minimizeButton.addEventListener("click", () => {
+        // Toggle the collapsed state of the sidebar
+        sidebar.classList.toggle("collapsed");
+
+        // Reset sidebar scroll state after expanding
+        if (!sidebar.classList.contains("collapsed")) {
             sidebar.scrollTo(0, 0);
         }
 
-        // delay to recalculate dimensions accurately after transition
+        // Delay to ensure dimensions are recalculated accurately after transition
         setTimeout(() => {
             toggleBackToTopButton();
         }, 200);
 
-        // minimize icon based on sidebar state
-        const minimizeIcon = document.getElementById('minimize-sidebar').querySelector('i');
-        if (sidebar.classList.contains('collapsed')) {
-            minimizeIcon.classList.remove('fa-chevron-up');
-            minimizeIcon.classList.add('fa-chevron-down');
+        // Update the minimize icon based on the sidebar state
+        const minimizeIcon = minimizeButton.querySelector("i");
+        if (sidebar.classList.contains("collapsed")) {
+            minimizeIcon.classList.remove("fa-chevron-up");
+            minimizeIcon.classList.add("fa-chevron-down");
         } else {
-            minimizeIcon.classList.remove('fa-chevron-down');
-            minimizeIcon.classList.add('fa-chevron-up');
+            minimizeIcon.classList.remove("fa-chevron-down");
+            minimizeIcon.classList.add("fa-chevron-up");
         }
-
-        // Event listener for sidebar minimize/expand button
-        const minimizeButton = document.getElementById("minimize-sidebar");
-        if (minimizeButton) {
-            minimizeButton.addEventListener("click", () => {
-                sidebar.classList.toggle("collapsed");
-                toggleBackToTopButton();
-            });
-        }
-
     });
+}
 
     // Event listener for touchstart on the sidebar (for mobile)
     sidebar.addEventListener(
@@ -967,23 +1009,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!regionsWithFacilities.has(clickedRegionId)) {
                     log(`Region "${regionName}" with ID ${clickedRegionId} does not have facilities.`, 'warn');
 
-                    const sidebar = document.getElementById('hospital-list-sidebar');
+                    // const sidebar = document.getElementById('hospital-list-sidebar');
                     if (sidebar) sidebar.style.display = 'none';
 
                     toggleVisibility(['state-markers'], 'visible');
                     toggleVisibility(['location-markers', 'clusters', 'cluster-count', 'unclustered-point'], 'none');
-
-                    // function getRegionZoomLevel(regionId) {
-                    //     const regionZoomLevels = {
-                    //         USA: 4,
-                    //         ENG: 5,
-                    //         IT: 6,
-                    //         CAN: 3,
-                    //         AW: 10,
-                    //         default: 4,
-                    //     };
-                    //     return regionZoomLevels[regionId] || regionZoomLevels.default;
-                    // }
 
                     const regionZoomLevels = {
                         AW: 10,
@@ -1026,7 +1056,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     });
             } else {
                 // Handle clicks outside any region
-                const sidebar = document.getElementById('hospital-list-sidebar');
+                // const sidebar = document.getElementById('hospital-list-sidebar');
                 if (sidebar) sidebar.style.display = 'none';
 
                 toggleVisibility(['state-markers'], 'visible');
@@ -1138,21 +1168,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     console.warn(`No zoom threshold defined for region: ${currentRegion}`);
                     markerZoomThreshold = 4;
             }
-
-            // function getZoomThreshold(region) {
-            //     const thresholds = {
-            //         usa: 4.5,
-            //         uk: 5,
-            //         italy: 6,
-            //         aruba: 10,
-            //         canada: 7,
-            //         reset: 1,
-            //         fitToUSA: 2,
-            //     };
-            //     return thresholds[region] || 4; // Default threshold
-            // }
-            // const markerZoomThreshold = getZoomThreshold(currentRegion);
-
 
             // Initialize zoom warning visibility and tooltip logic
             manageZoomWarning();
@@ -1826,8 +1841,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
             const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
 
-            // Apply hover effect
+            let hoverTimeout;
+//Apply Hover
             const applyHover = (regionId) => {
+                if (!regionsWithFacilities.has(regionId)) return;
                 if (hoveredRegionId && hoveredRegionId !== selectedRegionId) {
                     map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
                 }
@@ -1836,14 +1853,45 @@ document.addEventListener("DOMContentLoaded", () => {
                     map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: true });
                 }
             };
+            
+    const interactionDelay = map.getZoom() > 6 ? 150 : 300;
 
-            // Clear hover effect
-            const clearHover = () => {
+           // Throttled clear hover effect
+           const clearHover = () => {
+            clearTimeout(hoverTimeout);
+            hoverTimeout = setTimeout(() => {
                 if (hoveredRegionId && hoveredRegionId !== selectedRegionId) {
                     map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
                 }
+        
+                // Ensure no lingering hover states remain in rendered features
+                map.queryRenderedFeatures({ layers: [layerId] }).forEach((feature) => {
+                    if (feature.id !== selectedRegionId) {
+                        map.setFeatureState({ source: sourceId, id: feature.id }, { hover: false });
+                    }
+                });
+
+                console.log(`Cleared hover for region: ${hoveredRegionId}`);
+
+        
                 hoveredRegionId = null;
-            };
+            }, interactionDelay);
+        };
+        
+
+map.off(hoverEvent, layerId);
+map.off('mouseleave', layerId);
+map.off('touchend', layerId);
+
+// Attach hover and touch interactions
+map.on(hoverEvent, layerId, (e) => {
+    const regionId = e.features?.[0]?.id;
+    if (regionId) applyHover(regionId);
+});
+
+const clearEvent = isTouchDevice ? 'touchend' : 'mouseleave';
+map.on(clearEvent, layerId, clearHover);
+
 
             //Clear selection
             function clearRegionSelection() {
@@ -1859,18 +1907,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     });
                     hoveredRegionId = null;
                 }
-
-                // Reset the lastAction to avoid unexpected state changes
-                lastAction = null;
+                lastAction = null; // Reset last action
             }
-
-            document.getElementById('close-sidebar').addEventListener('click', () => {
-                // console.log('Closing sidebar. Clearing selection...');
-                clearRegionSelection();
-                closeSidebar();
-                resetToSessionView();
-                // console.log('After close button click:', { selectedRegionId, hoveredRegionId });
-            });
 
             // Select a region
             const selectRegion = (regionId) => {
@@ -1888,7 +1926,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Update sidebar with selected region information
             const updateSidebarForRegion = (regionId) => {
                 // console.log(`Updating sidebar for region: ${regionId}`);
-                const sidebar = document.getElementById('hospital-list-sidebar');
+                // const sidebar = document.getElementById('hospital-list-sidebar');
                 const title = sidebar.querySelector('h2');
                 title.innerText = `Facilities in Region ${regionId}`;
 
@@ -1913,21 +1951,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             };
 
-            // Attach hover interactions
-            if (!map.getLayer(layerId)) {
-                console.warn(`Layer ${layerId} does not exist. Skipping interaction setup.`);
-                return;
-            }
-
-            // Attach hover interactions
-            map.on(hoverEvent, layerId, (e) => {
-                const regionId = e.features[0].id;
-                if (regionId) {
-                    applyHover(regionId);
-                }
-            });
-            map.on('mouseleave', layerId, clearHover);
-
             // Attach click interactions
             map.on('click', layerId, (e) => {
                 const regionId = e.features[0].id;
@@ -1939,41 +1962,50 @@ document.addEventListener("DOMContentLoaded", () => {
                     console.warn(`Clicked region "${regionId}" does not have facilities.`);
                 }
 
-                // console.log(`Hovered Region: ${hoveredRegionId}, Selected Region: ${selectedRegionId}`);
+                console.log(`Hovered Region: ${hoveredRegionId}, Selected Region: ${selectedRegionId}`);
 
             });
 
             // Sidebar Close Button. Attach clear interactions to sidebar close button
-            document.getElementById('close-sidebar').addEventListener('click', () => {
-                clearRegionSelection();
-                sidebar.style.display = 'none';
-
-                // Determine the view to revert to based on `lastAction`
-                if (lastAction === 'fitToUSA') {
-                    map.fitBounds([
-                        [-165.031128, 65.476793],
-                        [-81.131287, 26.876143],
-                    ]);
-                } else if (lastAction === 'reset') {
-                    map.flyTo({
-                        center: INITIAL_CENTER,
-                        zoom: INITIAL_ZOOM,
-                        pitch: 0,
-                        bearing: 0,
-                        duration: 1000,
-                    });
-                } else if (sessionStartingView) {
-                    map.flyTo({
-                        center: sessionStartingView.center,
-                        zoom: sessionStartingView.zoom,
-                        pitch: sessionStartingView.pitch,
-                        bearing: sessionStartingView.bearing,
-                        duration: 1000,
-                    });
-                } else {
-                    console.warn('No valid view to revert to.');
-                }
+            const closeSidebarButton = document.getElementById('close-sidebar');
+// Ensure the listener is attached only once
+if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
+    closeSidebarButton.setAttribute('data-listener-attached', 'true');
+    closeSidebarButton.addEventListener('click', () => {
+        // Clear region selection
+        clearRegionSelection();
+        // Hide the sidebar
+        closeSidebar();
+        // Determine the view to revert to
+        if (lastAction === 'fitToUSA') {
+            map.fitBounds([
+                [-165.031128, 65.476793],
+                [-81.131287, 26.876143],
+            ]);
+        } else if (lastAction === 'reset') {
+            map.flyTo({
+                center: INITIAL_CENTER,
+                zoom: INITIAL_ZOOM,
+                pitch: 0,
+                bearing: 0,
+                duration: 1000,
             });
+        } else if (sessionStartingView) {
+            map.flyTo({
+                center: sessionStartingView.center,
+                zoom: sessionStartingView.zoom,
+                pitch: sessionStartingView.pitch,
+                bearing: sessionStartingView.bearing,
+                duration: 1000,
+            });
+        } else {
+            console.warn('No valid session view found.');
+        }
+
+        // Log for debugging
+        console.log(`Sidebar closed. Selection cleared, last action: ${lastAction}`);
+    });
+}
 
             // Fit-to-USA Button
             document.getElementById('fit-to-usa').addEventListener('click', () => {
@@ -1983,8 +2015,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     pitch: map.getPitch(),
                     bearing: map.getBearing(),
                 };
-                closeSidebar();
                 clearRegionSelection();
+                closeSidebar();
                 lastAction = 'fitToUSA';
                 map.fitBounds([
                     [-165.031128, 65.476793],
@@ -2000,8 +2032,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     pitch: map.getPitch(),
                     bearing: map.getBearing(),
                 };
-                closeSidebar();
                 clearRegionSelection();
+                closeSidebar();
                 lastAction = 'reset';
                 map.flyTo({
                     center: INITIAL_CENTER,
@@ -2010,12 +2042,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     bearing: 0,
                     duration: 1000,
                 });
-            });
+            }); 
         }
 
         //hide the sidebar and update the state of the map
         function closeSidebar() {
-            const sidebar = document.getElementById('hospital-list-sidebar');
+            // const sidebar = document.getElementById('hospital-list-sidebar');
             if (!sidebar) {
                 console.warn('Sidebar element not found.');
                 return;
@@ -2045,15 +2077,6 @@ document.addEventListener("DOMContentLoaded", () => {
             } else {
                 // console.log('No sessionStartingView found. Staying in the current view.');
             }
-        }
-
-        const closeSidebarButton = document.getElementById('close-sidebar');
-        if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
-            closeSidebarButton.setAttribute('data-listener-attached', 'true');
-            closeSidebarButton.addEventListener('click', () => {
-                // console.log('Sidebar closed via close button.');
-                closeSidebar();
-            });
         }
 
         //drag-and-drop functionality for an element

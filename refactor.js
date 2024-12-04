@@ -14,18 +14,17 @@ import { fetchAndCache, getCachedData, isCacheStale, preCacheFiles, clearCache }
         { url: './data/canada-regions.geojson', key: 'canadaRegions' },
         { url: './data/aruba-region.geojson', key: 'arubaRegion' }
     ]
-    
     try {
         // Pre-cache all files with a 24-hour expiry
         await preCacheFiles(filesToCache, 24);
 
         // cached data
         const facilities = getCachedData('facilities');
-        console.log('Cached facilities:', facilities);
+        // console.log('Cached facilities:', facilities);
 
         // Checking if the 'facilities' cache is stale (older than 24 hours)
         const isStale = isCacheStale('facilities', 24);
-        console.log('Is facilities cache stale?', isStale);
+        // console.log('Is facilities cache stale?', isStale);
 
         // Clear cache when user completes their session
         window.addEventListener('beforeunload', clearCache);
@@ -116,6 +115,16 @@ function log(message, level = 'info') {
         if (level === 'warn') lastWarningMessage = message;
     }
 }
+
+const loggedWarnings = new Set();
+function logWarningOnce(message) {
+    if (!loggedWarnings.has(message)) {
+        console.warn(message);
+        loggedWarnings.add(message);
+    }
+}
+// Use `logWarningOnce` instead of `console.warn` for repetitive warnings.
+
 
 // Initial zoom based on screen width
 function getInitialZoom() {
@@ -314,7 +323,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Reset sidebar scroll state after minimizing or reopening
         if (!sidebar.classList.contains('collapsed')) {
-            sidebar.scrollTo(0, 0); // Reset to the top
+            sidebar.scrollTo(0, 0);
         }
 
         // delay to recalculate dimensions accurately after transition
@@ -337,7 +346,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (minimizeButton) {
             minimizeButton.addEventListener("click", () => {
                 sidebar.classList.toggle("collapsed");
-                toggleBackToTopButton(); // Ensure the button visibility is updated
+                toggleBackToTopButton();
             });
         }
 
@@ -384,12 +393,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 promoteId: promoteId,
             });
 
-            console.log(`Source with ID "${sourceId}" added successfully.`);
+            // console.log(`Source with ID "${sourceId}" added successfully.`);
         }
         // else {
-            console.warn(`Source with ID "${sourceId}" already exists. Skipping addition.`);
+        // console.warn(`Source with ID "${sourceId}" already exists. Skipping addition.`);
         // }
-        console.log('Current sources:', map.getStyle().sources);
+        // console.log('Current sources:', map.getStyle().sources);
     }
 
     // Adjusting sidebar height based on content size
@@ -547,17 +556,6 @@ document.addEventListener("DOMContentLoaded", () => {
         };
     }
 
-    // Dynamic Sizing
-    function adjustMarkerSize(zoomLevel) {
-        // Scale marker size more conservatively
-        const size = Math.max(6, Math.min(20, zoomLevel * 3));
-        document.querySelectorAll('.custom-marker').forEach(marker => {
-            marker.style.width = `${size}px`;
-            marker.style.height = `${size}px`;
-        });
-        console.log(`Adjusted marker size to: ${size}px at zoom level ${zoomLevel}`);
-    }
-
     function createCustomMarker(lng, lat, popupContent, regionId) {
         // Create a custom marker element
         const markerElement = document.createElement('div');
@@ -596,30 +594,22 @@ document.addEventListener("DOMContentLoaded", () => {
         };
     }
 
-    // Original updateMarkers function
+    // Updated updateMarkers function
     function updateMarkers() {
-        if (!markersDataReady) {
-            console.warn('Markers data is not ready yet. Skipping updateMarkers.');
+        // Check if markersData is populated
+        if (!markersData || markersData.length === 0) {
+            // console.warn('Markers data is not ready. Skipping updateMarkers.');
             return;
         }
 
         // console.log('updateMarkers called');
-
-        // Check if markersData is available
-        if (!markersData || markersData.length === 0) {
-            console.warn('Markers Data is empty. Skipping updateMarkers.');
-            return;
-        }
-
         const bounds = map.getBounds();
         if (!bounds || !bounds._sw || !bounds._ne) {
             console.error('Invalid map bounds:', bounds);
             return;
         }
 
-        // console.log('Map Bounds:', bounds);
-
-        // Remove existing markers from the map
+        // Clear existing markers from the map
         markers.forEach(marker => marker.remove());
         markers = [];
 
@@ -629,16 +619,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 index === self.findIndex(m => m.lng === marker.lng && m.lat === marker.lat)
         );
 
-        // console.log(`Total Markers Data: ${markersData.length}`);
-        // console.log(`Markers added: ${markers.length}`);
-        // console.log(`Unique Markers to Add: ${uniqueMarkers.length}`);
-
         // Add markers within visible bounds
         uniqueMarkers.forEach(markerData => {
             const { lng, lat, popupContent } = markerData;
 
             if (bounds.contains([lng, lat])) {
-                // console.log(`Adding marker at: ${lng}, ${lat}`);
                 const marker = createCustomMarker(lng, lat, popupContent).addTo(map);
                 markers.push(marker);
             }
@@ -665,44 +650,40 @@ document.addEventListener("DOMContentLoaded", () => {
         default: 4,
     };
 
-   // Handle visibility updates more robustly:
     function updateMarkerVisibility(region, zoomLevel) {
-        const threshold = regionZoomThresholds[region] || regionZoomThresholds.default;
-        const layersToShow = zoomLevel > threshold ? ['location-markers'] : ['state-markers'];
-        const layersToHide = zoomLevel > threshold ? ['state-markers'] : ['location-markers'];
-    
-        layersToShow.forEach(layer => toggleVisibility([layer], 'visible'));
-        layersToHide.forEach(layer => toggleVisibility([layer], 'none'));
+        const threshold = regionZoomThresholds[region] ?? regionZoomThresholds.default;
+        const isStateView = zoomLevel <= threshold;
+
+        const visibilityConfig = {
+            visible: isStateView ? ['state-markers'] : ['location-markers'],
+            hidden: isStateView ? ['location-markers', 'clusters', 'unclustered-point', 'cluster-count'] : ['state-markers'],
+        };
+
+        Object.entries(visibilityConfig).forEach(([action, layers]) => {
+            layers.forEach(layer => toggleVisibility([layer], action === 'visible' ? 'visible' : 'none'));
+        });
     }
-    
 
-    // function updateMarkerVisibility(region, zoomLevel) {
-    //     const markerZoomThreshold = regionZoomThresholds[region] || 'usa' ? 4 : 5;
-    //     const currentZoom = map.getZoom();
+    let lastZoomLevel = null;
+    // Dynamic Sizing
+    function adjustMarkerSize(zoomLevel) {
+        // Avoid redundant updates for the same zoom level
+        if (lastZoomLevel === zoomLevel) return;
+        lastZoomLevel = zoomLevel;
 
-    //     if (zoomLevel <= markerZoomThreshold) {
-    //         toggleVisibility(['state-markers'], 'visible');
-    //         toggleVisibility(['location-markers', 'clusters', 'unclustered-point', 'cluster-count'], 'none');
-    //     } else {
-    //         toggleVisibility(['state-markers'], 'none');
-    //         toggleVisibility(['location-markers'], 'visible');
-    //     }
-    // }
+        // Calculate marker size, scaling conservatively
+        const size = Math.max(6, Math.min(20, zoomLevel * 3));
 
-// Add a buffer to marker size calculation to avoid frequent size changes during small zoom level adjustments.
-// Cache the current zoom level to prevent redundant updates if the zoom hasn’t changed.
+        // Update the size of all custom markers with optional smooth transitions
+        document.querySelectorAll('.custom-marker').forEach(marker => {
+            marker.style.transition = 'width 0.2s, height 0.2s';
+            marker.style.width = `${size}px`;
+            marker.style.height = `${size}px`;
+        });
 
-//     let lastZoomLevel = null;
-// function adjustMarkerSize(zoomLevel) {
-//     if (lastZoomLevel === zoomLevel) return;
-//     lastZoomLevel = zoomLevel;
-//     const size = Math.max(6, Math.min(20, zoomLevel * 3));
-//     document.querySelectorAll('.custom-marker').forEach(marker => {
-//         marker.style.width = `${size}px`;
-//         marker.style.height = `${size}px`;
-//     });
-//     console.log(`Adjusted marker size to: ${size}px at zoom level ${zoomLevel}`);
-// }
+        // Log the size adjustment for debugging
+        console.log(`Adjusted marker size to: ${size}px at zoom level ${zoomLevel}`);
+    }
 
     // reset the map view based on the previously stored session view
     function resetToSessionView() {
@@ -825,7 +806,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Check for small screens and adjust bounds for regions
         if (window.innerWidth <= 480 && regionBounds[region]) {
             map.fitBounds(regionBounds[region], {
-                padding: 20, 
+                padding: 20,
                 maxZoom: 4.5,
                 duration: 2000,
             });
@@ -866,7 +847,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll(".region-button").forEach(button => button.classList.remove("active"));
         document.getElementById(`fly-to-${region}`).classList.add("active");
     }
-    
+
     //function handles the click event on a region (state) and adjusts the map accordingly.
     function handleStateClick(clickedRegionId, facilitiesData) {
         // console.log(`Clicked Region ID: ${clickedRegionId}`);
@@ -1003,7 +984,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     //     };
                     //     return regionZoomLevels[regionId] || regionZoomLevels.default;
                     // }
-                    
+
                     const regionZoomLevels = {
                         AW: 10,
                         IT: 6,
@@ -1157,6 +1138,21 @@ document.addEventListener("DOMContentLoaded", () => {
                     console.warn(`No zoom threshold defined for region: ${currentRegion}`);
                     markerZoomThreshold = 4;
             }
+
+            // function getZoomThreshold(region) {
+            //     const thresholds = {
+            //         usa: 4.5,
+            //         uk: 5,
+            //         italy: 6,
+            //         aruba: 10,
+            //         canada: 7,
+            //         reset: 1,
+            //         fitToUSA: 2,
+            //     };
+            //     return thresholds[region] || 4; // Default threshold
+            // }
+            // const markerZoomThreshold = getZoomThreshold(currentRegion);
+
 
             // Initialize zoom warning visibility and tooltip logic
             manageZoomWarning();
@@ -1495,7 +1491,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     // const selectedColor = '#05aaff' 
 
                     if (map.getLayer(`${layerId}-fill`)) {
-                        console.warn(`Layer with id "${layerId}-fill" already exists. Skipping addition.`);
+                        // console.warn(`Layer with id "${layerId}-fill" already exists. Skipping addition.`);
                         return;
                     }
 
@@ -1526,12 +1522,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 function addHoverOutlineLayer(map, layerId, sourceId) {
                     if (map.getLayer(layerId)) {
-                        console.warn(`Layer with id "${layerId}" already exists. Skipping addition.`);
+                        // console.warn(`Layer with id "${layerId}" already exists. Skipping addition.`);
                         return;
                     }
 
                     if (map.getLayer(`${layerId}-glow`)) {
-                        console.warn(`Glow layer with id "${layerId}-glow" already exists. Skipping addition.`);
+                        // console.warn(`Glow layer with id "${layerId}-glow" already exists. Skipping addition.`);
                         return;
                     }
 
@@ -1734,7 +1730,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         // Check if the clicked region has facilities
                         if (!regionsWithFacilities.has(clickedRegionId)) {
-                            console.warn(`Region "${clickedRegionName}" with ID ${clickedRegionId} does not have facilities.`);
+                            // console.warn(`Region "${clickedRegionName}" with ID ${clickedRegionId} does not have facilities.`);
                             // Hide the sidebar and reset the selected region ID
                             document.getElementById('hospital-list-sidebar').style.display = 'none';
                             selectedRegionId = null;
@@ -1863,17 +1859,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     });
                     hoveredRegionId = null;
                 }
-            
+
                 // Reset the lastAction to avoid unexpected state changes
                 lastAction = null;
             }
 
             document.getElementById('close-sidebar').addEventListener('click', () => {
-                console.log('Closing sidebar. Clearing selection...');
+                // console.log('Closing sidebar. Clearing selection...');
                 clearRegionSelection();
                 closeSidebar();
                 resetToSessionView();
-                console.log('After close button click:', { selectedRegionId, hoveredRegionId });
+                // console.log('After close button click:', { selectedRegionId, hoveredRegionId });
             });
 
             // Select a region
@@ -1947,27 +1943,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             });
 
-            // // Sidebar Close Button. Attach clear interactions to sidebar close button
-            // const closeSidebarButton = document.getElementById('close-sidebar');
-            // if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
-            //     closeSidebarButton.setAttribute('data-listener-attached', 'true');
-            //     closeSidebarButton.addEventListener('click', () => {
-            //         console.log('Sidebar closed via close button.');
-            //         sidebar.style.display = 'none';
-            //         clearRegionSelection();
-
-            //         if (sessionStartingView) {
-            //             resetToSessionView();
-            //         } else {
-            //             console.warn('No sessionStartingView found. Staying in the current view.');
-            //         }
-            //     });
-            // }
-
+            // Sidebar Close Button. Attach clear interactions to sidebar close button
             document.getElementById('close-sidebar').addEventListener('click', () => {
                 clearRegionSelection();
                 sidebar.style.display = 'none';
-            
+
                 // Determine the view to revert to based on `lastAction`
                 if (lastAction === 'fitToUSA') {
                     map.fitBounds([
@@ -1994,25 +1974,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     console.warn('No valid view to revert to.');
                 }
             });
-            
-            // Fit-to-USA Button
-            // document.getElementById('fit-to-usa').addEventListener('click', () => {
-            //     console.log('Fit-to-USA button clicked.');
-            //     sessionStartingView = {
-            //         center: map.getCenter(),
-            //         zoom: map.getZoom(),
-            //         pitch: map.getPitch(),
-            //         bearing: map.getBearing(),
-            //     };
-            //     closeSidebar();
-            //     clearRegionSelection()
-            //     lastAction = 'fitToUSA';
-            //     map.fitBounds([
-            //         [-165.031128, 65.476793],
-            //         [-81.131287, 26.876143],
-            //     ]);
-            // });
 
+            // Fit-to-USA Button
             document.getElementById('fit-to-usa').addEventListener('click', () => {
                 sessionStartingView = {
                     center: map.getCenter(),
@@ -2028,8 +1991,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     [-81.131287, 26.876143],
                 ]);
             });
-            
 
+            // Reset Button
             document.getElementById('reset-view').addEventListener('click', () => {
                 sessionStartingView = {
                     center: map.getCenter(),
@@ -2048,32 +2011,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     duration: 1000,
                 });
             });
-
-        // Reset Button
-        //     const resetButton = document.getElementById('reset-view');
-        //     if (resetButton && !resetButton.hasAttribute('data-listener-attached')) {
-        //         resetButton.setAttribute('data-listener-attached', 'true');
-        //         resetButton.addEventListener('click', () => {
-        //             console.log('Reset button clicked.');
-        //             sessionStartingView = {
-        //                 center: map.getCenter(),
-        //                 zoom: map.getZoom(),
-        //                 pitch: map.getPitch(),
-        //                 bearing: map.getBearing(),
-        //             };
-        //             closeSidebar();
-        //             clearRegionSelection()
-        //             lastAction = 'reset';
-        //             map.flyTo({
-        //                 center: INITIAL_CENTER,
-        //                 zoom: INITIAL_ZOOM,
-        //                 pitch: 0,
-        //                 bearing: 0,
-        //                 duration: 1000,
-        //             });
-        //         });
-        //     }
-        //     map.on('zoomstart', clearHover);
         }
 
         //hide the sidebar and update the state of the map
@@ -2106,7 +2043,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     duration: 1000,
                 });
             } else {
-                console.log('No sessionStartingView found. Staying in the current view.');
+                // console.log('No sessionStartingView found. Staying in the current view.');
             }
         }
 
@@ -2114,7 +2051,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
             closeSidebarButton.setAttribute('data-listener-attached', 'true');
             closeSidebarButton.addEventListener('click', () => {
-                console.log('Sidebar closed via close button.');
+                // console.log('Sidebar closed via close button.');
                 closeSidebar();
             });
         }
