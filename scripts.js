@@ -116,6 +116,16 @@ function log(message, level = 'info') {
     }
 }
 
+const loggedWarnings = new Set();
+function logWarningOnce(message) {
+    if (!loggedWarnings.has(message)) {
+        console.warn(message);
+        loggedWarnings.add(message);
+    }
+}
+// Use `logWarningOnce` instead of `console.warn` for repetitive warnings.
+
+
 // Initial zoom based on screen width
 function getInitialZoom() {
     if (window.innerWidth <= 480) return 2;
@@ -1855,11 +1865,11 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             document.getElementById('close-sidebar').addEventListener('click', () => {
-                console.log('Closing sidebar. Clearing selection...');
+                // console.log('Closing sidebar. Clearing selection...');
                 clearRegionSelection();
                 closeSidebar();
                 resetToSessionView();
-                console.log('After close button click:', { selectedRegionId, hoveredRegionId });
+                // console.log('After close button click:', { selectedRegionId, hoveredRegionId });
             });
 
             // Select a region
@@ -2033,7 +2043,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     duration: 1000,
                 });
             } else {
-                console.log('No sessionStartingView found. Staying in the current view.');
+                // console.log('No sessionStartingView found. Staying in the current view.');
             }
         }
 
@@ -2041,7 +2051,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
             closeSidebarButton.setAttribute('data-listener-attached', 'true');
             closeSidebarButton.addEventListener('click', () => {
-                console.log('Sidebar closed via close button.');
+                // console.log('Sidebar closed via close button.');
                 closeSidebar();
             });
         }
