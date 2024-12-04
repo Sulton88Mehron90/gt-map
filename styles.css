@@ -463,7 +463,7 @@ button:hover {
 #back-to-top-button.show {
     display: none !important;
 }
-
+/* 1 */
 #back-to-top-button {
     display: none;
     /* button is hidden by default */
@@ -482,14 +482,14 @@ hospital-list-sidebar.collapsed #close-sidebar {
     top: 0;
     margin-right: 5px;
 }
-
+/* 2 */
 #back-to-top-button {
     margin: 10px auto;
     display: block;
     cursor: pointer;
     display: none;
     opacity: 1;
-    transition: opacity 0.3s ease;
+    /* transition: opacity 0.3s ease; */
     position: sticky;
     bottom: 10px;
     opacity: 0.8;
@@ -498,7 +498,8 @@ hospital-list-sidebar.collapsed #close-sidebar {
 #back-to-top-button i {
     margin-top: -1px;
     position: relative;
-    top: -5px;
+    top: 1px;
+    left: -1px;
     padding-bottom: 0;
 }
 
@@ -1277,6 +1278,7 @@ hospital-list-sidebar.collapsed #close-sidebar {
         right: 10px;
         z-index: 999;
         margin-left: 60px;
+        padding: 8px 0;
     }
 /* 
     #back-button {
