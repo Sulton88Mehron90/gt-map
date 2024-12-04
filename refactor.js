@@ -1158,21 +1158,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     markerZoomThreshold = 4;
             }
 
-            // function getZoomThreshold(region) {
-            //     const thresholds = {
-            //         usa: 4.5,
-            //         uk: 5,
-            //         italy: 6,
-            //         aruba: 10,
-            //         canada: 7,
-            //         reset: 1,
-            //         fitToUSA: 2,
-            //     };
-            //     return thresholds[region] || 4; // Default threshold
-            // }
-            // const markerZoomThreshold = getZoomThreshold(currentRegion);
-
-
             // Initialize zoom warning visibility and tooltip logic
             manageZoomWarning();
 
