@@ -120,7 +120,7 @@ function log(message, level = 'info') {
 const loggedWarnings = new Set();
 function logWarningOnce(message) {
     if (!loggedWarnings.has(message)) {
-        console.warn(message);
+        // console.warn(message);
         loggedWarnings.add(message);
     }
 }
@@ -294,12 +294,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const shouldShowButton = !isCollapsed && hasScrolled && isScrollable;
 
-        console.log("Back-to-Top Button Conditions:", {
-            isCollapsed,
-            hasScrolled,
-            isScrollable,
-            shouldShowButton,
-        });
+        // console.log("Back-to-Top Button Conditions:", {
+        //     isCollapsed,
+        //     hasScrolled,
+        //     isScrollable,
+        //     shouldShowButton,
+        // });
 
         // Toggle the button's visibility
         backToTopButton.style.display = shouldShowButton ? "block" : "none";
@@ -308,7 +308,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Add scroll listener for the sidebar
     sidebar?.addEventListener("scroll", () => {
-        console.log("Sidebar Scrolled:", sidebar.scrollTop);
+        // console.log("Sidebar Scrolled:", sidebar.scrollTop);
         toggleBackToTopButton();
     }, { passive: true });
 
@@ -330,7 +330,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Event listener for back-to-top button click
     backToTopButton?.addEventListener("click", () => {
         sidebar.scrollTo({ top: 0, behavior: "smooth" });
-        console.log("Back-to-Top Button Clicked");
+        // console.log("Back-to-Top Button Clicked");
     });
 
     // Sidebar minimize/expand functionality
@@ -351,11 +351,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (isCollapsed) {
             minimizeIcon.classList.remove("fa-chevron-up");
             minimizeIcon.classList.add("fa-chevron-down");
-            console.log("Sidebar minimized.");
+            // console.log("Sidebar minimized.");
         } else {
             minimizeIcon.classList.remove("fa-chevron-down");
             minimizeIcon.classList.add("fa-chevron-up");
-            console.log("Sidebar expanded.");
+            // console.log("Sidebar expanded.");
         }
 
         // Update aria-expanded for accessibility
@@ -982,7 +982,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!regionsWithFacilities.has(clickedRegionId)) {
                     log(`Region "${regionName}" with ID ${clickedRegionId} does not have facilities.`, 'warn');
 
-                    // const sidebar = document.getElementById('hospital-list-sidebar');
                     if (sidebar) sidebar.style.display = 'none';
 
                     toggleVisibility(['state-markers'], 'visible');
@@ -1029,7 +1028,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     });
             } else {
                 // Handle clicks outside any region
-                // const sidebar = document.getElementById('hospital-list-sidebar');
                 if (sidebar) sidebar.style.display = 'none';
 
                 toggleVisibility(['state-markers'], 'visible');
@@ -1107,7 +1105,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Ensure currentRegion has a valid value
             if (!currentRegion) {
-                // console.warn('currentRegion is not defined; defaulting to "usa".');
+                console.warn('currentRegion is not defined; defaulting to "usa".');
                 currentRegion = 'usa';
             }
 
@@ -1850,7 +1848,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
                     });
 
-                    console.log(`Cleared hover for region: ${hoveredRegionId}`);
+                    // console.log(`Cleared hover for region: ${hoveredRegionId}`);
 
 
                     hoveredRegionId = null;
@@ -1905,7 +1903,6 @@ document.addEventListener("DOMContentLoaded", () => {
             // Update sidebar with selected region information
             const updateSidebarForRegion = (regionId) => {
                 // console.log(`Updating sidebar for region: ${regionId}`);
-                // const sidebar = document.getElementById('hospital-list-sidebar');
                 const title = sidebar.querySelector('h2');
                 title.innerText = `Facilities in Region ${regionId}`;
 
@@ -2026,7 +2023,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         //hide the sidebar and update the state of the map
         function closeSidebar() {
-            // const sidebar = document.getElementById('hospital-list-sidebar');
             if (!sidebar) {
                 console.warn('Sidebar element not found.');
                 return;
@@ -2058,14 +2054,14 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-     //drag-and-drop functionality for an element
-        // Declare variables for drag-and-drop
+        //drag-and-drop functionality for an element
+        // Variables for drag-and-drop
         let isDragging = false;
         let startX, startY, initialLeft, initialTop;
-        const dragThreshold = 5;
 
-        // Start Drag Function
+        // Function: Start Drag
         function startDrag(e) {
+            isDragging = true;
             startX = e.touches ? e.touches[0].clientX : e.clientX;
             startY = e.touches ? e.touches[0].clientY : e.clientY;
 
@@ -2073,99 +2069,46 @@ document.addEventListener("DOMContentLoaded", () => {
             initialLeft = rect.left;
             initialTop = rect.top;
 
-            sidebar.classList.add("dragging");
-            sidebarHeader.classList.add("grabbing");
-
-            isDragging = false;
+            // Apply styles for dragging
+            sidebar.classList.add('dragging');
 
             // Add event listeners for dragging
-            document.addEventListener("mousemove", handleDrag);
-            document.addEventListener("mouseup", endDrag);
-            document.addEventListener("touchmove", handleDrag, { passive: false });
-            document.addEventListener("touchend", endDrag);
+            document.addEventListener('mousemove', handleDrag);
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchmove', handleDrag, { passive: false });
+            document.addEventListener('touchend', endDrag);
         }
 
-        // Drag Handling Function
+        // Function: Handle Drag
         function handleDrag(e) {
+            if (!isDragging) return;
+
             const currentX = e.touches ? e.touches[0].clientX : e.clientX;
             const currentY = e.touches ? e.touches[0].clientY : e.clientY;
+
             const dx = currentX - startX;
             const dy = currentY - startY;
 
-            if (!isDragging && Math.abs(dx) + Math.abs(dy) > dragThreshold) {
-                isDragging = true;
-            }
-
-            if (isDragging) {
-                e.preventDefault();
-                sidebar.style.left = `${Math.min(Math.max(0, initialLeft + dx), window.innerWidth - sidebar.offsetWidth)}px`;
-                sidebar.style.top = `${Math.min(Math.max(0, initialTop + dy), window.innerHeight - sidebar.offsetHeight)}px`;
-            }
+            // Update position of sidebar
+            sidebar.style.left = `${Math.min(Math.max(0, initialLeft + dx), window.innerWidth - sidebar.offsetWidth)}px`;
+            sidebar.style.top = `${Math.min(Math.max(0, initialTop + dy), window.innerHeight - sidebar.offsetHeight)}px`;
         }
 
-        // End Drag Function
+        // Function: End Drag
         function endDrag() {
             isDragging = false;
-            sidebar.classList.remove("dragging");
-            sidebarHeader.classList.remove("grabbing");
+            sidebar.classList.remove('dragging');
 
             // Remove event listeners
-            document.removeEventListener("mousemove", handleDrag);
-            document.removeEventListener("mouseup", endDrag);
-            document.removeEventListener("touchmove", handleDrag);
-            document.removeEventListener("touchend", endDrag);
+            document.removeEventListener('mousemove', handleDrag);
+            document.removeEventListener('mouseup', endDrag);
+            document.removeEventListener('touchmove', handleDrag);
+            document.removeEventListener('touchend', endDrag);
         }
 
-        // Attach Event Listeners to Sidebar Header
-        sidebarHeader.addEventListener("mousedown", startDrag);
-        sidebarHeader.addEventListener("touchstart", startDrag, { passive: false });
-
-        // Utility to check if the device supports touch
-        // const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-
-        // Detect touch device support
-        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-
-        // Toggle Sidebar Visibility for Small Screens
-        function toggleSidebarOnHover(show) {
-            if (!isDragging && window.innerWidth <= 480) {
-                sidebar.style.display = show ? "block" : "none";
-            }
-        }
-
-        // Define event handlers for hover and touch interactions
-        function handleMouseEnter() {
-            if (!isTouchDevice && !isDragging) {
-                toggleSidebarOnHover(true);
-            }
-        }
-
-        function handleMouseLeave() {
-            if (!isTouchDevice && !isDragging) {
-                toggleSidebarOnHover(false);
-            }
-        }
-
-        function handleTouchStart() {
-            toggleSidebarOnHover(true);
-        }
-
-        function handleTouchEnd() {
-            toggleSidebarOnHover(false);
-        }
-
-        // Add event listeners based on device type
-        if (!isTouchDevice) {
-            sidebar.addEventListener('mouseenter', handleMouseEnter);
-            sidebar.addEventListener('mouseleave', handleMouseLeave);
-        } else {
-            sidebar.addEventListener('touchstart', handleTouchStart);
-            sidebar.addEventListener('touchend', handleTouchEnd);
-        }
-
-        // Sidebar dragging initiation
-        sidebarHeader.addEventListener("mousedown", startDrag);
-        sidebarHeader.addEventListener("touchstart", startDrag, { passive: false });
+        // Attach event listeners to header
+        sidebarHeader.addEventListener('mousedown', startDrag);
+        sidebarHeader.addEventListener('touchstart', startDrag, { passive: false });
 
     })
 });
