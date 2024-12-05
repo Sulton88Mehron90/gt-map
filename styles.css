@@ -66,7 +66,6 @@ button {
 }
 
 button:hover {
-    /* background-color: #45a049; */
     background: linear-gradient(145deg, #ff8502, #ff8502);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
@@ -221,7 +220,6 @@ button:hover {
 .mapbox-button-group #fly-to-aruba .flip-front {
     background-image: url('./img/aruba_flag.png');
     background-position: left center;
-    /* padding-right: 7px; */
     background-color: #0f2844;
 }
 
@@ -247,6 +245,26 @@ button:hover {
     max-height: 80vh;
     overflow-y: auto;
     display: block;
+    box-sizing: border-box;
+}
+
+
+
+#hospital-list-sidebar::-webkit-scrollbar {
+    width: 8px; /* Adjust scrollbar width */
+}
+
+#hospital-list-sidebar::-webkit-scrollbar-thumb {
+    background: #ff8502; /* Color of scrollbar thumb */
+    border-radius: 10px; /* Round the edges */
+}
+
+#hospital-list-sidebar::-webkit-scrollbar-thumb:hover {
+    background: #e57300; /* Hover effect for scrollbar thumb */
+}
+
+#hospital-list-sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1); /* Track color */
 }
 
 #hospital-list-sidebar:hover {
@@ -321,34 +339,6 @@ button:hover {
     border-radius: 10px;
 }
 
-#close-sidebar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #333;
-    color: #fff;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    top: 10px;
-    right: 10px;
-    z-index: 11;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    transition: background-color 0.3s ease;
-    border: none;
-    cursor: pointer;
-    margin: 0 10px;
-}
-
-#close-sidebar:hover {
-    background-color: #555;
-    transform: scale(1.1);
-}
-
-#close-sidebar i {
-    font-size: 12px;
-}
-
 .theme-toggle-btn {
     background-color: #333;
     color: #fff;
@@ -420,7 +410,7 @@ button:hover {
 .button-group {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 1px;
 }
 
 .round-button {
@@ -443,6 +433,7 @@ button:hover {
     transform: scale(1.1);
 }
 
+/* 1 */
 #hospital-list-sidebar.collapsed {
     display: flex;
     justify-content: space-between;
@@ -457,16 +448,34 @@ button:hover {
     background-color: rgba(15, 40, 68, 0.9);
 }
 
+#hospital-list-sidebar.collapsed .button-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 100%;
+}
+
+#hospital-list-sidebar.collapsed #minimize-sidebar {
+    position: relative;
+    left: 0; 
+    top: 0; 
+    margin-left: 25px;
+    z-index: 12; 
+}
+
 #hospital-list-sidebar.collapsed h2,
 #hospital-list-sidebar.collapsed ul,
-#hospital-list-sidebar.collapsed .count-display,
-#back-to-top-button.show {
-    display: none !important;
-}
-/* 1 */
-#back-to-top-button {
+#hospital-list-sidebar.collapsed .count-display {
     display: none;
-    /* button is hidden by default */
+}
+
+#hospital-list-sidebar.collapsed #close-sidebar {
+    display: flex;
+    position: relative;
+    left: 0;
+    top: 0;
+    margin-right: 5px;
+    right: 0;
 }
 
 #hospital-list-sidebar.dragging {
@@ -475,26 +484,35 @@ button:hover {
     transition: opacity 0.1s ease, outline 0.1s ease;
 }
 
-hospital-list-sidebar.collapsed #close-sidebar {
-    display: flex;
-    position: relative;
-    left: 0;
-    top: 0;
-    margin-right: 5px;
-}
-/* 2 */
 #back-to-top-button {
-    margin: 10px auto;
-    display: block;
+    display: none; 
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    z-index: 3000; 
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
     cursor: pointer;
-    display: none;
-    opacity: 1;
-    /* transition: opacity 0.3s ease; */
+    left: 130px;
     position: sticky;
-    bottom: 10px;
-    opacity: 0.8;
 }
 
+#back-to-top-button.show {
+    display: block !important;
+}
+
+#back-to-top-button:hover {
+    background-color: #e57300;
+    transform: scale(1.1);
+}
+
+/* Ensure it's hidden only when sidebar is collapsed */
+#hospital-list-sidebar.collapsed ~ #back-to-top-button {
+    display: none !important;
+}
+
+/* Icon Styling */
 #back-to-top-button i {
     margin-top: -1px;
     position: relative;
@@ -503,9 +521,24 @@ hospital-list-sidebar.collapsed #close-sidebar {
     padding-bottom: 0;
 }
 
-#back-to-top-button.show {
-    display: block;
-    opacity: 1;
+#minimize-sidebar {
+    background-color: #333;
+    color: #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    z-index: 12;
+}
+
+#minimize-sidebar:hover {
+    background-color: #555;
+    transform: scale(1.1);
 }
 
 .sidebar-header {
@@ -513,17 +546,60 @@ hospital-list-sidebar.collapsed #close-sidebar {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 10px; /* Adds space between children */
 }
 
 .sidebar-header.grabbing {
     cursor: grabbing;
 }
 
+#minimize-sidebar,
+#close-sidebar {
+    width: 20px;
+    height: 20px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 5px;
+
+    background-color: #333;
+    color: #fff; 
+    border-radius: 50%; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
+    cursor: pointer; 
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    transition: background-color 0.3s ease;
+
+
+    top: 10px;
+    right: 10px;
+    z-index: 11;
+
+   
+    border: none;
+
+    margin: 0 10px;
+}
+
+/* Hover Effect for Buttons */
+#minimize-sidebar:hover,
+#close-sidebar:hover {
+    background-color: #555;
+    transform: scale(1.1); 
+}
+
+/* outline is removed for accessibility */
 #close-sidebar,
+#minimize-sidebar,
 .theme-toggle-btn,
 .round-button {
     outline: none;
 }
+
+#close-sidebar i {
+    font-size: 12px;
+}
+
 
 .logo-container {
     position: relative;
@@ -536,15 +612,12 @@ hospital-list-sidebar.collapsed #close-sidebar {
     top: 0;
     left: 0;
     width: 20px;
-    /* height: 20px;  */
     height: auto;
     background-color: #333;
     border-radius: 50%;
     border: 0.5px solid rgba(12, 0, 0, 0.892);
     cursor: pointer;
-    /* transition: transform 0.2s ease, box-shadow 0.2s ease; */
     transition: transform 0.2s ease, z-index 0.3s ease;
-
     margin-right: 10px;
     background-size: 70%;
     margin-left: 1px;
@@ -572,6 +645,7 @@ hospital-list-sidebar.collapsed #close-sidebar {
     position: relative;
     top: 0; 
     padding-bottom: 0;
+    left: -0.1rem;
 }
 
 #back-button:hover {
@@ -640,7 +714,6 @@ hospital-list-sidebar.collapsed #close-sidebar {
 .not-found-heading {
     font-size: 2.5rem;
     color: #ff8502;
-    /* color: #ff0000; */
     margin-bottom: 1rem;
 }
 
@@ -738,7 +811,6 @@ hospital-list-sidebar.collapsed #close-sidebar {
 /* Spinner element */
 .spinner {
     border-top: 4px solid #ff8502;
-    /* border-top: 3.6px solid #0f2744; */
     border-radius: 50%;
     width: 60px;
     height: 60px;
@@ -822,38 +894,6 @@ hospital-list-sidebar.collapsed #close-sidebar {
         position: relative;
     }
 
-    #hospital-list-sidebar.collapsed h2,
-    #hospital-list-sidebar.collapsed ul,
-    #hospital-list-sidebar.collapsed .count-display,
-    #back-to-top-button.show {
-        display: none !important;
-    }
-
-    #back-to-top-button {
-        display: none !important;
-        bottom: 10px;
-        right: 10px;
-        z-index: 999;
-    }
-
-    /* #back-button {
-        display: none;
-        position: absolute;
-        font-size: 0.8rem;
-        margin-right: 0;
-        margin-left: 0;
-        z-index: 20;
-        top: 9.5px;
-        left: 11.7px;
-        transform: translate(-50%, -50%);
-        cursor: pointer;
-    }
-
-    #back-button i {
-        position: relative;
-        top: -3px;
-    } */
-
     #hospital-list-sidebar h2 {
         font-size: 1.2rem;
     }
@@ -878,11 +918,11 @@ hospital-list-sidebar.collapsed #close-sidebar {
     #container {
         flex-direction: column;
     }
-
+/* 
     button {
         font-size: 12px;
         padding: 6px 0;
-    }
+    } */
 
     #home-logo {
         width: 60px;
@@ -917,6 +957,20 @@ hospital-list-sidebar.collapsed #close-sidebar {
         border-radius: 5px;
         font-size: 10px;
     }
+
+    #back-to-top-button {
+        bottom: 185px;
+        right: 15px;
+        display: block !important;
+        position: fixed;
+        left: 230px;
+        font-size: 12px;
+      
+    }
+
+    #hospital-list-sidebar {
+        padding-right: 15px;
+    }
 }
 
 @media (max-width: 480px){
@@ -931,37 +985,6 @@ hospital-list-sidebar.collapsed #close-sidebar {
         overflow-y: auto;
         position: relative;
     }
-
-    #hospital-list-sidebar.collapsed h2,
-    #hospital-list-sidebar.collapsed ul,
-    #hospital-list-sidebar.collapsed .count-display,
-    #back-to-top-button.show {
-        display: none !important;
-    }
-
-    #back-to-top-button {
-        display: none !important;
-        bottom: 10px;
-        right: 10px;
-        z-index: 999;
-    }
-
-    /* #back-button {
-        display: none;
-        position: absolute;
-        font-size: 0.8rem;
-        margin-right: 0;
-        margin-left: 0;
-        z-index: 20;
-        top: 9.5px;
-        left: 11.7px;
-        transform: translate(-50%, -50%);
-        cursor: pointer;
-    }
-
-    #back-button i {
-        position: relative;
-    } */
 
     #hospital-list li {
         font-size: 0.8rem;
@@ -979,12 +1002,6 @@ hospital-list-sidebar.collapsed #close-sidebar {
     #close-sidebar {
         padding: 3px;
         font-size: 0.8rem;
-    }
-
-    #close-sidebar,
-    .theme-toggle-btn {
-        width: 25px;
-        height: 25px;
     }
 
     button {
@@ -1027,6 +1044,21 @@ hospital-list-sidebar.collapsed #close-sidebar {
         padding: 5px 10px;
         border-radius: 5px;
         font-size: 10px;
+    }
+
+
+    #back-to-top-button {
+        bottom: 185px;
+        right: 15px;
+        display: block !important;
+        position: fixed;
+        left: 230px;
+        font-size: 12px;
+      
+    }
+
+    #hospital-list-sidebar {
+        padding-right: 15px;
     }
 
 }
@@ -1043,38 +1075,7 @@ hospital-list-sidebar.collapsed #close-sidebar {
         overflow-y: auto;
         position: relative;
     }
-
-    #hospital-list-sidebar.collapsed h2,
-    #hospital-list-sidebar.collapsed ul,
-    #hospital-list-sidebar.collapsed .count-display,
-    #back-to-top-button.show {
-        display: none !important;
-    }
-
-    #back-to-top-button {
-        display: none !important;
-        bottom: 10px;
-        right: 10px;
-        z-index: 999;
-    }
-/* 
-    #back-button {
-        display: none;
-        position: absolute;
-        font-size: 0.8rem;
-        margin-right: 0;
-        margin-left: 0;
-        z-index: 15;
-        top: 10px;
-        left: 11.7px;
-        transform: translate(-50%, -50%);
-        cursor: pointer;
-    } */
-/* 
-    #back-button i {
-        position: relative;
-    } */
-
+  
     #hospital-list li {
         font-size: 0.8rem;
         padding: 4px;
@@ -1139,6 +1140,21 @@ hospital-list-sidebar.collapsed #close-sidebar {
         padding: 5px 10px;
         border-radius: 5px;
         font-size: 10px;
+    }
+
+
+    #back-to-top-button {
+        bottom: 185px;
+        right: 15px;
+        display: block !important;
+        position: fixed;
+        left: 230px;
+        font-size: 12px;
+      
+    }
+
+    #hospital-list-sidebar {
+        padding-right: 15px;
     }
 
 }
@@ -1168,38 +1184,6 @@ hospital-list-sidebar.collapsed #close-sidebar {
         position: relative;
     }
 
-    #hospital-list-sidebar.collapsed h2,
-    #hospital-list-sidebar.collapsed ul,
-    #hospital-list-sidebar.collapsed .count-display,
-    #back-to-top-button.show {
-        display: none !important;
-    }
-
-    #back-to-top-button {
-        display: none !important;
-        bottom: 10px;
-        right: 10px;
-        z-index: 999;
-        margin-left: 60px;
-    }
-
-    /* #back-button {
-        display: none;
-        position: absolute;
-        font-size: 0.8rem;
-        margin-right: 0;
-        margin-left: 0;
-        z-index: 15;
-        top: 10px;
-        left: 11.7px;
-        transform: translate(-50%, -50%);
-        cursor: pointer;
-    }
-
-    #back-button i {
-        position: relative;
-    } */
-
     #home-logo {
         width: 40px;
     }
@@ -1236,6 +1220,21 @@ hospital-list-sidebar.collapsed #close-sidebar {
         padding: 5px 10px;
         border-radius: 5px;
         font-size: 10px;
+    }
+
+
+    #back-to-top-button {
+        bottom: 185px;
+        right: 15px;
+        display: block !important;
+        position: fixed;
+        left: 230px;
+        font-size: 12px;
+      
+    }
+
+    #hospital-list-sidebar {
+        padding-right: 15px;
     }
 
 }
@@ -1265,39 +1264,6 @@ hospital-list-sidebar.collapsed #close-sidebar {
         position: relative;
     }
 
-    #hospital-list-sidebar.collapsed h2,
-    #hospital-list-sidebar.collapsed ul,
-    #hospital-list-sidebar.collapsed .count-display,
-    #back-to-top-button.show {
-        display: none !important;
-    }
-
-    #back-to-top-button {
-        display: none !important;
-        bottom: 10px;
-        right: 10px;
-        z-index: 999;
-        margin-left: 60px;
-        padding: 8px 0;
-    }
-/* 
-    #back-button {
-        display: none;
-        position: absolute;
-        font-size: 0.8rem;
-        margin-right: 0;
-        margin-left: 0;
-        z-index: 15;
-        top: 10px;
-        left: 11.7px;
-        transform: translate(-50%, -50%);
-        cursor: pointer;
-    }
-
-    #back-button i {
-        position: relative;
-    } */
-
     #home-logo {
         width: 40px;
     }
@@ -1334,6 +1300,21 @@ hospital-list-sidebar.collapsed #close-sidebar {
         padding: 5px 10px;
         border-radius: 5px;
         font-size: 10px;
+    }
+
+
+    #back-to-top-button {
+        bottom: 185px;
+        right: 15px;
+        display: block !important;
+        position: fixed;
+        left: 230px;
+        font-size: 12px;
+      
+    }
+
+    #hospital-list-sidebar {
+        padding-right: 15px;
     }
 
 }

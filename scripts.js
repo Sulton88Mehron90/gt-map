@@ -116,6 +116,7 @@ function log(message, level = 'info') {
     }
 }
 
+// Use `logWarningOnce` instead of `console.warn` for repetitive warnings.
 const loggedWarnings = new Set();
 function logWarningOnce(message) {
     if (!loggedWarnings.has(message)) {
@@ -123,8 +124,6 @@ function logWarningOnce(message) {
         loggedWarnings.add(message);
     }
 }
-// Use `logWarningOnce` instead of `console.warn` for repetitive warnings.
-
 
 // Initial zoom based on screen width
 function getInitialZoom() {
@@ -149,7 +148,6 @@ function hideSpinner() {
         spinnerVisible = false;
     }
 }
-
 // Variables for Interaction States
 let selectedRegionId = null;
 let hoveredRegionId = null;
@@ -161,6 +159,7 @@ const regionSources = ['us-states', 'canada-regions', 'aruba-region', 'italy-reg
 // Map Initialization on DOMContentLoaded
 document.addEventListener("DOMContentLoaded", () => {
     showSpinner();
+    // toggleBackToTopButton();
 
     const map = new mapboxgl.Map({
         container: 'map',
@@ -178,6 +177,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const sidebar = document.getElementById("hospital-list-sidebar");
     const sidebarHeader = document.querySelector(".sidebar-header");
     const backToTopButton = document.getElementById('back-to-top-button');
+    const minimizeButton = document.getElementById("minimize-sidebar");
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
 
     sidebar.addEventListener('click', (event) => {
         event.stopPropagation();
@@ -268,6 +270,7 @@ document.addEventListener("DOMContentLoaded", () => {
             geocoder = null;
         }
     }, 300);
+
     // Event Listener for Geocoder Toggle
     geocoderToggle.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -281,149 +284,119 @@ document.addEventListener("DOMContentLoaded", () => {
             geocoderToggle.style.display = "flex";
         }
     });
+    /////
 
-    // Check if elements are found
-    if (!sidebar) {
-        console.error("Sidebar element not found!");
-    }
-    if (!backToTopButton) {
-        console.error("Back to Top button not found!");
-    }
-
+    // Function to toggle visibility of the back-to-top button
     function toggleBackToTopButton() {
         const isCollapsed = sidebar.classList.contains("collapsed");
+        const hasScrolled = sidebar.scrollTop > 100;
         const isScrollable = sidebar.scrollHeight > sidebar.clientHeight;
-        const isSmallScreen = window.innerWidth <= 480;
 
-        // Show button only if the sidebar is not collapsed and has scrollable content
-        if (!isCollapsed && (isScrollable || isSmallScreen)) {
-            backToTopButton.style.display = "block";
-        } else {
-            backToTopButton.style.display = "none";
-        }
+        const shouldShowButton = !isCollapsed && hasScrolled && isScrollable;
+
+        console.log("Back-to-Top Button Conditions:", {
+            isCollapsed,
+            hasScrolled,
+            isScrollable,
+            shouldShowButton,
+        });
+
+        // Toggle the button's visibility
+        backToTopButton.style.display = shouldShowButton ? "block" : "none";
+        backToTopButton.classList.toggle("show", shouldShowButton);
     }
 
-    // Observer to monitor sidebar content changes for the back-to-top button
-    const observer = new MutationObserver(toggleBackToTopButton);
-    observer.observe(sidebar, { childList: true, subtree: true });
-
-    // Event listener for back-to-top button scroll
-    
-    // backToTopButton.addEventListener('click', () => {
-    //     sidebar.scrollTo({ top: 0, behavior: "smooth" });
-    // });
-
-    // sidebar.addEventListener('touchstart', () => {
-    //     if (!sidebar.classList.contains('collapsed')) {
-    //         toggleBackToTopButton();
-    //     }
-    // }, { passive: false });
-
-    // document.getElementById('minimize-sidebar').addEventListener('click', () => {
-    //     sidebar.classList.toggle('collapsed');
-
-    //     // Reset sidebar scroll state after minimizing or reopening
-    //     if (!sidebar.classList.contains('collapsed')) {
-    //         sidebar.scrollTo(0, 0);
-    //     }
-
-    //     // delay to recalculate dimensions accurately after transition
-    //     setTimeout(() => {
-    //         toggleBackToTopButton();
-    //     }, 200);
-
-    //     // minimize icon based on sidebar state
-    //     const minimizeIcon = document.getElementById('minimize-sidebar').querySelector('i');
-    //     if (sidebar.classList.contains('collapsed')) {
-    //         minimizeIcon.classList.remove('fa-chevron-up');
-    //         minimizeIcon.classList.add('fa-chevron-down');
-    //     } else {
-    //         minimizeIcon.classList.remove('fa-chevron-down');
-    //         minimizeIcon.classList.add('fa-chevron-up');
-    //     }
-
-    //     // Event listener for sidebar minimize/expand button
-    //     const minimizeButton = document.getElementById("minimize-sidebar");
-    //     if (minimizeButton) {
-    //         minimizeButton.addEventListener("click", () => {
-    //             sidebar.classList.toggle("collapsed");
-    //             toggleBackToTopButton();
-    //         });
-    //     }
-
-    // });
-
-    // Event listener for back-to-top button scroll
-backToTopButton.addEventListener('click', () => {
-    sidebar.scrollTo({ top: 0, behavior: "smooth" });
-});
-
-// Sidebar touch event listener for back-to-top button visibility
-sidebar.addEventListener('scroll', () => {
-    if (!sidebar.classList.contains('collapsed')) {
+    // Add scroll listener for the sidebar
+    sidebar?.addEventListener("scroll", () => {
+        console.log("Sidebar Scrolled:", sidebar.scrollTop);
         toggleBackToTopButton();
-    }
-}, { passive: true });
+    }, { passive: true });
 
-// Sidebar minimize/expand functionality
-const minimizeButton = document.getElementById("minimize-sidebar");
-if (minimizeButton) {
-    minimizeButton.addEventListener("click", () => {
-        // Toggle the collapsed state of the sidebar
-        sidebar.classList.toggle("collapsed");
+    window.addEventListener("load", () => {
+        backToTopButton.style.display = "block";
+    });
+
+    // Error handling for missing elements
+    if (!sidebar) {
+        console.error("Sidebar element not found! Ensure the #hospital-list-sidebar ID is present in the HTML.");
+    }
+    if (!backToTopButton) {
+        console.error("Back to Top button not found! Ensure the #back-to-top-button ID is present in the HTML.");
+    }
+    if (!minimizeButton) {
+        console.error("Minimize button not found! Ensure the #minimize-sidebar ID is present in the HTML.");
+    }
+
+    // Event listener for back-to-top button click
+    backToTopButton?.addEventListener("click", () => {
+        sidebar.scrollTo({ top: 0, behavior: "smooth" });
+        console.log("Back-to-Top Button Clicked");
+    });
+
+    // Sidebar minimize/expand functionality
+    minimizeButton?.addEventListener("click", () => {
+        // Toggle the "collapsed" class to minimize or expand the sidebar
+        const isCollapsed = sidebar.classList.toggle("collapsed");
 
         // Reset sidebar scroll state after expanding
-        if (!sidebar.classList.contains("collapsed")) {
+        if (!isCollapsed) {
             sidebar.scrollTo(0, 0);
         }
 
         // Delay to ensure dimensions are recalculated accurately after transition
-        setTimeout(() => {
-            toggleBackToTopButton();
-        }, 200);
+        setTimeout(toggleBackToTopButton, 200);
 
-        // Update the minimize icon based on the sidebar state
+        // Update the minimize button icon dynamically
         const minimizeIcon = minimizeButton.querySelector("i");
-        if (sidebar.classList.contains("collapsed")) {
+        if (isCollapsed) {
             minimizeIcon.classList.remove("fa-chevron-up");
             minimizeIcon.classList.add("fa-chevron-down");
+            console.log("Sidebar minimized.");
         } else {
             minimizeIcon.classList.remove("fa-chevron-down");
             minimizeIcon.classList.add("fa-chevron-up");
+            console.log("Sidebar expanded.");
         }
+
+        // Update aria-expanded for accessibility
+        minimizeButton.setAttribute("aria-expanded", !isCollapsed);
     });
-}
 
-    // Event listener for touchstart on the sidebar (for mobile)
-    sidebar.addEventListener(
-        "touchstart",
-        () => {
-            if (!sidebar.classList.contains("collapsed")) {
-                toggleBackToTopButton();
-            }
-        },
-        { passive: true }
+
+    // Event listeners for sidebar touch events (mobile)
+    ["touchstart", "touchend"].forEach(event =>
+        sidebar?.addEventListener(event, toggleBackToTopButton, { passive: true })
     );
 
-    // Event listener for touchend on the sidebar
-    sidebar.addEventListener(
-        "touchend",
-        () => {
-            toggleBackToTopButton();
-        },
-        { passive: true }
-    );
-
-    //Recalculate button visibility on window resize
-    window.addEventListener("resize", toggleBackToTopButton);
+    // Debounce function for resize events
+    function debounce(func, wait) {
+        let timeout;
+        return function (...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
+    // Recalculate button visibility on window resize with debounce
+    window.addEventListener("resize", debounce(toggleBackToTopButton, 150));
 
     // Ensure the button visibility is set correctly on load
-    toggleBackToTopButton();
+    window.addEventListener("load", () => {
+        toggleBackToTopButton();
+        map.resize(); // Resize map on load
+    });
 
-    //Map Resize on Load and Window Resize
-    window.addEventListener("load", () => map.resize());
-    map.on("load", () => setTimeout(() => map.resize(), 100));
+    // Observer to monitor sidebar content changes for the back-to-top button
+    if (sidebar) {
+        const observer = new MutationObserver(toggleBackToTopButton);
+        observer.observe(sidebar, { childList: true, subtree: true });
+    }
+
+    // Map resize on window resize
+    map.on("load", () => {
+        setTimeout(() => map.resize(), 100); // Ensure proper map rendering
+    });
     window.addEventListener("resize", () => map.resize());
+
 
     // Function to add a GeoJSON source to the map
     function addGeoJSONSource(map, sourceId, dataUrl, promoteId) {
@@ -810,7 +783,7 @@ if (minimizeButton) {
     // flyToRegion function
     function flyToRegion(region) {
         if (!regions[region]) {
-            console.error(`Region "${region}" is not defined.`);
+            // console.error(`Region "${region}" is not defined.`);
             return;
         }
 
@@ -1134,7 +1107,7 @@ if (minimizeButton) {
 
             // Ensure currentRegion has a valid value
             if (!currentRegion) {
-                console.warn('currentRegion is not defined; defaulting to "usa".');
+                // console.warn('currentRegion is not defined; defaulting to "usa".');
                 currentRegion = 'usa';
             }
 
@@ -1505,10 +1478,16 @@ if (minimizeButton) {
                     // const selectedColor = '#F8F9FA' //gray
                     // const selectedColor = '#05aaff' 
 
+                    // if (map.getLayer(`${layerId}-fill`)) {
+                    //     // console.warn(`Layer with id "${layerId}-fill" already exists. Skipping addition.`);
+                    //     return;
+                    // }
+
                     if (map.getLayer(`${layerId}-fill`)) {
-                        // console.warn(`Layer with id "${layerId}-fill" already exists. Skipping addition.`);
+                        logWarningOnce(`Layer with id "${layerId}-fill" already exists. Skipping addition.`);
                         return;
                     }
+
 
                     map.addLayer({
                         id: `${layerId}-fill`,
@@ -1838,11 +1817,11 @@ if (minimizeButton) {
 
         //This function captures the function's role in configuring hover, click, and selection interactions for regions.
         function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
-            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            // const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
             const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
 
             let hoverTimeout;
-//Apply Hover
+            //Apply Hover
             const applyHover = (regionId) => {
                 if (!regionsWithFacilities.has(regionId)) return;
                 if (hoveredRegionId && hoveredRegionId !== selectedRegionId) {
@@ -1853,44 +1832,44 @@ if (minimizeButton) {
                     map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: true });
                 }
             };
-            
-    const interactionDelay = map.getZoom() > 6 ? 150 : 300;
 
-           // Throttled clear hover effect
-           const clearHover = () => {
-            clearTimeout(hoverTimeout);
-            hoverTimeout = setTimeout(() => {
-                if (hoveredRegionId && hoveredRegionId !== selectedRegionId) {
-                    map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
-                }
-        
-                // Ensure no lingering hover states remain in rendered features
-                map.queryRenderedFeatures({ layers: [layerId] }).forEach((feature) => {
-                    if (feature.id !== selectedRegionId) {
-                        map.setFeatureState({ source: sourceId, id: feature.id }, { hover: false });
+            const interactionDelay = map.getZoom() > 6 ? 150 : 300;
+
+            // Throttled clear hover effect
+            const clearHover = () => {
+                clearTimeout(hoverTimeout);
+                hoverTimeout = setTimeout(() => {
+                    if (hoveredRegionId && hoveredRegionId !== selectedRegionId) {
+                        map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
                     }
-                });
 
-                console.log(`Cleared hover for region: ${hoveredRegionId}`);
+                    // Ensure no lingering hover states remain in rendered features
+                    map.queryRenderedFeatures({ layers: [layerId] }).forEach((feature) => {
+                        if (feature.id !== selectedRegionId) {
+                            map.setFeatureState({ source: sourceId, id: feature.id }, { hover: false });
+                        }
+                    });
 
-        
-                hoveredRegionId = null;
-            }, interactionDelay);
-        };
-        
+                    console.log(`Cleared hover for region: ${hoveredRegionId}`);
 
-map.off(hoverEvent, layerId);
-map.off('mouseleave', layerId);
-map.off('touchend', layerId);
 
-// Attach hover and touch interactions
-map.on(hoverEvent, layerId, (e) => {
-    const regionId = e.features?.[0]?.id;
-    if (regionId) applyHover(regionId);
-});
+                    hoveredRegionId = null;
+                }, interactionDelay);
+            };
 
-const clearEvent = isTouchDevice ? 'touchend' : 'mouseleave';
-map.on(clearEvent, layerId, clearHover);
+
+            map.off(hoverEvent, layerId);
+            map.off('mouseleave', layerId);
+            map.off('touchend', layerId);
+
+            // Attach hover and touch interactions
+            map.on(hoverEvent, layerId, (e) => {
+                const regionId = e.features?.[0]?.id;
+                if (regionId) applyHover(regionId);
+            });
+
+            const clearEvent = isTouchDevice ? 'touchend' : 'mouseleave';
+            map.on(clearEvent, layerId, clearHover);
 
 
             //Clear selection
@@ -1968,44 +1947,44 @@ map.on(clearEvent, layerId, clearHover);
 
             // Sidebar Close Button. Attach clear interactions to sidebar close button
             const closeSidebarButton = document.getElementById('close-sidebar');
-// Ensure the listener is attached only once
-if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
-    closeSidebarButton.setAttribute('data-listener-attached', 'true');
-    closeSidebarButton.addEventListener('click', () => {
-        // Clear region selection
-        clearRegionSelection();
-        // Hide the sidebar
-        closeSidebar();
-        // Determine the view to revert to
-        if (lastAction === 'fitToUSA') {
-            map.fitBounds([
-                [-165.031128, 65.476793],
-                [-81.131287, 26.876143],
-            ]);
-        } else if (lastAction === 'reset') {
-            map.flyTo({
-                center: INITIAL_CENTER,
-                zoom: INITIAL_ZOOM,
-                pitch: 0,
-                bearing: 0,
-                duration: 1000,
-            });
-        } else if (sessionStartingView) {
-            map.flyTo({
-                center: sessionStartingView.center,
-                zoom: sessionStartingView.zoom,
-                pitch: sessionStartingView.pitch,
-                bearing: sessionStartingView.bearing,
-                duration: 1000,
-            });
-        } else {
-            console.warn('No valid session view found.');
-        }
+            // Ensure the listener is attached only once
+            if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
+                closeSidebarButton.setAttribute('data-listener-attached', 'true');
+                closeSidebarButton.addEventListener('click', () => {
+                    // Clear region selection
+                    clearRegionSelection();
+                    // Hide the sidebar
+                    closeSidebar();
+                    // Determine the view to revert to
+                    if (lastAction === 'fitToUSA') {
+                        map.fitBounds([
+                            [-165.031128, 65.476793],
+                            [-81.131287, 26.876143],
+                        ]);
+                    } else if (lastAction === 'reset') {
+                        map.flyTo({
+                            center: INITIAL_CENTER,
+                            zoom: INITIAL_ZOOM,
+                            pitch: 0,
+                            bearing: 0,
+                            duration: 1000,
+                        });
+                    } else if (sessionStartingView) {
+                        map.flyTo({
+                            center: sessionStartingView.center,
+                            zoom: sessionStartingView.zoom,
+                            pitch: sessionStartingView.pitch,
+                            bearing: sessionStartingView.bearing,
+                            duration: 1000,
+                        });
+                    } else {
+                        console.warn('No valid session view found.');
+                    }
 
-        // Log for debugging
-        console.log(`Sidebar closed. Selection cleared, last action: ${lastAction}`);
-    });
-}
+                    // Log for debugging
+                    console.log(`Sidebar closed. Selection cleared, last action: ${lastAction}`);
+                });
+            }
 
             // Fit-to-USA Button
             document.getElementById('fit-to-usa').addEventListener('click', () => {
@@ -2042,7 +2021,7 @@ if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attach
                     bearing: 0,
                     duration: 1000,
                 });
-            }); 
+            });
         }
 
         //hide the sidebar and update the state of the map
@@ -2079,7 +2058,8 @@ if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attach
             }
         }
 
-        //drag-and-drop functionality for an element
+     //drag-and-drop functionality for an element
+        // Declare variables for drag-and-drop
         let isDragging = false;
         let startX, startY, initialLeft, initialTop;
         const dragThreshold = 5;
@@ -2088,14 +2068,17 @@ if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attach
         function startDrag(e) {
             startX = e.touches ? e.touches[0].clientX : e.clientX;
             startY = e.touches ? e.touches[0].clientY : e.clientY;
+
             const rect = sidebar.getBoundingClientRect();
             initialLeft = rect.left;
             initialTop = rect.top;
+
             sidebar.classList.add("dragging");
             sidebarHeader.classList.add("grabbing");
 
             isDragging = false;
 
+            // Add event listeners for dragging
             document.addEventListener("mousemove", handleDrag);
             document.addEventListener("mouseup", endDrag);
             document.addEventListener("touchmove", handleDrag, { passive: false });
@@ -2126,35 +2109,63 @@ if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attach
             sidebar.classList.remove("dragging");
             sidebarHeader.classList.remove("grabbing");
 
+            // Remove event listeners
             document.removeEventListener("mousemove", handleDrag);
             document.removeEventListener("mouseup", endDrag);
             document.removeEventListener("touchmove", handleDrag);
             document.removeEventListener("touchend", endDrag);
         }
 
-        // Attach Event Listeners
+        // Attach Event Listeners to Sidebar Header
         sidebarHeader.addEventListener("mousedown", startDrag);
         sidebarHeader.addEventListener("touchstart", startDrag, { passive: false });
 
-        // Adjust Sidebar Visibility Based on Screen Size
+        // Utility to check if the device supports touch
+        // const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+        // Detect touch device support
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+        // Toggle Sidebar Visibility for Small Screens
         function toggleSidebarOnHover(show) {
-            // Only toggle visibility on small screens (e.g., max-width of 480px)
-            if (window.innerWidth <= 480) {
-                sidebar.style.display = show ? 'block' : 'none';
+            if (!isDragging && window.innerWidth <= 480) {
+                sidebar.style.display = show ? "block" : "none";
             }
         }
 
-        // Show sidebar on touch or mouse enter for small screens
-        sidebar.addEventListener('mouseenter', () => toggleSidebarOnHover(true));
-        sidebar.addEventListener('touchstart', () => toggleSidebarOnHover(true));
+        // Define event handlers for hover and touch interactions
+        function handleMouseEnter() {
+            if (!isTouchDevice && !isDragging) {
+                toggleSidebarOnHover(true);
+            }
+        }
 
-        // Remove hiding behavior on `mouseleave` and `touchend`
-        sidebar.removeEventListener('mouseleave', () => toggleSidebarOnHover(false));
-        sidebar.removeEventListener('touchend', () => toggleSidebarOnHover(false));
+        function handleMouseLeave() {
+            if (!isTouchDevice && !isDragging) {
+                toggleSidebarOnHover(false);
+            }
+        }
 
-        // Close sidebar only when the close button is clicked
-        document.getElementById("close-sidebar").addEventListener('click', () => {
-            sidebar.style.display = 'none';
-        });
+        function handleTouchStart() {
+            toggleSidebarOnHover(true);
+        }
+
+        function handleTouchEnd() {
+            toggleSidebarOnHover(false);
+        }
+
+        // Add event listeners based on device type
+        if (!isTouchDevice) {
+            sidebar.addEventListener('mouseenter', handleMouseEnter);
+            sidebar.addEventListener('mouseleave', handleMouseLeave);
+        } else {
+            sidebar.addEventListener('touchstart', handleTouchStart);
+            sidebar.addEventListener('touchend', handleTouchEnd);
+        }
+
+        // Sidebar dragging initiation
+        sidebarHeader.addEventListener("mousedown", startDrag);
+        sidebarHeader.addEventListener("touchstart", startDrag, { passive: false });
+
     })
 });
