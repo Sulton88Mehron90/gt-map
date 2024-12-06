@@ -53,8 +53,6 @@ export const centerStateMarkerLocation = [
 { name: 'Washington, D.C.', lngLat: [-77.0369, 38.9072], region_id: 'DC' },
 { name: 'UK', lngLat: [-1.654816, 52.181932], region_id: 'ENG' },
 { name: 'Aruba', lngLat: [-69.952269, 12.512168], region_id: 'AW' },
-// { name: 'Aruba', lngLat: [-69.977291, 12.514357], region_id: 'AW' },
-// { name: 'Canada', lngLat: [-106.728058, 57.922142], region_id: 'CA' },
 { name: 'Ontario', lngLat: [-85.3232, 50.0000], region_id: 'ON' },
 { name: 'Nunavut', lngLat: [-94.6428, 66.4600], region_id: 'NU' },
 { name: 'Italy', lngLat: [12.465363, 42.835192], region_id: 'IT' }
