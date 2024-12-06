@@ -440,7 +440,7 @@ button:hover {
     max-height: 50px;
     width: 90px;
     overflow: hidden;
-    padding: 19px;
+    padding: 18px;
     transition: max-height 0.3s ease-in-out, width 0.3s ease-in-out;
 
     background-color: rgba(15, 40, 68, 0.9);
@@ -453,12 +453,19 @@ button:hover {
     width: 100%;
 }
 
+#hospital-list-sidebar.collapsed .logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly; 
+}
+
 #hospital-list-sidebar.collapsed #minimize-sidebar {
     position: relative;
     left: 0; 
     top: 0; 
     margin-left: 25px;
     z-index: 12; 
+    /* margin-right: 5px; */
 }
 
 #hospital-list-sidebar.collapsed h2,
@@ -474,6 +481,7 @@ button:hover {
     top: 0;
     margin-right: 5px;
     right: 0;
+    /* display: none;  */
 }
 
 #hospital-list-sidebar.dragging {
@@ -560,7 +568,9 @@ button:hover {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px; /* Adds space between children */
+    gap: 10px;
+    padding: 0 10px; /* Add padding for better spacing */
+    gap: 10px; /* Space between elements on the same side */
 }
 
 .sidebar-header.grabbing {
@@ -617,7 +627,7 @@ button:hover {
 .logo-container {
     position: relative;
     /* width: 20px;  */
-    height: 20px; 
+    height: 20px;
 }
 
 .sidebar-logo {
@@ -898,6 +908,42 @@ button:hover {
     caret-color: black;
 }
 
+/* Zoom Warning Icon */
+#zoom-warning {
+    display: none; /* Initially hidden */
+    position: absolute;
+    top: 50px;
+    left: 20px; /* Adjust as needed for alignment */
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Icon for Zoom Warning */
+#zoom-warning-icon {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}   
+
+/* Tooltip for Zoom Warning */
+#zoom-tooltip {
+    display: none;
+    position: absolute;
+    top: 30px;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+
 /* Responsive Styles */
 @media (max-width: 768px) {
     #map {
@@ -962,10 +1008,6 @@ button:hover {
         font-size: 0.85rem;
     }
 
-    .sidebar-header {
-        justify-content: space-evenly;
-    }
-
     #container {
         flex-direction: column;
     }
@@ -980,12 +1022,12 @@ button:hover {
         left: 726px;
         z-index: 1000;
     }
-
+/* 
     #zoom-warning-icon {
         width: 15px;
         height: 15px;
         cursor: pointer;
-    }
+    } */
 
     #zoom-warning:hover #zoom-tooltip {
         display: block;
@@ -1003,7 +1045,18 @@ button:hover {
         border-radius: 5px;
         font-size: 10px;
     }
-}
+
+    #zoom-warning {
+        top: 10px; /* Adjusted top for smaller screens */
+        left: auto; /* Avoid hardcoding left for flexibility */
+        right: 10px; /* Position relative to the right edge */
+        display: block; /* Ensure it's visible on small screens */
+    }
+
+    #zoom-warning-icon {
+        width: 15px;
+        height: 15px;
+    }
 
 @media (max-width: 480px){
     #map {
@@ -1059,6 +1112,16 @@ button:hover {
         font-size: 10px;
     }
 
+    #zoom-warning {
+        top: 5px; /* Further adjust top for very small screens */
+        right: 5px; /* Adjust right to maintain spacing */
+    }
+
+    #zoom-warning-icon {
+        width: 12px; /* Reduce icon size for very small screens */
+        height: 12px;
+    }
+
 }
 
 @media (max-width: 425px){
@@ -1070,37 +1133,6 @@ button:hover {
     #home-logo {
         width: 40px;
     }
-
-    #zoom-warning {
-        position: absolute;
-        top: 50px;
-        left: 384px;
-        z-index: 1000;
-    }
-
-    #zoom-warning-icon {
-        width: 15px;
-        height: 15px;
-        cursor: pointer;
-    }
-
-    #zoom-warning:hover #zoom-tooltip {
-        display: block;
-        transition: opacity 0.3s;
-    }
-
-    #zoom-tooltip {
-        display: none;
-        position: absolute;
-        top: -5px;
-        left: -255px;
-        background-color: rgba(0, 0, 0, 0.8);
-        color: #fff;
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 10px;
-    }
-
 }
 
 @media (max-width: 375px){
@@ -1112,61 +1144,12 @@ button:hover {
     #home-logo {
         width: 40px;
     }
-
-    #zoom-warning {
-        position: absolute;
-        top: 50px;
-        left: 278px;
-        z-index: 1000;
-    }
-
-    #zoom-warning-icon {
-        width: 15px;
-        height: 15px;
-        cursor: pointer;
-    }
-
-    #zoom-warning:hover #zoom-tooltip {
-        display: block;
-        transition: opacity 0.3s;
-    }
-
-    #zoom-tooltip {
-        display: none;
-        position: absolute;
-        top: -5px;
-        left: -255px;
-        background-color: rgba(0, 0, 0, 0.8);
-        color: #fff;
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 10px;
-    }
-
 }
 
 @media (max-width: 320px){
     #map {
         height: calc(100vh - 50px);
         width: 100%;
-    }
-
-    #zoom-warning {
-        position: absolute;
-        top: 50px;
-        left: 278px;
-        z-index: 1000;
-    }
-
-    #zoom-warning-icon {
-        width: 15px;
-        height: 15px;
-        cursor: pointer;
-    }
-
-    #zoom-warning:hover #zoom-tooltip {
-        display: block;
-        transition: opacity 0.3s;
     }
 
     #zoom-tooltip {

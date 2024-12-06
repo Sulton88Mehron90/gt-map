@@ -120,7 +120,7 @@ function log(message, level = 'info') {
 const loggedWarnings = new Set();
 function logWarningOnce(message) {
     if (!loggedWarnings.has(message)) {
-        // console.warn(message);
+        console.warn(message);
         loggedWarnings.add(message);
     }
 }
@@ -783,7 +783,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // flyToRegion function
     function flyToRegion(region) {
         if (!regions[region]) {
-            // console.error(`Region "${region}" is not defined.`);
+             console.error(`Region "${region}" is not defined.`);
             return;
         }
 
@@ -931,37 +931,72 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    // // zoom warning visibility and tooltip
+    // function manageZoomWarning() {
+    //     const zoomLevel = map.getZoom();
+    //     const isSmallScreen = window.innerWidth <= 480;
+    //     const zoomThreshold = 5;
+
+    //     const zoomWarning = document.getElementById('zoom-warning');
+    //     if (!zoomWarning) return;
+
+    //     if (isSmallScreen && zoomLevel < zoomThreshold) {
+    //         zoomWarning.style.display = 'block';
+    //     } else {
+    //         zoomWarning.style.display = 'none';
+    //     }
+    // }
+
+    // // hover tooltip logic
+    // const zoomWarningIcon = document.getElementById('zoom-warning-icon');
+    // const zoomTooltip = document.getElementById('zoom-tooltip');
+
+    // if (zoomWarningIcon) {
+    //     zoomWarningIcon.addEventListener('mouseenter', () => {
+    //         if (zoomTooltip) zoomTooltip.style.display = 'block';
+    //     });
+
+    //     zoomWarningIcon.addEventListener('mouseleave', () => {
+    //         if (zoomTooltip) zoomTooltip.style.display = 'none';
+    //     });
+    // }
+
+    // map.on('zoomend', manageZoomWarning);
+
     // zoom warning visibility and tooltip
-    function manageZoomWarning() {
-        const zoomLevel = map.getZoom();
-        const isSmallScreen = window.innerWidth <= 480;
-        const zoomThreshold = 5;
+function manageZoomWarning() {
+    const zoomLevel = map.getZoom(); // Current zoom level
+    const isSmallScreen = window.innerWidth <= 480; // Check if screen size is small
+    const zoomThreshold = 5; // Minimum zoom level to show warning
 
-        const zoomWarning = document.getElementById('zoom-warning');
-        if (!zoomWarning) return;
+    const zoomWarning = document.getElementById('zoom-warning');
+    if (!zoomWarning) return;
 
-        if (isSmallScreen && zoomLevel < zoomThreshold) {
-            zoomWarning.style.display = 'block';
-        } else {
-            zoomWarning.style.display = 'none';
-        }
+    // Show warning only on small screens and if zoom level is below the threshold
+    if (isSmallScreen && zoomLevel < zoomThreshold) {
+        zoomWarning.style.display = 'block';
+    } else {
+        zoomWarning.style.display = 'none';
     }
+}
 
-    // hover tooltip logic
-    const zoomWarningIcon = document.getElementById('zoom-warning-icon');
-    const zoomTooltip = document.getElementById('zoom-tooltip');
+// Hover tooltip logic
+const zoomWarningIcon = document.getElementById('zoom-warning-icon');
+const zoomTooltip = document.getElementById('zoom-tooltip');
 
-    if (zoomWarningIcon) {
-        zoomWarningIcon.addEventListener('mouseenter', () => {
-            if (zoomTooltip) zoomTooltip.style.display = 'block';
-        });
+if (zoomWarningIcon) {
+    zoomWarningIcon.addEventListener('mouseenter', () => {
+        if (zoomTooltip) zoomTooltip.style.display = 'block';
+    });
 
-        zoomWarningIcon.addEventListener('mouseleave', () => {
-            if (zoomTooltip) zoomTooltip.style.display = 'none';
-        });
-    }
+    zoomWarningIcon.addEventListener('mouseleave', () => {
+        if (zoomTooltip) zoomTooltip.style.display = 'none';
+    });
+}
 
-    map.on('zoomend', manageZoomWarning);
+// Trigger manageZoomWarning on zoom and map load
+map.on('zoomend', manageZoomWarning);
+
 
     //responsible for attaching a click event to a specific region layer on the map.
     function setRegionClickEvent(regionSource, regionIdProp, regionNameProp) {
@@ -1486,7 +1521,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         return;
                     }
 
-
                     map.addLayer({
                         id: `${layerId}-fill`,
                         type: 'fill',
@@ -1692,20 +1726,45 @@ document.addEventListener("DOMContentLoaded", () => {
                     debouncedExpandCluster(clusterId, coordinates);
                 });
 
-                // Handle cluster click to expand zoom level
-                map.on('click', 'clusters', (e) => {
-                    const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
-                    // const clusterId = features[0].properties.cluster_id;
-                    map.getSource('hospitals').setClusterRadius(zoomLevel < 5 ? 100 : 50);
+                // // Handle cluster click to expand zoom level
+                // map.on('click', 'clusters', (e) => {
+                //     const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+                //     const zoomLevel = map.getZoom();
+                //     const clusterId = features[0].properties.cluster_id;
+                //     map.getSource('hospitals').setClusterRadius(zoomLevel < 5 ? 100 : 50);
 
-                    // map.getSource('hospitals').getClusterExpansionZoom(clusterId, (err, zoom) => {
-                    //     if (err) return;
-                    //     map.easeTo({
-                    //         center: features[0].geometry.coordinates,
-                    //         zoom: zoom
-                    //     });
-                    // });
-                });
+                //     map.getSource('hospitals').getClusterExpansionZoom(clusterId, (err, zoom) => {
+                //         if (err) return;
+                //         map.easeTo({
+                //             center: features[0].geometry.coordinates,
+                //             zoom: zoom
+                //         });
+                //     });
+                // });
+
+                // Handle cluster click to expand zoom level
+map.on('click', 'clusters', (e) => {
+    // Query for features in the 'clusters' layer at the clicked point
+    const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+    
+    if (!features.length) return; // Ensure there are features at the clicked location
+
+    const clusterId = features[0].properties.cluster_id;
+    const zoomLevel = map.getZoom();
+
+    // Dynamically adjust the cluster radius based on zoom level
+    map.getSource('hospitals').setClusterRadius(zoomLevel < 5 ? 100 : 50);
+
+    // Expand the cluster and zoom to it
+    map.getSource('hospitals').getClusterExpansionZoom(clusterId, (err, zoom) => {
+        if (err) return; // If error occurs, return early
+
+        map.easeTo({
+            center: features[0].geometry.coordinates,
+            zoom: zoom
+        });
+    });
+});
 
                 // Handle clicks on states/regions dynamically
                 ['us-states', 'canada-regions', 'aruba-region', 'italy-regions', 'uk-regions'].forEach(layerId => {
@@ -1821,7 +1880,7 @@ document.addEventListener("DOMContentLoaded", () => {
             let hoverTimeout;
             //Apply Hover
             const applyHover = (regionId) => {
-                if (!regionsWithFacilities.has(regionId)) return;
+                // if (!regionsWithFacilities.has(regionId)) return;
                 if (hoveredRegionId && hoveredRegionId !== selectedRegionId) {
                     map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
                 }
@@ -1935,10 +1994,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     // console.log(`Clicked Region ID: ${regionId}`);
                     selectRegion(regionId);
                 } else {
-                    console.warn(`Clicked region "${regionId}" does not have facilities.`);
+                    // console.warn(`Clicked region "${regionId}" does not have facilities.`);
                 }
 
-                console.log(`Hovered Region: ${hoveredRegionId}, Selected Region: ${selectedRegionId}`);
+                // console.log(`Hovered Region: ${hoveredRegionId}, Selected Region: ${selectedRegionId}`);
 
             });
 
@@ -1975,11 +2034,11 @@ document.addEventListener("DOMContentLoaded", () => {
                             duration: 1000,
                         });
                     } else {
-                        console.warn('No valid session view found.');
+                        // console.warn('No valid session view found.');
                     }
 
                     // Log for debugging
-                    console.log(`Sidebar closed. Selection cleared, last action: ${lastAction}`);
+                    // console.log(`Sidebar closed. Selection cleared, last action: ${lastAction}`);
                 });
             }
 
