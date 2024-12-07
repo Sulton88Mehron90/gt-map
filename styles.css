@@ -229,9 +229,13 @@ button:hover {
     position: relative;
     left: 20px;
     top: 100px;
-    width: 360px;
-    height: 100%;
-    max-height: 600px;
+    max-width: 360px;
+    min-width: 150px;
+    width: 35%;
+    /* height: 100%; */
+    height: 100vh;
+    /* max-height: 600px; */
+    max-height: 80vh;
     background: linear-gradient(145deg, #0f2844, #1c3a5c);
     border-radius: 12px;
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4);
@@ -248,21 +252,27 @@ button:hover {
     box-sizing: border-box;
 }
 
+#hospital-list-sidebar.dragging {
+    opacity: 0.8;
+    outline: 2px dashed #ff8502;
+    transition: opacity 0.1s ease, outline 0.1s ease;
+}
+
 #hospital-list-sidebar::-webkit-scrollbar {
-    width: 8px; /* Adjust scrollbar width */
+    width: 8px;
 }
 
 #hospital-list-sidebar::-webkit-scrollbar-thumb {
-    background: #ff8502; /* Color of scrollbar thumb */
-    border-radius: 10px; /* Round the edges */
+    background: #ff8502;
+    border-radius: 10px;
 }
 
 #hospital-list-sidebar::-webkit-scrollbar-thumb:hover {
-    background: #e57300; /* Hover effect for scrollbar thumb */
+    background: #e57300;
 }
 
 #hospital-list-sidebar::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1); /* Track color */
+    background: rgba(255, 255, 255, 0.1);
 }
 
 #hospital-list-sidebar:hover {
@@ -326,15 +336,6 @@ button:hover {
 #hospital-list li:hover {
     background-color: rgba(255, 255, 255, 0.2);
     transform: scale(1.02);
-}
-
-#hospital-list-sidebar::-webkit-scrollbar {
-    width: 6px;
-}
-
-#hospital-list-sidebar::-webkit-scrollbar-thumb {
-    background: #ff8502;
-    border-radius: 10px;
 }
 
 .theme-toggle-btn {
@@ -456,15 +457,15 @@ button:hover {
 #hospital-list-sidebar.collapsed .logo-container {
     display: flex;
     align-items: center;
-    justify-content: space-evenly; 
+    justify-content: space-evenly;
 }
 
 #hospital-list-sidebar.collapsed #minimize-sidebar {
     position: relative;
-    left: 0; 
-    top: 0; 
+    left: 0;
+    top: 0;
     margin-left: 25px;
-    z-index: 12; 
+    z-index: 12;
     /* margin-right: 5px; */
 }
 
@@ -484,21 +485,16 @@ button:hover {
     /* display: none;  */
 }
 
-#hospital-list-sidebar.dragging {
-    opacity: 0.8;
-    outline: 2px dashed #ff8502;
-    transition: opacity 0.1s ease, outline 0.1s ease;
-}
-
 /* General Back to Top Button Styling */
 #back-to-top-button {
-    display: none; 
+    display: none;
     position: absolute;
     right: 20px;
     bottom: 20px;
-    z-index: 3000; 
+    z-index: 3000;
     border: none;
     left: 50%;
+    transform: translateX(50%);
     border-radius: 50%;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
     cursor: pointer;
@@ -516,13 +512,8 @@ button:hover {
 }
 
 /* Ensure it's hidden only when sidebar is collapsed */
-#hospital-list-sidebar.collapsed ~ #back-to-top-button {
+#hospital-list-sidebar.collapsed~#back-to-top-button {
     display: none !important;
-}
-
-/* Ensure alignment within sidebar */
-#hospital-list-sidebar.dragging ~ #back-to-top-button {
-    display: none !important; /* Hide while dragging */
 }
 
 .dragging {
@@ -530,6 +521,7 @@ button:hover {
     opacity: 0.9;
     z-index: 9999;
 }
+
 .grabbing {
     cursor: grabbing;
 }
@@ -569,8 +561,10 @@ button:hover {
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-    padding: 0 10px; /* Add padding for better spacing */
-    gap: 10px; /* Space between elements on the same side */
+    padding: 0 10px;
+    /* Add padding for better spacing */
+    gap: 10px;
+    /* Space between elements on the same side */
 }
 
 .sidebar-header.grabbing {
@@ -580,17 +574,17 @@ button:hover {
 #minimize-sidebar,
 #close-sidebar {
     width: 20px;
-    height: 20px; 
+    height: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 5px;
 
     background-color: #333;
-    color: #fff; 
-    border-radius: 50%; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
-    cursor: pointer; 
+    color: #fff;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
     transition: background-color 0.3s ease, transform 0.3s ease;
     transition: background-color 0.3s ease;
 
@@ -599,7 +593,7 @@ button:hover {
     right: 10px;
     z-index: 11;
 
-   
+
     border: none;
 
     margin: 0 10px;
@@ -609,7 +603,7 @@ button:hover {
 #minimize-sidebar:hover,
 #close-sidebar:hover {
     background-color: #555;
-    transform: scale(1.1); 
+    transform: scale(1.1);
 }
 
 /* outline is removed for accessibility */
@@ -654,7 +648,7 @@ button:hover {
 
 /* Logo visibility when back button is displayed */
 .sidebar-logo.hidden {
-    opacity: 0; 
+    opacity: 0;
     pointer-events: none;
 }
 
@@ -671,7 +665,7 @@ button:hover {
 #back-button i {
     font-size: 0.8rem;
     position: relative;
-    top: 0; 
+    top: 0;
     padding-bottom: 0;
     left: -0.1rem;
 }
@@ -904,16 +898,16 @@ button:hover {
 }
 
 .mapboxgl-ctrl-geocoder--input:focus {
-    outline: none; 
+    outline: none;
     caret-color: black;
 }
 
 /* Zoom Warning Icon */
 #zoom-warning {
-    display: none; /* Initially hidden */
+    display: none;
     position: absolute;
     top: 50px;
-    left: 20px; /* Adjust as needed for alignment */
+    left: 20px;
     z-index: 1000;
     background-color: rgba(0, 0, 0, 0.8);
     color: white;
@@ -928,7 +922,7 @@ button:hover {
     width: 20px;
     height: 20px;
     cursor: pointer;
-}   
+}
 
 /* Tooltip for Zoom Warning */
 #zoom-tooltip {
@@ -950,31 +944,21 @@ button:hover {
         height: 100vh;
         width: 100vw;
     }
-/* 
+
     #hospital-list-sidebar {
-        width: 60%; */
+        /* width: 60%; */
         /* max-height: 50vh; */
-        /* overflow-y: auto; */
-        /* position: absolute; */
-        /* padding-right: 15px; */
-        /* overflow-y: scroll; */
+        width: 40%;
     }
-/*    
+
     #back-to-top-button {
-        display: none !important;
-        left: 200px;
         width: 20px;
         height: 20px;
-        position: sticky; 
-        bottom: 10px;
-        right: 10px;    
-        z-index: 15;
-        justify-content: center;
-        align-items: center;
-    }  */
+        left: 40%;
+    }
 
     #back-to-top-button i {
-        font-size: 12px;    
+        font-size: 12px;
         padding-left: 1px;
     }
 
@@ -987,7 +971,7 @@ button:hover {
         transform: scale(1.1);
     }
 
-    #hospital-list-sidebar.collapsed ~ #back-to-top-button {
+    #hospital-list-sidebar.collapsed~#back-to-top-button {
         display: none !important;
     }
 
@@ -1022,12 +1006,6 @@ button:hover {
         left: 726px;
         z-index: 1000;
     }
-/* 
-    #zoom-warning-icon {
-        width: 15px;
-        height: 15px;
-        cursor: pointer;
-    } */
 
     #zoom-warning:hover #zoom-tooltip {
         display: block;
@@ -1047,25 +1025,36 @@ button:hover {
     }
 
     #zoom-warning {
-        top: 10px; /* Adjusted top for smaller screens */
-        left: auto; /* Avoid hardcoding left for flexibility */
-        right: 10px; /* Position relative to the right edge */
-        display: block; /* Ensure it's visible on small screens */
+        top: 10px;
+        left: auto;
+        right: 10px;
+        display: block;
     }
 
     #zoom-warning-icon {
         width: 15px;
         height: 15px;
     }
+}
 
-@media (max-width: 480px){
+@media (max-width: 480px) {
     #map {
         width: 100vw;
         height: calc(100vh - 40px);
     }
 
+    #hospital-list-sidebar {
+        width: 60%;
+        max-height: 70vh;
+    }
+
+    #back-to-top-button {
+        width: 20px;
+        height: 20px;
+    }
+
     #back-to-top-button i {
-        font-size: 12px;    
+        font-size: 12px;
         padding-left: 1px;
     }
 
@@ -1078,7 +1067,7 @@ button:hover {
         transform: scale(1.1);
     }
 
-    #hospital-list-sidebar.collapsed ~ #back-to-top-button {
+    #hospital-list-sidebar.collapsed~#back-to-top-button {
         display: none !important;
     }
 
@@ -1113,18 +1102,18 @@ button:hover {
     }
 
     #zoom-warning {
-        top: 5px; /* Further adjust top for very small screens */
-        right: 5px; /* Adjust right to maintain spacing */
+        top: 5px;
+        right: 5px;
     }
 
     #zoom-warning-icon {
-        width: 12px; /* Reduce icon size for very small screens */
+        width: 12px;
         height: 12px;
     }
 
 }
 
-@media (max-width: 425px){
+@media (max-width: 425px) {
     #map {
         width: 100vw;
         height: calc(100vh - 40px);
@@ -1135,7 +1124,7 @@ button:hover {
     }
 }
 
-@media (max-width: 375px){
+@media (max-width: 375px) {
     #map {
         height: calc(100vh - 50px);
         width: 100%;
@@ -1146,7 +1135,7 @@ button:hover {
     }
 }
 
-@media (max-width: 320px){
+@media (max-width: 320px) {
     #map {
         height: calc(100vh - 50px);
         width: 100%;

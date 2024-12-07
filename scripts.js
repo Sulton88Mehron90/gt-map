@@ -159,7 +159,6 @@ const regionSources = ['us-states', 'canada-regions', 'aruba-region', 'italy-reg
 // Map Initialization on DOMContentLoaded
 document.addEventListener("DOMContentLoaded", () => {
     showSpinner();
-    // toggleBackToTopButton();
 
     const map = new mapboxgl.Map({
         container: 'map',
@@ -284,7 +283,6 @@ document.addEventListener("DOMContentLoaded", () => {
             geocoderToggle.style.display = "flex";
         }
     });
-    /////
 
     // Function to toggle visibility of the back-to-top button
     function toggleBackToTopButton() {
@@ -587,7 +585,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // console.log(`createCustomMarker created with data-region-id: ${regionId}`);
 
         // Create a popup and attach it to the marker
-        const popup = new mapboxgl.Popup({ offset: 15 }).setHTML(popupContent);
+        const popup = new mapboxgl.Popup({ offset: 15, closeButton: false }).setHTML(popupContent)
 
         // Create the marker without adding it to the map
         const marker = new mapboxgl.Marker(markerElement)
@@ -783,7 +781,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // flyToRegion function
     function flyToRegion(region) {
         if (!regions[region]) {
-             console.error(`Region "${region}" is not defined.`);
+            console.error(`Region "${region}" is not defined.`);
             return;
         }
 
@@ -841,7 +839,6 @@ document.addEventListener("DOMContentLoaded", () => {
         currentRegion = region;
 
         // Adjust marker visibility based on zoom threshold
-        // const markerZoomThreshold = currentRegion === 'usa' ? 4 : 5;
         const markerZoomThreshold = regionZoomThresholds[region] || regionZoomThresholds.default;
 
         const currentZoom = map.getZoom();
@@ -931,7 +928,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // // zoom warning visibility and tooltip
+    // zoom warning visibility and tooltip
     // function manageZoomWarning() {
     //     const zoomLevel = map.getZoom();
     //     const isSmallScreen = window.innerWidth <= 480;
@@ -964,38 +961,38 @@ document.addEventListener("DOMContentLoaded", () => {
     // map.on('zoomend', manageZoomWarning);
 
     // zoom warning visibility and tooltip
-function manageZoomWarning() {
-    const zoomLevel = map.getZoom(); // Current zoom level
-    const isSmallScreen = window.innerWidth <= 480; // Check if screen size is small
-    const zoomThreshold = 5; // Minimum zoom level to show warning
+    function manageZoomWarning() {
+        const zoomLevel = map.getZoom(); // Current zoom level
+        const isSmallScreen = window.innerWidth <= 480; // Check if screen size is small
+        const zoomThreshold = 5; // Minimum zoom level to show warning
 
-    const zoomWarning = document.getElementById('zoom-warning');
-    if (!zoomWarning) return;
+        const zoomWarning = document.getElementById('zoom-warning');
+        if (!zoomWarning) return;
 
-    // Show warning only on small screens and if zoom level is below the threshold
-    if (isSmallScreen && zoomLevel < zoomThreshold) {
-        zoomWarning.style.display = 'block';
-    } else {
-        zoomWarning.style.display = 'none';
+        // Show warning only on small screens and if zoom level is below the threshold
+        if (isSmallScreen && zoomLevel < zoomThreshold) {
+            zoomWarning.style.display = 'block';
+        } else {
+            zoomWarning.style.display = 'none';
+        }
     }
-}
 
-// Hover tooltip logic
-const zoomWarningIcon = document.getElementById('zoom-warning-icon');
-const zoomTooltip = document.getElementById('zoom-tooltip');
+    // Hover tooltip logic
+    const zoomWarningIcon = document.getElementById('zoom-warning-icon');
+    const zoomTooltip = document.getElementById('zoom-tooltip');
 
-if (zoomWarningIcon) {
-    zoomWarningIcon.addEventListener('mouseenter', () => {
-        if (zoomTooltip) zoomTooltip.style.display = 'block';
-    });
+    if (zoomWarningIcon) {
+        zoomWarningIcon.addEventListener('mouseenter', () => {
+            if (zoomTooltip) zoomTooltip.style.display = 'block';
+        });
 
-    zoomWarningIcon.addEventListener('mouseleave', () => {
-        if (zoomTooltip) zoomTooltip.style.display = 'none';
-    });
-}
+        zoomWarningIcon.addEventListener('mouseleave', () => {
+            if (zoomTooltip) zoomTooltip.style.display = 'none';
+        });
+    }
 
-// Trigger manageZoomWarning on zoom and map load
-map.on('zoomend', manageZoomWarning);
+    // Trigger manageZoomWarning on zoom and map load
+    map.on('zoomend', manageZoomWarning);
 
 
     //responsible for attaching a click event to a specific region layer on the map.
@@ -1427,8 +1424,7 @@ map.on('zoomend', manageZoomWarning);
         <a href="https://www.commonspirit.org/" target="_blank" style="color: #06b4fd">Visit Website</a>`;
                     }
 
-                    const popup = new mapboxgl.Popup({ offset: 15, closeButton: false })
-                        .setHTML(popupContent);
+                    const popup = new mapboxgl.Popup({ offset: 15, closeButton: false }).setHTML(popupContent)
 
                     // Create a custom marker element
                     const markerElement = document.createElement('div');
@@ -1452,15 +1448,59 @@ map.on('zoomend', manageZoomWarning);
                         .addTo(map);
 
                     // Specific hover behavior based on the hospital name
+                    // if (hospital_name !== "CommonSpirit Health Headquarters") {
+                    //     // Standard behavior: show/hide popup on hover
+                    //     marker.getElement().addEventListener('mouseenter', () => popup.addTo(map));
+                    //     marker.getElement().addEventListener('mouseleave', () => popup.remove());
+                    // } else {
+                    //     // For CommonSpirit Headquarters, keep popup open on click
+                    //     marker.getElement().addEventListener('click', (e) => {
+                    //         e.stopPropagation();
+                    //         popup.addTo(map);
+                    //     });
+                    // }
+
+// Specific hover behavior based on the hospital name and the other
                     if (hospital_name !== "CommonSpirit Health Headquarters") {
-                        // Standard behavior: show/hide popup on hover
-                        marker.getElement().addEventListener('mouseenter', () => popup.addTo(map));
-                        marker.getElement().addEventListener('mouseleave', () => popup.remove());
+                        if (isTouchDevice) {
+                            marker.getElement().addEventListener('touchstart', (e) => {
+                                e.stopPropagation();
+                                // Close all other popups to prevent overlaps
+                                markers.forEach(m => {
+                                    if (m !== marker) {
+                                        m.getPopup()?.remove();
+                                    }
+                                });
+
+                                if (!popup.isOpen()) {
+                                    popup.addTo(map);
+                                    // Ensure aria-hidden is not applied to the popup close button
+                                    const closeButton = popup._container.querySelector('.mapboxgl-popup-close-button');
+                                    if (closeButton) {
+                                        closeButton.removeAttribute('aria-hidden');
+                                    }
+                                } else {
+                                    popup.remove();
+                                }
+                            });
+                        } else {
+                            marker.getElement().addEventListener('mouseenter', () => {
+                                popup.addTo(map);
+                                const closeButton = popup._container.querySelector('.mapboxgl-popup-close-button');
+                                if (closeButton) {
+                                    closeButton.removeAttribute('aria-hidden');
+                                }
+                            });
+                            marker.getElement().addEventListener('mouseleave', () => popup.remove());
+                        }
                     } else {
-                        // For CommonSpirit Headquarters, keep popup open on click
                         marker.getElement().addEventListener('click', (e) => {
                             e.stopPropagation();
                             popup.addTo(map);
+                            const closeButton = popup._container.querySelector('.mapboxgl-popup-close-button');
+                            if (closeButton) {
+                                closeButton.removeAttribute('aria-hidden');
+                            }
                         });
                     }
 
@@ -1510,11 +1550,6 @@ map.on('zoomend', manageZoomWarning);
                     // const selectedColor = '#A2C4A5'; //Muted Green
                     // const selectedColor = '#F8F9FA' //gray
                     // const selectedColor = '#05aaff' 
-
-                    // if (map.getLayer(`${layerId}-fill`)) {
-                    //     // console.warn(`Layer with id "${layerId}-fill" already exists. Skipping addition.`);
-                    //     return;
-                    // }
 
                     if (map.getLayer(`${layerId}-fill`)) {
                         logWarningOnce(`Layer with id "${layerId}-fill" already exists. Skipping addition.`);
@@ -1709,64 +1744,31 @@ map.on('zoomend', manageZoomWarning);
                         .addTo(map);
                 });
 
-                //Cluster Zoom Throttling. check if i need this.
-                const debouncedExpandCluster = debounce((clusterId, coordinates) => {
+                // Handle clicks on states/regions dynamically
+                map.on('click', 'clusters', (e) => {
+                    const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+                    if (!features.length) return;
+
+                    const clusterId = features[0].properties.cluster_id;
+                    const coordinates = features[0].geometry.coordinates;
+
+                    // Adjust cluster radius dynamically based on zoom level (Optional)
+                    const zoomLevel = map.getZoom();
+                    if (zoomLevel < 5) {
+                        console.warn("Dynamic cluster radius adjustment skipped. `setClusterRadius` is not valid.");
+                    }
+
+                    // Expand the cluster and zoom in
                     map.getSource('hospitals').getClusterExpansionZoom(clusterId, (err, zoom) => {
                         if (err) return;
+
                         map.easeTo({
                             center: coordinates,
-                            zoom: zoom
+                            zoom: zoom,
                         });
                     });
-                }, 300);
-
-                map.on('click', 'clusters', (e) => {
-                    const clusterId = e.features[0].properties.cluster_id;
-                    const coordinates = e.features[0].geometry.coordinates;
-                    debouncedExpandCluster(clusterId, coordinates);
                 });
 
-                // // Handle cluster click to expand zoom level
-                // map.on('click', 'clusters', (e) => {
-                //     const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
-                //     const zoomLevel = map.getZoom();
-                //     const clusterId = features[0].properties.cluster_id;
-                //     map.getSource('hospitals').setClusterRadius(zoomLevel < 5 ? 100 : 50);
-
-                //     map.getSource('hospitals').getClusterExpansionZoom(clusterId, (err, zoom) => {
-                //         if (err) return;
-                //         map.easeTo({
-                //             center: features[0].geometry.coordinates,
-                //             zoom: zoom
-                //         });
-                //     });
-                // });
-
-                // Handle cluster click to expand zoom level
-map.on('click', 'clusters', (e) => {
-    // Query for features in the 'clusters' layer at the clicked point
-    const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
-    
-    if (!features.length) return; // Ensure there are features at the clicked location
-
-    const clusterId = features[0].properties.cluster_id;
-    const zoomLevel = map.getZoom();
-
-    // Dynamically adjust the cluster radius based on zoom level
-    map.getSource('hospitals').setClusterRadius(zoomLevel < 5 ? 100 : 50);
-
-    // Expand the cluster and zoom to it
-    map.getSource('hospitals').getClusterExpansionZoom(clusterId, (err, zoom) => {
-        if (err) return; // If error occurs, return early
-
-        map.easeTo({
-            center: features[0].geometry.coordinates,
-            zoom: zoom
-        });
-    });
-});
-
-                // Handle clicks on states/regions dynamically
                 ['us-states', 'canada-regions', 'aruba-region', 'italy-regions', 'uk-regions'].forEach(layerId => {
                     map.on('click', `${layerId}-fill`, (e) => {
                         const clickedRegionId = e.features[0].properties.id;
@@ -2036,9 +2038,6 @@ map.on('click', 'clusters', (e) => {
                     } else {
                         // console.warn('No valid session view found.');
                     }
-
-                    // Log for debugging
-                    // console.log(`Sidebar closed. Selection cleared, last action: ${lastAction}`);
                 });
             }
 
