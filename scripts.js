@@ -162,14 +162,46 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/light-v11', //original
+        // style: 'mapbox://styles/mapbox/light-v11', //original
         // style: 'mapbox://styles/nanajon66/cm4e8yzf8001601spf3zn96g1', // i like it 2
-        // style: 'mapbox://styles/nanajon66/cm4fk3i8x001e01rf0pov4618', //last option?
+        style: 'mapbox://styles/nanajon66/cm4fk3i8x001e01rf0pov4618', //last option?
         projection: 'globe',
         center: USA_CENTER,
         zoom: USA_ZOOM,
     });
 
+    // map.on('styledata', () => {
+    //     console.log('Custom style layers:', map.getStyle().layers);
+    // });
+
+//     //helper function toggleMapStyle that switches the map's style based on the zoom level
+//     function toggleMapStyle(zoomLevel) {
+//         // Define the styles
+//         const defaultStyle = 'mapbox://styles/mapbox/light-v11';
+//         const alternateStyle = 'mapbox://styles/nanajon66/cm4e8yzf8001601spf3zn96g1';
+    
+//         // Check the zoom level and update the style if necessary
+//         if (zoomLevel <= 3) {
+//             // Apply default style for reset and fit-to-USA views
+//             if (map.getStyle().sprite !== defaultStyle) {
+//                 map.setStyle(defaultStyle);
+//                 console.log(`Switched to default style at zoom level: ${zoomLevel}`);
+//             }
+//         } else {
+//             // Apply alternate style for other zoom levels
+//             if (map.getStyle().sprite !== alternateStyle) {
+//                 map.setStyle(alternateStyle);
+//                 console.log(`Switched to alternate style at zoom level: ${zoomLevel}`);
+//             }
+//         }
+//     }
+
+// //Zoom Event
+//     map.on('zoom', () => {
+//         const zoomLevel = map.getZoom(); // Get the current zoom level
+//         toggleMapStyle(zoomLevel);      // Call the toggle logic
+//     });    
+    
     window.addEventListener("resize", () => map.resize());
 
     // Map navigation controls (zoom and rotate)
@@ -627,8 +659,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //     // Rest of the function
     // }
-
-
 
     function updateMarkerVisibility(region, zoomLevel) {
         const threshold = regionZoomThresholds[region] ?? regionZoomThresholds.default;
@@ -1102,6 +1132,14 @@ document.addEventListener("DOMContentLoaded", () => {
         log('Map fully loaded', 'info');
         map.setFog({});
 
+/////
+        const layers = map.getStyle().layers;
+        layers.forEach(layer => {
+            console.log(`Layer ID: ${layer.id}`);
+            console.log('Paint Properties:', layer.paint);
+        });
+/////
+
         setTimeout(() => map.resize(), 100); // Ensure proper map rendering
 
         // Set flat projection
@@ -1543,6 +1581,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Initial call to set visibility based on the starting zoom level
                 toggleMarkers();
 
+//Adjusts marker size and visibility for certain regions.
                 map.on('zoomend', () => {
                     const zoomLevel = map.getZoom();
                     adjustMarkerSize(zoomLevel);

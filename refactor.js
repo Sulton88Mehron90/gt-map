@@ -529,7 +529,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         sidebar.style.display = uniqueHealthSystems.size > 0 ? 'block' : 'none';
         adjustSidebarHeight();
-    
+
     }
 
     function createCustomMarker(lng, lat, popupContent, regionId) {
@@ -618,18 +618,16 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     // Avoid recalculating visibility unnecessarily by adding a guard against redundant updates in updateMarkerVisibility.
-    
-//     let lastRegion = null;
-// function updateMarkerVisibility(region, zoomLevel) {
-//     if (region === lastRegion && lastZoomLevel === zoomLevel) return;
-//     lastRegion = region;
-//     lastZoomLevel = zoomLevel;
 
-//     // Rest of the function
-// }
+    //     let lastRegion = null;
+    // function updateMarkerVisibility(region, zoomLevel) {
+    //     if (region === lastRegion && lastZoomLevel === zoomLevel) return;
+    //     lastRegion = region;
+    //     lastZoomLevel = zoomLevel;
 
-    
-    
+    //     // Rest of the function
+    // }
+
     function updateMarkerVisibility(region, zoomLevel) {
         const threshold = regionZoomThresholds[region] ?? regionZoomThresholds.default;
         const isStateView = zoomLevel <= threshold;
@@ -729,22 +727,22 @@ document.addEventListener("DOMContentLoaded", () => {
         adjustMarkerSize(zoomLevel);
     }
 
- // Back button logic
+    // Back button logic
     function handleBackButtonClick() {
         // Directly call the resetToSessionView function
         resetToSessionView();
-    
+
         // Additional logic, if needed
         backButton.style.display = 'none';
         gtLogo.style.display = 'block';
     }
-    
+
     // Ensure the event listener is only attached once
     if (!backButton.hasAttribute('data-listener-attached')) {
         backButton.addEventListener('click', handleBackButtonClick);
         backButton.setAttribute('data-listener-attached', 'true');
     }
-    
+
     // Regions
     const regions = {
         usa: { center: [-98.5795, 39.8283], zoom: 4, pitch: 0 },
@@ -888,7 +886,7 @@ document.addEventListener("DOMContentLoaded", () => {
             fitToUSA: 3,  // Fit-to-USA zoom level
             default: 6,   // Default zoom level for unhandled regions
         };
-        
+
         const customZoom = regionZoomLevels[clickedRegionId] || regionZoomLevels.default;
 
         // Zoom into the bounds of the region
@@ -1082,7 +1080,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     default: 6,   // Default zoom level for unhandled regions
                 };
 
-                
+
                 const defaultZoom = regionZoomLevels[currentRegion] || 4;
 
                 map.flyTo({
@@ -1098,11 +1096,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //the initialization point for actions and event handlers that require the map to be fully loaded. 
     map.on('load', () => {
-    showSpinner();
+        showSpinner();
         log('Map fully loaded', 'info');
-    map.setFog({});
+        map.setFog({});
 
-    setTimeout(() => map.resize(), 100); // Ensure proper map rendering
+        setTimeout(() => map.resize(), 100); // Ensure proper map rendering
 
         // Set flat projection
         // map.setProjection('mercator');
@@ -1473,7 +1471,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     //     });
                     // }
 
-// Specific hover behavior based on the hospital name and the other
+                    // Specific hover behavior based on the hospital name and the other
                     if (hospital_name !== "CommonSpirit Health Headquarters") {
                         if (isTouchDevice) {
                             marker.getElement().addEventListener('touchstart', (e) => {
@@ -1593,94 +1591,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
                     });
                 }
-
-                // function addRegionLayer(map, layerId, sourceId, regionsWithFacilities) {
-                //     const hoverColor = '#05aaff';
-                //     const selectedColor = '#6E7F80'; // disaturated blue
-                
-                //     if (map.getLayer(`${layerId}-fill`)) {
-                //         logWarningOnce(`Layer with id "${layerId}-fill" already exists. Skipping addition.`);
-                //         return;
-                //     }
-                
-                //     // Add the main region layer
-                //     map.addLayer({
-                //         id: `${layerId}-fill`,
-                //         type: 'fill',
-                //         source: sourceId,
-                //         paint: {
-                //             'fill-color': [
-                //                 'case',
-                //                 // Apply selected color if the region is selected and has facilities
-                //                 ['all', ['boolean', ['feature-state', 'selected'], false], ['in', ['get', 'id'], ['literal', Array.from(regionsWithFacilities)]]], selectedColor,
-                //                 // Apply hover color if the region is hovered and has facilities
-                //                 ['all', ['boolean', ['feature-state', 'hover'], false], ['in', ['get', 'id'], ['literal', Array.from(regionsWithFacilities)]]], hoverColor,
-                //                 // Default color for regions without facilities
-                //                 '#d3d3d3'
-                //             ],
-                //             'fill-opacity': [
-                //                 'case',
-                //                 // Increase transparency for selected regions
-                //                 ['boolean', ['feature-state', 'selected'], false], 0.1, // 10% opacity for selected regions
-                //                 ['boolean', ['feature-state', 'hover'], false], 0.6, // 60% opacity for hovered regions
-                //                 0.8
-                //             ]
-                //         }
-                //     });
-                
-                //     // Add water layer inside regions
-                //     map.addLayer({
-                //         id: `${layerId}-water`,
-                //         type: 'fill',
-                //         source: sourceId,
-                //         filter: ['==', ['get', 'type'], 'water'], // Filter for water if defined in GeoJSON
-                //         paint: {
-                //             'fill-color': '#A0DFF7', // Light blue for water
-                //             'fill-opacity': 0.8      // Semi-transparent
-                //         }
-                //     });
-                
-                //     // Add land layer inside regions
-                //     map.addLayer({
-                //         id: `${layerId}-land`,
-                //         type: 'fill',
-                //         source: sourceId,
-                //         filter: ['==', ['get', 'type'], 'land'], // Filter for land if defined in GeoJSON
-                //         paint: {
-                //             'fill-color': '#A8D5BA', // Light green for land
-                //             'fill-opacity': 0.8      // Semi-transparent
-                //         }
-                //     });
-                // }
-                
-
-// New Function: Add water and land styling for regions
-function addWaterAndLandLayers(map, layerId, sourceId) {
-    // Add water layer inside regions
-    map.addLayer({
-        id: `${layerId}-water`,
-        type: 'fill',
-        source: sourceId,
-        filter: ['==', ['get', 'type'], 'water'], // Filter for water if defined in GeoJSON
-        paint: {
-            'fill-color': '#A0DFF7', // Light blue for water
-            'fill-opacity': 0.8      // Semi-transparent
-        }
-    });
-
-    // Add land layer inside regions
-    map.addLayer({
-        id: `${layerId}-land`,
-        type: 'fill',
-        source: sourceId,
-        filter: ['==', ['get', 'type'], 'land'], // Filter for land if defined in GeoJSON
-        paint: {
-            'fill-color': '#A8D5BA', // Light green for land
-            'fill-opacity': 0.8      // Semi-transparent
-        }
-    });
-}
-
 
                 function addHoverOutlineLayer(map, layerId, sourceId) {
                     if (map.getLayer(layerId)) {
@@ -2143,13 +2053,17 @@ function addWaterAndLandLayers(map, layerId, sourceId) {
             // }
 
             const closeSidebarButton = document.getElementById('close-sidebar');
-// Ensure the listener is attached only once
-if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
-    closeSidebarButton.setAttribute('data-listener-attached', 'true');
-    closeSidebarButton.addEventListener('click', closeSidebar);
-}
-
-
+            // Ensure the listener is attached only once
+            if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
+                closeSidebarButton.setAttribute('data-listener-attached', 'true');
+                closeSidebarButton.addEventListener('click', () => {
+                    // Clear region selection
+                    clearRegionSelection();
+                    // Hide the sidebar and update the view
+                    closeSidebar();
+                });
+            }
+            
             // Fit-to-USA Button
             document.getElementById('fit-to-usa').addEventListener('click', () => {
                 sessionStartingView = {
@@ -2228,18 +2142,18 @@ if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attach
                 console.warn('Sidebar element not found.');
                 return;
             }
-        
+
             sidebar.style.display = 'none';
-        
+
             // Deselect the feature state for all regions
             regionSources.forEach(sourceId => {
                 if (selectedStateId !== null) {
                     map.setFeatureState({ source: sourceId, id: selectedStateId }, { selected: false });
                 }
             });
-        
+
             selectedStateId = null;
-        
+
             // Determine the view to revert to based on the current region
             if (currentRegion && regions[currentRegion]) {
                 const { center, zoom, pitch } = regions[currentRegion];
@@ -2281,7 +2195,7 @@ if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attach
                     duration: 1000,
                 });
             }
-        }        
+        }
 
         //drag-and-drop functionality for an element
         // Variables for drag-and-drop
