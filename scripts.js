@@ -174,34 +174,34 @@ document.addEventListener("DOMContentLoaded", () => {
     //     console.log('Custom style layers:', map.getStyle().layers);
     // });
 
-//     //helper function toggleMapStyle that switches the map's style based on the zoom level
-//     function toggleMapStyle(zoomLevel) {
-//         // Define the styles
-//         const defaultStyle = 'mapbox://styles/mapbox/light-v11';
-//         const alternateStyle = 'mapbox://styles/nanajon66/cm4e8yzf8001601spf3zn96g1';
-    
-//         // Check the zoom level and update the style if necessary
-//         if (zoomLevel <= 3) {
-//             // Apply default style for reset and fit-to-USA views
-//             if (map.getStyle().sprite !== defaultStyle) {
-//                 map.setStyle(defaultStyle);
-//                 console.log(`Switched to default style at zoom level: ${zoomLevel}`);
-//             }
-//         } else {
-//             // Apply alternate style for other zoom levels
-//             if (map.getStyle().sprite !== alternateStyle) {
-//                 map.setStyle(alternateStyle);
-//                 console.log(`Switched to alternate style at zoom level: ${zoomLevel}`);
-//             }
-//         }
-//     }
+    //     //helper function toggleMapStyle that switches the map's style based on the zoom level
+    //     function toggleMapStyle(zoomLevel) {
+    //         // Define the styles
+    //         const defaultStyle = 'mapbox://styles/mapbox/light-v11';
+    //         const alternateStyle = 'mapbox://styles/nanajon66/cm4e8yzf8001601spf3zn96g1';
 
-// //Zoom Event
-//     map.on('zoom', () => {
-//         const zoomLevel = map.getZoom(); // Get the current zoom level
-//         toggleMapStyle(zoomLevel);      // Call the toggle logic
-//     });    
-    
+    //         // Check the zoom level and update the style if necessary
+    //         if (zoomLevel <= 3) {
+    //             // Apply default style for reset and fit-to-USA views
+    //             if (map.getStyle().sprite !== defaultStyle) {
+    //                 map.setStyle(defaultStyle);
+    //                 console.log(`Switched to default style at zoom level: ${zoomLevel}`);
+    //             }
+    //         } else {
+    //             // Apply alternate style for other zoom levels
+    //             if (map.getStyle().sprite !== alternateStyle) {
+    //                 map.setStyle(alternateStyle);
+    //                 console.log(`Switched to alternate style at zoom level: ${zoomLevel}`);
+    //             }
+    //         }
+    //     }
+
+    // //Zoom Event
+    //     map.on('zoom', () => {
+    //         const zoomLevel = map.getZoom(); // Get the current zoom level
+    //         toggleMapStyle(zoomLevel);      // Call the toggle logic
+    //     });    
+
     window.addEventListener("resize", () => map.resize());
 
     // Map navigation controls (zoom and rotate)
@@ -547,7 +547,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     zoom: 12,
                     pitch: 45,
                     bearing: 0,
-                    duration: 2000,
+                    duration: 1000, // Reduced duration from 2000 to 1000 milliseconds
                     easing: (t) => t * (2 - t),
                 });
 
@@ -717,7 +717,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     zoom: zoomLevel,
                     pitch: sessionStartingView.pitch,
                     bearing: sessionStartingView.bearing,
-                    duration: 2000,
+                    duration: 1000, // Reduced duration from 2000 to 1000 milliseconds
                 });
             } else {
                 // console.warn('Stored region does not match current region. Resetting to current region.');
@@ -736,7 +736,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 ], {
                     padding: 20,
                     maxZoom: regionZoomThresholds.fitToUSA,
-                    duration: 2000,
+                    duration: 1000, // Reduced duration from 2000 to 1000 milliseconds
                 });
             } else if (lastAction === 'reset') {
                 // console.log('Returning to Reset view.');
@@ -745,7 +745,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     zoom: regionZoomThresholds.reset,
                     pitch: 0,
                     bearing: 0,
-                    duration: 2000,
+                    duration: 1000, // Reduced duration from 2000 to 1000 milliseconds
                 });
             } else {
                 console.warn('No last action specified. Defaulting to current region.');
@@ -838,7 +838,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 zoom,
                 pitch,
                 bearing: 0,
-                duration: 2000,
+                duration: 1000, // Reduced duration from 2000 to 1000 milliseconds
                 easing: (t) => t * (2 - t),
             });
         }
@@ -1038,14 +1038,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     toggleVisibility(['state-markers'], 'visible');
                     toggleVisibility(['location-markers', 'clusters', 'cluster-count', 'unclustered-point'], 'none');
 
-                    // const regionZoomLevels = {
-                    //     AW: 10,
-                    //     IT: 6,
-                    //     ENG: 8,
-                    //     CAN: 3,
-                    //     default: 4,
-                    // };
-
                     const regionZoomLevels = {
                         AW: 10,       // Aruba
                         IT: 6,        // Italy
@@ -1060,7 +1052,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     map.flyTo({
                         center: map.getCenter(),
                         zoom: customZoom,
-                        duration: 2000,
+                        duration: 1000, // Reduced duration from 2000 to 1000 milliseconds
                         essential: true,
                         easing: (t) => t * (2 - t),
                     });
@@ -1118,7 +1110,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 map.flyTo({
                     center: regions[currentRegion]?.center || map.getCenter(),
                     zoom: defaultZoom,
-                    duration: 2000,
+                    duration: 1000, // Reduced duration from 2000 to 1000 milliseconds
                     essential: true,
                     easing: (t) => t * (2 - t),
                 });
@@ -1132,13 +1124,13 @@ document.addEventListener("DOMContentLoaded", () => {
         log('Map fully loaded', 'info');
         map.setFog({});
 
-/////
+        /////
         const layers = map.getStyle().layers;
         layers.forEach(layer => {
             console.log(`Layer ID: ${layer.id}`);
             console.log('Paint Properties:', layer.paint);
         });
-/////
+        /////
 
         setTimeout(() => map.resize(), 100); // Ensure proper map rendering
 
@@ -1152,7 +1144,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 zoom: USA_ZOOM,
                 pitch: 0,
                 bearing: 0,
-                duration: 1500,
+                duration: 1000, // Reduced duration from 2000 to 1000 milliseconds
             });
             isFirstLoad = false;
         } else {
@@ -1581,7 +1573,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Initial call to set visibility based on the starting zoom level
                 toggleMarkers();
 
-//Adjusts marker size and visibility for certain regions.
+                //Adjusts marker size and visibility for certain regions.
                 map.on('zoomend', () => {
                     const zoomLevel = map.getZoom();
                     adjustMarkerSize(zoomLevel);
@@ -2056,43 +2048,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             // Sidebar Close Button. Attach clear interactions to sidebar close button
-            // const closeSidebarButton = document.getElementById('close-sidebar');
-            // // Ensure the listener is attached only once
-            // if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
-            //     closeSidebarButton.setAttribute('data-listener-attached', 'true');
-            //     closeSidebarButton.addEventListener('click', () => {
-            //         // Clear region selection
-            //         clearRegionSelection();
-            //         // Hide the sidebar
-            //         closeSidebar();
-            //         // Determine the view to revert to
-            //         if (lastAction === 'fitToUSA') {
-            //             map.fitBounds([
-            //                 [-165.031128, 65.476793],
-            //                 [-81.131287, 26.876143],
-            //             ]);
-            //         } else if (lastAction === 'reset') {
-            //             map.flyTo({
-            //                 center: INITIAL_CENTER,
-            //                 zoom: INITIAL_ZOOM,
-            //                 pitch: 0,
-            //                 bearing: 0,
-            //                 duration: 1000,
-            //             });
-            //         } else if (sessionStartingView) {
-            //             map.flyTo({
-            //                 center: sessionStartingView.center,
-            //                 zoom: sessionStartingView.zoom,
-            //                 pitch: sessionStartingView.pitch,
-            //                 bearing: sessionStartingView.bearing,
-            //                 duration: 1000,
-            //             });
-            //         } else {
-            //             // console.warn('No valid session view found.');
-            //         }
-            //     });
-            // }
-
             const closeSidebarButton = document.getElementById('close-sidebar');
             // Ensure the listener is attached only once
             if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
@@ -2104,7 +2059,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     closeSidebar();
                 });
             }
-            
+
             // Fit-to-USA Button
             document.getElementById('fit-to-usa').addEventListener('click', () => {
                 sessionStartingView = {
@@ -2144,40 +2099,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         //hide the sidebar and update the state of the map
-        // function closeSidebar() {
-        //     if (!sidebar) {
-        //         console.warn('Sidebar element not found.');
-        //         return;
-        //     }
-
-        //     sidebar.style.display = 'none';
-
-        //     // Deselect the feature state for all regions
-        //     regionSources.forEach(sourceId => {
-        //         if (selectedStateId !== null) {
-        //             map.setFeatureState({ source: sourceId, id: selectedStateId }, { selected: false });
-        //         }
-        //     });
-
-        //     selectedStateId = null;
-
-        //     // Navigate back to sessionStartingView if it exists
-        //     if (sessionStartingView) {
-        //         map.flyTo({
-        //             center: sessionStartingView.center,
-        //             zoom: sessionStartingView.zoom,
-        //             pitch: sessionStartingView.pitch,
-        //             bearing: sessionStartingView.bearing,
-        //             essential: true,
-        //             duration: 1000,
-        //         });
-        //     } else {
-        //         // console.log('No sessionStartingView found. Staying in the current view.');
-        //     }
-        // }
-
-
-
         function closeSidebar() {
             if (!sidebar) {
                 console.warn('Sidebar element not found.');
