@@ -2058,10 +2058,14 @@ document.addEventListener("DOMContentLoaded", () => {
             // Ensure the listener is attached only once
             if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
                 closeSidebarButton.setAttribute('data-listener-attached', 'true');
-                closeSidebarButton.addEventListener('click', closeSidebar);
+                closeSidebarButton.addEventListener('click', () => {
+                    // Clear region selection
+                    clearRegionSelection();
+                    // Hide the sidebar and update the view
+                    closeSidebar();
+                });
             }
-
-
+            
             // Fit-to-USA Button
             document.getElementById('fit-to-usa').addEventListener('click', () => {
                 sessionStartingView = {
