@@ -120,7 +120,7 @@ function log(message, level = 'info') {
 const loggedWarnings = new Set();
 function logWarningOnce(message) {
     if (!loggedWarnings.has(message)) {
-        console.warn(message);
+        // console.warn(message);
         loggedWarnings.add(message);
     }
 }
@@ -159,15 +159,18 @@ const regionSources = ['us-states', 'canada-regions', 'aruba-region', 'italy-reg
 // Map Initialization on DOMContentLoaded
 document.addEventListener("DOMContentLoaded", () => {
     showSpinner();
-    // toggleBackToTopButton();
 
     const map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/light-v11',
+        style: 'mapbox://styles/mapbox/light-v11', //original
+        // style: 'mapbox://styles/nanajon66/cm4e8yzf8001601spf3zn96g1', // i like it 2
+        // style: 'mapbox://styles/nanajon66/cm4fk3i8x001e01rf0pov4618', //last option?
         projection: 'globe',
         center: USA_CENTER,
         zoom: USA_ZOOM,
     });
+
+    window.addEventListener("resize", () => map.resize());
 
     // Map navigation controls (zoom and rotate)
     map.addControl(new mapboxgl.NavigationControl());
@@ -179,7 +182,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const backToTopButton = document.getElementById('back-to-top-button');
     const minimizeButton = document.getElementById("minimize-sidebar");
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-
 
     sidebar.addEventListener('click', (event) => {
         event.stopPropagation();
@@ -227,7 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Debounce Function Definition
+    // Debounce utility function to limit execution frequency 
     function debounce(func, delay) {
         let timeout;
         return function (...args) {
@@ -284,7 +286,6 @@ document.addEventListener("DOMContentLoaded", () => {
             geocoderToggle.style.display = "flex";
         }
     });
-    /////
 
     // Function to toggle visibility of the back-to-top button
     function toggleBackToTopButton() {
@@ -362,7 +363,6 @@ document.addEventListener("DOMContentLoaded", () => {
         minimizeButton.setAttribute("aria-expanded", !isCollapsed);
     });
 
-
     // Event listeners for sidebar touch events (mobile)
     ["touchstart", "touchend"].forEach(event =>
         sidebar?.addEventListener(event, toggleBackToTopButton, { passive: true })
@@ -390,13 +390,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const observer = new MutationObserver(toggleBackToTopButton);
         observer.observe(sidebar, { childList: true, subtree: true });
     }
-
-    // Map resize on window resize
-    map.on("load", () => {
-        setTimeout(() => map.resize(), 100); // Ensure proper map rendering
-    });
-    window.addEventListener("resize", () => map.resize());
-
 
     // Function to add a GeoJSON source to the map
     function addGeoJSONSource(map, sourceId, dataUrl, promoteId) {
@@ -536,39 +529,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         sidebar.style.display = uniqueHealthSystems.size > 0 ? 'block' : 'none';
         adjustSidebarHeight();
-
-        // Back button logic
-        backButton.addEventListener('click', () => {
-            if (sessionStartingView) {
-                map.flyTo({
-                    center: sessionStartingView.center,
-                    zoom: sessionStartingView.zoom,
-                    pitch: sessionStartingView.pitch,
-                    bearing: sessionStartingView.bearing,
-                    duration: 2000,
-                    easing: (t) => t * (2 - t),
-                });
-
-                // Reset session view after use
-                sessionStartingView = null;
-
-                // Hide the back button and show the home logo again
-                backButton.style.display = 'none';
-                gtLogo.style.display = 'block';
-            } else {
-                console.warn('No previous session view stored. Falling back to default region.');
-                flyToRegion(currentRegion || 'usa');
-            }
-        });
-    }
-
-    // Debounce utility function to limit execution frequency 
-    function debounce(func, delay) {
-        let timeout;
-        return function (...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), delay);
-        };
+    
     }
 
     function createCustomMarker(lng, lat, popupContent, regionId) {
@@ -587,7 +548,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // console.log(`createCustomMarker created with data-region-id: ${regionId}`);
 
         // Create a popup and attach it to the marker
-        const popup = new mapboxgl.Popup({ offset: 15 }).setHTML(popupContent);
+        const popup = new mapboxgl.Popup({ offset: 15, closeButton: false }).setHTML(popupContent)
 
         // Create the marker without adding it to the map
         const marker = new mapboxgl.Marker(markerElement)
@@ -598,15 +559,6 @@ document.addEventListener("DOMContentLoaded", () => {
         locationMarkers.push(marker);
 
         return marker;
-    }
-
-    // Debounce utility function
-    function debounce(func, delay) {
-        let timeout;
-        return function (...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), delay);
-        };
     }
 
     // Updated updateMarkers function
@@ -661,10 +613,23 @@ document.addEventListener("DOMContentLoaded", () => {
         aruba: 10,
         canada: 7,
         reset: 1,
-        fitToUSA: 2,
+        fitToUSA: 3,
         default: 4,
     };
 
+    // Avoid recalculating visibility unnecessarily by adding a guard against redundant updates in updateMarkerVisibility.
+    
+//     let lastRegion = null;
+// function updateMarkerVisibility(region, zoomLevel) {
+//     if (region === lastRegion && lastZoomLevel === zoomLevel) return;
+//     lastRegion = region;
+//     lastZoomLevel = zoomLevel;
+
+//     // Rest of the function
+// }
+
+    
+    
     function updateMarkerVisibility(region, zoomLevel) {
         const threshold = regionZoomThresholds[region] ?? regionZoomThresholds.default;
         const isStateView = zoomLevel <= threshold;
@@ -764,11 +729,22 @@ document.addEventListener("DOMContentLoaded", () => {
         adjustMarkerSize(zoomLevel);
     }
 
-    backButton.addEventListener('click', () => {
-        // console.log('Back button clicked. Resetting to session view.');
+ // Back button logic
+    function handleBackButtonClick() {
+        // Directly call the resetToSessionView function
         resetToSessionView();
-    });
-
+    
+        // Additional logic, if needed
+        backButton.style.display = 'none';
+        gtLogo.style.display = 'block';
+    }
+    
+    // Ensure the event listener is only attached once
+    if (!backButton.hasAttribute('data-listener-attached')) {
+        backButton.addEventListener('click', handleBackButtonClick);
+        backButton.setAttribute('data-listener-attached', 'true');
+    }
+    
     // Regions
     const regions = {
         usa: { center: [-98.5795, 39.8283], zoom: 4, pitch: 0 },
@@ -783,7 +759,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // flyToRegion function
     function flyToRegion(region) {
         if (!regions[region]) {
-             console.error(`Region "${region}" is not defined.`);
+            console.error(`Region "${region}" is not defined.`);
             return;
         }
 
@@ -841,7 +817,6 @@ document.addEventListener("DOMContentLoaded", () => {
         currentRegion = region;
 
         // Adjust marker visibility based on zoom threshold
-        // const markerZoomThreshold = currentRegion === 'usa' ? 4 : 5;
         const markerZoomThreshold = regionZoomThresholds[region] || regionZoomThresholds.default;
 
         const currentZoom = map.getZoom();
@@ -895,14 +870,25 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // Custom zoom levels for specific regions
+        // // Custom zoom levels for specific regions
+        // const regionZoomLevels = {
+        //     AW: 10,
+        //     IT: 6,
+        //     ENG: 8,
+        //     CAN: 3,
+        //     default: 6,
+        // };
+
         const regionZoomLevels = {
-            AW: 10,
-            IT: 6,
-            ENG: 8,
-            CAN: 3,
-            default: 6,
+            AW: 10,       // Aruba
+            IT: 6,        // Italy
+            ENG: 8,       // England (UK)
+            CAN: 3,       // Canada
+            reset: 1,     // Reset zoom level for global view
+            fitToUSA: 3,  // Fit-to-USA zoom level
+            default: 6,   // Default zoom level for unhandled regions
         };
+        
         const customZoom = regionZoomLevels[clickedRegionId] || regionZoomLevels.default;
 
         // Zoom into the bounds of the region
@@ -931,7 +917,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // // zoom warning visibility and tooltip
+    // zoom warning visibility and tooltip
     // function manageZoomWarning() {
     //     const zoomLevel = map.getZoom();
     //     const isSmallScreen = window.innerWidth <= 480;
@@ -964,38 +950,38 @@ document.addEventListener("DOMContentLoaded", () => {
     // map.on('zoomend', manageZoomWarning);
 
     // zoom warning visibility and tooltip
-function manageZoomWarning() {
-    const zoomLevel = map.getZoom(); // Current zoom level
-    const isSmallScreen = window.innerWidth <= 480; // Check if screen size is small
-    const zoomThreshold = 5; // Minimum zoom level to show warning
+    function manageZoomWarning() {
+        const zoomLevel = map.getZoom(); // Current zoom level
+        const isSmallScreen = window.innerWidth <= 480; // Check if screen size is small
+        const zoomThreshold = 5; // Minimum zoom level to show warning
 
-    const zoomWarning = document.getElementById('zoom-warning');
-    if (!zoomWarning) return;
+        const zoomWarning = document.getElementById('zoom-warning');
+        if (!zoomWarning) return;
 
-    // Show warning only on small screens and if zoom level is below the threshold
-    if (isSmallScreen && zoomLevel < zoomThreshold) {
-        zoomWarning.style.display = 'block';
-    } else {
-        zoomWarning.style.display = 'none';
+        // Show warning only on small screens and if zoom level is below the threshold
+        if (isSmallScreen && zoomLevel < zoomThreshold) {
+            zoomWarning.style.display = 'block';
+        } else {
+            zoomWarning.style.display = 'none';
+        }
     }
-}
 
-// Hover tooltip logic
-const zoomWarningIcon = document.getElementById('zoom-warning-icon');
-const zoomTooltip = document.getElementById('zoom-tooltip');
+    // Hover tooltip logic
+    const zoomWarningIcon = document.getElementById('zoom-warning-icon');
+    const zoomTooltip = document.getElementById('zoom-tooltip');
 
-if (zoomWarningIcon) {
-    zoomWarningIcon.addEventListener('mouseenter', () => {
-        if (zoomTooltip) zoomTooltip.style.display = 'block';
-    });
+    if (zoomWarningIcon) {
+        zoomWarningIcon.addEventListener('mouseenter', () => {
+            if (zoomTooltip) zoomTooltip.style.display = 'block';
+        });
 
-    zoomWarningIcon.addEventListener('mouseleave', () => {
-        if (zoomTooltip) zoomTooltip.style.display = 'none';
-    });
-}
+        zoomWarningIcon.addEventListener('mouseleave', () => {
+            if (zoomTooltip) zoomTooltip.style.display = 'none';
+        });
+    }
 
-// Trigger manageZoomWarning on zoom and map load
-map.on('zoomend', manageZoomWarning);
+    // Trigger manageZoomWarning on zoom and map load
+    map.on('zoomend', manageZoomWarning);
 
 
     //responsible for attaching a click event to a specific region layer on the map.
@@ -1022,12 +1008,22 @@ map.on('zoomend', manageZoomWarning);
                     toggleVisibility(['state-markers'], 'visible');
                     toggleVisibility(['location-markers', 'clusters', 'cluster-count', 'unclustered-point'], 'none');
 
+                    // const regionZoomLevels = {
+                    //     AW: 10,
+                    //     IT: 6,
+                    //     ENG: 8,
+                    //     CAN: 3,
+                    //     default: 4,
+                    // };
+
                     const regionZoomLevels = {
-                        AW: 10,
-                        IT: 6,
-                        ENG: 8,
-                        CAN: 3,
-                        default: 4,
+                        AW: 10,       // Aruba
+                        IT: 6,        // Italy
+                        ENG: 8,       // England (UK)
+                        CAN: 3,       // Canada
+                        reset: 1,     // Reset zoom level for global view
+                        fitToUSA: 3,  // Fit-to-USA zoom level
+                        default: 6,   // Default zoom level for unhandled regions
                     };
                     const customZoom = regionZoomLevels[clickedRegionId] || regionZoomLevels.default;
 
@@ -1068,13 +1064,25 @@ map.on('zoomend', manageZoomWarning);
                 toggleVisibility(['state-markers'], 'visible');
                 toggleVisibility(['location-markers', 'clusters', 'cluster-count', 'unclustered-point'], 'none');
 
+                // const regionZoomLevels = {
+                //     usa: 4,
+                //     uk: 5,
+                //     italy: 6,
+                //     canada: 3,
+                //     aruba: 10,
+                // };
+
                 const regionZoomLevels = {
-                    usa: 4,
-                    uk: 5,
-                    italy: 6,
-                    canada: 3,
-                    aruba: 10,
+                    AW: 10,       // Aruba
+                    IT: 6,        // Italy
+                    ENG: 8,       // England (UK)
+                    CAN: 3,       // Canada
+                    reset: 1,     // Reset zoom level for global view
+                    fitToUSA: 3,  // Fit-to-USA zoom level
+                    default: 6,   // Default zoom level for unhandled regions
                 };
+
+                
                 const defaultZoom = regionZoomLevels[currentRegion] || 4;
 
                 map.flyTo({
@@ -1090,9 +1098,11 @@ map.on('zoomend', manageZoomWarning);
 
     //the initialization point for actions and event handlers that require the map to be fully loaded. 
     map.on('load', () => {
-        showSpinner();
-        // log('Map fully loaded', 'info');
-        map.setFog({});
+    showSpinner();
+        log('Map fully loaded', 'info');
+    map.setFog({});
+
+    setTimeout(() => map.resize(), 100); // Ensure proper map rendering
 
         // Set flat projection
         // map.setProjection('mercator');
@@ -1168,7 +1178,7 @@ map.on('zoomend', manageZoomWarning);
                     markerZoomThreshold = 1;
                     break;
                 case 'fitToUSA':
-                    markerZoomThreshold = 2;
+                    markerZoomThreshold = 3;
                     break;
                 default:
                     console.warn(`No zoom threshold defined for region: ${currentRegion}`);
@@ -1176,7 +1186,7 @@ map.on('zoomend', manageZoomWarning);
             }
 
             // Initialize zoom warning visibility and tooltip logic
-            manageZoomWarning();
+            // manageZoomWarning();
 
             // Adjust visibility based on zoom level and thresholds
             if (currentZoom <= 3) {
@@ -1427,8 +1437,7 @@ map.on('zoomend', manageZoomWarning);
         <a href="https://www.commonspirit.org/" target="_blank" style="color: #06b4fd">Visit Website</a>`;
                     }
 
-                    const popup = new mapboxgl.Popup({ offset: 15, closeButton: false })
-                        .setHTML(popupContent);
+                    const popup = new mapboxgl.Popup({ offset: 15, closeButton: false }).setHTML(popupContent)
 
                     // Create a custom marker element
                     const markerElement = document.createElement('div');
@@ -1452,15 +1461,59 @@ map.on('zoomend', manageZoomWarning);
                         .addTo(map);
 
                     // Specific hover behavior based on the hospital name
+                    // if (hospital_name !== "CommonSpirit Health Headquarters") {
+                    //     // Standard behavior: show/hide popup on hover
+                    //     marker.getElement().addEventListener('mouseenter', () => popup.addTo(map));
+                    //     marker.getElement().addEventListener('mouseleave', () => popup.remove());
+                    // } else {
+                    //     // For CommonSpirit Headquarters, keep popup open on click
+                    //     marker.getElement().addEventListener('click', (e) => {
+                    //         e.stopPropagation();
+                    //         popup.addTo(map);
+                    //     });
+                    // }
+
+// Specific hover behavior based on the hospital name and the other
                     if (hospital_name !== "CommonSpirit Health Headquarters") {
-                        // Standard behavior: show/hide popup on hover
-                        marker.getElement().addEventListener('mouseenter', () => popup.addTo(map));
-                        marker.getElement().addEventListener('mouseleave', () => popup.remove());
+                        if (isTouchDevice) {
+                            marker.getElement().addEventListener('touchstart', (e) => {
+                                e.stopPropagation();
+                                // Close all other popups to prevent overlaps
+                                markers.forEach(m => {
+                                    if (m !== marker) {
+                                        m.getPopup()?.remove();
+                                    }
+                                });
+
+                                if (!popup.isOpen()) {
+                                    popup.addTo(map);
+                                    // Ensure aria-hidden is not applied to the popup close button
+                                    const closeButton = popup._container.querySelector('.mapboxgl-popup-close-button');
+                                    if (closeButton) {
+                                        closeButton.removeAttribute('aria-hidden');
+                                    }
+                                } else {
+                                    popup.remove();
+                                }
+                            });
+                        } else {
+                            marker.getElement().addEventListener('mouseenter', () => {
+                                popup.addTo(map);
+                                const closeButton = popup._container.querySelector('.mapboxgl-popup-close-button');
+                                if (closeButton) {
+                                    closeButton.removeAttribute('aria-hidden');
+                                }
+                            });
+                            marker.getElement().addEventListener('mouseleave', () => popup.remove());
+                        }
                     } else {
-                        // For CommonSpirit Headquarters, keep popup open on click
                         marker.getElement().addEventListener('click', (e) => {
                             e.stopPropagation();
                             popup.addTo(map);
+                            const closeButton = popup._container.querySelector('.mapboxgl-popup-close-button');
+                            if (closeButton) {
+                                closeButton.removeAttribute('aria-hidden');
+                            }
                         });
                     }
 
@@ -1511,11 +1564,6 @@ map.on('zoomend', manageZoomWarning);
                     // const selectedColor = '#F8F9FA' //gray
                     // const selectedColor = '#05aaff' 
 
-                    // if (map.getLayer(`${layerId}-fill`)) {
-                    //     // console.warn(`Layer with id "${layerId}-fill" already exists. Skipping addition.`);
-                    //     return;
-                    // }
-
                     if (map.getLayer(`${layerId}-fill`)) {
                         logWarningOnce(`Layer with id "${layerId}-fill" already exists. Skipping addition.`);
                         return;
@@ -1545,6 +1593,94 @@ map.on('zoomend', manageZoomWarning);
                         }
                     });
                 }
+
+                // function addRegionLayer(map, layerId, sourceId, regionsWithFacilities) {
+                //     const hoverColor = '#05aaff';
+                //     const selectedColor = '#6E7F80'; // disaturated blue
+                
+                //     if (map.getLayer(`${layerId}-fill`)) {
+                //         logWarningOnce(`Layer with id "${layerId}-fill" already exists. Skipping addition.`);
+                //         return;
+                //     }
+                
+                //     // Add the main region layer
+                //     map.addLayer({
+                //         id: `${layerId}-fill`,
+                //         type: 'fill',
+                //         source: sourceId,
+                //         paint: {
+                //             'fill-color': [
+                //                 'case',
+                //                 // Apply selected color if the region is selected and has facilities
+                //                 ['all', ['boolean', ['feature-state', 'selected'], false], ['in', ['get', 'id'], ['literal', Array.from(regionsWithFacilities)]]], selectedColor,
+                //                 // Apply hover color if the region is hovered and has facilities
+                //                 ['all', ['boolean', ['feature-state', 'hover'], false], ['in', ['get', 'id'], ['literal', Array.from(regionsWithFacilities)]]], hoverColor,
+                //                 // Default color for regions without facilities
+                //                 '#d3d3d3'
+                //             ],
+                //             'fill-opacity': [
+                //                 'case',
+                //                 // Increase transparency for selected regions
+                //                 ['boolean', ['feature-state', 'selected'], false], 0.1, // 10% opacity for selected regions
+                //                 ['boolean', ['feature-state', 'hover'], false], 0.6, // 60% opacity for hovered regions
+                //                 0.8
+                //             ]
+                //         }
+                //     });
+                
+                //     // Add water layer inside regions
+                //     map.addLayer({
+                //         id: `${layerId}-water`,
+                //         type: 'fill',
+                //         source: sourceId,
+                //         filter: ['==', ['get', 'type'], 'water'], // Filter for water if defined in GeoJSON
+                //         paint: {
+                //             'fill-color': '#A0DFF7', // Light blue for water
+                //             'fill-opacity': 0.8      // Semi-transparent
+                //         }
+                //     });
+                
+                //     // Add land layer inside regions
+                //     map.addLayer({
+                //         id: `${layerId}-land`,
+                //         type: 'fill',
+                //         source: sourceId,
+                //         filter: ['==', ['get', 'type'], 'land'], // Filter for land if defined in GeoJSON
+                //         paint: {
+                //             'fill-color': '#A8D5BA', // Light green for land
+                //             'fill-opacity': 0.8      // Semi-transparent
+                //         }
+                //     });
+                // }
+                
+
+// New Function: Add water and land styling for regions
+function addWaterAndLandLayers(map, layerId, sourceId) {
+    // Add water layer inside regions
+    map.addLayer({
+        id: `${layerId}-water`,
+        type: 'fill',
+        source: sourceId,
+        filter: ['==', ['get', 'type'], 'water'], // Filter for water if defined in GeoJSON
+        paint: {
+            'fill-color': '#A0DFF7', // Light blue for water
+            'fill-opacity': 0.8      // Semi-transparent
+        }
+    });
+
+    // Add land layer inside regions
+    map.addLayer({
+        id: `${layerId}-land`,
+        type: 'fill',
+        source: sourceId,
+        filter: ['==', ['get', 'type'], 'land'], // Filter for land if defined in GeoJSON
+        paint: {
+            'fill-color': '#A8D5BA', // Light green for land
+            'fill-opacity': 0.8      // Semi-transparent
+        }
+    });
+}
+
 
                 function addHoverOutlineLayer(map, layerId, sourceId) {
                     if (map.getLayer(layerId)) {
@@ -1709,64 +1845,31 @@ map.on('zoomend', manageZoomWarning);
                         .addTo(map);
                 });
 
-                //Cluster Zoom Throttling. check if i need this.
-                const debouncedExpandCluster = debounce((clusterId, coordinates) => {
+                // Handle clicks on states/regions dynamically
+                map.on('click', 'clusters', (e) => {
+                    const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
+                    if (!features.length) return;
+
+                    const clusterId = features[0].properties.cluster_id;
+                    const coordinates = features[0].geometry.coordinates;
+
+                    // Adjust cluster radius dynamically based on zoom level (Optional)
+                    const zoomLevel = map.getZoom();
+                    if (zoomLevel < 5) {
+                        console.warn("Dynamic cluster radius adjustment skipped. `setClusterRadius` is not valid.");
+                    }
+
+                    // Expand the cluster and zoom in
                     map.getSource('hospitals').getClusterExpansionZoom(clusterId, (err, zoom) => {
                         if (err) return;
+
                         map.easeTo({
                             center: coordinates,
-                            zoom: zoom
+                            zoom: zoom,
                         });
                     });
-                }, 300);
-
-                map.on('click', 'clusters', (e) => {
-                    const clusterId = e.features[0].properties.cluster_id;
-                    const coordinates = e.features[0].geometry.coordinates;
-                    debouncedExpandCluster(clusterId, coordinates);
                 });
 
-                // // Handle cluster click to expand zoom level
-                // map.on('click', 'clusters', (e) => {
-                //     const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
-                //     const zoomLevel = map.getZoom();
-                //     const clusterId = features[0].properties.cluster_id;
-                //     map.getSource('hospitals').setClusterRadius(zoomLevel < 5 ? 100 : 50);
-
-                //     map.getSource('hospitals').getClusterExpansionZoom(clusterId, (err, zoom) => {
-                //         if (err) return;
-                //         map.easeTo({
-                //             center: features[0].geometry.coordinates,
-                //             zoom: zoom
-                //         });
-                //     });
-                // });
-
-                // Handle cluster click to expand zoom level
-map.on('click', 'clusters', (e) => {
-    // Query for features in the 'clusters' layer at the clicked point
-    const features = map.queryRenderedFeatures(e.point, { layers: ['clusters'] });
-    
-    if (!features.length) return; // Ensure there are features at the clicked location
-
-    const clusterId = features[0].properties.cluster_id;
-    const zoomLevel = map.getZoom();
-
-    // Dynamically adjust the cluster radius based on zoom level
-    map.getSource('hospitals').setClusterRadius(zoomLevel < 5 ? 100 : 50);
-
-    // Expand the cluster and zoom to it
-    map.getSource('hospitals').getClusterExpansionZoom(clusterId, (err, zoom) => {
-        if (err) return; // If error occurs, return early
-
-        map.easeTo({
-            center: features[0].geometry.coordinates,
-            zoom: zoom
-        });
-    });
-});
-
-                // Handle clicks on states/regions dynamically
                 ['us-states', 'canada-regions', 'aruba-region', 'italy-regions', 'uk-regions'].forEach(layerId => {
                     map.on('click', `${layerId}-fill`, (e) => {
                         const clickedRegionId = e.features[0].properties.id;
@@ -2002,45 +2105,50 @@ map.on('click', 'clusters', (e) => {
             });
 
             // Sidebar Close Button. Attach clear interactions to sidebar close button
-            const closeSidebarButton = document.getElementById('close-sidebar');
-            // Ensure the listener is attached only once
-            if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
-                closeSidebarButton.setAttribute('data-listener-attached', 'true');
-                closeSidebarButton.addEventListener('click', () => {
-                    // Clear region selection
-                    clearRegionSelection();
-                    // Hide the sidebar
-                    closeSidebar();
-                    // Determine the view to revert to
-                    if (lastAction === 'fitToUSA') {
-                        map.fitBounds([
-                            [-165.031128, 65.476793],
-                            [-81.131287, 26.876143],
-                        ]);
-                    } else if (lastAction === 'reset') {
-                        map.flyTo({
-                            center: INITIAL_CENTER,
-                            zoom: INITIAL_ZOOM,
-                            pitch: 0,
-                            bearing: 0,
-                            duration: 1000,
-                        });
-                    } else if (sessionStartingView) {
-                        map.flyTo({
-                            center: sessionStartingView.center,
-                            zoom: sessionStartingView.zoom,
-                            pitch: sessionStartingView.pitch,
-                            bearing: sessionStartingView.bearing,
-                            duration: 1000,
-                        });
-                    } else {
-                        // console.warn('No valid session view found.');
-                    }
+            // const closeSidebarButton = document.getElementById('close-sidebar');
+            // // Ensure the listener is attached only once
+            // if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
+            //     closeSidebarButton.setAttribute('data-listener-attached', 'true');
+            //     closeSidebarButton.addEventListener('click', () => {
+            //         // Clear region selection
+            //         clearRegionSelection();
+            //         // Hide the sidebar
+            //         closeSidebar();
+            //         // Determine the view to revert to
+            //         if (lastAction === 'fitToUSA') {
+            //             map.fitBounds([
+            //                 [-165.031128, 65.476793],
+            //                 [-81.131287, 26.876143],
+            //             ]);
+            //         } else if (lastAction === 'reset') {
+            //             map.flyTo({
+            //                 center: INITIAL_CENTER,
+            //                 zoom: INITIAL_ZOOM,
+            //                 pitch: 0,
+            //                 bearing: 0,
+            //                 duration: 1000,
+            //             });
+            //         } else if (sessionStartingView) {
+            //             map.flyTo({
+            //                 center: sessionStartingView.center,
+            //                 zoom: sessionStartingView.zoom,
+            //                 pitch: sessionStartingView.pitch,
+            //                 bearing: sessionStartingView.bearing,
+            //                 duration: 1000,
+            //             });
+            //         } else {
+            //             // console.warn('No valid session view found.');
+            //         }
+            //     });
+            // }
 
-                    // Log for debugging
-                    // console.log(`Sidebar closed. Selection cleared, last action: ${lastAction}`);
-                });
-            }
+            const closeSidebarButton = document.getElementById('close-sidebar');
+// Ensure the listener is attached only once
+if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
+    closeSidebarButton.setAttribute('data-listener-attached', 'true');
+    closeSidebarButton.addEventListener('click', closeSidebar);
+}
+
 
             // Fit-to-USA Button
             document.getElementById('fit-to-usa').addEventListener('click', () => {
@@ -2081,37 +2189,99 @@ map.on('click', 'clusters', (e) => {
         }
 
         //hide the sidebar and update the state of the map
+        // function closeSidebar() {
+        //     if (!sidebar) {
+        //         console.warn('Sidebar element not found.');
+        //         return;
+        //     }
+
+        //     sidebar.style.display = 'none';
+
+        //     // Deselect the feature state for all regions
+        //     regionSources.forEach(sourceId => {
+        //         if (selectedStateId !== null) {
+        //             map.setFeatureState({ source: sourceId, id: selectedStateId }, { selected: false });
+        //         }
+        //     });
+
+        //     selectedStateId = null;
+
+        //     // Navigate back to sessionStartingView if it exists
+        //     if (sessionStartingView) {
+        //         map.flyTo({
+        //             center: sessionStartingView.center,
+        //             zoom: sessionStartingView.zoom,
+        //             pitch: sessionStartingView.pitch,
+        //             bearing: sessionStartingView.bearing,
+        //             essential: true,
+        //             duration: 1000,
+        //         });
+        //     } else {
+        //         // console.log('No sessionStartingView found. Staying in the current view.');
+        //     }
+        // }
+
+
+
         function closeSidebar() {
             if (!sidebar) {
                 console.warn('Sidebar element not found.');
                 return;
             }
-
+        
             sidebar.style.display = 'none';
-
+        
             // Deselect the feature state for all regions
             regionSources.forEach(sourceId => {
                 if (selectedStateId !== null) {
                     map.setFeatureState({ source: sourceId, id: selectedStateId }, { selected: false });
                 }
             });
-
+        
             selectedStateId = null;
-
-            // Navigate back to sessionStartingView if it exists
-            if (sessionStartingView) {
+        
+            // Determine the view to revert to based on the current region
+            if (currentRegion && regions[currentRegion]) {
+                const { center, zoom, pitch } = regions[currentRegion];
+                map.flyTo({
+                    center,
+                    zoom,
+                    pitch,
+                    bearing: 0,
+                    duration: 1000,
+                });
+            } else if (sessionStartingView) {
                 map.flyTo({
                     center: sessionStartingView.center,
                     zoom: sessionStartingView.zoom,
                     pitch: sessionStartingView.pitch,
                     bearing: sessionStartingView.bearing,
-                    essential: true,
+                    duration: 1000,
+                });
+            } else if (lastAction === 'fitToUSA') {
+                map.fitBounds([
+                    [-165.031128, 65.476793],
+                    [-81.131287, 26.876143],
+                ]);
+            } else if (lastAction === 'reset') {
+                map.flyTo({
+                    center: INITIAL_CENTER,
+                    zoom: INITIAL_ZOOM,
+                    pitch: 0,
+                    bearing: 0,
                     duration: 1000,
                 });
             } else {
-                // console.log('No sessionStartingView found. Staying in the current view.');
+                console.warn('No valid session view found. Defaulting to initial view.');
+                map.flyTo({
+                    center: USA_CENTER,
+                    zoom: USA_ZOOM,
+                    pitch: 0,
+                    bearing: 0,
+                    duration: 1000,
+                });
             }
-        }
+        }        
 
         //drag-and-drop functionality for an element
         // Variables for drag-and-drop

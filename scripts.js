@@ -120,7 +120,7 @@ function log(message, level = 'info') {
 const loggedWarnings = new Set();
 function logWarningOnce(message) {
     if (!loggedWarnings.has(message)) {
-        console.warn(message);
+        // console.warn(message);
         loggedWarnings.add(message);
     }
 }
@@ -162,11 +162,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/light-v11',
+        style: 'mapbox://styles/mapbox/light-v11', //original
+        // style: 'mapbox://styles/nanajon66/cm4e8yzf8001601spf3zn96g1', // i like it 2
+        // style: 'mapbox://styles/nanajon66/cm4fk3i8x001e01rf0pov4618', //last option?
         projection: 'globe',
         center: USA_CENTER,
         zoom: USA_ZOOM,
     });
+
+    window.addEventListener("resize", () => map.resize());
 
     // Map navigation controls (zoom and rotate)
     map.addControl(new mapboxgl.NavigationControl());
@@ -178,7 +182,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const backToTopButton = document.getElementById('back-to-top-button');
     const minimizeButton = document.getElementById("minimize-sidebar");
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-
 
     sidebar.addEventListener('click', (event) => {
         event.stopPropagation();
@@ -226,7 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Debounce Function Definition
+    // Debounce utility function to limit execution frequency 
     function debounce(func, delay) {
         let timeout;
         return function (...args) {
@@ -360,7 +363,6 @@ document.addEventListener("DOMContentLoaded", () => {
         minimizeButton.setAttribute("aria-expanded", !isCollapsed);
     });
 
-
     // Event listeners for sidebar touch events (mobile)
     ["touchstart", "touchend"].forEach(event =>
         sidebar?.addEventListener(event, toggleBackToTopButton, { passive: true })
@@ -388,13 +390,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const observer = new MutationObserver(toggleBackToTopButton);
         observer.observe(sidebar, { childList: true, subtree: true });
     }
-
-    // Map resize on window resize
-    map.on("load", () => {
-        setTimeout(() => map.resize(), 100); // Ensure proper map rendering
-    });
-    window.addEventListener("resize", () => map.resize());
-
 
     // Function to add a GeoJSON source to the map
     function addGeoJSONSource(map, sourceId, dataUrl, promoteId) {
@@ -535,38 +530,6 @@ document.addEventListener("DOMContentLoaded", () => {
         sidebar.style.display = uniqueHealthSystems.size > 0 ? 'block' : 'none';
         adjustSidebarHeight();
 
-        // Back button logic
-        backButton.addEventListener('click', () => {
-            if (sessionStartingView) {
-                map.flyTo({
-                    center: sessionStartingView.center,
-                    zoom: sessionStartingView.zoom,
-                    pitch: sessionStartingView.pitch,
-                    bearing: sessionStartingView.bearing,
-                    duration: 2000,
-                    easing: (t) => t * (2 - t),
-                });
-
-                // Reset session view after use
-                sessionStartingView = null;
-
-                // Hide the back button and show the home logo again
-                backButton.style.display = 'none';
-                gtLogo.style.display = 'block';
-            } else {
-                console.warn('No previous session view stored. Falling back to default region.');
-                flyToRegion(currentRegion || 'usa');
-            }
-        });
-    }
-
-    // Debounce utility function to limit execution frequency 
-    function debounce(func, delay) {
-        let timeout;
-        return function (...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), delay);
-        };
     }
 
     function createCustomMarker(lng, lat, popupContent, regionId) {
@@ -596,15 +559,6 @@ document.addEventListener("DOMContentLoaded", () => {
         locationMarkers.push(marker);
 
         return marker;
-    }
-
-    // Debounce utility function
-    function debounce(func, delay) {
-        let timeout;
-        return function (...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), delay);
-        };
     }
 
     // Updated updateMarkers function
@@ -659,9 +613,22 @@ document.addEventListener("DOMContentLoaded", () => {
         aruba: 10,
         canada: 7,
         reset: 1,
-        fitToUSA: 2,
+        fitToUSA: 3,
         default: 4,
     };
+
+    // Avoid recalculating visibility unnecessarily by adding a guard against redundant updates in updateMarkerVisibility.
+
+    //     let lastRegion = null;
+    // function updateMarkerVisibility(region, zoomLevel) {
+    //     if (region === lastRegion && lastZoomLevel === zoomLevel) return;
+    //     lastRegion = region;
+    //     lastZoomLevel = zoomLevel;
+
+    //     // Rest of the function
+    // }
+
+
 
     function updateMarkerVisibility(region, zoomLevel) {
         const threshold = regionZoomThresholds[region] ?? regionZoomThresholds.default;
@@ -762,10 +729,21 @@ document.addEventListener("DOMContentLoaded", () => {
         adjustMarkerSize(zoomLevel);
     }
 
-    backButton.addEventListener('click', () => {
-        // console.log('Back button clicked. Resetting to session view.');
+    // Back button logic
+    function handleBackButtonClick() {
+        // Directly call the resetToSessionView function
         resetToSessionView();
-    });
+
+        // Additional logic, if needed
+        backButton.style.display = 'none';
+        gtLogo.style.display = 'block';
+    }
+
+    // Ensure the event listener is only attached once
+    if (!backButton.hasAttribute('data-listener-attached')) {
+        backButton.addEventListener('click', handleBackButtonClick);
+        backButton.setAttribute('data-listener-attached', 'true');
+    }
 
     // Regions
     const regions = {
@@ -892,14 +870,25 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // Custom zoom levels for specific regions
+        // // Custom zoom levels for specific regions
+        // const regionZoomLevels = {
+        //     AW: 10,
+        //     IT: 6,
+        //     ENG: 8,
+        //     CAN: 3,
+        //     default: 6,
+        // };
+
         const regionZoomLevels = {
-            AW: 10,
-            IT: 6,
-            ENG: 8,
-            CAN: 3,
-            default: 6,
+            AW: 10,       // Aruba
+            IT: 6,        // Italy
+            ENG: 8,       // England (UK)
+            CAN: 3,       // Canada
+            reset: 1,     // Reset zoom level for global view
+            fitToUSA: 3,  // Fit-to-USA zoom level
+            default: 6,   // Default zoom level for unhandled regions
         };
+
         const customZoom = regionZoomLevels[clickedRegionId] || regionZoomLevels.default;
 
         // Zoom into the bounds of the region
@@ -1019,12 +1008,22 @@ document.addEventListener("DOMContentLoaded", () => {
                     toggleVisibility(['state-markers'], 'visible');
                     toggleVisibility(['location-markers', 'clusters', 'cluster-count', 'unclustered-point'], 'none');
 
+                    // const regionZoomLevels = {
+                    //     AW: 10,
+                    //     IT: 6,
+                    //     ENG: 8,
+                    //     CAN: 3,
+                    //     default: 4,
+                    // };
+
                     const regionZoomLevels = {
-                        AW: 10,
-                        IT: 6,
-                        ENG: 8,
-                        CAN: 3,
-                        default: 4,
+                        AW: 10,       // Aruba
+                        IT: 6,        // Italy
+                        ENG: 8,       // England (UK)
+                        CAN: 3,       // Canada
+                        reset: 1,     // Reset zoom level for global view
+                        fitToUSA: 3,  // Fit-to-USA zoom level
+                        default: 6,   // Default zoom level for unhandled regions
                     };
                     const customZoom = regionZoomLevels[clickedRegionId] || regionZoomLevels.default;
 
@@ -1065,13 +1064,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 toggleVisibility(['state-markers'], 'visible');
                 toggleVisibility(['location-markers', 'clusters', 'cluster-count', 'unclustered-point'], 'none');
 
+                // const regionZoomLevels = {
+                //     usa: 4,
+                //     uk: 5,
+                //     italy: 6,
+                //     canada: 3,
+                //     aruba: 10,
+                // };
+
                 const regionZoomLevels = {
-                    usa: 4,
-                    uk: 5,
-                    italy: 6,
-                    canada: 3,
-                    aruba: 10,
+                    AW: 10,       // Aruba
+                    IT: 6,        // Italy
+                    ENG: 8,       // England (UK)
+                    CAN: 3,       // Canada
+                    reset: 1,     // Reset zoom level for global view
+                    fitToUSA: 3,  // Fit-to-USA zoom level
+                    default: 6,   // Default zoom level for unhandled regions
                 };
+
+
                 const defaultZoom = regionZoomLevels[currentRegion] || 4;
 
                 map.flyTo({
@@ -1088,8 +1099,10 @@ document.addEventListener("DOMContentLoaded", () => {
     //the initialization point for actions and event handlers that require the map to be fully loaded. 
     map.on('load', () => {
         showSpinner();
-        // log('Map fully loaded', 'info');
+        log('Map fully loaded', 'info');
         map.setFog({});
+
+        setTimeout(() => map.resize(), 100); // Ensure proper map rendering
 
         // Set flat projection
         // map.setProjection('mercator');
@@ -1165,7 +1178,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     markerZoomThreshold = 1;
                     break;
                 case 'fitToUSA':
-                    markerZoomThreshold = 2;
+                    markerZoomThreshold = 3;
                     break;
                 default:
                     console.warn(`No zoom threshold defined for region: ${currentRegion}`);
@@ -1173,7 +1186,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             // Initialize zoom warning visibility and tooltip logic
-            manageZoomWarning();
+            // manageZoomWarning();
 
             // Adjust visibility based on zoom level and thresholds
             if (currentZoom <= 3) {
@@ -1460,7 +1473,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     //     });
                     // }
 
-// Specific hover behavior based on the hospital name and the other
+                    // Specific hover behavior based on the hospital name and the other
                     if (hospital_name !== "CommonSpirit Health Headquarters") {
                         if (isTouchDevice) {
                             marker.getElement().addEventListener('touchstart', (e) => {
@@ -2004,42 +2017,50 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             // Sidebar Close Button. Attach clear interactions to sidebar close button
+            // const closeSidebarButton = document.getElementById('close-sidebar');
+            // // Ensure the listener is attached only once
+            // if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
+            //     closeSidebarButton.setAttribute('data-listener-attached', 'true');
+            //     closeSidebarButton.addEventListener('click', () => {
+            //         // Clear region selection
+            //         clearRegionSelection();
+            //         // Hide the sidebar
+            //         closeSidebar();
+            //         // Determine the view to revert to
+            //         if (lastAction === 'fitToUSA') {
+            //             map.fitBounds([
+            //                 [-165.031128, 65.476793],
+            //                 [-81.131287, 26.876143],
+            //             ]);
+            //         } else if (lastAction === 'reset') {
+            //             map.flyTo({
+            //                 center: INITIAL_CENTER,
+            //                 zoom: INITIAL_ZOOM,
+            //                 pitch: 0,
+            //                 bearing: 0,
+            //                 duration: 1000,
+            //             });
+            //         } else if (sessionStartingView) {
+            //             map.flyTo({
+            //                 center: sessionStartingView.center,
+            //                 zoom: sessionStartingView.zoom,
+            //                 pitch: sessionStartingView.pitch,
+            //                 bearing: sessionStartingView.bearing,
+            //                 duration: 1000,
+            //             });
+            //         } else {
+            //             // console.warn('No valid session view found.');
+            //         }
+            //     });
+            // }
+
             const closeSidebarButton = document.getElementById('close-sidebar');
             // Ensure the listener is attached only once
             if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
                 closeSidebarButton.setAttribute('data-listener-attached', 'true');
-                closeSidebarButton.addEventListener('click', () => {
-                    // Clear region selection
-                    clearRegionSelection();
-                    // Hide the sidebar
-                    closeSidebar();
-                    // Determine the view to revert to
-                    if (lastAction === 'fitToUSA') {
-                        map.fitBounds([
-                            [-165.031128, 65.476793],
-                            [-81.131287, 26.876143],
-                        ]);
-                    } else if (lastAction === 'reset') {
-                        map.flyTo({
-                            center: INITIAL_CENTER,
-                            zoom: INITIAL_ZOOM,
-                            pitch: 0,
-                            bearing: 0,
-                            duration: 1000,
-                        });
-                    } else if (sessionStartingView) {
-                        map.flyTo({
-                            center: sessionStartingView.center,
-                            zoom: sessionStartingView.zoom,
-                            pitch: sessionStartingView.pitch,
-                            bearing: sessionStartingView.bearing,
-                            duration: 1000,
-                        });
-                    } else {
-                        // console.warn('No valid session view found.');
-                    }
-                });
+                closeSidebarButton.addEventListener('click', closeSidebar);
             }
+
 
             // Fit-to-USA Button
             document.getElementById('fit-to-usa').addEventListener('click', () => {
@@ -2080,6 +2101,40 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         //hide the sidebar and update the state of the map
+        // function closeSidebar() {
+        //     if (!sidebar) {
+        //         console.warn('Sidebar element not found.');
+        //         return;
+        //     }
+
+        //     sidebar.style.display = 'none';
+
+        //     // Deselect the feature state for all regions
+        //     regionSources.forEach(sourceId => {
+        //         if (selectedStateId !== null) {
+        //             map.setFeatureState({ source: sourceId, id: selectedStateId }, { selected: false });
+        //         }
+        //     });
+
+        //     selectedStateId = null;
+
+        //     // Navigate back to sessionStartingView if it exists
+        //     if (sessionStartingView) {
+        //         map.flyTo({
+        //             center: sessionStartingView.center,
+        //             zoom: sessionStartingView.zoom,
+        //             pitch: sessionStartingView.pitch,
+        //             bearing: sessionStartingView.bearing,
+        //             essential: true,
+        //             duration: 1000,
+        //         });
+        //     } else {
+        //         // console.log('No sessionStartingView found. Staying in the current view.');
+        //     }
+        // }
+
+
+
         function closeSidebar() {
             if (!sidebar) {
                 console.warn('Sidebar element not found.');
@@ -2097,18 +2152,46 @@ document.addEventListener("DOMContentLoaded", () => {
 
             selectedStateId = null;
 
-            // Navigate back to sessionStartingView if it exists
-            if (sessionStartingView) {
+            // Determine the view to revert to based on the current region
+            if (currentRegion && regions[currentRegion]) {
+                const { center, zoom, pitch } = regions[currentRegion];
+                map.flyTo({
+                    center,
+                    zoom,
+                    pitch,
+                    bearing: 0,
+                    duration: 1000,
+                });
+            } else if (sessionStartingView) {
                 map.flyTo({
                     center: sessionStartingView.center,
                     zoom: sessionStartingView.zoom,
                     pitch: sessionStartingView.pitch,
                     bearing: sessionStartingView.bearing,
-                    essential: true,
+                    duration: 1000,
+                });
+            } else if (lastAction === 'fitToUSA') {
+                map.fitBounds([
+                    [-165.031128, 65.476793],
+                    [-81.131287, 26.876143],
+                ]);
+            } else if (lastAction === 'reset') {
+                map.flyTo({
+                    center: INITIAL_CENTER,
+                    zoom: INITIAL_ZOOM,
+                    pitch: 0,
+                    bearing: 0,
                     duration: 1000,
                 });
             } else {
-                // console.log('No sessionStartingView found. Staying in the current view.');
+                console.warn('No valid session view found. Defaulting to initial view.');
+                map.flyTo({
+                    center: USA_CENTER,
+                    zoom: USA_ZOOM,
+                    pitch: 0,
+                    bearing: 0,
+                    duration: 1000,
+                });
             }
         }
 
