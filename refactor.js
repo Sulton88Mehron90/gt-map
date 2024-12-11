@@ -609,17 +609,6 @@ document.addEventListener("DOMContentLoaded", () => {
         default: 4,
     };
 
-    // Avoid recalculating visibility unnecessarily by adding a guard against redundant updates in updateMarkerVisibility.
-
-    //     let lastRegion = null;
-    // function updateMarkerVisibility(region, zoomLevel) {
-    //     if (region === lastRegion && lastZoomLevel === zoomLevel) return;
-    //     lastRegion = region;
-    //     lastZoomLevel = zoomLevel;
-
-    //     // Rest of the function
-    // }
-
     function updateMarkerVisibility(region, zoomLevel) {
         const threshold = regionZoomThresholds[region] ?? regionZoomThresholds.default;
         const isStateView = zoomLevel <= threshold;
@@ -668,7 +657,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
         // Apply size changes to all custom markers
         document.querySelectorAll('.custom-marker').forEach(marker => {
-            marker.style.transition = 'width 0.2s, height 0.2s'; // Smooth animation
+            marker.style.transition = 'width 0.2s, height 0.2s';
             marker.style.width = `${size}px`;
             marker.style.height = `${size}px`;
         });

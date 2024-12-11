@@ -56,7 +56,6 @@ body {
 }
 
 button {
-    /* padding: 8px 0; */
     margin: 1px 0;
     background-color: #0f2844;
     border-radius: 4px;
@@ -186,28 +185,24 @@ button:hover {
     background-image: url('./img/UK_flag.png');
     background-position: left center;
     background-color: #0f2844;
-    /* padding-right: 5px; */
 }
 
 .mapbox-button-group #fly-to-canada .flip-front {
     background-image: url('./img/canada_flag.png');
     background-position: left center;
     background-color: #0f2844;
-    /* padding-right: 5px; */
 }
 
 .mapbox-button-group #fly-to-usa .flip-front {
     background-image: url('./img/USA_flag.png');
     background-position: left center;
     background-color: #0f2844;
-    /* padding-right: 6px; */
 }
 
 .mapbox-button-group #fly-to-italy .flip-front {
     background-image: url('./img/italy_flag.png');
     background-position: left center;
     background-color: #0f2844;
-    /* padding-right: 6px; */
 }
 
 .mapbox-button-group .fit-to-usa {
@@ -221,6 +216,10 @@ button:hover {
     background-image: url('./img/aruba_flag.png');
     background-position: left center;
     background-color: #0f2844;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
 }
 
 /* sidebar */
@@ -276,28 +275,27 @@ button:hover {
 
 /* Global Scrollbar Styles */
 *::-webkit-scrollbar {
-    width: 8px; /* Adjust scrollbar width */
+    width: 8px;
 }
 
 *::-webkit-scrollbar-thumb {
-    background: #ff8502; /* Thumb color */
-    border-radius: 10px; /* Rounded corners */
+    background: #ff8502; 
+    border-radius: 10px;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-    background: #e57300; /* Hover color for the thumb */
+    background: #e57300;
 }
 
 *::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1); /* Track color */
+    background: rgba(255, 255, 255, 0.1);
 }
 
 /* Firefox-specific Scrollbar */
 * {
-    scrollbar-width: thin; /* Thin scrollbar */
-    scrollbar-color: #ff8502 rgba(255, 255, 255, 0.1); /* Thumb and track colors */
+    scrollbar-width: thin;
+    scrollbar-color: #ff8502 rgba(255, 255, 255, 0.1);
 }
-
 
 #hospital-list-sidebar:hover {
     box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
@@ -490,7 +488,6 @@ button:hover {
     top: 0;
     margin-left: 25px;
     z-index: 12;
-    /* margin-right: 5px; */
 }
 
 #hospital-list-sidebar.collapsed h2,
@@ -506,7 +503,6 @@ button:hover {
     top: 0;
     margin-right: 5px;
     right: 0;
-    /* display: none;  */
 }
 
 /* General Back to Top Button Styling */
@@ -518,7 +514,6 @@ button:hover {
     z-index: 3000;
     border: none;
     left: 50%;
-    /* transform: translateX(50%); */
     border-radius: 50%;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
     cursor: pointer;
@@ -532,7 +527,6 @@ button:hover {
 
 #back-to-top-button:hover {
     background-color: #e57300;
-    /* transform: scale(1.1); */
 }
 
 /* Ensure it's hidden only when sidebar is collapsed */
@@ -586,9 +580,7 @@ button:hover {
     justify-content: space-between;
     gap: 10px;
     padding: 0 10px;
-    /* Add padding for better spacing */
     gap: 10px;
-    /* Space between elements on the same side */
 }
 
 .sidebar-header.grabbing {
@@ -602,24 +594,17 @@ button:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 5px;
-
+    /* margin: 5px; */
     background-color: #333;
     color: #fff;
     border-radius: 50%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.3s ease;
-    transition: background-color 0.3s ease;
-
-
     top: 10px;
     right: 10px;
     z-index: 11;
-
-
     border: none;
-
     margin: 0 10px;
 }
 
@@ -644,7 +629,6 @@ button:hover {
 
 .logo-container {
     position: relative;
-    /* width: 20px;  */
     height: 20px;
 }
 
@@ -722,10 +706,10 @@ button:hover {
 }
 
 /* rotation effect when globe rotating */
-.company-logo.rotate {
+/* .company-logo.rotate {
     transform: rotate(360deg);
     transition: transform 1s ease-out;
-}
+} */
 
 /* Default styling for the error message container */
 .error-code {
@@ -765,7 +749,6 @@ button:hover {
 
 .not-found-handling h3 {
     font-size: 1.2rem;
-    /* color: #555; */
     color: white;
 }
 
@@ -861,7 +844,7 @@ button:hover {
     width: 60px;
     height: 60px;
     animation: spin 1s linear infinite, color-change 3s ease-in-out infinite;
-    position: absolute;
+    position: relative;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -897,7 +880,7 @@ button:hover {
     }
 }
 
-/* Add a max height and scrollbar to the suggestion list */
+/* max height and scrollbar to the suggestion list */
 .mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--suggestions {
     max-height: 200px !important;
     overflow-y: auto !important;
@@ -969,8 +952,6 @@ button:hover {
     }
 
     #hospital-list-sidebar {
-        /* width: 60%; */
-        /* max-height: 50vh; */
         width: 40%;
     }
 
@@ -1022,13 +1003,6 @@ button:hover {
     #home-logo {
         width: 60px;
     }
-/* 
-    #zoom-warning {
-        position: absolute;
-        top: 50px;
-        left: 726px;
-        z-index: 1000;
-    } */
 
     #zoom-warning:hover #zoom-tooltip {
         display: block;
@@ -1090,12 +1064,12 @@ button:hover {
         transform: scale(1.1);
     }
     #hospital-list-sidebar::-webkit-scrollbar {
-        width: 6px; /* Adjust width for smaller screens */
+        width: 6px;
     }
 
     #hospital-list-sidebar::-webkit-scrollbar-thumb {
         background: #ff8502;
-        border-radius: 8px; /* Smaller radius */
+        border-radius: 8px; 
     }
 
     #hospital-list-sidebar::-webkit-scrollbar-thumb:hover {
@@ -1105,47 +1079,6 @@ button:hover {
     #hospital-list-sidebar::-webkit-scrollbar-track {
         background: rgba(255, 255, 255, 0.1);
     }
-/* 
-    #zoom-warning {
-        position: absolute;
-        top: 50px;
-        left: 384px;
-        z-index: 1000;
-    }
-
-    #zoom-warning-icon {
-        width: 15px;
-        height: 15px;
-        cursor: pointer;
-    }
-
-    #zoom-warning:hover #zoom-tooltip {
-        display: block;
-        transition: opacity 0.3s;
-    }
-
-    #zoom-tooltip {
-        display: none;
-        position: absolute;
-        top: -5px;
-        left: -255px;
-        background-color: rgba(0, 0, 0, 0.8);
-        color: #fff;
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 10px;
-    }
-
-    #zoom-warning {
-        top: 5px;
-        right: 5px;
-    }
-
-    #zoom-warning-icon {
-        width: 12px;
-        height: 12px;
-    } */
-
 }
 
 @media (max-width: 425px) {
@@ -1175,17 +1108,4 @@ button:hover {
         height: calc(100vh - 50px);
         width: 100%;
     }
-/* 
-    #zoom-tooltip {
-        display: none;
-        position: absolute;
-        top: -5px;
-        left: -255px;
-        background-color: rgba(0, 0, 0, 0.8);
-        color: #fff;
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 10px;
-    } */
-
 }

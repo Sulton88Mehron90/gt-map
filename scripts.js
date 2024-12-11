@@ -198,7 +198,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const statesWithFacilities = new Set();
     //Selection and Region Tracking:
     let selectedStateId = null;
-    // const logoUrl = './img/gtLogo.png';
     let currentRegion = 'usa';
     //Geographic Bounds:
     const contiguousUSABounds = [
@@ -609,17 +608,6 @@ document.addEventListener("DOMContentLoaded", () => {
         default: 4,
     };
 
-    // Avoid recalculating visibility unnecessarily by adding a guard against redundant updates in updateMarkerVisibility.
-
-    //     let lastRegion = null;
-    // function updateMarkerVisibility(region, zoomLevel) {
-    //     if (region === lastRegion && lastZoomLevel === zoomLevel) return;
-    //     lastRegion = region;
-    //     lastZoomLevel = zoomLevel;
-
-    //     // Rest of the function
-    // }
-
     function updateMarkerVisibility(region, zoomLevel) {
         const threshold = regionZoomThresholds[region] ?? regionZoomThresholds.default;
         const isStateView = zoomLevel <= threshold;
@@ -647,15 +635,21 @@ document.addEventListener("DOMContentLoaded", () => {
     
         // Apply size changes to all custom markers
         document.querySelectorAll('.custom-marker').forEach(marker => {
-            marker.style.transition = 'width 0.2s, height 0.2s'; // Smooth animation
+            marker.style.transition = 'width 0.2s, height 0.2s';
             marker.style.width = `${size}px`;
             marker.style.height = `${size}px`;
         });
     
         // Debug log (remove in production)
-        console.log(`Adjusted marker size to: ${size}px at zoom level ${zoomLevel}`);
+        console.log(`[DEBUG] Adjusted marker size: ${size}px at zoom level: ${zoomLevel}`);
     }
-    
+
+    // Event listener for zoom level changes
+    map.on('zoom', () => {
+        const zoomLevel = Math.floor(map.getZoom());
+        adjustMarkerSize(zoomLevel);
+    });    
+
     // reset the map view based on the previously stored session view
     function resetToSessionView() {
         // console.log('Resetting to session view...');
@@ -899,40 +893,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // // zoom warning visibility and tooltip
-    // function manageZoomWarning() {
-    //     const zoomLevel = map.getZoom(); // Current zoom level
-    //     const isSmallScreen = window.innerWidth <= 480; // Check if screen size is small
-    //     const zoomThreshold = 5; // Minimum zoom level to show warning
-
-    //     const zoomWarning = document.getElementById('zoom-warning');
-    //     if (!zoomWarning) return;
-
-    //     // Show warning only on small screens and if zoom level is below the threshold
-    //     if (isSmallScreen && zoomLevel < zoomThreshold) {
-    //         zoomWarning.style.display = 'block';
-    //     } else {
-    //         zoomWarning.style.display = 'none';
-    //     }
-    // }
-
-    // // Hover tooltip logic
-    // const zoomWarningIcon = document.getElementById('zoom-warning-icon');
-    // const zoomTooltip = document.getElementById('zoom-tooltip');
-
-    // if (zoomWarningIcon) {
-    //     zoomWarningIcon.addEventListener('mouseenter', () => {
-    //         if (zoomTooltip) zoomTooltip.style.display = 'block';
-    //     });
-
-    //     zoomWarningIcon.addEventListener('mouseleave', () => {
-    //         if (zoomTooltip) zoomTooltip.style.display = 'none';
-    //     });
-    // }
-
-    // // Trigger manageZoomWarning on zoom and map load
-    // map.on('zoomend', manageZoomWarning);
-
     //responsible for attaching a click event to a specific region layer on the map.
     function setRegionClickEvent(regionSource, regionIdProp, regionNameProp) {
         map.on('click', (e) => {
@@ -1117,9 +1077,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     console.warn(`No zoom threshold defined for region: ${currentRegion}`);
                     markerZoomThreshold = 4;
             }
-
-            // // Initialize zoom warning visibility and tooltip logic
-            // manageZoomWarning();
 
             // Adjust visibility based on zoom level and thresholds
             if (currentZoom <= 3) {
