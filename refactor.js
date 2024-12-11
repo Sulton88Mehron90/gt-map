@@ -111,7 +111,7 @@ function log(message, level = 'info') {
 
     if (DEBUG_MODE || level !== 'info') {
         if (level === 'warn' && message === lastWarningMessage) return;
-        console[level](`[${level.toUpperCase()}] ${message}`);
+        // console[level](`[${level.toUpperCase()}] ${message}`);
         if (level === 'warn') lastWarningMessage = message;
     }
 }
@@ -163,45 +163,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const map = new mapboxgl.Map({
         container: 'map',
         // style: 'mapbox://styles/mapbox/light-v11', //original
-        // style: 'mapbox://styles/nanajon66/cm4e8yzf8001601spf3zn96g1', // i like it 2
-        style: 'mapbox://styles/nanajon66/cm4fk3i8x001e01rf0pov4618', //last option?
+        style: 'mapbox://styles/nanajon66/cm4fk3i8x001e01rf0pov4618',
         projection: 'globe',
         center: USA_CENTER,
         zoom: USA_ZOOM,
     });
 
-    // map.on('styledata', () => {
-    //     console.log('Custom style layers:', map.getStyle().layers);
-    // });
-
-//     //helper function toggleMapStyle that switches the map's style based on the zoom level
-//     function toggleMapStyle(zoomLevel) {
-//         // Define the styles
-//         const defaultStyle = 'mapbox://styles/mapbox/light-v11';
-//         const alternateStyle = 'mapbox://styles/nanajon66/cm4e8yzf8001601spf3zn96g1';
-    
-//         // Check the zoom level and update the style if necessary
-//         if (zoomLevel <= 3) {
-//             // Apply default style for reset and fit-to-USA views
-//             if (map.getStyle().sprite !== defaultStyle) {
-//                 map.setStyle(defaultStyle);
-//                 console.log(`Switched to default style at zoom level: ${zoomLevel}`);
-//             }
-//         } else {
-//             // Apply alternate style for other zoom levels
-//             if (map.getStyle().sprite !== alternateStyle) {
-//                 map.setStyle(alternateStyle);
-//                 console.log(`Switched to alternate style at zoom level: ${zoomLevel}`);
-//             }
-//         }
-//     }
-
-// //Zoom Event
-//     map.on('zoom', () => {
-//         const zoomLevel = map.getZoom(); // Get the current zoom level
-//         toggleMapStyle(zoomLevel);      // Call the toggle logic
-//     });    
-    
     window.addEventListener("resize", () => map.resize());
 
     // Map navigation controls (zoom and rotate)
@@ -326,13 +293,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const isScrollable = sidebar.scrollHeight > sidebar.clientHeight;
 
         const shouldShowButton = !isCollapsed && hasScrolled && isScrollable;
-
-        // console.log("Back-to-Top Button Conditions:", {
-        //     isCollapsed,
-        //     hasScrolled,
-        //     isScrollable,
-        //     shouldShowButton,
-        // });
 
         // Toggle the button's visibility
         backToTopButton.style.display = shouldShowButton ? "block" : "none";
@@ -674,26 +634,49 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // let lastZoomLevel = null;
+    // // Dynamic Sizing
+    // function adjustMarkerSize(zoomLevel) {
+    //     // Avoid redundant updates for the same zoom level
+    //     if (lastZoomLevel === zoomLevel) return;
+    //     lastZoomLevel = zoomLevel;
+
+    //     // Calculate marker size, scaling conservatively
+    //     const size = Math.max(6, Math.min(20, zoomLevel * 3));
+
+    //     // Update the size of all custom markers with optional smooth transitions
+    //     document.querySelectorAll('.custom-marker').forEach(marker => {
+    //         marker.style.transition = 'width 0.2s, height 0.2s';
+    //         marker.style.width = `${size}px`;
+    //         marker.style.height = `${size}px`;
+    //     });
+
+    //     // Log the size adjustment for debugging
+    //     console.log(`Adjusted marker size to: ${size}px at zoom level ${zoomLevel}`);
+    // }
+
     let lastZoomLevel = null;
+
     // Dynamic Sizing
     function adjustMarkerSize(zoomLevel) {
-        // Avoid redundant updates for the same zoom level
+        // Skip redundant updates for the same zoom level
         if (lastZoomLevel === zoomLevel) return;
         lastZoomLevel = zoomLevel;
-
-        // Calculate marker size, scaling conservatively
+    
+        // Dynamically calculate marker size based on zoom level
         const size = Math.max(6, Math.min(20, zoomLevel * 3));
-
-        // Update the size of all custom markers with optional smooth transitions
+    
+        // Apply size changes to all custom markers
         document.querySelectorAll('.custom-marker').forEach(marker => {
-            marker.style.transition = 'width 0.2s, height 0.2s';
+            marker.style.transition = 'width 0.2s, height 0.2s'; // Smooth animation
             marker.style.width = `${size}px`;
             marker.style.height = `${size}px`;
         });
-
-        // Log the size adjustment for debugging
+    
+        // Debug log (remove in production)
         console.log(`Adjusted marker size to: ${size}px at zoom level ${zoomLevel}`);
     }
+    
 
     // reset the map view based on the previously stored session view
     function resetToSessionView() {
@@ -802,25 +785,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 [-66.93457, 49.384358],  // Northeast corner
             ],
             uk: [
-                [-10.854492, 49.823809], // Southwest corner
-                [1.762496, 58.635],      // Northeast corner
+                [-10.854492, 49.823809],
+                [1.762496, 58.635],
             ],
             italy: [
-                [6.6272658, 35.2889616], // Southwest corner
-                [18.784474, 47.0921462], // Northeast corner
+                [6.6272658, 35.2889616],
+                [18.784474, 47.0921462],
             ],
             canada: [
-                [-141.003, 41.675],      // Southwest corner
-                [-52.648, 83.23324],     // Northeast corner
+                [-141.003, 41.675],
+                [-52.648, 83.23324],
             ],
             aruba: [
-                [-70.062056, 12.406293], // Southwest corner
-                [-69.876820, 12.623324], // Northeast corner
+                [-70.062056, 12.406293],
+                [-69.876820, 12.623324],
             ],
             reset: null,
             fitToUSA: [
-                [-165.031128, 65.476793], // Southwest corner
-                [-81.131287, 26.876143], // Northeast corner
+                [-165.031128, 65.476793],
+                [-81.131287, 26.876143],
             ],
         };
 
@@ -838,7 +821,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 zoom,
                 pitch,
                 bearing: 0,
-                duration: 1000, // Reduced duration from 2000 to 1000 milliseconds
+                duration: 1000,
                 easing: (t) => t * (2 - t),
             });
         }
@@ -900,15 +883,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // // Custom zoom levels for specific regions
-        // const regionZoomLevels = {
-        //     AW: 10,
-        //     IT: 6,
-        //     ENG: 8,
-        //     CAN: 3,
-        //     default: 6,
-        // };
-
         const regionZoomLevels = {
             AW: 10,       // Aruba
             IT: 6,        // Italy
@@ -934,7 +908,7 @@ document.addEventListener("DOMContentLoaded", () => {
         map.fitBounds(stateBounds, {
             padding: 50,
             maxZoom: customZoom,
-            duration: 2000,
+            duration: 1000,
         });
 
         backButton.style.display = 'block';
@@ -946,38 +920,6 @@ document.addEventListener("DOMContentLoaded", () => {
             button.addEventListener("click", () => flyToRegion(region));
         }
     });
-
-    // zoom warning visibility and tooltip
-    // function manageZoomWarning() {
-    //     const zoomLevel = map.getZoom();
-    //     const isSmallScreen = window.innerWidth <= 480;
-    //     const zoomThreshold = 5;
-
-    //     const zoomWarning = document.getElementById('zoom-warning');
-    //     if (!zoomWarning) return;
-
-    //     if (isSmallScreen && zoomLevel < zoomThreshold) {
-    //         zoomWarning.style.display = 'block';
-    //     } else {
-    //         zoomWarning.style.display = 'none';
-    //     }
-    // }
-
-    // // hover tooltip logic
-    // const zoomWarningIcon = document.getElementById('zoom-warning-icon');
-    // const zoomTooltip = document.getElementById('zoom-tooltip');
-
-    // if (zoomWarningIcon) {
-    //     zoomWarningIcon.addEventListener('mouseenter', () => {
-    //         if (zoomTooltip) zoomTooltip.style.display = 'block';
-    //     });
-
-    //     zoomWarningIcon.addEventListener('mouseleave', () => {
-    //         if (zoomTooltip) zoomTooltip.style.display = 'none';
-    //     });
-    // }
-
-    // map.on('zoomend', manageZoomWarning);
 
     // zoom warning visibility and tooltip
     function manageZoomWarning() {
@@ -1086,14 +1028,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 toggleVisibility(['state-markers'], 'visible');
                 toggleVisibility(['location-markers', 'clusters', 'cluster-count', 'unclustered-point'], 'none');
 
-                // const regionZoomLevels = {
-                //     usa: 4,
-                //     uk: 5,
-                //     italy: 6,
-                //     canada: 3,
-                //     aruba: 10,
-                // };
-
                 const regionZoomLevels = {
                     AW: 10,       // Aruba
                     IT: 6,        // Italy
@@ -1123,14 +1057,6 @@ document.addEventListener("DOMContentLoaded", () => {
         showSpinner();
         log('Map fully loaded', 'info');
         map.setFog({});
-
-/////
-        const layers = map.getStyle().layers;
-        layers.forEach(layer => {
-            console.log(`Layer ID: ${layer.id}`);
-            console.log('Paint Properties:', layer.paint);
-        });
-/////
 
         setTimeout(() => map.resize(), 100); // Ensure proper map rendering
 
@@ -1216,7 +1142,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             // Initialize zoom warning visibility and tooltip logic
-            // manageZoomWarning();
+            manageZoomWarning();
 
             // Adjust visibility based on zoom level and thresholds
             if (currentZoom <= 3) {
@@ -1490,19 +1416,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         .setPopup(popup)
                         .addTo(map);
 
-                    // Specific hover behavior based on the hospital name
-                    // if (hospital_name !== "CommonSpirit Health Headquarters") {
-                    //     // Standard behavior: show/hide popup on hover
-                    //     marker.getElement().addEventListener('mouseenter', () => popup.addTo(map));
-                    //     marker.getElement().addEventListener('mouseleave', () => popup.remove());
-                    // } else {
-                    //     // For CommonSpirit Headquarters, keep popup open on click
-                    //     marker.getElement().addEventListener('click', (e) => {
-                    //         e.stopPropagation();
-                    //         popup.addTo(map);
-                    //     });
-                    // }
-
                     // Specific hover behavior based on the hospital name and the other
                     if (hospital_name !== "CommonSpirit Health Headquarters") {
                         if (isTouchDevice) {
@@ -1573,7 +1486,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Initial call to set visibility based on the starting zoom level
                 toggleMarkers();
 
-//Adjusts marker size and visibility for certain regions.
+                //Adjusts marker size and visibility for certain regions.
                 map.on('zoomend', () => {
                     const zoomLevel = map.getZoom();
                     adjustMarkerSize(zoomLevel);
@@ -2048,43 +1961,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             // Sidebar Close Button. Attach clear interactions to sidebar close button
-            // const closeSidebarButton = document.getElementById('close-sidebar');
-            // // Ensure the listener is attached only once
-            // if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
-            //     closeSidebarButton.setAttribute('data-listener-attached', 'true');
-            //     closeSidebarButton.addEventListener('click', () => {
-            //         // Clear region selection
-            //         clearRegionSelection();
-            //         // Hide the sidebar
-            //         closeSidebar();
-            //         // Determine the view to revert to
-            //         if (lastAction === 'fitToUSA') {
-            //             map.fitBounds([
-            //                 [-165.031128, 65.476793],
-            //                 [-81.131287, 26.876143],
-            //             ]);
-            //         } else if (lastAction === 'reset') {
-            //             map.flyTo({
-            //                 center: INITIAL_CENTER,
-            //                 zoom: INITIAL_ZOOM,
-            //                 pitch: 0,
-            //                 bearing: 0,
-            //                 duration: 1000,
-            //             });
-            //         } else if (sessionStartingView) {
-            //             map.flyTo({
-            //                 center: sessionStartingView.center,
-            //                 zoom: sessionStartingView.zoom,
-            //                 pitch: sessionStartingView.pitch,
-            //                 bearing: sessionStartingView.bearing,
-            //                 duration: 1000,
-            //             });
-            //         } else {
-            //             // console.warn('No valid session view found.');
-            //         }
-            //     });
-            // }
-
             const closeSidebarButton = document.getElementById('close-sidebar');
             // Ensure the listener is attached only once
             if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
@@ -2096,7 +1972,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     closeSidebar();
                 });
             }
-            
+
             // Fit-to-USA Button
             document.getElementById('fit-to-usa').addEventListener('click', () => {
                 sessionStartingView = {
@@ -2136,40 +2012,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         //hide the sidebar and update the state of the map
-        // function closeSidebar() {
-        //     if (!sidebar) {
-        //         console.warn('Sidebar element not found.');
-        //         return;
-        //     }
-
-        //     sidebar.style.display = 'none';
-
-        //     // Deselect the feature state for all regions
-        //     regionSources.forEach(sourceId => {
-        //         if (selectedStateId !== null) {
-        //             map.setFeatureState({ source: sourceId, id: selectedStateId }, { selected: false });
-        //         }
-        //     });
-
-        //     selectedStateId = null;
-
-        //     // Navigate back to sessionStartingView if it exists
-        //     if (sessionStartingView) {
-        //         map.flyTo({
-        //             center: sessionStartingView.center,
-        //             zoom: sessionStartingView.zoom,
-        //             pitch: sessionStartingView.pitch,
-        //             bearing: sessionStartingView.bearing,
-        //             essential: true,
-        //             duration: 1000,
-        //         });
-        //     } else {
-        //         // console.log('No sessionStartingView found. Staying in the current view.');
-        //     }
-        // }
-
-
-
         function closeSidebar() {
             if (!sidebar) {
                 console.warn('Sidebar element not found.');
