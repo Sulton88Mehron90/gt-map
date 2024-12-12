@@ -665,7 +665,6 @@ document.addEventListener("DOMContentLoaded", () => {
         // Debug log (remove in production)
         console.log(`Adjusted marker size to: ${size}px at zoom level ${zoomLevel}`);
     }
-    
 
     // reset the map view based on the previously stored session view
     function resetToSessionView() {

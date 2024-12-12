@@ -134,7 +134,8 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 <div align="right">
   <h1 style="color:red; display: inline;">
 <!--     Thank you -->
-    <img src="img/goliath-logo-black.png" alt="Profile Picture" width="205" style="margin-left: 5px; border-radius: 50%; vertical-align: middle;">
+    <!-- <img src="img/GTcapterra.png" alt="Profile Picture" width="205" style="margin-left: 5px; border-radius: 50%; vertical-align: middle;"> -->
+     <img src="img/round1gtG.png" alt="Profile Picture" width="205" style="margin-left: 5px; border-radius: 50%; vertical-align: middle;"> 
   </h1>
 </div>
 
