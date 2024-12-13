@@ -53,10 +53,14 @@ export function displayErrorMessage(error, context = "An unexpected error occurr
     const mapContainer = document.getElementById('map');
     const sidebar = document.getElementById('hospital-list-sidebar');
     const buttonGroup = document.querySelector('.mapbox-button-group');
+    // const minimizeButton = document.getElementById("minimize-sidebar");
+    const backToTopButton = document.getElementById('back-to-top-button');
 
-    if (mapContainer) mapContainer.style.display = 'none';
-    if (sidebar) sidebar.style.display = 'none';
-    if (buttonGroup) buttonGroup.style.display = 'none';
+ // Replace repeated DOM accesses with cached references
+if (mapContainer) mapContainer.style.display = 'none';
+if (sidebar) sidebar.style.display = 'none';
+if (backToTopButton) backToTopButton.style.display = 'block';
+if (buttonGroup) buttonGroup.style.display = 'none';
 
     //Display error page
     const errorPage = document.getElementById('error-page');
@@ -170,7 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
         zoom: USA_ZOOM,
     });
 
-    window.addEventListener("resize", () => map.resize());
+    // window.addEventListener("resize", () => map.resize());
 
     //Map navigation controls (zoom and rotate)
     map.addControl(new mapboxgl.NavigationControl());
@@ -254,7 +258,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 marker: { color: 'red' }
             });
             geocoderContainer.appendChild(geocoder.onAdd(map));
-    
+
             //Add MutationObserver to detect input addition
             const observer = new MutationObserver(() => {
                 const geocoderInput = geocoderContainer.querySelector('input[type="text"]');
@@ -269,7 +273,7 @@ document.addEventListener("DOMContentLoaded", () => {
             geocoder = null;
         }
     }, 300);
-    
+
     //Event Listener for Geocoder Toggle
     geocoderToggle.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -303,9 +307,9 @@ document.addEventListener("DOMContentLoaded", () => {
         toggleBackToTopButton();
     }, { passive: true });
 
-    window.addEventListener("load", () => {
-        backToTopButton.style.display = "block";
-    });
+    // window.addEventListener("load", () => {
+    //     backToTopButton.style.display = "block";
+    // });
 
     //Error handling for missing elements
     if (!sidebar) {
@@ -358,13 +362,20 @@ document.addEventListener("DOMContentLoaded", () => {
         sidebar?.addEventListener(event, toggleBackToTopButton, { passive: true })
     );
 
-    //Recalculate button visibility on window resize with debounce
-    window.addEventListener("resize", debounce(toggleBackToTopButton, 150));
+    // Debounced resize logic for map and button
+    window.addEventListener(
+        "resize",
+        debounce(() => {
+            map.resize(); // Ensure map resizes correctly
+            toggleBackToTopButton(); // Adjust button visibility
+        }, 150)
+    );
 
-    //Ensure the button visibility is set correctly on load
+    // Unified load event listener
     window.addEventListener("load", () => {
+        backToTopButton.style.display = "block";
         toggleBackToTopButton();
-        map.resize(); // Resize map on load
+        map.resize();
     });
 
     //Observer to monitor sidebar content changes for the back-to-top button
@@ -620,17 +631,17 @@ document.addEventListener("DOMContentLoaded", () => {
         //Skip redundant updates for the same zoom level
         if (lastZoomLevel === zoomLevel) return;
         lastZoomLevel = zoomLevel;
-    
+
         //Dynamically calculate marker size based on zoom level
         const size = Math.max(6, Math.min(20, zoomLevel * 3));
-    
+
         //Apply size changes to all custom markers
         document.querySelectorAll('.custom-marker').forEach(marker => {
             marker.style.transition = 'width 0.2s, height 0.2s';
             marker.style.width = `${size}px`;
             marker.style.height = `${size}px`;
         });
-    
+
         //Debug log (remove in production)
         // console.log(`[DEBUG] Adjusted marker size: ${size}px at zoom level: ${zoomLevel}`);
     }
@@ -639,7 +650,7 @@ document.addEventListener("DOMContentLoaded", () => {
     map.on('zoom', () => {
         const zoomLevel = Math.floor(map.getZoom());
         adjustMarkerSize(zoomLevel);
-    });    
+    });
 
     //Reset the map view based on the previously stored session view
     function resetToSessionView() {
@@ -2052,6 +2063,8 @@ document.addEventListener("DOMContentLoaded", () => {
         //Attach event listeners to header
         sidebarHeader.addEventListener('mousedown', startDrag);
         sidebarHeader.addEventListener('touchstart', startDrag, { passive: false });
+        // Sidebar drag-and-drop with unified pointer event
+        sidebarHeader.addEventListener('pointerdown', startDrag);
 
     })
 });
