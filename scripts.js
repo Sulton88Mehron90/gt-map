@@ -174,8 +174,6 @@ document.addEventListener("DOMContentLoaded", () => {
         zoom: USA_ZOOM,
     });
 
-    // window.addEventListener("resize", () => map.resize());
-
     //Map navigation controls (zoom and rotate)
     map.addControl(new mapboxgl.NavigationControl());
     map.scrollZoom.disable();
@@ -307,10 +305,7 @@ document.addEventListener("DOMContentLoaded", () => {
         toggleBackToTopButton();
     }, { passive: true });
 
-    // window.addEventListener("load", () => {
-    //     backToTopButton.style.display = "block";
-    // });
-
+ 
     //Error handling for missing elements
     if (!sidebar) {
         console.error("Sidebar element not found! Ensure the #hospital-list-sidebar ID is present in the HTML.");
