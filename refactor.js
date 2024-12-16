@@ -1,11 +1,11 @@
-// Imports and Mapbox Token Initialization
+//Imports and Mapbox Token Initialization
 import { MAPBOX_TOKEN } from './config.js';
 import { loadFacilitiesData } from './data/dataLoader.js';
 import { centerStateMarkerLocation } from './data/centerStateMarkerLocation.js';
 import { fetchAndCache, getCachedData, isCacheStale, preCacheFiles, clearCache } from './cache.js';
 
 (async () => {
-    // List of files to cache (including JSON, GeoJSON, and JS files)
+    //List of files to cache (including JSON, GeoJSON, and JS files)
     const filesToCache = [
         { url: './data/facilities.json', key: 'facilities' },
         { url: './data/us-states.geojson', key: 'usStates' },
@@ -15,18 +15,18 @@ import { fetchAndCache, getCachedData, isCacheStale, preCacheFiles, clearCache }
         { url: './data/aruba-region.geojson', key: 'arubaRegion' }
     ]
     try {
-        // Pre-cache all files with a 24-hour expiry
+        //Pre-cache all files with a 24-hour expiry
         await preCacheFiles(filesToCache, 24);
 
-        // cached data
+        //Cached data
         const facilities = getCachedData('facilities');
         // console.log('Cached facilities:', facilities);
 
-        // Checking if the 'facilities' cache is stale (older than 24 hours)
+        //Checking if the 'facilities' cache is stale (older than 24 hours)
         const isStale = isCacheStale('facilities', 24);
         // console.log('Is facilities cache stale?', isStale);
 
-        // Clear cache when user completes their session
+        //Clear cache when user completes their session
         window.addEventListener('beforeunload', clearCache);
     } catch (error) {
         console.error('Error during initialization:', error);
@@ -35,30 +35,34 @@ import { fetchAndCache, getCachedData, isCacheStale, preCacheFiles, clearCache }
 
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
-// Constants for Map Configuration
+//Constants for Map Configuration
 const INITIAL_CENTER = [-75.4265, 40.0428]; // Initial center (Berwyn, PA)
 const INITIAL_ZOOM = 1;
 const USA_CENTER = [-98.5795, 39.8283];
 const USA_ZOOM = getInitialZoom();
 let spinnerVisible = false;
 
-// Centralized error message handler with dynamic error code
+//Centralized error message handler with dynamic error code
 export function displayErrorMessage(error, context = "An unexpected error occurred") {
     console.log('displayErrorMessage called with:', error, context);
 
-    // Hide spinner if active
+    //Hide spinner if active
     hideSpinner();
 
-    // Hide main content
+    //Hide main content
     const mapContainer = document.getElementById('map');
     const sidebar = document.getElementById('hospital-list-sidebar');
     const buttonGroup = document.querySelector('.mapbox-button-group');
+    // const minimizeButton = document.getElementById("minimize-sidebar");
+    const backToTopButton = document.getElementById('back-to-top-button');
 
+    // Replace repeated DOM accesses with cached references
     if (mapContainer) mapContainer.style.display = 'none';
     if (sidebar) sidebar.style.display = 'none';
+    if (backToTopButton) backToTopButton.style.display = 'block';
     if (buttonGroup) buttonGroup.style.display = 'none';
 
-    // Display error page
+    //Display error page
     const errorPage = document.getElementById('error-page');
     const errorCodeLabel = document.querySelector('#error-number .error-code-label');
     const errorCodeNumber = document.querySelector('#error-number .error-code-number');
@@ -66,7 +70,7 @@ export function displayErrorMessage(error, context = "An unexpected error occurr
     if (errorPage) {
         errorPage.style.display = 'block';
 
-        // Set error code dynamically
+        //Set error code dynamically
         if (errorCodeLabel) {
             errorCodeLabel.innerText = "Error Code:";
         }
@@ -81,7 +85,7 @@ export function displayErrorMessage(error, context = "An unexpected error occurr
             }
         }
 
-        // Add a random fact about Goliath Technologies
+        //Add a random fact about Goliath Technologies
         const goliathInformativeFacts = [
             "Goliath Technologies leverages AI and automation to help IT professionals proactively troubleshoot and resolve performance issues before they impact users.",
             "Goliath Technologies ensures clinicians have seamless access to EHR systems like Epic, Cerner, Allscripts, and MEDITECH, so they can focus on patient care.",
@@ -95,15 +99,15 @@ export function displayErrorMessage(error, context = "An unexpected error occurr
     }
 }
 
-// Debug mode flag
+//Debug mode flag
 const DEBUG_MODE = true;
 let lastWarningMessage = '';
 
-// Logging utility function
+//Logging utility function
 function log(message, level = 'info') {
     const validLevels = ['info', 'warn', 'error', 'debug'];
 
-    // Validate the log level
+    //Validate the log level
     if (!validLevels.includes(level)) {
         console.warn(`Invalid log level: ${level}. Defaulting to 'info'.`);
         level = 'info';
@@ -116,7 +120,7 @@ function log(message, level = 'info') {
     }
 }
 
-// Use `logWarningOnce` instead of `console.warn` for repetitive warnings.
+//Use `logWarningOnce` instead of `console.warn` for repetitive warnings.
 const loggedWarnings = new Set();
 function logWarningOnce(message) {
     if (!loggedWarnings.has(message)) {
@@ -125,14 +129,14 @@ function logWarningOnce(message) {
     }
 }
 
-// Initial zoom based on screen width
+//Initial zoom based on screen width
 function getInitialZoom() {
     if (window.innerWidth <= 480) return 2;
     if (window.innerWidth <= 768) return 3;
     return 4;
 }
 
-// Spinner Functions
+//Spinner Functions
 function showSpinner() {
     if (!spinnerVisible) {
         // console.log('Spinner shown');
@@ -148,15 +152,16 @@ function hideSpinner() {
         spinnerVisible = false;
     }
 }
-// Variables for Interaction States
+
+//Variables for Interaction States
 let selectedRegionId = null;
 let hoveredRegionId = null;
 let facilitiesData = [];
 let locationMarkers = [];
-// Define regionSources
+//Define regionSources
 const regionSources = ['us-states', 'canada-regions', 'aruba-region', 'italy-regions', 'uk-regions'];
 
-// Map Initialization on DOMContentLoaded
+//Map Initialization on DOMContentLoaded
 document.addEventListener("DOMContentLoaded", () => {
     showSpinner();
 
@@ -169,9 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
         zoom: USA_ZOOM,
     });
 
-    window.addEventListener("resize", () => map.resize());
-
-    // Map navigation controls (zoom and rotate)
+    //Map navigation controls (zoom and rotate)
     map.addControl(new mapboxgl.NavigationControl());
     map.scrollZoom.disable();
 
@@ -188,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const gtLogo = document.querySelector('.sidebar-logo');
     const backButton = document.getElementById('back-button');
 
-    // Global variable
+    //Global variable
     //Markers and Data Management:
     let markers = [];
     let markersData = [];
@@ -198,7 +201,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const statesWithFacilities = new Set();
     //Selection and Region Tracking:
     let selectedStateId = null;
-    // const logoUrl = './img/gtLogo.png';
     let currentRegion = 'usa';
     //Geographic Bounds:
     const contiguousUSABounds = [
@@ -206,13 +208,13 @@ document.addEventListener("DOMContentLoaded", () => {
         [-66.93457, 49.384358],
     ];
     let sessionStartingView = null;
-    // Tracks the last action performed (reset or fit-to-USA)
+    //Tracks the last action performed (reset or fit-to-USA)
     let lastAction = null;
     let isFirstLoad = true;
 
-    // clearRegionSelection()// this is just to show the spinner to Ted
+    //clearRegionSelection()// this is just to show the spinner to Ted
 
-    // Toggle visibility for elements (markers or layers)
+    //Toggle visibility for elements (markers or layers)
     function toggleVisibility(layerIds, visibility) {
         layerIds.forEach(layerId => {
             if (map.getLayer(layerId)) {
@@ -221,14 +223,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Function to manage visibility explicitly
+    //Function to manage visibility explicitly
     function setLayerVisibility(layerId, visibility) {
         if (map.getLayer(layerId)) {
             map.setLayoutProperty(layerId, 'visibility', visibility);
         }
     }
 
-    // Debounce utility function to limit execution frequency 
+    //Debounce utility function to limit execution frequency 
     function debounce(func, delay) {
         let timeout;
         return function (...args) {
@@ -237,11 +239,12 @@ document.addEventListener("DOMContentLoaded", () => {
         };
     }
 
-    // Geocoder Toggle Setup
+    //Geocoder Toggle Setup
     const geocoderToggle = document.getElementById("toggle-geocoder");
     const geocoderContainer = document.getElementById("geocoder-container");
     let geocoder;
-    // Debounced toggle function
+
+    //Debounced toggle function
     const debouncedGeocoderToggle = debounce(() => {
         geocoderContainer.style.display = geocoderContainer.style.display === "none" ? "block" : "none";
         geocoderToggle.style.display = geocoderContainer.style.display === "none" ? "flex" : "none";
@@ -250,13 +253,11 @@ document.addEventListener("DOMContentLoaded", () => {
             geocoder = new MapboxGeocoder({
                 accessToken: mapboxgl.accessToken,
                 mapboxgl: mapboxgl,
-                marker: {
-                    color: 'red'
-                }
+                marker: { color: 'red' }
             });
             geocoderContainer.appendChild(geocoder.onAdd(map));
 
-            // Add MutationObserver to detect input addition
+            //Add MutationObserver to detect input addition
             const observer = new MutationObserver(() => {
                 const geocoderInput = geocoderContainer.querySelector('input[type="text"]');
                 if (geocoderInput) {
@@ -264,7 +265,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     observer.disconnect();
                 }
             });
-            // Observe changes in the geocoderContainer
             observer.observe(geocoderContainer, { childList: true, subtree: true });
         } else if (geocoderContainer.style.display === "none" && geocoder) {
             geocoder.onRemove();
@@ -272,13 +272,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }, 300);
 
-    // Event Listener for Geocoder Toggle
+    //Event Listener for Geocoder Toggle
     geocoderToggle.addEventListener("click", (e) => {
         e.stopPropagation();
         debouncedGeocoderToggle();
     });
 
-    // Outside Click Detection for Geocoder
+    //Outside Click Detection for Geocoder
     document.addEventListener("click", (event) => {
         if (!geocoderContainer.contains(event.target) && event.target !== geocoderToggle) {
             geocoderContainer.style.display = "none";
@@ -286,7 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Function to toggle visibility of the back-to-top button
+    //Function to toggle visibility of the back-to-top button
     function toggleBackToTopButton() {
         const isCollapsed = sidebar.classList.contains("collapsed");
         const hasScrolled = sidebar.scrollTop > 100;
@@ -299,17 +299,14 @@ document.addEventListener("DOMContentLoaded", () => {
         backToTopButton.classList.toggle("show", shouldShowButton);
     }
 
-    // Add scroll listener for the sidebar
+    //Add scroll listener for the sidebar
     sidebar?.addEventListener("scroll", () => {
         // console.log("Sidebar Scrolled:", sidebar.scrollTop);
         toggleBackToTopButton();
     }, { passive: true });
 
-    window.addEventListener("load", () => {
-        backToTopButton.style.display = "block";
-    });
 
-    // Error handling for missing elements
+    //Error handling for missing elements
     if (!sidebar) {
         console.error("Sidebar element not found! Ensure the #hospital-list-sidebar ID is present in the HTML.");
     }
@@ -320,70 +317,69 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("Minimize button not found! Ensure the #minimize-sidebar ID is present in the HTML.");
     }
 
-    // Event listener for back-to-top button click
+    //Event listener for back-to-top button click
     backToTopButton?.addEventListener("click", () => {
         sidebar.scrollTo({ top: 0, behavior: "smooth" });
         // console.log("Back-to-Top Button Clicked");
     });
 
-    // Sidebar minimize/expand functionality
+    //Sidebar minimize/expand functionality
     minimizeButton?.addEventListener("click", () => {
-        // Toggle the "collapsed" class to minimize or expand the sidebar
+        //Toggle the "collapsed" class to minimize or expand the sidebar
         const isCollapsed = sidebar.classList.toggle("collapsed");
 
-        // Reset sidebar scroll state after expanding
+        //Reset sidebar scroll state after expanding
         if (!isCollapsed) {
             sidebar.scrollTo(0, 0);
         }
 
-        // Delay to ensure dimensions are recalculated accurately after transition
+        //Delay to ensure dimensions are recalculated accurately after transition
         setTimeout(toggleBackToTopButton, 200);
 
-        // Update the minimize button icon dynamically
+        //Update the minimize button icon dynamically
         const minimizeIcon = minimizeButton.querySelector("i");
         if (isCollapsed) {
             minimizeIcon.classList.remove("fa-chevron-up");
             minimizeIcon.classList.add("fa-chevron-down");
-            // console.log("Sidebar minimized.");
+            //console.log("Sidebar minimized.");
         } else {
             minimizeIcon.classList.remove("fa-chevron-down");
             minimizeIcon.classList.add("fa-chevron-up");
-            // console.log("Sidebar expanded.");
+            //console.log("Sidebar expanded.");
         }
 
-        // Update aria-expanded for accessibility
+        //Update aria-expanded for accessibility
         minimizeButton.setAttribute("aria-expanded", !isCollapsed);
     });
 
-    // Event listeners for sidebar touch events (mobile)
+    //Event listeners for sidebar touch events (mobile)
     ["touchstart", "touchend"].forEach(event =>
         sidebar?.addEventListener(event, toggleBackToTopButton, { passive: true })
     );
 
-    // Debounce function for resize events
-    function debounce(func, wait) {
-        let timeout;
-        return function (...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), wait);
-        };
-    }
-    // Recalculate button visibility on window resize with debounce
-    window.addEventListener("resize", debounce(toggleBackToTopButton, 150));
+    // Debounced resize logic for map and button
+    window.addEventListener(
+        "resize",
+        debounce(() => {
+            map.resize(); // Ensure map resizes correctly
+            toggleBackToTopButton(); // Adjust button visibility
+        }, 150)
+    );
 
-    // Ensure the button visibility is set correctly on load
+    // Unified load event listener
     window.addEventListener("load", () => {
+        backToTopButton.style.display = "block";
         toggleBackToTopButton();
-        map.resize(); // Resize map on load
+        map.resize();
     });
 
-    // Observer to monitor sidebar content changes for the back-to-top button
+    //Observer to monitor sidebar content changes for the back-to-top button
     if (sidebar) {
         const observer = new MutationObserver(toggleBackToTopButton);
         observer.observe(sidebar, { childList: true, subtree: true });
     }
 
-    // Function to add a GeoJSON source to the map
+    //Function to add a GeoJSON source to the map
     function addGeoJSONSource(map, sourceId, dataUrl, promoteId) {
         // console.log(`Attempting to add source: ${sourceId}`);
         if (!map.getSource(sourceId)) {
@@ -401,11 +397,11 @@ document.addEventListener("DOMContentLoaded", () => {
         // console.log('Current sources:', map.getStyle().sources);
     }
 
-    // Adjusting sidebar height based on content size
+    //Adjusting sidebar height based on content size
     function adjustSidebarHeight() {
         const hospitalList = document.getElementById('hospital-list');
 
-        // Check if content fits without overflow
+        //Check if content fits without overflow
         if (hospitalList.scrollHeight <= sidebar.clientHeight) {
             sidebar.classList.add('auto-height');
         } else {
@@ -413,7 +409,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    //populate the sidebar function.
+    //Populate the sidebar function.
     function populateSidebar(regionId, regionName, facilities) {
         const list = document.getElementById('hospital-list');
         list.innerHTML = '';
@@ -424,19 +420,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const existingCountDisplay = sidebar.querySelector('.count-display');
         if (existingCountDisplay) existingCountDisplay.remove();
 
-        // Filter facilities by region
+        //Filter facilities by region
         const regionHospitals = facilities.filter(hospital =>
             hospital.location.includes(regionName) || hospital.region_id === regionId
         );
 
-        // Use a Map to group hospitals by parent_company
+        //Use a Map to group hospitals by parent_company
         const uniqueHealthSystems = new Map();
         let totalHospitalCount = 0;
 
         regionHospitals.forEach(hospital => {
             const parentCompany = hospital.parent_company || hospital.hospital_name;
 
-            // Accumulate count for all hospitals under the same parent company
+            //Accumulate count for all hospitals under the same parent company
             if (uniqueHealthSystems.has(parentCompany)) {
                 const existing = uniqueHealthSystems.get(parentCompany);
                 existing.hospital_count += hospital.hospital_count || 1;
@@ -447,11 +443,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             }
 
-            // Accumulate total hospital count
+            //Accumulate total hospital count
             totalHospitalCount += hospital.hospital_count || 1;
         });
 
-        // Display total facility count in the sidebar
+        //Display total facility count in the sidebar
         const countDisplay = document.createElement('p');
         countDisplay.classList.add('count-display');
         countDisplay.innerHTML = `Total Facilities: <span style="color: #ff8502;">${totalHospitalCount}</span>`;
@@ -460,7 +456,7 @@ document.addEventListener("DOMContentLoaded", () => {
         countDisplay.style.marginTop = '10px';
         list.before(countDisplay);
 
-        // Populate the sidebar with one hospital per health system
+        //Populate the sidebar with one hospital per health system
         uniqueHealthSystems.forEach(hospital => {
             const listItem = document.createElement('li');
 
@@ -493,7 +489,7 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
 
             listItem.addEventListener('click', () => {
-                // Update session view before flying to facility
+                //Update session view before flying to facility
                 sessionStartingView = {
                     center: map.getCenter(),
                     zoom: map.getZoom(),
@@ -501,7 +497,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     bearing: map.getBearing(),
                 };
 
-                // Fly to the hospital's location
+                //Fly to the hospital's location
                 map.flyTo({
                     center: [hospital.longitude, hospital.latitude],
                     zoom: 12,
@@ -511,7 +507,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     easing: (t) => t * (2 - t),
                 });
 
-                // Show the back button and hide the home logo
+                //Show the back button and hide the home logo
                 backButton.style.display = 'block';
                 gtLogo.style.display = 'none';
             });
@@ -525,7 +521,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function createCustomMarker(lng, lat, popupContent, regionId) {
-        // Create a custom marker element
+        //Create a custom marker element
         const markerElement = document.createElement('div');
         markerElement.className = 'custom-marker company-logo sidebar-logo';
         markerElement.style.width = '12px';
@@ -537,48 +533,48 @@ document.addEventListener("DOMContentLoaded", () => {
         markerElement.style.borderRadius = '50%';
         markerElement.setAttribute('data-region-id', regionId);
 
-        // console.log(`createCustomMarker created with data-region-id: ${regionId}`);
+        //console.log(`createCustomMarker created with data-region-id: ${regionId}`);
 
-        // Create a popup and attach it to the marker
+        //Create a popup and attach it to the marker
         const popup = new mapboxgl.Popup({ offset: 15, closeButton: false }).setHTML(popupContent)
 
-        // Create the marker without adding it to the map
+        //Create the marker without adding it to the map
         const marker = new mapboxgl.Marker(markerElement)
             .setLngLat([lng, lat])
             .setPopup(popup);
 
-        // Store the marker in the global array
+        //Store the marker in the global array
         locationMarkers.push(marker);
 
         return marker;
     }
 
-    // Updated updateMarkers function
+    //Updated updateMarkers function
     function updateMarkers() {
-        // Check if markersData is populated
+        //Check if markersData is populated
         if (!markersData || markersData.length === 0) {
-            // console.warn('Markers data is not ready. Skipping updateMarkers.');
+            //console.warn('Markers data is not ready. Skipping updateMarkers.');
             return;
         }
 
-        // console.log('updateMarkers called');
+        //console.log('updateMarkers called');
         const bounds = map.getBounds();
         if (!bounds || !bounds._sw || !bounds._ne) {
             console.error('Invalid map bounds:', bounds);
             return;
         }
 
-        // Clear existing markers from the map
+        //Clear existing markers from the map
         markers.forEach(marker => marker.remove());
         markers = [];
 
-        // Deduplicate markersData
+        //Deduplicate markersData
         const uniqueMarkers = markersData.filter(
             (marker, index, self) =>
                 index === self.findIndex(m => m.lng === marker.lng && m.lat === marker.lat)
         );
 
-        // Add markers within visible bounds
+        //Add markers within visible bounds
         uniqueMarkers.forEach(markerData => {
             const { lng, lat, popupContent } = markerData;
 
@@ -591,10 +587,10 @@ document.addEventListener("DOMContentLoaded", () => {
         // console.log(`Markers added: ${markers.length}`);
     }
 
-    // Debounce the `updateMarkers` function
+    //Debounce the `updateMarkers` function
     const debouncedUpdateMarkers = debounce(updateMarkers, 300);
 
-    // Map events now use the debounced version of `updateMarkers`
+    //Map events now use the debounced version of `updateMarkers`
     map.on('zoomend', debouncedUpdateMarkers);
     map.on('moveend', debouncedUpdateMarkers);
 
@@ -623,50 +619,35 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // let lastZoomLevel = null;
-    // // Dynamic Sizing
-    // function adjustMarkerSize(zoomLevel) {
-    //     // Avoid redundant updates for the same zoom level
-    //     if (lastZoomLevel === zoomLevel) return;
-    //     lastZoomLevel = zoomLevel;
-
-    //     // Calculate marker size, scaling conservatively
-    //     const size = Math.max(6, Math.min(20, zoomLevel * 3));
-
-    //     // Update the size of all custom markers with optional smooth transitions
-    //     document.querySelectorAll('.custom-marker').forEach(marker => {
-    //         marker.style.transition = 'width 0.2s, height 0.2s';
-    //         marker.style.width = `${size}px`;
-    //         marker.style.height = `${size}px`;
-    //     });
-
-    //     // Log the size adjustment for debugging
-    //     console.log(`Adjusted marker size to: ${size}px at zoom level ${zoomLevel}`);
-    // }
-
     let lastZoomLevel = null;
 
-    // Dynamic Sizing
+    //Dynamic Sizing
     function adjustMarkerSize(zoomLevel) {
-        // Skip redundant updates for the same zoom level
+        //Skip redundant updates for the same zoom level
         if (lastZoomLevel === zoomLevel) return;
         lastZoomLevel = zoomLevel;
-    
-        // Dynamically calculate marker size based on zoom level
+
+        //Dynamically calculate marker size based on zoom level
         const size = Math.max(6, Math.min(20, zoomLevel * 3));
-    
-        // Apply size changes to all custom markers
+
+        //Apply size changes to all custom markers
         document.querySelectorAll('.custom-marker').forEach(marker => {
             marker.style.transition = 'width 0.2s, height 0.2s';
             marker.style.width = `${size}px`;
             marker.style.height = `${size}px`;
         });
-    
-        // Debug log (remove in production)
-        console.log(`Adjusted marker size to: ${size}px at zoom level ${zoomLevel}`);
+
+        //Debug log (remove in production)
+        // console.log(`[DEBUG] Adjusted marker size: ${size}px at zoom level: ${zoomLevel}`);
     }
 
-    // reset the map view based on the previously stored session view
+    //Event listener for zoom level changes
+    map.on('zoom', () => {
+        const zoomLevel = Math.floor(map.getZoom());
+        adjustMarkerSize(zoomLevel);
+    });
+
+    //Reset the map view based on the previously stored session view
     function resetToSessionView() {
         // console.log('Resetting to session view...');
         if (sessionStartingView) {
@@ -676,7 +657,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     lastAction === 'fitToUSA' ? regionZoomThresholds.fitToUSA :
                         regionZoomThresholds[currentRegion] || regionZoomThresholds.default || 4;
 
-            // const adjustedZoom = isMobile ? sessionStartingView.zoom - 1 : sessionStartingView.zoom;
+            //const adjustedZoom = isMobile ? sessionStartingView.zoom - 1 : sessionStartingView.zoom;
             const adjustedZoom = sessionStartingView.zoom - (isMobile ? 1 : 0);
 
             const zoomLevel = Math.max(adjustedZoom, zoomThreshold);
@@ -724,23 +705,23 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        // Ensure marker visibility and size are consistent
+        //Ensure marker visibility and size are consistent
         const zoomLevel = map.getZoom();
         updateMarkerVisibility(currentRegion, zoomLevel);
         adjustMarkerSize(zoomLevel);
     }
 
-    // Back button logic
+    //Back button logic
     function handleBackButtonClick() {
-        // Directly call the resetToSessionView function
+        //Directly call the resetToSessionView function
         resetToSessionView();
 
-        // Additional logic, if needed
+        //Additional logic, if needed
         backButton.style.display = 'none';
         gtLogo.style.display = 'block';
     }
 
-    // Ensure the event listener is only attached once
+    //Ensure the event listener is only attached once
     if (!backButton.hasAttribute('data-listener-attached')) {
         backButton.addEventListener('click', handleBackButtonClick);
         backButton.setAttribute('data-listener-attached', 'true');
@@ -757,7 +738,7 @@ document.addEventListener("DOMContentLoaded", () => {
         fitToUSA: { center: [-98.5795, 39.8283], zoom: 3, pitch: 0 },
     };
 
-    // flyToRegion function
+    //flyToRegion function
     function flyToRegion(region) {
         if (!regions[region]) {
             console.error(`Region "${region}" is not defined.`);
@@ -766,7 +747,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const { center, zoom, pitch } = regions[region];
 
-        // Define bounds for regions (only if applicable)
+        //Define bounds for regions (only if applicable)
         const regionBounds = {
             usa: [
                 [-124.848974, 24.396308], // Southwest corner
@@ -795,15 +776,15 @@ document.addEventListener("DOMContentLoaded", () => {
             ],
         };
 
-        // Check for small screens and adjust bounds for regions
+        //Check for small screens and adjust bounds for regions
         if (window.innerWidth <= 480 && regionBounds[region]) {
             map.fitBounds(regionBounds[region], {
                 padding: 20,
                 maxZoom: 4.5,
-                duration: 2000,
+                duration: 1000, //?
             });
         } else {
-            // Default flyTo logic
+            //Default flyTo logic
             map.flyTo({
                 center,
                 zoom,
@@ -817,7 +798,7 @@ document.addEventListener("DOMContentLoaded", () => {
         //current region
         currentRegion = region;
 
-        // Adjust marker visibility based on zoom threshold
+        //Adjust marker visibility based on zoom threshold
         const markerZoomThreshold = regionZoomThresholds[region] || regionZoomThresholds.default;
 
         const currentZoom = map.getZoom();
@@ -829,12 +810,12 @@ document.addEventListener("DOMContentLoaded", () => {
             toggleVisibility(['state-markers'], 'none');
         }
 
-        // Explicitly show markers for Canada on small screens
+        //Explicitly show markers for Canada on small screens
         if (region === 'canada' && window.innerWidth <= 480) {
             toggleVisibility(['location-markers'], 'visible');
         }
 
-        // Highlight active button
+        //Highlight active button
         document.querySelectorAll(".region-button").forEach(button => button.classList.remove("active"));
         document.getElementById(`fly-to-${region}`).classList.add("active");
     }
@@ -843,7 +824,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function handleStateClick(clickedRegionId, facilitiesData) {
         // console.log(`Clicked Region ID: ${clickedRegionId}`);
 
-        // Store the current view if not already stored
+        //Store the current view if not already stored
         if (!sessionStartingView) {
             sessionStartingView = {
                 center: map.getCenter(),
@@ -854,14 +835,14 @@ document.addEventListener("DOMContentLoaded", () => {
             };
         }
 
-        // Check if the clicked region has facilities
+        //Check if the clicked region has facilities
         const stateFacilities = facilitiesData.filter(facility => facility.region_id === clickedRegionId);
         if (!stateFacilities.length) {
             console.warn(`Region "${clickedRegionId}" does not have facilities.`);
             return;
         }
 
-        // Show only location markers for the clicked region
+        //Show only location markers for the clicked region
         locationMarkers.forEach(marker => {
             const markerRegionId = marker.getElement().getAttribute('data-region-id');
             if (markerRegionId === clickedRegionId && !marker._map) {
@@ -908,41 +889,6 @@ document.addEventListener("DOMContentLoaded", () => {
             button.addEventListener("click", () => flyToRegion(region));
         }
     });
-
-    // zoom warning visibility and tooltip
-    function manageZoomWarning() {
-        const zoomLevel = map.getZoom(); // Current zoom level
-        const isSmallScreen = window.innerWidth <= 480; // Check if screen size is small
-        const zoomThreshold = 5; // Minimum zoom level to show warning
-
-        const zoomWarning = document.getElementById('zoom-warning');
-        if (!zoomWarning) return;
-
-        // Show warning only on small screens and if zoom level is below the threshold
-        if (isSmallScreen && zoomLevel < zoomThreshold) {
-            zoomWarning.style.display = 'block';
-        } else {
-            zoomWarning.style.display = 'none';
-        }
-    }
-
-    // Hover tooltip logic
-    const zoomWarningIcon = document.getElementById('zoom-warning-icon');
-    const zoomTooltip = document.getElementById('zoom-tooltip');
-
-    if (zoomWarningIcon) {
-        zoomWarningIcon.addEventListener('mouseenter', () => {
-            if (zoomTooltip) zoomTooltip.style.display = 'block';
-        });
-
-        zoomWarningIcon.addEventListener('mouseleave', () => {
-            if (zoomTooltip) zoomTooltip.style.display = 'none';
-        });
-    }
-
-    // Trigger manageZoomWarning on zoom and map load
-    map.on('zoomend', manageZoomWarning);
-
 
     //responsible for attaching a click event to a specific region layer on the map.
     function setRegionClickEvent(regionSource, regionIdProp, regionNameProp) {
@@ -1010,7 +956,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         hideSpinner();
                     });
             } else {
-                // Handle clicks outside any region
+                //Handle clicks outside any region
                 if (sidebar) sidebar.style.display = 'none';
 
                 toggleVisibility(['state-markers'], 'visible');
@@ -1065,7 +1011,7 @@ document.addEventListener("DOMContentLoaded", () => {
             log('Subsequent load: Preserving current map view', 'info');
         }
 
-        // Add GeoJSON sources
+        //Add GeoJSON sources
         const sources = [
             { id: 'us-states', url: '/data/us-states.geojson' },
             { id: 'uk-regions', url: '/data/uk-regions.geojson' },
@@ -1080,7 +1026,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // Explicitly set visibility for initial layers
+        //Explicitly set visibility for initial layers
         setTimeout(() => {
             setLayerVisibility('state-markers', 'visible');
             setLayerVisibility('location-markers', 'none');
@@ -1092,16 +1038,16 @@ document.addEventListener("DOMContentLoaded", () => {
         map.on('idle', () => {
             const currentZoom = map.getZoom();
 
-            // Ensure currentRegion has a valid value
+            //Ensure currentRegion has a valid value
             if (!currentRegion) {
                 console.warn('currentRegion is not defined; defaulting to "usa".');
                 currentRegion = 'usa';
             }
 
-            // Default threshold for state marker visibility
+            //Default threshold for state marker visibility
             let markerZoomThreshold = 4;
 
-            // Threshold based on the active region
+            //Threshold based on the active region
             switch (currentRegion) {
                 case 'usa':
                     markerZoomThreshold = 4.5;
@@ -1129,10 +1075,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     markerZoomThreshold = 4;
             }
 
-            // Initialize zoom warning visibility and tooltip logic
-            manageZoomWarning();
-
-            // Adjust visibility based on zoom level and thresholds
+            //Adjust visibility based on zoom level and thresholds
             if (currentZoom <= 3) {
                 setLayerVisibility('state-markers', 'visible');
                 setLayerVisibility('location-markers', 'none');
@@ -1148,7 +1091,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // imported loadFacilitiesData function
+        //imported loadFacilitiesData function
         loadFacilitiesData()
             .then(facilities => {
                 addFacilityMarkersWithOffsets(map, facilities);
@@ -1821,52 +1764,83 @@ document.addEventListener("DOMContentLoaded", () => {
 
         //This function captures the function's role in configuring hover, click, and selection interactions for regions.
         function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
-            // const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
             const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
 
             let hoverTimeout;
             //Apply Hover
+            // const applyHover = (regionId) => {
+            //     // if (!regionsWithFacilities.has(regionId)) return;
+            //     console.log(`Hover applied: Region ID ${regionId}`);
+            //     if (hoveredRegionId && hoveredRegionId !== selectedRegionId) {
+            //         map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
+            //     }
+            //     hoveredRegionId = regionId;
+            //     if (hoveredRegionId !== selectedRegionId) {
+            //         map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: true });
+            //         console.log(`Hover state set for: Region ID ${hoveredRegionId}`);
+            //     }
+            // };
+
             const applyHover = (regionId) => {
-                // if (!regionsWithFacilities.has(regionId)) return;
+                if (hoveredRegionId === regionId) return; // Skip redundant updates
+                if (DEBUG_MODE) console.log(`Hover applied: Region ID ${regionId}`);
                 if (hoveredRegionId && hoveredRegionId !== selectedRegionId) {
                     map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
                 }
                 hoveredRegionId = regionId;
                 if (hoveredRegionId !== selectedRegionId) {
                     map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: true });
+                    if (DEBUG_MODE) console.log(`Hover state set for: Region ID ${hoveredRegionId}`);
                 }
             };
+            
 
-            const interactionDelay = map.getZoom() > 6 ? 150 : 300;
+
+            // const forceClearAllHoverStates = () => {
+            //     console.log(`Force clearing all hover states`);
+            //     regionSources.forEach((sourceId) => {
+            //         map.querySourceFeatures(sourceId).forEach((feature) => {
+            //             map.setFeatureState({ source: sourceId, id: feature.id }, { hover: false });
+            //         });
+            //     });
+            //     hoveredRegionId = null;
+            //     console.log(`All hover states cleared`);
+            // };
 
             // Throttled clear hover effect
+            
+            
+            
+            
             const clearHover = () => {
+                console.log(`Clear hover triggered`);
                 clearTimeout(hoverTimeout);
                 hoverTimeout = setTimeout(() => {
                     if (hoveredRegionId && hoveredRegionId !== selectedRegionId) {
+                        console.log(`Clearing hover for: Region ID ${hoveredRegionId}`);
                         map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
                     }
-
-                    // Ensure no lingering hover states remain in rendered features
-                    map.queryRenderedFeatures({ layers: [layerId] }).forEach((feature) => {
-                        if (feature.id !== selectedRegionId) {
-                            map.setFeatureState({ source: sourceId, id: feature.id }, { hover: false });
-                        }
-                    });
-
-                    // console.log(`Cleared hover for region: ${hoveredRegionId}`);
-
-
-                    hoveredRegionId = null;
-                }, interactionDelay);
+                    forceClearAllHoverStates();
+                }, 300);
             };
 
-
             map.off(hoverEvent, layerId);
-            map.off('mouseleave', layerId);
             map.off('touchend', layerId);
 
-            // Attach hover and touch interactions
+            // map.on('moveend', forceClearAllHoverStates);
+            // map.on('zoomend', forceClearAllHoverStates);
+
+            const handleMapInteraction = () => {
+                if (DEBUG_MODE) console.log(`Map interaction triggered`);
+                forceClearAllHoverStates();
+            };
+            
+            map.on('moveend', handleMapInteraction);
+            map.on('zoomend', handleMapInteraction);
+            
+            
+
+            //Attach hover and touch interactions
             map.on(hoverEvent, layerId, (e) => {
                 const regionId = e.features?.[0]?.id;
                 if (regionId) applyHover(regionId);
@@ -1877,23 +1851,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             //Clear selection
+            // function clearRegionSelection() {
+            //     if (selectedRegionId) {
+            //         regionSources.forEach((regionSource) => {
+            //             map.setFeatureState({ source: regionSource, id: selectedRegionId }, { selected: false });
+            //         });
+            //         selectedRegionId = null;
+            //     }
+            //     if (hoveredRegionId) {
+            //         regionSources.forEach((regionSource) => {
+            //             map.setFeatureState({ source: regionSource, id: hoveredRegionId }, { hover: false });
+            //         });
+            //         hoveredRegionId = null;
+            //     }
+            //     lastAction = null; // Reset last action
+            // }
+
             function clearRegionSelection() {
+                console.log(`Clearing region selection`);
                 if (selectedRegionId) {
+                    console.log(`Deselecting region: ${selectedRegionId}`);
                     regionSources.forEach((regionSource) => {
                         map.setFeatureState({ source: regionSource, id: selectedRegionId }, { selected: false });
                     });
                     selectedRegionId = null;
                 }
                 if (hoveredRegionId) {
+                    console.log(`Clearing hover for region: ${hoveredRegionId}`);
                     regionSources.forEach((regionSource) => {
                         map.setFeatureState({ source: regionSource, id: hoveredRegionId }, { hover: false });
                     });
                     hoveredRegionId = null;
                 }
-                lastAction = null; // Reset last action
             }
+            
 
-            // Select a region
+            //Select a region
             const selectRegion = (regionId) => {
                 if (regionId === selectedRegionId) {
                     // console.log(`Region ${regionId} already selected. Skipping.`);
@@ -1906,13 +1899,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 updateSidebarForRegion(regionId);
             };
 
-            // Update sidebar with selected region information
+            //Update sidebar with selected region information
             const updateSidebarForRegion = (regionId) => {
                 // console.log(`Updating sidebar for region: ${regionId}`);
                 const title = sidebar.querySelector('h2');
                 title.innerText = `Facilities in Region ${regionId}`;
 
-                // Add logic to populate facilities in the sidebar
+                //Add logic to populate facilities in the sidebar
                 const list = document.getElementById('hospital-list');
                 list.innerHTML = '';
 
@@ -1933,7 +1926,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             };
 
-            // Attach click interactions
+            //Attach click interactions
             map.on('click', layerId, (e) => {
                 const regionId = e.features[0].id;
 
@@ -1948,20 +1941,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
             });
 
-            // Sidebar Close Button. Attach clear interactions to sidebar close button
+            //Sidebar Close Button. Attach clear interactions to sidebar close button
             const closeSidebarButton = document.getElementById('close-sidebar');
-            // Ensure the listener is attached only once
+            //Ensure the listener is attached only once
             if (closeSidebarButton && !closeSidebarButton.hasAttribute('data-listener-attached')) {
                 closeSidebarButton.setAttribute('data-listener-attached', 'true');
                 closeSidebarButton.addEventListener('click', () => {
-                    // Clear region selection
+                    //Clear region selection
                     clearRegionSelection();
-                    // Hide the sidebar and update the view
+                    //Hide the sidebar and update the view
                     closeSidebar();
                 });
             }
 
-            // Fit-to-USA Button
+            //Fit-to-USA Button
             document.getElementById('fit-to-usa').addEventListener('click', () => {
                 sessionStartingView = {
                     center: map.getCenter(),
@@ -1978,7 +1971,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 ]);
             });
 
-            // Reset Button
+            //Reset Button
             document.getElementById('reset-view').addEventListener('click', () => {
                 sessionStartingView = {
                     center: map.getCenter(),
@@ -1999,7 +1992,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
 
-        //hide the sidebar and update the state of the map
+        //Hide the sidebar and update the state of the map
         function closeSidebar() {
             if (!sidebar) {
                 console.warn('Sidebar element not found.');
@@ -2008,7 +2001,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             sidebar.style.display = 'none';
 
-            // Deselect the feature state for all regions
+            //Deselect the feature state for all regions
             regionSources.forEach(sourceId => {
                 if (selectedStateId !== null) {
                     map.setFeatureState({ source: sourceId, id: selectedStateId }, { selected: false });
@@ -2017,7 +2010,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             selectedStateId = null;
 
-            // Determine the view to revert to based on the current region
+            //Determine the view to revert to based on the current region
             if (currentRegion && regions[currentRegion]) {
                 const { center, zoom, pitch } = regions[currentRegion];
                 map.flyTo({
@@ -2060,12 +2053,12 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        //drag-and-drop functionality for an element
-        // Variables for drag-and-drop
+        //Drag-and-drop functionality for an element
+        //Variables for drag-and-drop
         let isDragging = false;
         let startX, startY, initialLeft, initialTop;
 
-        // Function: Start Drag
+        //Function: Start Drag
         function startDrag(e) {
             isDragging = true;
             startX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -2075,17 +2068,17 @@ document.addEventListener("DOMContentLoaded", () => {
             initialLeft = rect.left;
             initialTop = rect.top;
 
-            // Apply styles for dragging
+            //Apply styles for dragging
             sidebar.classList.add('dragging');
 
-            // Add event listeners for dragging
+            //Add event listeners for dragging
             document.addEventListener('mousemove', handleDrag);
             document.addEventListener('mouseup', endDrag);
             document.addEventListener('touchmove', handleDrag, { passive: false });
             document.addEventListener('touchend', endDrag);
         }
 
-        // Function: Handle Drag
+        //Function: Handle Drag
         function handleDrag(e) {
             if (!isDragging) return;
 
@@ -2095,26 +2088,28 @@ document.addEventListener("DOMContentLoaded", () => {
             const dx = currentX - startX;
             const dy = currentY - startY;
 
-            // Update position of sidebar
+            //Update position of sidebar
             sidebar.style.left = `${Math.min(Math.max(0, initialLeft + dx), window.innerWidth - sidebar.offsetWidth)}px`;
             sidebar.style.top = `${Math.min(Math.max(0, initialTop + dy), window.innerHeight - sidebar.offsetHeight)}px`;
         }
 
-        // Function: End Drag
+        //Function: End Drag
         function endDrag() {
             isDragging = false;
             sidebar.classList.remove('dragging');
 
-            // Remove event listeners
+            //Remove event listeners
             document.removeEventListener('mousemove', handleDrag);
             document.removeEventListener('mouseup', endDrag);
             document.removeEventListener('touchmove', handleDrag);
             document.removeEventListener('touchend', endDrag);
         }
 
-        // Attach event listeners to header
+        //Attach event listeners to header
         sidebarHeader.addEventListener('mousedown', startDrag);
         sidebarHeader.addEventListener('touchstart', startDrag, { passive: false });
+        // Sidebar drag-and-drop with unified pointer event
+        sidebarHeader.addEventListener('pointerdown', startDrag);
 
     })
 });

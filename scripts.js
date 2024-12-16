@@ -56,11 +56,11 @@ export function displayErrorMessage(error, context = "An unexpected error occurr
     // const minimizeButton = document.getElementById("minimize-sidebar");
     const backToTopButton = document.getElementById('back-to-top-button');
 
- // Replace repeated DOM accesses with cached references
-if (mapContainer) mapContainer.style.display = 'none';
-if (sidebar) sidebar.style.display = 'none';
-if (backToTopButton) backToTopButton.style.display = 'block';
-if (buttonGroup) buttonGroup.style.display = 'none';
+    // Replace repeated DOM accesses with cached references
+    if (mapContainer) mapContainer.style.display = 'none';
+    if (sidebar) sidebar.style.display = 'none';
+    if (backToTopButton) backToTopButton.style.display = 'block';
+    if (buttonGroup) buttonGroup.style.display = 'none';
 
     //Display error page
     const errorPage = document.getElementById('error-page');
@@ -305,7 +305,7 @@ document.addEventListener("DOMContentLoaded", () => {
         toggleBackToTopButton();
     }, { passive: true });
 
- 
+
     //Error handling for missing elements
     if (!sidebar) {
         console.error("Sidebar element not found! Ensure the #hospital-list-sidebar ID is present in the HTML.");
@@ -1764,76 +1764,107 @@ document.addEventListener("DOMContentLoaded", () => {
 
         //This function captures the function's role in configuring hover, click, and selection interactions for regions.
         function addRegionInteractions(map, layerId, sourceId, regionsWithFacilities) {
-            // const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
             const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
 
             let hoverTimeout;
-            //Apply Hover
+            // Apply Hover Logic
             const applyHover = (regionId) => {
-                // if (!regionsWithFacilities.has(regionId)) return;
+                if (hoveredRegionId === regionId) return; // No change, exit early
+                // if (DEBUG_MODE) console.log(`Hover applied: Region ID ${regionId}`);
+
+                // Clear previous hover state if needed
                 if (hoveredRegionId && hoveredRegionId !== selectedRegionId) {
                     map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
                 }
+
+                // Update hoveredRegionId and reset isHoverCleared only if hover changes
                 hoveredRegionId = regionId;
                 if (hoveredRegionId !== selectedRegionId) {
+                    isHoverCleared = false; // Reset flag when a new hover is applied
                     map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: true });
+                    // if (DEBUG_MODE) console.log(`Hover state set for: Region ID ${hoveredRegionId}`);
                 }
             };
 
-            const interactionDelay = map.getZoom() > 6 ? 150 : 300;
+            // Force Clear All Hover States
+            let isHoverCleared = true;
+            const forceClearAllHoverStates = () => {
+                if (isHoverCleared) return;
+                // if (DEBUG_MODE) console.log(`Force clearing all hover states`);
+                regionSources.forEach((sourceId) => {
+                    map.querySourceFeatures(sourceId).forEach((feature) => {
+                        map.setFeatureState({ source: sourceId, id: feature.id }, { hover: false });
+                    });
+                });
+                hoveredRegionId = null;
+                isHoverCleared = true; 
+                // if (DEBUG_MODE) console.log(`All hover states cleared`);
+            };
 
-            //Throttled clear hover effect
             const clearHover = () => {
+                if (isHoverCleared || !hoveredRegionId) {
+                    // if (DEBUG_MODE) console.log(`Clear hover skipped: No hover to clear`);
+                    return;
+                }
+                // if (DEBUG_MODE) console.log(`Clear hover triggered`);
                 clearTimeout(hoverTimeout);
                 hoverTimeout = setTimeout(() => {
                     if (hoveredRegionId && hoveredRegionId !== selectedRegionId) {
+                        // if (DEBUG_MODE) console.log(`Clearing hover for: Region ID ${hoveredRegionId}`);
                         map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
                     }
-
-                    //Ensure no lingering hover states remain in rendered features
-                    map.queryRenderedFeatures({ layers: [layerId] }).forEach((feature) => {
-                        if (feature.id !== selectedRegionId) {
-                            map.setFeatureState({ source: sourceId, id: feature.id }, { hover: false });
-                        }
-                    });
-
-                    // console.log(`Cleared hover for region: ${hoveredRegionId}`);
-
-
-                    hoveredRegionId = null;
-                }, interactionDelay);
+                    forceClearAllHoverStates();
+                }, 300);
             };
 
-
             map.off(hoverEvent, layerId);
-            map.off('mouseleave', layerId);
             map.off('touchend', layerId);
 
-            //Attach hover and touch interactions
+            // Handle Map Interaction Events
+            const handleMapInteraction = debounce(() => {
+                // if (DEBUG_MODE) console.log(`Map interaction triggered`);
+                forceClearAllHoverStates();
+            }, 200);
+
+
+            map.on('moveend', handleMapInteraction);
+            map.on('zoomend', handleMapInteraction);
+
+            // Debounced Hover
+            const debounceHover = debounce((regionId) => {
+                if (regionId) applyHover(regionId);
+            }, 100);
+
+            // Attach hover interaction with debouncing
             map.on(hoverEvent, layerId, (e) => {
                 const regionId = e.features?.[0]?.id;
-                if (regionId) applyHover(regionId);
+                debounceHover(regionId);
             });
 
+            // Attach clear event for hover
             const clearEvent = isTouchDevice ? 'touchend' : 'mouseleave';
             map.on(clearEvent, layerId, clearHover);
 
+            // Debugging log for layer interaction
+            // if (DEBUG_MODE) console.log(`Adding region interactions for layer: ${layerId}`);
 
-            //Clear selection
             function clearRegionSelection() {
+                if (!hoveredRegionId && isHoverCleared && !selectedRegionId) return;
+                // console.log(`Clearing region selection`);
                 if (selectedRegionId) {
+                    // console.log(`Deselecting region: ${selectedRegionId}`);
                     regionSources.forEach((regionSource) => {
                         map.setFeatureState({ source: regionSource, id: selectedRegionId }, { selected: false });
                     });
                     selectedRegionId = null;
                 }
                 if (hoveredRegionId) {
+                    // console.log(`Clearing hover for region: ${hoveredRegionId}`);
                     regionSources.forEach((regionSource) => {
                         map.setFeatureState({ source: regionSource, id: hoveredRegionId }, { hover: false });
                     });
                     hoveredRegionId = null;
                 }
-                lastAction = null; // Reset last action
             }
 
             //Select a region
