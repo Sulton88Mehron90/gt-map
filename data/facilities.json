@@ -236,6 +236,20 @@
         "main_facility": false
     },
     {
+        "ehr_system": "Epic",
+        "hospital_name": "Baylor Scott & White Health",
+        "hospital_count": 52,
+        "location": "Texas",
+        "hospital_address": "Dallas, TX (Multiple Locations)",
+        "latitude": 31.9686,
+        "longitude": -99.9018,
+        "color": "#57fa7d",
+        "scale": 0.7,
+        "parent_company": "Baylor Scott & White Health",
+        "region_id": "TX",
+        "main_facility": false
+    },    
+    {
         "ehr_system": "Cerner-ITWorks",
         "hospital_name": "Einstein Medical Center Philadelphia",
         "hospital_count": 3,
