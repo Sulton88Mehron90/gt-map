@@ -598,7 +598,7 @@ document.addEventListener("DOMContentLoaded", () => {
         usa: 4.5,
         uk: 5,
         italy: 6,
-        aruba: 10,
+        aruba: 9,
         canada: 7,
         reset: 1,
         fitToUSA: 3,
@@ -618,7 +618,7 @@ document.addEventListener("DOMContentLoaded", () => {
             layers.forEach(layer => toggleVisibility([layer], action === 'visible' ? 'visible' : 'none'));
         });
     }
-
+    
     let lastZoomLevel = null;
 
     //Dynamic Sizing
@@ -638,7 +638,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         //Debug log (remove in production)
-        // console.log(`[DEBUG] Adjusted marker size: ${size}px at zoom level: ${zoomLevel}`);
+        console.log(`[DEBUG] Adjusted marker size: ${size}px at zoom level: ${zoomLevel}`);
     }
 
     //Event listener for zoom level changes
@@ -657,7 +657,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     lastAction === 'fitToUSA' ? regionZoomThresholds.fitToUSA :
                         regionZoomThresholds[currentRegion] || regionZoomThresholds.default || 4;
 
-            //const adjustedZoom = isMobile ? sessionStartingView.zoom - 1 : sessionStartingView.zoom;
             const adjustedZoom = sessionStartingView.zoom - (isMobile ? 1 : 0);
 
             const zoomLevel = Math.max(adjustedZoom, zoomThreshold);
@@ -989,7 +988,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //the initialization point for actions and event handlers that require the map to be fully loaded. 
     map.on('load', () => {
         showSpinner();
-        log('Map fully loaded', 'info');
+        // log('Map fully loaded', 'info');
         map.setFog({});
 
         setTimeout(() => map.resize(), 100); // Ensure proper map rendering
@@ -1059,7 +1058,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     markerZoomThreshold = 6;
                     break;
                 case 'aruba':
-                    markerZoomThreshold = 10;
+                    markerZoomThreshold = 9;
                     break;
                 case 'canada':
                     markerZoomThreshold = 7;
