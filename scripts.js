@@ -409,105 +409,105 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-// Populate the sidebar function.
-function populateSidebar(regionId, regionName, facilities) {
-    const list = document.getElementById('hospital-list');
-    if (!list) {
-        console.error("Sidebar list element not found.");
-        return;
-    }
-    list.innerHTML = '';
-
-    const title = sidebar.querySelector('h2');
-    if (title) {
-        title.innerHTML = `Facilities Using Goliath's Solutions in <span style="color: #ff8502;">${regionName}</span>`;
-    } else {
-        console.error("Sidebar title element not found.");
-    }
-
-    const existingCountDisplay = sidebar.querySelector('.count-display');
-    if (existingCountDisplay) {
-        existingCountDisplay.remove();
-    }
-
-    // Filter facilities by region
-    const regionHospitals = facilities.filter(hospital =>
-        hospital.location.includes(regionName) || hospital.region_id === regionId
-    );
-    if (regionHospitals.length === 0) {
-        console.warn(`No facilities found for region: ${regionName}`);
-    }
-
-    // Use a Map to group hospitals by parent_company
-    const uniqueHealthSystems = new Map();
-    let totalHospitalCount = 0;
-
-    regionHospitals.forEach(hospital => {
-        if (!hospital.hospital_name || !hospital.ehr_system) {
-            console.error("Invalid hospital data:", hospital);
+    // Populate the sidebar function.
+    function populateSidebar(regionId, regionName, facilities) {
+        const list = document.getElementById('hospital-list');
+        if (!list) {
+            console.error("Sidebar list element not found.");
             return;
         }
+        list.innerHTML = '';
 
-        const parentCompany = hospital.parent_company || hospital.hospital_name;
-
-        if (uniqueHealthSystems.has(parentCompany)) {
-            const existing = uniqueHealthSystems.get(parentCompany);
-            existing.hospital_count += hospital.hospital_count || 1;
+        const title = sidebar.querySelector('h2');
+        if (title) {
+            title.innerHTML = `Facilities Using Goliath's Solutions in <span style="color: #ff8502;">${regionName}</span>`;
         } else {
-            uniqueHealthSystems.set(parentCompany, {
-                ...hospital,
-                hospital_count: hospital.hospital_count || 1,
-            });
+            console.error("Sidebar title element not found.");
         }
 
-        totalHospitalCount += hospital.hospital_count || 1;
-    });
+        const existingCountDisplay = sidebar.querySelector('.count-display');
+        if (existingCountDisplay) {
+            existingCountDisplay.remove();
+        }
 
-    // Display total facility count in the sidebar
-    const countDisplay = document.createElement('p');
-    countDisplay.classList.add('count-display');
-    countDisplay.innerHTML = `Total Facilities: <span style="color: #ff8502;">${totalHospitalCount}</span>`;
-    countDisplay.style.fontWeight = 'bold';
-    countDisplay.style.color = '#FFFFFF';
-    countDisplay.style.marginTop = '10px';
-    list.before(countDisplay);
+        // Filter facilities by region
+        const regionHospitals = facilities.filter(hospital =>
+            hospital.location.includes(regionName) || hospital.region_id === regionId
+        );
+        if (regionHospitals.length === 0) {
+            console.warn(`No facilities found for region: ${regionName}`);
+        }
 
-    // Populate the sidebar with one hospital per health system
-    uniqueHealthSystems.forEach(hospital => {
-        const listItem = document.createElement('li');
-        listItem.style.marginBottom = '10px';
+        // Use a Map to group hospitals by parent_company
+        const uniqueHealthSystems = new Map();
+        let totalHospitalCount = 0;
 
-   let ehrLogo = '';
-switch (hospital.ehr_system) {
-    case 'Cerner':
-    case 'Cerner-ITWorks':
-        ehrLogo = `
+        regionHospitals.forEach(hospital => {
+            if (!hospital.hospital_name || !hospital.ehr_system) {
+                console.error("Invalid hospital data:", hospital);
+                return;
+            }
+
+            const parentCompany = hospital.parent_company || hospital.hospital_name;
+
+            if (uniqueHealthSystems.has(parentCompany)) {
+                const existing = uniqueHealthSystems.get(parentCompany);
+                existing.hospital_count += hospital.hospital_count || 1;
+            } else {
+                uniqueHealthSystems.set(parentCompany, {
+                    ...hospital,
+                    hospital_count: hospital.hospital_count || 1,
+                });
+            }
+
+            totalHospitalCount += hospital.hospital_count || 1;
+        });
+
+        // Display total facility count in the sidebar
+        const countDisplay = document.createElement('p');
+        countDisplay.classList.add('count-display');
+        countDisplay.innerHTML = `Total Facilities: <span style="color: #ff8502;">${totalHospitalCount}</span>`;
+        countDisplay.style.fontWeight = 'bold';
+        countDisplay.style.color = '#FFFFFF';
+        countDisplay.style.marginTop = '10px';
+        list.before(countDisplay);
+
+        // Populate the sidebar with one hospital per health system
+        uniqueHealthSystems.forEach(hospital => {
+            const listItem = document.createElement('li');
+            listItem.style.marginBottom = '10px';
+
+            let ehrLogo = '';
+            switch (hospital.ehr_system) {
+                case 'Cerner':
+                case 'Cerner-ITWorks':
+                    ehrLogo = `
             <a href="https://www.oracle.com/corporate/acquisitions/cerner/" target="_blank" aria-label="Visit Cerner website">
                 <img src="./img/cerner-logo.png" alt="Cerner logo" 
                      style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%; cursor: pointer;">
             </a>`;
-        break;
-    case 'Epic':
-        ehrLogo = `
+                    break;
+                case 'Epic':
+                    ehrLogo = `
             <a href="https://www.epic.com/" target="_blank" aria-label="Visit Epic website">
                 <img src="./img/epic-logo.png" alt="Epic logo" 
                      style="width: 20px; height: 18px; vertical-align: middle; margin-right: 5px; cursor: pointer;">
             </a>`;
-        break;
-    case 'Meditech':
-        ehrLogo = `
+                    break;
+                case 'Meditech':
+                    ehrLogo = `
             <a href="https://ehr.meditech.com/" target="_blank" aria-label="Visit Meditech website">
                 <img src="./img/meditech-logo.png" alt="Meditech logo" 
                      style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%; cursor: pointer;">
             </a>`;
-        break;
-    default:
-        ehrLogo = 'Not Available';
-        break;
-}
-        
+                    break;
+                default:
+                    ehrLogo = 'Not Available';
+                    break;
+            }
 
-        listItem.innerHTML = `
+
+            listItem.innerHTML = `
             <i class="fas fa-hospital"></i> 
             <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
                 ${hospital.hospital_name}
@@ -539,50 +539,50 @@ switch (hospital.ehr_system) {
             </div>
         `;
 
-        const moreInfoBtn = listItem.querySelector('.more-info-btn');
-        const additionalInfoDiv = listItem.querySelector('.additional-info');
+            const moreInfoBtn = listItem.querySelector('.more-info-btn');
+            const additionalInfoDiv = listItem.querySelector('.additional-info');
 
-        moreInfoBtn.addEventListener('click', () => {
-            if (additionalInfoDiv.style.display === 'none') {
-                additionalInfoDiv.style.display = 'block';
-                moreInfoBtn.querySelector('i').classList.remove('fa-info-circle');
-                moreInfoBtn.querySelector('i').classList.add('fa-minus-circle');
-            } else {
-                additionalInfoDiv.style.display = 'none';
-                moreInfoBtn.querySelector('i').classList.remove('fa-minus-circle');
-                moreInfoBtn.querySelector('i').classList.add('fa-info-circle');
-            }
-        });
-
-        listItem.querySelector('.clickable-hospital').addEventListener('click', () => {
-            sessionStartingView = {
-                center: map.getCenter(),
-                zoom: map.getZoom(),
-                pitch: map.getPitch(),
-                bearing: map.getBearing(),
-            };
-
-            map.flyTo({
-                center: [hospital.longitude, hospital.latitude],
-                zoom: 12,
-                pitch: 45,
-                bearing: 0,
-                duration: 1000,
-                easing: (t) => t * (2 - t),
+            moreInfoBtn.addEventListener('click', () => {
+                if (additionalInfoDiv.style.display === 'none') {
+                    additionalInfoDiv.style.display = 'block';
+                    moreInfoBtn.querySelector('i').classList.remove('fa-info-circle');
+                    moreInfoBtn.querySelector('i').classList.add('fa-minus-circle');
+                } else {
+                    additionalInfoDiv.style.display = 'none';
+                    moreInfoBtn.querySelector('i').classList.remove('fa-minus-circle');
+                    moreInfoBtn.querySelector('i').classList.add('fa-info-circle');
+                }
             });
 
-            backButton.style.display = 'block';
-            gtLogo.style.display = 'none';
+            listItem.querySelector('.clickable-hospital').addEventListener('click', () => {
+                sessionStartingView = {
+                    center: map.getCenter(),
+                    zoom: map.getZoom(),
+                    pitch: map.getPitch(),
+                    bearing: map.getBearing(),
+                };
+
+                map.flyTo({
+                    center: [hospital.longitude, hospital.latitude],
+                    zoom: 12,
+                    pitch: 45,
+                    bearing: 0,
+                    duration: 1000,
+                    easing: (t) => t * (2 - t),
+                });
+
+                backButton.style.display = 'block';
+                gtLogo.style.display = 'none';
+            });
+
+            list.appendChild(listItem);
         });
 
-        list.appendChild(listItem);
-    });
+        sidebar.style.display = uniqueHealthSystems.size > 0 ? 'block' : 'none';
+        adjustSidebarHeight();
+    }
 
-    sidebar.style.display = uniqueHealthSystems.size > 0 ? 'block' : 'none';
-    adjustSidebarHeight();
-}
-
-function createCustomMarker(lng, lat, popupContent, regionId) {
+    function createCustomMarker(lng, lat, popupContent, regionId) {
         //Create a custom marker element
         const markerElement = document.createElement('div');
         markerElement.className = 'custom-marker company-logo sidebar-logo';
@@ -680,7 +680,7 @@ function createCustomMarker(lng, lat, popupContent, regionId) {
             layers.forEach(layer => toggleVisibility([layer], action === 'visible' ? 'visible' : 'none'));
         });
     }
-    
+
     let lastZoomLevel = null;
 
     //Dynamic Sizing
@@ -1776,32 +1776,32 @@ function createCustomMarker(lng, lat, popupContent, regionId) {
                             const listItem = document.createElement('li');
                             let ehrLogo;
                             switch (facility.ehr_system) {
-    case 'Cerner':
-    case 'Cerner-ITWorks':
-        ehrLogo = `
+                                case 'Cerner':
+                                case 'Cerner-ITWorks':
+                                    ehrLogo = `
             <a href="https://www.oracle.com/corporate/acquisitions/cerner/" target="_blank" aria-label="Visit Cerner website">
                 <img src="./img/cerner-logo.png" alt="Cerner logo" 
                      style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%; cursor: pointer;">
             </a>`;
-        break;
-    case 'Epic':
-        ehrLogo = `
+                                    break;
+                                case 'Epic':
+                                    ehrLogo = `
             <a href="https://www.epic.com/" target="_blank" aria-label="Visit Epic website">
                 <img src="./img/epic-logo.png" alt="Epic logo" 
                      style="width: 20px; height: 18px; vertical-align: middle; margin-right: 5px; cursor: pointer;">
             </a>`;
-        break;
-    case 'Meditech':
-        ehrLogo = `
+                                    break;
+                                case 'Meditech':
+                                    ehrLogo = `
             <a href="https://ehr.meditech.com/" target="_blank" aria-label="Visit Meditech website">
                 <img src="./img/meditech-logo.png" alt="Meditech logo" 
                      style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%; cursor: pointer;">
             </a>`;
-        break;
-    default:
-        ehrLogo = '';
-        break;
-}
+                                    break;
+                                default:
+                                    ehrLogo = '';
+                                    break;
+                            }
 
 
                             listItem.innerHTML = `
@@ -1873,7 +1873,7 @@ function createCustomMarker(lng, lat, popupContent, regionId) {
                     });
                 });
                 hoveredRegionId = null;
-                isHoverCleared = true; 
+                isHoverCleared = true;
                 // if (DEBUG_MODE) console.log(`All hover states cleared`);
             };
 

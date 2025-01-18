@@ -218,7 +218,9 @@ button:hover {
     background-color: #0f2844;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
@@ -257,7 +259,7 @@ button:hover {
 
 #hospital-list-sidebar::-webkit-scrollbar {
     width: 8px;
-    margin-right: 2px; 
+    margin-right: 2px;
 }
 
 #hospital-list-sidebar::-webkit-scrollbar-thumb {
@@ -279,7 +281,7 @@ button:hover {
 }
 
 *::-webkit-scrollbar-thumb {
-    background: #ff8502; 
+    background: #ff8502;
     border-radius: 10px;
 }
 
@@ -431,36 +433,34 @@ button:hover {
 
 /* Modernize the "More Info" button to match sidebar buttons */
 .more-info-btn {
-    background-color: #333; /* Matches the sidebar button color */
+    background-color: #333;
     color: #fff;
-    border-radius: 50%; /* Rounded like other buttons */
-    width: 20px; /* Same size as sidebar buttons */
+    border-radius: 50%;
+    width: 20px;
     height: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Similar shadow effect */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     transition: background-color 0.3s ease, transform 0.3s ease;
     border: none;
-    margin: 0; /* Aligns visually with other buttons */
+    margin: 0;
 }
 
 .more-info-btn:hover {
-    background-color: #555; /* Hover effect to match other buttons */
-    transform: scale(1.1); /* Slight scale on hover */
+    background-color: #555;
+    transform: scale(1.1);
 }
 
 .more-info-btn:focus {
     outline: none;
-    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5); /* Accessible focus indicator */
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
 }
 
 .more-info-btn i {
-    font-size: 12px; /* Matches icon size of other buttons */
+    font-size: 12px;
 }
-
-
 
 .button-group {
     display: flex;
@@ -1098,13 +1098,14 @@ button:hover {
         background-color: #e57300;
         transform: scale(1.1);
     }
+
     #hospital-list-sidebar::-webkit-scrollbar {
         width: 6px;
     }
 
     #hospital-list-sidebar::-webkit-scrollbar-thumb {
         background: #ff8502;
-        border-radius: 8px; 
+        border-radius: 8px;
     }
 
     #hospital-list-sidebar::-webkit-scrollbar-thumb:hover {

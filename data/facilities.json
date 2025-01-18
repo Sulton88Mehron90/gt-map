@@ -14,7 +14,23 @@
         "main_facility": false,
         "parent_company_website": "https://www.adventisthealth.org",
         "hospital_website": "https://www.adventisthealth.org/clear-lake/"
-    },    
+    }, 
+    {
+        "ehr_system": "Cerner",
+        "hospital_name": "Antelope Valley Medical Center",
+        "hospital_count": 1,
+        "location": "Lancaster, CA",
+        "hospital_address": "1600 W Avenue J, Lancaster, CA 93534",
+        "latitude": 34.6868,
+        "longitude": -118.1542,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Antelope Valley Healthcare District",
+        "region_id": "CA",
+        "main_facility": false,
+        "hospital_website": "https://www.avmc.org/",
+    "parent_company_website": "https://www.avmc.org/about-us/antelope-valley-healthcare-district/"
+    },   
     {
         "ehr_system": "Cerner",
         "hospital_name": "AtlantiCare Regional Medical Center - Mainland Campus",
