@@ -11,8 +11,10 @@
         "scale": 0.6,
         "parent_company": "Adventist Health",
         "region_id": "CA",
-        "main_facility": false
-    },
+        "main_facility": false,
+        "parent_company_website": "https://www.adventisthealth.org",
+        "hospital_website": "https://www.adventisthealth.org/clear-lake/"
+    }, 
     {
         "ehr_system": "Cerner",
         "hospital_name": "Antelope Valley Medical Center",
@@ -25,8 +27,10 @@
         "scale": 0.6,
         "parent_company": "Antelope Valley Healthcare District",
         "region_id": "CA",
-        "main_facility": false
-    },
+        "main_facility": false,
+        "hospital_website": "https://www.avmc.org/",
+    "parent_company_website": "https://www.avmc.org/about-us/antelope-valley-healthcare-district/"
+    },   
     {
         "ehr_system": "Cerner",
         "hospital_name": "AtlantiCare Regional Medical Center - Mainland Campus",
@@ -37,7 +41,9 @@
         "longitude": -74.5328,
         "parent_company": "AtlantiCare",
         "region_id": "NJ",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.atlanticare.org",
+        "hospital_website": "https://www.atlanticare.org/locations/atlanticare-regional-medical-center-mainland-campus"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -51,7 +57,9 @@
         "scale": 0.6,
         "parent_company": "Beloit Health System",
         "region_id": "WI",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.beloithealthsystem.org",
+        "hospital_website": "https://www.beloithealthsystem.org/beloit-memorial-hospital"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -65,7 +73,9 @@
         "scale": 0.6,
         "parent_company": "Central Maine Healthcare",
         "region_id": "ME",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.cmhc.org",
+        "hospital_website": "https://www.cmhc.org/central-maine-medical-center"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -79,7 +89,9 @@
         "scale": 0.6,
         "parent_company": "Central Maine Healthcare",
         "region_id": "ME",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.cmhc.org",
+        "hospital_website": "https://www.cmhc.org/bridgton-hospital"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -93,7 +105,9 @@
         "scale": 0.6,
         "parent_company": "Central Maine Healthcare",
         "region_id": "ME",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.cmhc.org",
+        "hospital_website": "https://www.cmhc.org/rumford-hospital"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -107,7 +121,9 @@
         "scale": 0.6,
         "parent_company": "Baptist Health South Florida",
         "region_id": "FL",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://baptisthealth.net",
+        "hospital_website": "https://baptisthealth.net/en/facilities/baptist-hospital"
     },
     {
         "ehr_system": "Cerner",
@@ -121,7 +137,9 @@
         "scale": 0.6,
         "parent_company": "CGH Medical Center",
         "main_facility": false,
-        "region_id": "IL"
+        "region_id": "IL",
+        "parent_company_website": "https://www.cghmc.com",
+        "hospital_website": "https://www.cghmc.com"
     },
     {
         "ehr_system": "Cerner",
@@ -135,7 +153,9 @@
         "scale": 0.6,
         "parent_company": "Cherokee Nation Health Services",
         "region_id": "OK",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://health.cherokee.org",
+        "hospital_website": "https://health.cherokee.org"
     },
     {
         "ehr_system": "Cerner",
@@ -149,7 +169,9 @@
         "scale": 0.6,
         "parent_company": "Cherokee Nation Health Services",
         "region_id": "OK",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://health.cherokee.org",
+        "hospital_website": "https://health.cherokee.org"
     },
     {
         "ehr_system": "Cerner",
@@ -163,7 +185,9 @@
         "scale": 0.6,
         "parent_company": "Cherokee Nation Health Services",
         "region_id": "OK",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://health.cherokee.org",
+        "hospital_website": "https://health.cherokee.org"
     },
     {
         "ehr_system": "Cerner",
@@ -175,9 +199,11 @@
         "longitude": -77.0146,
         "color": "#57fa7d",
         "scale": 0.6,
-        "parent_company": "Children's National Medical Center ",
+        "parent_company": "Children's National Medical Center",
         "region_id": "DC",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://childrensnational.org",
+        "hospital_website": "https://childrensnational.org/visit/locations-and-directions/main-hospital"
     },
     {
         "ehr_system": "Cerner",
@@ -191,7 +217,9 @@
         "scale": 0.6,
         "parent_company": "CommonSpirit Health",
         "region_id": "IL",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.commonspirit.org",
+        "hospital_website": "https://www.commonspirit.org/locations/chicago-headquarters"
     },
     {
         "ehr_system": "Cerner",
@@ -205,7 +233,9 @@
         "scale": 0.6,
         "parent_company": "Covenant Health",
         "region_id": "TN",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.covenanthealth.com",
+        "hospital_website": "https://www.fsregional.com"
     },
     {
         "ehr_system": "Cerner",
@@ -219,7 +249,9 @@
         "scale": 0.6,
         "parent_company": "Children's Hospital Los Angeles",
         "region_id": "CA",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.chla.org",
+        "hospital_website": "https://www.chla.org"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -233,7 +265,9 @@
         "scale": 0.6,
         "parent_company": "Ector County Hospital District",
         "region_id": "TX",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.mchodessa.com",
+        "hospital_website": "https://www.mchodessa.com"
     },
     {
         "ehr_system": "Epic",
@@ -247,8 +281,10 @@
         "scale": 0.7,
         "parent_company": "Baylor Scott & White Health",
         "region_id": "TX",
-        "main_facility": false
-    },    
+        "main_facility": false,
+        "parent_company_website": "https://www.bswhealth.com",
+        "hospital_website": "https://www.bswhealth.com"
+    },
     {
         "ehr_system": "Cerner-ITWorks",
         "hospital_name": "Einstein Medical Center Philadelphia",
@@ -261,7 +297,9 @@
         "scale": 0.6,
         "parent_company": "Einstein Healthcare Network",
         "region_id": "PA",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.einstein.edu",
+        "hospital_website": "https://www.einstein.edu/locations/einstein-medical-center-philadelphia"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -275,7 +313,9 @@
         "scale": 0.6,
         "parent_company": "Fort HealthCare, Inc.",
         "region_id": "WI",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.forthealthcare.com",
+        "hospital_website": "https://www.forthealthcare.com"
     },
     {
         "ehr_system": "Meditech",
@@ -289,7 +329,9 @@
         "scale": 0.6,
         "parent_company": "Harnett Health",
         "region_id": "NC",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.harnetthealth.org",
+        "hospital_website": "https://www.harnetthealth.org/betsy-johnson-hospital"
     },
     {
         "ehr_system": "Cerner",
@@ -303,7 +345,9 @@
         "scale": 0.6,
         "parent_company": "Southwell Health",
         "region_id": "GA",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.southwellhealth.org",
+        "hospital_website": "https://www.mysouthwell.com/tift-regional-medical-center"
     },
     {
         "ehr_system": "Meditech",
@@ -317,7 +361,9 @@
         "scale": 0.6,
         "parent_company": "Esse Health",
         "region_id": "MO",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.essehealth.com",
+        "hospital_website": "https://www.essehealth.com"
     },
     {
         "ehr_system": "Meditech",
@@ -331,7 +377,9 @@
         "scale": 0.6,
         "parent_company": "University of Louisville",
         "region_id": "KY",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://louisville.edu",
+        "hospital_website": "https://louisville.edu/dentistry"
     },
     {
         "ehr_system": "Meditech",
@@ -345,7 +393,9 @@
         "scale": 0.6,
         "parent_company": "State of California",
         "region_id": "CA",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.ca.gov",
+        "hospital_website": "https://www.cdph.ca.gov"
     },
     {
         "ehr_system": "Meditech",
@@ -359,7 +409,9 @@
         "scale": 0.6,
         "parent_company": "Exeter Health Resources",
         "region_id": "NH",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.exeterhealthresources.org",
+        "hospital_website": "https://www.exeterhospital.com"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -373,7 +425,9 @@
         "scale": 0.6,
         "parent_company": "Glens Falls Health Systems",
         "region_id": "NY",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.glensfallshealth.org",
+        "hospital_website": "https://www.glensfallshospital.org"
     },
     {
         "ehr_system": "Cerner",
@@ -387,7 +441,9 @@
         "scale": 0.6,
         "parent_company": "Intermountain Health",
         "region_id": "UT",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://intermountainhealthcare.org",
+        "hospital_website": "https://intermountainhealthcare.org/locations/intermountain-medical-center"
     },
     {
         "ehr_system": "Cerner",
@@ -401,7 +457,9 @@
         "scale": 0.6,
         "parent_company": "Inspira Health Network",
         "region_id": "NJ",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.inspirahealthnetwork.org",
+        "hospital_website": "https://www.inspirahealthnetwork.org/locations/inspira-medical-center-mullica-hill"
     },
     {
         "ehr_system": "Cerner",
@@ -415,7 +473,9 @@
         "scale": 0.6,
         "parent_company": "Kaweah Health",
         "main_facility": false,
-        "region_id": "CA"
+        "region_id": "CA",
+        "parent_company_website": "https://www.kaweahhealth.org",
+        "hospital_website": "https://www.kaweahhealth.org/locations/kaweah-health-medical-center/"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -429,7 +489,9 @@
         "scale": 0.6,
         "parent_company": "Mason Health",
         "main_facility": false,
-         "region_id": "WA"
+        "region_id": "WA",
+        "parent_company_website": "https://www.masonhealth.org",
+        "hospital_website": "https://www.masonhealth.org/services/mason-general-hospital/"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -443,7 +505,9 @@
         "scale": 0.6,
         "parent_company": "MU Health System",
         "region_id": "MO",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.muhealth.org",
+        "hospital_website": "https://www.muhealth.org/locations/university-hospital"
     },
     {
         "ehr_system": "Cerner",
@@ -457,7 +521,9 @@
         "scale": 0.6,
         "parent_company": "NorthBay HealthCare",
         "region_id": "CA",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.northbay.org",
+        "hospital_website": "https://www.northbay.org/About/NorthBay-Administration.cfm"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -471,7 +537,9 @@
         "scale": 0.6,
         "parent_company": "Palomar Health",
         "region_id": "CA",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.palomarhealth.org",
+        "hospital_website": "https://www.palomarhealth.org/locations/palomar-medical-center-escondido"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -485,7 +553,9 @@
         "scale": 0.6,
         "parent_company": "Rutland Regional Health Services",
         "region_id": "VT",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.rrmc.org",
+        "hospital_website": "https://www.rrmc.org/locations/rutland-regional-medical-center"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -499,7 +569,9 @@
         "scale": 0.6,
         "parent_company": "San Juan Regional Medical Center",
         "region_id": "NM",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.sanjuanregional.com",
+        "hospital_website": "https://www.sanjuanregional.com/locations/san-juan-regional-medical-center"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -513,7 +585,9 @@
         "scale": 0.6,
         "parent_company": "San Juan Regional Medical Center",
         "region_id": "NM",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.sanjuanregional.com",
+        "hospital_website": "https://www.sanjuanregional.com/services/heart-center"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -527,7 +601,9 @@
         "scale": 0.6,
         "parent_company": "Southwest General Health System",
         "region_id": "OH",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.swgeneral.com",
+        "hospital_website": "https://www.swgeneral.com"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -541,7 +617,9 @@
         "scale": 0.6,
         "parent_company": "University Health",
         "region_id": "MO",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.universityhealthkc.org",
+        "hospital_website": "https://www.universityhealthkc.org/locations/truman-medical-center-health-sciences-district/"
     },
     {
         "ehr_system": "Cerner",
@@ -555,7 +633,9 @@
         "scale": 0.6,
         "parent_company": "Maimonides Health",
         "region_id": "NY",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://maimo.org",
+        "hospital_website": "https://maimo.org/location/maimonides-medical-center/"
     },
     {
         "ehr_system": "Cerner",
@@ -569,7 +649,9 @@
         "scale": 0.6,
         "parent_company": "Universal Health Services",
         "region_id": "DC",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.uhs.com",
+        "hospital_website": "https://www.gwhospital.com"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -583,7 +665,9 @@
         "scale": 0.6,
         "parent_company": "Weirton Medical Center",
         "region_id": "WV",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.weirtonmedical.com",
+        "hospital_website": "https://www.weirtonmedical.com"
     },
     {
         "ehr_system": "Cerner",
@@ -597,7 +681,9 @@
         "scale": 0.6,
         "parent_company": "Westchester Medical Center Health Network (WMCHealth)",
         "region_id": "NY",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.wmchealth.org",
+        "hospital_website": "https://www.westchestermedicalcenter.org"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -611,7 +697,9 @@
         "scale": 0.6,
         "parent_company": "Western Missouri Medical Center",
         "region_id": "MO",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.wmmc.com",
+        "hospital_website": "https://www.wmmc.com"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -625,7 +713,9 @@
         "scale": 0.6,
         "parent_company": "Winona Health",
         "region_id": "MN",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.winonahealth.org",
+        "hospital_website": "https://www.winonahealth.org"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -639,7 +729,9 @@
         "scale": 0.6,
         "parent_company": "Dignity Health",
         "region_id": "AZ",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.dignityhealth.org",
+        "hospital_website": "https://www.dignityhealth.org/arizona/locations/yrmc"
     },
     {
         "ehr_system": "Epic",
@@ -653,7 +745,9 @@
         "scale": 0.6,
         "parent_company": "Ascension Via Christi Health System",
         "region_id": "KS",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.ascension.org/locations/kansas/kswic/wichita-ascension-via-christi-st-francis",
+        "hospital_website": "https://www.ascension.org/locations/kansas/kswic/wichita-ascension-via-christi-st-francis"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -667,7 +761,9 @@
         "scale": 0.6,
         "parent_company": "Genesis Health System",
         "region_id": "IL",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.genesishealth.com/",
+        "hospital_website": "https://www.genesishealth.com/locations/genesismedicalcentersilvis/"
     },
     {
         "ehr_system": "Cerner-ITWorks",
@@ -681,7 +777,9 @@
         "scale": 0.6,
         "parent_company": "Genesis Health System",
         "region_id": "IA",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.genesishealth.com/",
+        "hospital_website": "https://www.genesishealth.com/locations/healthplex-bettendorf/"
     },
     {
         "ehr_system": "Cerner",
@@ -695,7 +793,9 @@
         "scale": 0.6,
         "parent_company": "Rogers Behavioral Health",
         "region_id": "WI",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://rogersbh.org/",
+        "hospital_website": "https://rogersbh.org/locations/oconomowoc"
     },
     {
         "ehr_system": "Cerner",
@@ -709,7 +809,9 @@
         "scale": 0.6,
         "parent_company": "MaineHealth",
         "region_id": "ME",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://mainehealth.org/",
+        "hospital_website": "https://mainehealth.org/maine-medical-center"
     },
     {
         "ehr_system": "Cerner",
@@ -723,7 +825,9 @@
         "scale": 0.6,
         "parent_company": "Ventura County Health Care Agency",
         "region_id": "CA",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.vchca.org/",
+        "hospital_website": "https://www.vchca.org/ventura-county-medical-center"
     },
     {
         "ehr_system": "Cerner",
@@ -737,7 +841,9 @@
         "scale": 0.6,
         "parent_company": "Marshfield Clinic Health System",
         "region_id": "WI",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.marshfieldclinic.org/",
+        "hospital_website": "https://www.marshfieldclinic.org/locations/Marshfield-Medical-Center"
     },
     {
         "ehr_system": "Epic",
@@ -751,7 +857,9 @@
         "scale": 0.6,
         "parent_company": "Evangelical Community Hospital",
         "region_id": "PA",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.evanhospital.com/",
+        "hospital_website": "https://www.evanhospital.com/"
     },
     {
         "ehr_system": "Epic",
@@ -765,7 +873,9 @@
         "scale": 0.6,
         "parent_company": "Children's Hospital Colorado",
         "region_id": "CO",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.childrenscolorado.org/",
+        "hospital_website": "https://www.childrenscolorado.org/locations/anschutz-medical-campus/"
     },
     {
         "ehr_system": "Epic",
@@ -779,7 +889,9 @@
         "scale": 0.6,
         "parent_company": "Olmsted Medical Center",
         "region_id": "MN",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.olmmed.org/",
+        "hospital_website": "https://www.olmmed.org/locations/main-campus/"
     },
     {
         "ehr_system": "Epic",
@@ -793,7 +905,9 @@
         "scale": 0.6,
         "parent_company": "Licking Memorial Health Systems",
         "region_id": "OH",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.lmhealth.org/",
+        "hospital_website": "https://www.lmhealth.org/"
     },
     {
         "ehr_system": "Epic",
@@ -807,7 +921,9 @@
         "scale": 0.6,
         "parent_company": "The University of Kansas Health System",
         "region_id": "KS",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.kansashealthsystem.com/",
+        "hospital_website": "https://www.kansashealthsystem.com/"
     },
     {
         "ehr_system": "Epic",
@@ -821,7 +937,9 @@
         "scale": 0.6,
         "parent_company": "Liberty Hospital",
         "region_id": "MO",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.libertyhospital.org/",
+        "hospital_website": "https://www.libertyhospital.org/"
     },
     {
         "ehr_system": "Epic",
@@ -835,7 +953,9 @@
         "scale": 0.6,
         "parent_company": "University of Mississippi Medical Center",
         "region_id": "MS",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.umc.edu/",
+        "hospital_website": "https://www.umc.edu/"
     },
     {
         "ehr_system": "Epic",
@@ -849,7 +969,9 @@
         "scale": 0.6,
         "parent_company": "Children's Wisconsin",
         "region_id": "WI",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://childrenswi.org/",
+        "hospital_website": "https://childrenswi.org/"
     },
     {
         "ehr_system": "Epic",
@@ -863,7 +985,9 @@
         "scale": 0.6,
         "parent_company": "Centura Health",
         "region_id": "CO",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.centura.org/",
+        "hospital_website": "https://www.centura.org/"
     },
     {
         "ehr_system": "Epic",
@@ -877,7 +1001,9 @@
         "scale": 0.6,
         "parent_company": "Reid Health",
         "region_id": "IN",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.reidhealth.org/",
+        "hospital_website": "https://www.reidhealth.org/"
     },
     {
         "ehr_system": "Epic",
@@ -891,7 +1017,9 @@
         "scale": 0.6,
         "parent_company": "Reid Health",
         "region_id": "OH",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.reidhealth.org/",
+        "hospital_website": "https://www.reidhealth.org/locations/eaton"
     },
     {
         "ehr_system": "Epic",
@@ -905,7 +1033,9 @@
         "scale": 0.6,
         "parent_company": "Monroe Clinic",
         "region_id": "WI",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.monroeclinic.org/",
+        "hospital_website": "https://www.monroeclinic.org/locations/monroe-clinic-hospital"
     },
     {
         "ehr_system": "Epic",
@@ -919,7 +1049,9 @@
         "scale": 0.6,
         "parent_company": "West Tennessee Healthcare",
         "region_id": "TN",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.wth.org/",
+        "hospital_website": "https://www.wth.org/locations/jackson-madison-county-general-hospital/"
     },
     {
         "ehr_system": "Epic",
@@ -933,7 +1065,9 @@
         "scale": 0.6,
         "parent_company": "Catholic Medical Center",
         "region_id": "NH",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.catholicmedicalcenter.org/",
+        "hospital_website": "https://www.catholicmedicalcenter.org/locations/catholic-medical-center"
     },
     {
         "ehr_system": "Epic",
@@ -947,7 +1081,9 @@
         "scale": 0.6,
         "parent_company": "St. Luke's Health System",
         "region_id": "ID",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.stlukesonline.org/",
+        "hospital_website": "https://www.stlukesonline.org/health-services/locations/boise/st-lukes-boise-medical-center"
     },
     {
         "ehr_system": "Epic",
@@ -961,7 +1097,9 @@
         "scale": 0.6,
         "parent_company": "Hackensack Meridian Health",
         "region_id": "NJ",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.hackensackmeridianhealth.org/",
+        "hospital_website": "https://www.hackensackmeridianhealth.org/en/Locations/Hackensack-University-Medical-Center"
     },
     {
         "ehr_system": "Cerner",
@@ -975,7 +1113,9 @@
         "scale": 0.6,
         "parent_company": "Mount Nittany Health",
         "region_id": "PA",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.mountnittany.org/",
+        "hospital_website": "https://www.mountnittany.org/locations/medical-center"
     },
     {
         "ehr_system": "Cerner",
@@ -989,7 +1129,9 @@
         "scale": 0.6,
         "parent_company": "National Surgical Hospitals",
         "region_id": "AL",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.nshinc.com/",
+        "hospital_website": "https://www.brookwoodbaptisthealth.com/"
     },
     {
         "ehr_system": "Epic",
@@ -1003,7 +1145,9 @@
         "scale": 0.6,
         "parent_company": "New Hanover Regional Medical Center",
         "region_id": "NC",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.nhrmc.org/",
+        "hospital_website": "https://www.nhrmc.org/locations/new-hanover-regional-medical-center"
     },
     {
         "ehr_system": "",
@@ -1017,7 +1161,8 @@
         "scale": 0.6,
         "parent_company": "New Jersey Hospital Association",
         "region_id": "NJ",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.njha.com/"
     },
     {
         "ehr_system": "Epic",
@@ -1031,7 +1176,9 @@
         "scale": 0.6,
         "parent_company": "University of Oklahoma Health Sciences Center",
         "region_id": "OK",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.ouhsc.edu/",
+        "hospital_website": "https://medicine.ouhsc.edu/Departments/Family-Medicine/OU-Physicians-Clinic"
     },
     {
         "ehr_system": "Epic",
@@ -1045,7 +1192,9 @@
         "scale": 0.6,
         "parent_company": "Palmetto Primary Care Physicians",
         "region_id": "SC",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.palmettoprimarycare.com/",
+        "hospital_website": "https://www.palmettoprimarycare.com/"
     },
     {
         "ehr_system": "Cerner",
@@ -1059,7 +1208,9 @@
         "scale": 0.6,
         "parent_company": "Regional Health",
         "region_id": "SD",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://regionalhealth.org/",
+        "hospital_website": "https://www.monument.health/"
     },
     {
         "ehr_system": "Meditech",
@@ -1073,7 +1224,9 @@
         "scale": 0.6,
         "parent_company": "Roane General Hospital",
         "region_id": "WV",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.roanegeneralhospital.com/",
+        "hospital_website": "https://www.roanegeneralhospital.com/"
     },
     {
         "ehr_system": "Cerner",
@@ -1087,7 +1240,9 @@
         "scale": 0.6,
         "parent_company": "Roswell Park Comprehensive Cancer Center",
         "region_id": "NY",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.roswellpark.org/",
+        "hospital_website": "https://www.roswellpark.org/"
     },
     {
         "ehr_system": "Epic",
@@ -1101,7 +1256,9 @@
         "scale": 0.6,
         "parent_company": "SouthCoast Health",
         "region_id": "GA",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.southcoasthealth.com/",
+        "hospital_website": "https://www.southcoasthealth.com/"
     },
     {
         "ehr_system": "Epic",
@@ -1115,7 +1272,9 @@
         "scale": 0.6,
         "parent_company": "UPMC",
         "region_id": "PA",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.upmc.com/",
+        "hospital_website": "https://www.upmc.com/locations/hospitals/susquehanna"
     },
     {
         "ehr_system": "Epic",
@@ -1129,7 +1288,9 @@
         "scale": 0.6,
         "parent_company": "UW Medicine",
         "region_id": "WA",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.uwmedicine.org/",
+        "hospital_website": "https://www.uwmedicine.org/locations/uw-medical-center-montlake"
     },
     {
         "ehr_system": "Meditech",
@@ -1143,7 +1304,9 @@
         "scale": 0.6,
         "parent_company": "Val Verde Regional Medical Center",
         "region_id": "TX",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://vvrmc.org/",
+        "hospital_website": "https://vvrmc.org/"
     },
     {
         "ehr_system": "Meditech",
@@ -1157,7 +1320,9 @@
         "scale": 0.6,
         "parent_company": "Alder Hey Children's NHS Foundation Trust",
         "region_id": "ENG",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://alderhey.nhs.uk/",
+        "hospital_website": "https://alderhey.nhs.uk/parents-and-patients"
     },
     {
         "ehr_system": "Meditech",
@@ -1171,7 +1336,9 @@
         "scale": 0.6,
         "parent_company": "Liverpool Women's NHS Foundation Trust",
         "region_id": "ENG",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.liverpoolwomens.nhs.uk/",
+        "hospital_website": "https://www.liverpoolwomens.nhs.uk/our-services/"
     },
     {
         "ehr_system": "Meditech",
@@ -1185,7 +1352,9 @@
         "scale": 0.6,
         "parent_company": "The Clatterbridge Cancer Centre NHS Foundation Trust",
         "region_id": "ENG",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.clatterbridgecc.nhs.uk/",
+        "hospital_website": "https://www.clatterbridgecc.nhs.uk/"
     },
     {
         "ehr_system": "Meditech",
@@ -1199,7 +1368,9 @@
         "scale": 0.6,
         "parent_company": "Tillsonburg District Memorial Hospital Corporation",
         "region_id": "ON",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.tillsonburghospital.on.ca/",
+        "hospital_website": "https://www.tillsonburghospital.on.ca/"
     },
     {
         "ehr_system": "Epic",
@@ -1213,7 +1384,9 @@
         "scale": 0.6,
         "parent_company": "Markham Stouffville Hospital Corporation",
         "region_id": "ON",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.oakvalleyhealth.ca/",
+        "hospital_website": "https://www.oakvalleyhealth.ca/our-hospitals/markham-stouffville-hospital"
     },
     {
         "ehr_system": "Epic",
@@ -1227,7 +1400,9 @@
         "scale": 0.6,
         "parent_company": "Hamilton Health Sciences",
         "region_id": "ON",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.hamiltonhealthsciences.ca/",
+        "hospital_website": "https://www.hamiltonhealthsciences.ca/areas-of-care/hospitals/hamilton-general-hospital/"
     },
     {
         "ehr_system": "Meditech",
@@ -1241,7 +1416,9 @@
         "scale": 0.6,
         "parent_company": "Sault Area Hospital Group",
         "region_id": "ON",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.sah.on.ca/",
+        "hospital_website": "https://www.sah.on.ca/"
     },
     {
         "ehr_system": "Meditech",
@@ -1255,7 +1432,9 @@
         "scale": 0.6,
         "parent_company": "Government of Nunavut",
         "region_id": "NU",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.gov.nu.ca/health",
+        "hospital_website": "https://www.gov.nu.ca/health/information/health-centres"
     },
     {
         "ehr_system": "Meditech",
@@ -1269,7 +1448,9 @@
         "scale": 0.6,
         "parent_company": "Queensway Carleton Hospital",
         "region_id": "ON",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.qch.on.ca/",
+        "hospital_website": "https://www.qch.on.ca/"
     },
     {
         "ehr_system": "Meditech",
@@ -1283,7 +1464,9 @@
         "scale": 0.6,
         "parent_company": "Royal Victoria Regional Health Centre",
         "region_id": "ON",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.rvh.on.ca/",
+        "hospital_website": "https://www.rvh.on.ca/"
     },
     {
         "ehr_system": "Meditech",
@@ -1297,7 +1480,9 @@
         "scale": 0.6,
         "parent_company": "Southlake Regional Health Centre",
         "region_id": "ON",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://southlake.ca/",
+        "hospital_website": "https://southlake.ca/"
     },
     {
         "ehr_system": "Meditech",
@@ -1311,7 +1496,9 @@
         "scale": 0.6,
         "parent_company": "Government of Aruba",
         "region_id": "AW",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.dvg.aw/",
+        "hospital_website": "https://www.dvg.aw/"
     },
     {
         "ehr_system": "Cerner",
@@ -1325,160 +1512,184 @@
         "scale": 0.6,
         "parent_company": "Ospedale Riabilitativo di Alta Specializzazione S.p.A.",
         "region_id": "IT",
-        "main_facility": false
+        "main_facility": false,
+        "parent_company_website": "https://www.oras.it/",
+        "hospital_website": "https://www.oras.it/"
     },
-    {				
-        "ehr_system": "Epic",				
-           "hospital_name": "Detroit Medical Center",				
-           "hospital_count": 2,				
-           "location": "Detroit, MI",				
-           "hospital_address": "4201 St. Antoine Street, Detroit, MI 48201",				
-           "longitude": -83.0570,				
-           "latitude": 42.3522,				
-           "color": "#57fa7d",				
-           "scale": 0.6,				
-           "parent_company": "Ascension Healthcare",				
-           "region_id": "MI",				
-         "main_facility": false				
-       },
-       {				
-	    "ehr_system": "Epic",				
-	    "hospital_name": "St. David's Medical Center",				
-	    "hospital_count": 1,				
-	    "location": "Austin, TX",				
-	    "hospital_address": "919 E 32nd St, Austin, TX 78705",				
-	    "longitude": -97.7266,				
-	    "latitude": 30.2904,				
-	    "color": "#57fa7d",				
-	    "scale": 0.6,				
-	    "parent_company": "Ascension Healthcare",				
-	    "region_id": "TX",				
-	    "main_facility": false				
-	},								
-	{				
-	    "ehr_system": "Epic",				
-	    "hospital_name": "St. David's Round Rock Medical Center",				
-	    "hospital_count": 1,				
-	    "location": "Round Rock, TX",				
-	    "hospital_address": "2400 Round Rock Ave, Round Rock, TX 78681",				
-	    "longitude": -97.6910,				
-	    "latitude": 30.5186,				
-	    "color": "#57fa7d",				
-	    "scale": 0.6,				
-	  "parent_company": "Ascension Healthcare",				
-	    "region_id": "TX",				
-	  "main_facility": false				
-	},
-    {					
-	    "ehr_system": "Epic",					
-	    "hospital_name": "Ascension SE Wisconsin Hospital - Franklin Campus",					
-	    "hospital_count": 2,					
-	    "location": "Franklin, WI",					
-	    "hospital_address": "10101 South 27th Street, Franklin, WI 53132",					
-	    "longitude": -87.9485,					
-	    "latitude": 42.8572,					
-	    "color": "#57fa7d",					
-	    "scale": 0.6,					
-	  "parent_company": "Ascension Healthcare",					
-	    "region_id": "WI",					
-	 "main_facility": false					
-	},
-    {				
-   "ehr_system": "Epic",				
-    "hospital_name": "Indiana University Health University Hospital",				
-    "hospital_count": 2,				
-    "location": "Indianapolis, IN",				
-    "hospital_address": "550 University Blvd, Indianapolis, IN 46202",				
-    "longitude": -86.1780,				
-    "latitude": 39.7739,				
-    "color": "#57fa7d",				
-    "scale": 0.6,				
-   "parent_company": "Ascension Healthcare",				
-    "region_id": "IN",				
- "main_facility": false				
-},
-{				
-    "ehr_system": "Epic",				
-    "hospital_name": "Nashville General Hospital",				
-    "hospital_count": 2,				
-    "location": "Nashville, TN",				
-    "hospital_address": "1818 Albion St, Nashville, TN 37208",				
-    "longitude": -86.8048,				
-    "latitude": 36.1678,				
-    "color": "#57fa7d",				
-    "scale": 0.6,				
-  "parent_company": "Ascension Healthcare",				
-    "region_id": "TN",				
- "main_facility": false				
-},
-{				
-    "ehr_system": "Epic",				
-    "hospital_name": "Northwestern Memorial Hospital",				
-    "hospital_count": 2,				
-    "location": "Chicago, IL",				
-    "hospital_address": "251 E Huron St, Chicago, IL 60611",				
-    "longitude": -87.6206,				
-    "latitude": 41.8947,				
-    "color": "#57fa7d",				
-    "scale": 0.6,				
-  "parent_company": "Ascension Healthcare",				
-    "region_id": "IL",				
- "main_facility": false				
-},
-{					
-    "ehr_system": "Epic",					
-    "hospital_name": "Encompass Health Rehabilitation Hospital of Jacksonville",					
-    "hospital_count": 2,					
-    "location": "Jacksonville, FL",					
-    "hospital_address": "11595 Burnt Mill Road, Jacksonville, FL 32256",					
-    "longitude": -81.5250,					
-    "latitude": 30.2525,					
-    "color": "#57fa7d",					
-    "scale": 0.6,					
-  "parent_company": "Ascension Healthcare",					
-    "region_id": "FL",					
- "main_facility": false					
-},
-{					
-    "ehr_system": "Epic",					
-    "hospital_name": "Ascension Via Christi St. Francis",					
-    "hospital_count": 2,					
-    "location": "Wichita, KS",					
-    "hospital_address": "929 N St Francis St, Wichita, KS 67214",					
-    "longitude": -97.3361,					
-    "latitude": 37.7006,					
-    "color": "#57fa7d",					
-    "scale": 0.6,					
-  "parent_company": "Ascension Healthcare",					
-    "region_id": "KS",					
- "main_facility": false					
-},
-{					
-    "ehr_system": "Epic",					
-    "hospital_name": "Ascension St. John Jane Phillips Medical Center",					
-    "hospital_count": 2,					
-    "location": "Bartlesville, OK",					
-    "hospital_address": "3500 Southeast Frank Phillips Blvd, Bartlesville, OK 74006",					
-    "longitude": -95.9355,					
-    "latitude": 36.7335,					
-    "color": "#57fa7d",					
-    "scale": 0.6,					
-  "parent_company": "Ascension Healthcare",					
-    "region_id": "OK",					
- "main_facility": false					
-},
-{				
-    "ehr_system": "Epic",				
-    "hospital_name": "The Johns Hopkins Hospital",				
-    "hospital_count": 2,				
-    "location": "Baltimore, MD",				
-    "hospital_address": "1800 Orleans St, Baltimore, MD 21287",				
-    "longitude": -76.5906,				
-    "latitude": 39.2976,				
-    "color": "#57fa7d",				
-    "scale": 0.6,				
-  "parent_company": "Ascension Healthcare",				
-    "region_id": "MD",				
- "main_facility": false				
-}																																												
+    {
+        "ehr_system": "Epic",
+        "hospital_name": "Detroit Medical Center",
+        "hospital_count": 2,
+        "location": "Detroit, MI",
+        "hospital_address": "4201 St. Antoine Street, Detroit, MI 48201",
+        "longitude": -83.0570,
+        "latitude": 42.3522,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Ascension Healthcare",
+        "region_id": "MI",
+        "main_facility": false,
+        "parent_company_website": "https://healthcare.ascension.org/",
+        "hospital_website": "https://www.dmc.org/"
+    },
+    {
+        "ehr_system": "Epic",
+        "hospital_name": "St. David's Medical Center",
+        "hospital_count": 1,
+        "location": "Austin, TX",
+        "hospital_address": "919 E 32nd St, Austin, TX 78705",
+        "longitude": -97.7266,
+        "latitude": 30.2904,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Ascension Healthcare",
+        "region_id": "TX",
+        "main_facility": false,
+        "parent_company_website": "https://healthcare.ascension.org/",
+        "hospital_website": "https://stdavids.com/"
+    },
+    {
+        "ehr_system": "Epic",
+        "hospital_name": "St. David's Round Rock Medical Center",
+        "hospital_count": 1,
+        "location": "Round Rock, TX",
+        "hospital_address": "2400 Round Rock Ave, Round Rock, TX 78681",
+        "longitude": -97.6910,
+        "latitude": 30.5186,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Ascension Healthcare",
+        "region_id": "TX",
+        "main_facility": false,
+        "parent_company_website": "https://healthcare.ascension.org/",
+        "hospital_website": "https://stdavids.com/"
+    },
+    {
+        "ehr_system": "Epic",
+        "hospital_name": "Ascension SE Wisconsin Hospital - Franklin Campus",
+        "hospital_count": 2,
+        "location": "Franklin, WI",
+        "hospital_address": "10101 South 27th Street, Franklin, WI 53132",
+        "longitude": -87.9485,
+        "latitude": 42.8572,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Ascension Healthcare",
+        "region_id": "WI",
+        "main_facility": false,
+        "parent_company_website": "https://healthcare.ascension.org/",
+        "hospital_website": "https://healthcare.ascension.org/locations/wisconsin/wi015/franklin-ascension-se-wisconsin-hospital-franklin-campus"
+    },
+    {
+        "ehr_system": "Epic",
+        "hospital_name": "Indiana University Health University Hospital",
+        "hospital_count": 2,
+        "location": "Indianapolis, IN",
+        "hospital_address": "550 University Blvd, Indianapolis, IN 46202",
+        "longitude": -86.1780,
+        "latitude": 39.7739,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Ascension Healthcare",
+        "region_id": "IN",
+        "main_facility": false,
+        "parent_company_website": "https://healthcare.ascension.org/",
+        "hospital_website": "https://iuhealth.org/find-locations/iu-health-university-hospital"
+    },
+    {
+        "ehr_system": "Epic",
+        "hospital_name": "Nashville General Hospital",
+        "hospital_count": 2,
+        "location": "Nashville, TN",
+        "hospital_address": "1818 Albion St, Nashville, TN 37208",
+        "longitude": -86.8048,
+        "latitude": 36.1678,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Ascension Healthcare",
+        "region_id": "TN",
+        "main_facility": false,
+        "parent_company_website": "https://healthcare.ascension.org/",
+        "hospital_website": "https://nashvillegeneral.org/"
+    },
+    {
+        "ehr_system": "Epic",
+        "hospital_name": "Northwestern Memorial Hospital",
+        "hospital_count": 2,
+        "location": "Chicago, IL",
+        "hospital_address": "251 E Huron St, Chicago, IL 60611",
+        "longitude": -87.6206,
+        "latitude": 41.8947,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Ascension Healthcare",
+        "region_id": "IL",
+        "main_facility": false,
+        "parent_company_website": "https://healthcare.ascension.org/",
+        "hospital_website": "https://www.nm.org/locations/northwestern-memorial-hospital"
+    },
+    {
+        "ehr_system": "Epic",
+        "hospital_name": "Encompass Health Rehabilitation Hospital of Jacksonville",
+        "hospital_count": 2,
+        "location": "Jacksonville, FL",
+        "hospital_address": "11595 Burnt Mill Road, Jacksonville, FL 32256",
+        "longitude": -81.5250,
+        "latitude": 30.2525,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Ascension Healthcare",
+        "region_id": "FL",
+        "main_facility": false,
+        "parent_company_website": "https://healthcare.ascension.org/",
+        "hospital_website": "https://encompasshealth.com/jacksonvillerehab"
+    },
+    {
+        "ehr_system": "Epic",
+        "hospital_name": "Ascension Via Christi St. Francis",
+        "hospital_count": 2,
+        "location": "Wichita, KS",
+        "hospital_address": "929 N St Francis St, Wichita, KS 67214",
+        "longitude": -97.3361,
+        "latitude": 37.7006,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Ascension Healthcare",
+        "region_id": "KS",
+        "main_facility": false,
+        "parent_company_website": "https://healthcare.ascension.org/",
+        "hospital_website": "https://www.viachristi.org/"
+    },
+    {
+        "ehr_system": "Epic",
+        "hospital_name": "Ascension St. John Jane Phillips Medical Center",
+        "hospital_count": 2,
+        "location": "Bartlesville, OK",
+        "hospital_address": "3500 Southeast Frank Phillips Blvd, Bartlesville, OK 74006",
+        "longitude": -95.9355,
+        "latitude": 36.7335,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Ascension Healthcare",
+        "region_id": "OK",
+        "main_facility": false,
+        "parent_company_website": "https://healthcare.ascension.org/",
+        "hospital_website": "https://healthcare.ascension.org/locations/oklahoma/oktul/bartlesville-ascension-st-john-jane-phillips"
+    },
+    {
+        "ehr_system": "Epic",
+        "hospital_name": "The Johns Hopkins Hospital",
+        "hospital_count": 2,
+        "location": "Baltimore, MD",
+        "hospital_address": "1800 Orleans St, Baltimore, MD 21287",
+        "longitude": -76.5906,
+        "latitude": 39.2976,
+        "color": "#57fa7d",
+        "scale": 0.6,
+        "parent_company": "Ascension Healthcare",
+        "region_id": "MD",
+        "main_facility": false,
+        "parent_company_website": "https://healthcare.ascension.org/",
+        "hospital_website": "https://www.hopkinsmedicine.org/the_johns_hopkins_hospital/"
+    }
 ]

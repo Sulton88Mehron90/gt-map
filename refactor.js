@@ -409,118 +409,180 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    //Populate the sidebar function.
-    function populateSidebar(regionId, regionName, facilities) {
-        const list = document.getElementById('hospital-list');
-        list.innerHTML = '';
+// Populate the sidebar function.
+function populateSidebar(regionId, regionName, facilities) {
+    const list = document.getElementById('hospital-list');
+    if (!list) {
+        console.error("Sidebar list element not found.");
+        return;
+    }
+    list.innerHTML = '';
 
-        const title = sidebar.querySelector('h2');
+    const title = sidebar.querySelector('h2');
+    if (title) {
         title.innerHTML = `Facilities Using Goliath's Solutions in <span style="color: #ff8502;">${regionName}</span>`;
+    } else {
+        console.error("Sidebar title element not found.");
+    }
 
-        const existingCountDisplay = sidebar.querySelector('.count-display');
-        if (existingCountDisplay) existingCountDisplay.remove();
+    const existingCountDisplay = sidebar.querySelector('.count-display');
+    if (existingCountDisplay) {
+        existingCountDisplay.remove();
+    }
 
-        //Filter facilities by region
-        const regionHospitals = facilities.filter(hospital =>
-            hospital.location.includes(regionName) || hospital.region_id === regionId
-        );
+    // Filter facilities by region
+    const regionHospitals = facilities.filter(hospital =>
+        hospital.location.includes(regionName) || hospital.region_id === regionId
+    );
+    if (regionHospitals.length === 0) {
+        console.warn(`No facilities found for region: ${regionName}`);
+    }
 
-        //Use a Map to group hospitals by parent_company
-        const uniqueHealthSystems = new Map();
-        let totalHospitalCount = 0;
+    // Use a Map to group hospitals by parent_company
+    const uniqueHealthSystems = new Map();
+    let totalHospitalCount = 0;
 
-        regionHospitals.forEach(hospital => {
-            const parentCompany = hospital.parent_company || hospital.hospital_name;
+    regionHospitals.forEach(hospital => {
+        if (!hospital.hospital_name || !hospital.ehr_system) {
+            console.error("Invalid hospital data:", hospital);
+            return;
+        }
 
-            //Accumulate count for all hospitals under the same parent company
-            if (uniqueHealthSystems.has(parentCompany)) {
-                const existing = uniqueHealthSystems.get(parentCompany);
-                existing.hospital_count += hospital.hospital_count || 1;
-            } else {
-                uniqueHealthSystems.set(parentCompany, {
-                    ...hospital,
-                    hospital_count: hospital.hospital_count || 1,
-                });
-            }
+        const parentCompany = hospital.parent_company || hospital.hospital_name;
 
-            //Accumulate total hospital count
-            totalHospitalCount += hospital.hospital_count || 1;
-        });
+        if (uniqueHealthSystems.has(parentCompany)) {
+            const existing = uniqueHealthSystems.get(parentCompany);
+            existing.hospital_count += hospital.hospital_count || 1;
+        } else {
+            uniqueHealthSystems.set(parentCompany, {
+                ...hospital,
+                hospital_count: hospital.hospital_count || 1,
+            });
+        }
 
-        //Display total facility count in the sidebar
-        const countDisplay = document.createElement('p');
-        countDisplay.classList.add('count-display');
-        countDisplay.innerHTML = `Total Facilities: <span style="color: #ff8502;">${totalHospitalCount}</span>`;
-        countDisplay.style.fontWeight = 'bold';
-        countDisplay.style.color = '#FFFFFF';
-        countDisplay.style.marginTop = '10px';
-        list.before(countDisplay);
+        totalHospitalCount += hospital.hospital_count || 1;
+    });
 
-        //Populate the sidebar with one hospital per health system
-        uniqueHealthSystems.forEach(hospital => {
-            const listItem = document.createElement('li');
+    // Display total facility count in the sidebar
+    const countDisplay = document.createElement('p');
+    countDisplay.classList.add('count-display');
+    countDisplay.innerHTML = `Total Facilities: <span style="color: #ff8502;">${totalHospitalCount}</span>`;
+    countDisplay.style.fontWeight = 'bold';
+    countDisplay.style.color = '#FFFFFF';
+    countDisplay.style.marginTop = '10px';
+    list.before(countDisplay);
 
-            let ehrLogo;
-            switch (hospital.ehr_system) {
-                case 'Cerner':
-                case 'Cerner-ITWorks':
-                    ehrLogo = '<img src="./img/cerner-logo.png" alt="Cerner logo" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%;">';
-                    break;
-                case 'Epic':
-                    ehrLogo = '<img src="./img/epic-logo.png" alt="Epic logo" style="width: 20px; height: 18px; vertical-align: middle; margin-right: 5px;">';
-                    break;
-                case 'Meditech':
-                    ehrLogo = '<img src="./img/meditech-logo.png" alt="Meditech logo" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%;">';
-                    break;
-                default:
-                    ehrLogo = '';
-                    break;
-            }
+    // Populate the sidebar with one hospital per health system
+    uniqueHealthSystems.forEach(hospital => {
+        const listItem = document.createElement('li');
+        listItem.style.marginBottom = '10px';
 
-            listItem.innerHTML = `
-            <i class="fas fa-hospital-symbol"></i> 
+   let ehrLogo = '';
+switch (hospital.ehr_system) {
+    case 'Cerner':
+    case 'Cerner-ITWorks':
+        ehrLogo = `
+            <a href="https://www.oracle.com/corporate/acquisitions/cerner/" target="_blank" aria-label="Visit Cerner website">
+                <img src="./img/cerner-logo.png" alt="Cerner logo" 
+                     style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%; cursor: pointer;">
+            </a>`;
+        break;
+    case 'Epic':
+        ehrLogo = `
+            <a href="https://www.epic.com/" target="_blank" aria-label="Visit Epic website">
+                <img src="./img/epic-logo.png" alt="Epic logo" 
+                     style="width: 20px; height: 18px; vertical-align: middle; margin-right: 5px; cursor: pointer;">
+            </a>`;
+        break;
+    case 'Meditech':
+        ehrLogo = `
+            <a href="https://ehr.meditech.com/" target="_blank" aria-label="Visit Meditech website">
+                <img src="./img/meditech-logo.png" alt="Meditech logo" 
+                     style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%; cursor: pointer;">
+            </a>`;
+        break;
+    default:
+        ehrLogo = 'Not Available';
+        break;
+}
+        
+
+        listItem.innerHTML = `
+            <i class="fas fa-hospital"></i> 
             <strong class="clickable-hospital" style="cursor: pointer; color: #add8e6;">
                 ${hospital.hospital_name}
             </strong><br>
             ${hospital.parent_company ? `<strong>Parent Company:</strong> ${hospital.parent_company}<br>` : ""}
             ${hospital.location}<br>
-            <div><strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system !== "Epic" ? hospital.ehr_system : ""}</div>
+            <div><strong>EHR System:</strong> ${ehrLogo} ${hospital.ehr_system}</div>
             <div><strong>Hospital Count:</strong> ${hospital.hospital_count || 1}</div>
-            `;
+            <button class="more-info-btn" aria-label="Toggle More Info">
+                <i class="fas fa-info-circle"></i>
+            </button>
+            <div class="additional-info" style="display: none; margin-top: 5px; border-top: 1px solid #ccc; padding-top: 5px;">
+                ${hospital.hospital_website === hospital.parent_company_website
+                    ? `<strong>Website:</strong> 
+                       <a href="${hospital.hospital_website}" target="_blank" style="color: #ff8502; word-break: break-word;">
+                           ${hospital.hospital_website}
+                       </a>`
+                    : `
+                       <strong>Facility Website:</strong> 
+                       <a href="${hospital.hospital_website}" target="_blank" style="color: #ff8502; word-break: break-word;">
+                           ${hospital.hospital_website}
+                       </a><br>
+                       <strong>Parent Company Website:</strong> 
+                       <a href="${hospital.parent_company_website}" target="_blank" style="color: #ff8502; word-break: break-word;">
+                           ${hospital.parent_company_website}
+                       </a>
+                    `
+                }
+            </div>
+        `;
 
-            listItem.addEventListener('click', () => {
-                //Update session view before flying to facility
-                sessionStartingView = {
-                    center: map.getCenter(),
-                    zoom: map.getZoom(),
-                    pitch: map.getPitch(),
-                    bearing: map.getBearing(),
-                };
+        const moreInfoBtn = listItem.querySelector('.more-info-btn');
+        const additionalInfoDiv = listItem.querySelector('.additional-info');
 
-                //Fly to the hospital's location
-                map.flyTo({
-                    center: [hospital.longitude, hospital.latitude],
-                    zoom: 12,
-                    pitch: 45,
-                    bearing: 0,
-                    duration: 1000, // Reduced duration from 2000 to 1000 milliseconds
-                    easing: (t) => t * (2 - t),
-                });
-
-                //Show the back button and hide the home logo
-                backButton.style.display = 'block';
-                gtLogo.style.display = 'none';
-            });
-
-            list.appendChild(listItem);
+        moreInfoBtn.addEventListener('click', () => {
+            if (additionalInfoDiv.style.display === 'none') {
+                additionalInfoDiv.style.display = 'block';
+                moreInfoBtn.querySelector('i').classList.remove('fa-info-circle');
+                moreInfoBtn.querySelector('i').classList.add('fa-minus-circle');
+            } else {
+                additionalInfoDiv.style.display = 'none';
+                moreInfoBtn.querySelector('i').classList.remove('fa-minus-circle');
+                moreInfoBtn.querySelector('i').classList.add('fa-info-circle');
+            }
         });
 
-        sidebar.style.display = uniqueHealthSystems.size > 0 ? 'block' : 'none';
-        adjustSidebarHeight();
+        listItem.querySelector('.clickable-hospital').addEventListener('click', () => {
+            sessionStartingView = {
+                center: map.getCenter(),
+                zoom: map.getZoom(),
+                pitch: map.getPitch(),
+                bearing: map.getBearing(),
+            };
 
-    }
+            map.flyTo({
+                center: [hospital.longitude, hospital.latitude],
+                zoom: 12,
+                pitch: 45,
+                bearing: 0,
+                duration: 1000,
+                easing: (t) => t * (2 - t),
+            });
 
-    function createCustomMarker(lng, lat, popupContent, regionId) {
+            backButton.style.display = 'block';
+            gtLogo.style.display = 'none';
+        });
+
+        list.appendChild(listItem);
+    });
+
+    sidebar.style.display = uniqueHealthSystems.size > 0 ? 'block' : 'none';
+    adjustSidebarHeight();
+}
+
+function createCustomMarker(lng, lat, popupContent, regionId) {
         //Create a custom marker element
         const markerElement = document.createElement('div');
         markerElement.className = 'custom-marker company-logo sidebar-logo';
@@ -598,7 +660,7 @@ document.addEventListener("DOMContentLoaded", () => {
         usa: 4.5,
         uk: 5,
         italy: 6,
-        aruba: 10,
+        aruba: 9,
         canada: 7,
         reset: 1,
         fitToUSA: 3,
@@ -618,7 +680,7 @@ document.addEventListener("DOMContentLoaded", () => {
             layers.forEach(layer => toggleVisibility([layer], action === 'visible' ? 'visible' : 'none'));
         });
     }
-
+    
     let lastZoomLevel = null;
 
     //Dynamic Sizing
@@ -638,7 +700,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         //Debug log (remove in production)
-        // console.log(`[DEBUG] Adjusted marker size: ${size}px at zoom level: ${zoomLevel}`);
+        console.log(`[DEBUG] Adjusted marker size: ${size}px at zoom level: ${zoomLevel}`);
     }
 
     //Event listener for zoom level changes
@@ -657,7 +719,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     lastAction === 'fitToUSA' ? regionZoomThresholds.fitToUSA :
                         regionZoomThresholds[currentRegion] || regionZoomThresholds.default || 4;
 
-            //const adjustedZoom = isMobile ? sessionStartingView.zoom - 1 : sessionStartingView.zoom;
             const adjustedZoom = sessionStartingView.zoom - (isMobile ? 1 : 0);
 
             const zoomLevel = Math.max(adjustedZoom, zoomThreshold);
@@ -989,7 +1050,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //the initialization point for actions and event handlers that require the map to be fully loaded. 
     map.on('load', () => {
         showSpinner();
-        log('Map fully loaded', 'info');
+        // log('Map fully loaded', 'info');
         map.setFog({});
 
         setTimeout(() => map.resize(), 100); // Ensure proper map rendering
@@ -1059,7 +1120,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     markerZoomThreshold = 6;
                     break;
                 case 'aruba':
-                    markerZoomThreshold = 10;
+                    markerZoomThreshold = 9;
                     break;
                 case 'canada':
                     markerZoomThreshold = 7;
@@ -1715,18 +1776,33 @@ document.addEventListener("DOMContentLoaded", () => {
                             const listItem = document.createElement('li');
                             let ehrLogo;
                             switch (facility.ehr_system) {
-                                case 'Cerner':
-                                    ehrLogo = '<img src="./img/cerner-logo.png" alt="Cerner logo" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%;">';
-                                    break;
-                                case 'Epic':
-                                    ehrLogo = '<img src="./img/epic-logo.png" alt="Epic logo" style="width: 20px; height: 18px; vertical-align: middle; margin-right: 5px;">';
-                                    break;
-                                case 'Meditech':
-                                    ehrLogo = '<img src="./img/meditech-logo.png" alt="Meditech logo" style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%;">';
-                                    break;
-                                default:
-                                    ehrLogo = '';
-                            }
+    case 'Cerner':
+    case 'Cerner-ITWorks':
+        ehrLogo = `
+            <a href="https://www.oracle.com/corporate/acquisitions/cerner/" target="_blank" aria-label="Visit Cerner website">
+                <img src="./img/cerner-logo.png" alt="Cerner logo" 
+                     style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%; cursor: pointer;">
+            </a>`;
+        break;
+    case 'Epic':
+        ehrLogo = `
+            <a href="https://www.epic.com/" target="_blank" aria-label="Visit Epic website">
+                <img src="./img/epic-logo.png" alt="Epic logo" 
+                     style="width: 20px; height: 18px; vertical-align: middle; margin-right: 5px; cursor: pointer;">
+            </a>`;
+        break;
+    case 'Meditech':
+        ehrLogo = `
+            <a href="https://ehr.meditech.com/" target="_blank" aria-label="Visit Meditech website">
+                <img src="./img/meditech-logo.png" alt="Meditech logo" 
+                     style="width: 18px; height: 18px; vertical-align: middle; margin-right: 5px; border-radius: 50%; cursor: pointer;">
+            </a>`;
+        break;
+    default:
+        ehrLogo = '';
+        break;
+}
+
 
                             listItem.innerHTML = `
                 <div>
@@ -1767,57 +1843,50 @@ document.addEventListener("DOMContentLoaded", () => {
             const hoverEvent = isTouchDevice ? 'touchstart' : 'mousemove';
 
             let hoverTimeout;
-            //Apply Hover
-            // const applyHover = (regionId) => {
-            //     // if (!regionsWithFacilities.has(regionId)) return;
-            //     console.log(`Hover applied: Region ID ${regionId}`);
-            //     if (hoveredRegionId && hoveredRegionId !== selectedRegionId) {
-            //         map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
-            //     }
-            //     hoveredRegionId = regionId;
-            //     if (hoveredRegionId !== selectedRegionId) {
-            //         map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: true });
-            //         console.log(`Hover state set for: Region ID ${hoveredRegionId}`);
-            //     }
-            // };
-
+            // Apply Hover Logic
             const applyHover = (regionId) => {
-                if (hoveredRegionId === regionId) return; // Skip redundant updates
-                if (DEBUG_MODE) console.log(`Hover applied: Region ID ${regionId}`);
+                if (hoveredRegionId === regionId) return; // No change, exit early
+                // if (DEBUG_MODE) console.log(`Hover applied: Region ID ${regionId}`);
+
+                // Clear previous hover state if needed
                 if (hoveredRegionId && hoveredRegionId !== selectedRegionId) {
                     map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
                 }
+
+                // Update hoveredRegionId and reset isHoverCleared only if hover changes
                 hoveredRegionId = regionId;
                 if (hoveredRegionId !== selectedRegionId) {
+                    isHoverCleared = false; // Reset flag when a new hover is applied
                     map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: true });
-                    if (DEBUG_MODE) console.log(`Hover state set for: Region ID ${hoveredRegionId}`);
+                    // if (DEBUG_MODE) console.log(`Hover state set for: Region ID ${hoveredRegionId}`);
                 }
             };
-            
 
+            // Force Clear All Hover States
+            let isHoverCleared = true;
+            const forceClearAllHoverStates = () => {
+                if (isHoverCleared) return;
+                // if (DEBUG_MODE) console.log(`Force clearing all hover states`);
+                regionSources.forEach((sourceId) => {
+                    map.querySourceFeatures(sourceId).forEach((feature) => {
+                        map.setFeatureState({ source: sourceId, id: feature.id }, { hover: false });
+                    });
+                });
+                hoveredRegionId = null;
+                isHoverCleared = true; 
+                // if (DEBUG_MODE) console.log(`All hover states cleared`);
+            };
 
-            // const forceClearAllHoverStates = () => {
-            //     console.log(`Force clearing all hover states`);
-            //     regionSources.forEach((sourceId) => {
-            //         map.querySourceFeatures(sourceId).forEach((feature) => {
-            //             map.setFeatureState({ source: sourceId, id: feature.id }, { hover: false });
-            //         });
-            //     });
-            //     hoveredRegionId = null;
-            //     console.log(`All hover states cleared`);
-            // };
-
-            // Throttled clear hover effect
-            
-            
-            
-            
             const clearHover = () => {
-                console.log(`Clear hover triggered`);
+                if (isHoverCleared || !hoveredRegionId) {
+                    // if (DEBUG_MODE) console.log(`Clear hover skipped: No hover to clear`);
+                    return;
+                }
+                // if (DEBUG_MODE) console.log(`Clear hover triggered`);
                 clearTimeout(hoverTimeout);
                 hoverTimeout = setTimeout(() => {
                     if (hoveredRegionId && hoveredRegionId !== selectedRegionId) {
-                        console.log(`Clearing hover for: Region ID ${hoveredRegionId}`);
+                        // if (DEBUG_MODE) console.log(`Clearing hover for: Region ID ${hoveredRegionId}`);
                         map.setFeatureState({ source: sourceId, id: hoveredRegionId }, { hover: false });
                     }
                     forceClearAllHoverStates();
@@ -1827,64 +1896,52 @@ document.addEventListener("DOMContentLoaded", () => {
             map.off(hoverEvent, layerId);
             map.off('touchend', layerId);
 
-            // map.on('moveend', forceClearAllHoverStates);
-            // map.on('zoomend', forceClearAllHoverStates);
-
-            const handleMapInteraction = () => {
-                if (DEBUG_MODE) console.log(`Map interaction triggered`);
+            // Handle Map Interaction Events
+            const handleMapInteraction = debounce(() => {
+                // if (DEBUG_MODE) console.log(`Map interaction triggered`);
                 forceClearAllHoverStates();
-            };
-            
+            }, 200);
+
+
             map.on('moveend', handleMapInteraction);
             map.on('zoomend', handleMapInteraction);
-            
-            
 
-            //Attach hover and touch interactions
+            // Debounced Hover
+            const debounceHover = debounce((regionId) => {
+                if (regionId) applyHover(regionId);
+            }, 100);
+
+            // Attach hover interaction with debouncing
             map.on(hoverEvent, layerId, (e) => {
                 const regionId = e.features?.[0]?.id;
-                if (regionId) applyHover(regionId);
+                debounceHover(regionId);
             });
 
+            // Attach clear event for hover
             const clearEvent = isTouchDevice ? 'touchend' : 'mouseleave';
             map.on(clearEvent, layerId, clearHover);
 
-
-            //Clear selection
-            // function clearRegionSelection() {
-            //     if (selectedRegionId) {
-            //         regionSources.forEach((regionSource) => {
-            //             map.setFeatureState({ source: regionSource, id: selectedRegionId }, { selected: false });
-            //         });
-            //         selectedRegionId = null;
-            //     }
-            //     if (hoveredRegionId) {
-            //         regionSources.forEach((regionSource) => {
-            //             map.setFeatureState({ source: regionSource, id: hoveredRegionId }, { hover: false });
-            //         });
-            //         hoveredRegionId = null;
-            //     }
-            //     lastAction = null; // Reset last action
-            // }
+            // Debugging log for layer interaction
+            // if (DEBUG_MODE) console.log(`Adding region interactions for layer: ${layerId}`);
 
             function clearRegionSelection() {
-                console.log(`Clearing region selection`);
+                if (!hoveredRegionId && isHoverCleared && !selectedRegionId) return;
+                // console.log(`Clearing region selection`);
                 if (selectedRegionId) {
-                    console.log(`Deselecting region: ${selectedRegionId}`);
+                    // console.log(`Deselecting region: ${selectedRegionId}`);
                     regionSources.forEach((regionSource) => {
                         map.setFeatureState({ source: regionSource, id: selectedRegionId }, { selected: false });
                     });
                     selectedRegionId = null;
                 }
                 if (hoveredRegionId) {
-                    console.log(`Clearing hover for region: ${hoveredRegionId}`);
+                    // console.log(`Clearing hover for region: ${hoveredRegionId}`);
                     regionSources.forEach((regionSource) => {
                         map.setFeatureState({ source: regionSource, id: hoveredRegionId }, { hover: false });
                     });
                     hoveredRegionId = null;
                 }
             }
-            
 
             //Select a region
             const selectRegion = (regionId) => {

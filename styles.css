@@ -218,7 +218,9 @@ button:hover {
     background-color: #0f2844;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
@@ -257,7 +259,7 @@ button:hover {
 
 #hospital-list-sidebar::-webkit-scrollbar {
     width: 8px;
-    margin-right: 2px; 
+    margin-right: 2px;
 }
 
 #hospital-list-sidebar::-webkit-scrollbar-thumb {
@@ -279,7 +281,7 @@ button:hover {
 }
 
 *::-webkit-scrollbar-thumb {
-    background: #ff8502; 
+    background: #ff8502;
     border-radius: 10px;
 }
 
@@ -426,6 +428,38 @@ button:hover {
     width: 140%;
     height: auto;
     filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.8));
+}
+
+
+/* Modernize the "More Info" button to match sidebar buttons */
+.more-info-btn {
+    background-color: #333;
+    color: #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    border: none;
+    margin: 0;
+}
+
+.more-info-btn:hover {
+    background-color: #555;
+    transform: scale(1.1);
+}
+
+.more-info-btn:focus {
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+}
+
+.more-info-btn i {
+    font-size: 12px;
 }
 
 .button-group {
@@ -1064,13 +1098,14 @@ button:hover {
         background-color: #e57300;
         transform: scale(1.1);
     }
+
     #hospital-list-sidebar::-webkit-scrollbar {
         width: 6px;
     }
 
     #hospital-list-sidebar::-webkit-scrollbar-thumb {
         background: #ff8502;
-        border-radius: 8px; 
+        border-radius: 8px;
     }
 
     #hospital-list-sidebar::-webkit-scrollbar-thumb:hover {
