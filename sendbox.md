@@ -12,3 +12,1149 @@
  background-color: #45a049;
  background: linear-gradient(145deg, #ff5656, #d32626);
 
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    color: #333;
+    overflow: hidden;
+}
+
+/* Map and Layout */
+#map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background-color: #f4f4f4;
+}
+
+.mapboxgl-ctrl-top-right {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+/* Map Control Positioning */
+.mapbox-button-group {
+    position: absolute;
+    top: 180px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    z-index: 10;
+}
+
+/* reset and search */
+.mapbox-button-group button {
+    color: #ffff;
+    border: none;
+    border-radius: 8px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease-in-out;
+    border: 0.5px solid #ff8502;
+}
+
+button {
+    margin: 1px 0;
+    background-color: #0f2844;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background: linear-gradient(145deg, #ff8502, #ff8502);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Flip Button Container */
+.flip-button {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    perspective: 800px;
+    cursor: pointer;
+    text-align: center;
+}
+
+/* Front and Back Styles */
+.flip-button .flip-front {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: transform 0.6s;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 0.5px solid #ff8502;
+    color: #fff;
+    transform: rotateX(0deg);
+    backface-visibility: hidden;
+}
+
+.flip-button .flip-back {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: transform 0.6s;
+    font-size: 9px;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 0.5px solid #ff8502;
+    color: white;
+    background-color: #0f2844;
+    transform: rotateX(180deg);
+    backface-visibility: hidden;
+}
+
+/* Flip Effect - Vertical Flip */
+.flip-button .flip-front {
+    transform: rotateX(0deg);
+    backface-visibility: hidden;
+}
+
+/* Style for the back side with text */
+.flip-button .flip-back {
+    transform: rotateX(180deg);
+    backface-visibility: hidden;
+    background-color: #0f2844;
+    font-size: 12px;
+}
+
+/* Flip animation on hover */
+.flip-button:hover .flip-front {
+    transform: rotateX(-180deg);
+}
+
+.flip-button:hover .flip-back {
+    transform: rotateX(0deg);
+}
+
+/* General Fly-To and Fit-To Button Styles */
+.mapbox-button-group .fly-to-button,
+.mapbox-button-group .fit-to-button,
+.mapbox-button-group .flip-front {
+    border: none;
+    border-radius: 8px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease-in-out;
+    border: 0.5px solid #ff8502;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: transparent;
+}
+
+/* Hover Effect */
+.mapbox-button-group .fly-to-button:hover,
+.mapbox-button-group .fit-to-button:hover,
+.mapbox-button-group #reset-view:hover,
+.mapbox-button-group #toggle-geocoder:hover {
+    transform: scale(1.2);
+    background-color: #0f2844;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Flip Effect on Hover */
+.flip-button:hover .flip-front {
+    transform: rotateX(-180deg);
+}
+
+.flip-button:hover .flip-back {
+    transform: rotateX(0deg);
+}
+
+/* Specific Backgrounds for Each Button */
+.mapbox-button-group #fly-to-uk .flip-front {
+    background-image: url('./img/UK_flag.png');
+    background-position: left center;
+    background-color: #0f2844;
+}
+
+.mapbox-button-group #fly-to-canada .flip-front {
+    background-image: url('./img/canada_flag.png');
+    background-position: left center;
+    background-color: #0f2844;
+}
+
+.mapbox-button-group #fly-to-usa .flip-front {
+    background-image: url('./img/USA_flag.png');
+    background-position: left center;
+    background-color: #0f2844;
+}
+
+.mapbox-button-group #fly-to-italy .flip-front {
+    background-image: url('./img/italy_flag.png');
+    background-position: left center;
+    background-color: #0f2844;
+}
+
+.mapbox-button-group .fit-to-usa {
+    background-image: url('./img/fit_usa.png');
+    background-position: left center;
+    padding-right: 6px;
+    background-color: #0f2844;
+}
+
+.mapbox-button-group #fly-to-aruba .flip-front {
+    background-image: url('./img/aruba_flag.png');
+    background-position: left center;
+    background-color: #0f2844;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* sidebar */
+#hospital-list-sidebar {
+    font-family: 'Open Sans', sans-serif;
+    position: relative;
+    left: 20px;
+    top: 100px;
+    max-width: 360px;
+    min-width: 150px;
+    width: 35%;
+    height: 100vh;
+    max-height: 80vh;
+    background: linear-gradient(145deg, #0f2844, #1c3a5c);
+    border-radius: 12px;
+    clip-path: inset(0 round 12px);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4);
+    padding: 20px;
+    overflow-y: auto;
+    z-index: 10;
+    color: white;
+    cursor: grab;
+    transition: width 0.3s ease-in-out, max-height 0.3s ease-in-out;
+    overflow-x: hidden;
+    max-height: 80vh;
+    display: block;
+    box-sizing: border-box;
+}
+
+#hospital-list-sidebar.dragging {
+    opacity: 0.8;
+    outline: 2px dashed #ff8502;
+    transition: opacity 0.1s ease, outline 0.1s ease;
+}
+
+#hospital-list-sidebar::-webkit-scrollbar {
+    width: 8px;
+    margin-right: 2px; 
+}
+
+#hospital-list-sidebar::-webkit-scrollbar-thumb {
+    background: #ff8502;
+    border-radius: 10px;
+}
+
+#hospital-list-sidebar::-webkit-scrollbar-thumb:hover {
+    background: #e57300;
+}
+
+#hospital-list-sidebar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Global Scrollbar Styles */
+*::-webkit-scrollbar {
+    width: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: #ff8502; 
+    border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: #e57300;
+}
+
+*::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Firefox-specific Scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #ff8502 rgba(255, 255, 255, 0.1);
+}
+
+#hospital-list-sidebar:hover {
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+}
+
+#hospital-list-sidebar.hidden {
+    transform: translateX(-100%);
+}
+
+#hospital-list-sidebar.auto-height {
+    max-height: none;
+    max-height: 80vh;
+    height: auto;
+}
+
+#hospital-list-sidebar h2 {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-top: 6px;
+    margin-bottom: 10px;
+    text-align: center;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
+#hospital-list-sidebar p.count-display {
+    font-size: 1rem;
+    color: #f5eaea;
+    text-align: center;
+    font-weight: 500;
+    margin: 10px 0;
+}
+
+#hospital-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+#hospital-list li {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    line-height: 1.4;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+#hospital-list li div {
+    display: block;
+    margin-top: 5px;
+}
+
+#hospital-list li:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.02);
+}
+
+.theme-toggle-btn {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease;
+}
+
+.theme-toggle-btn:hover {
+    background-color: #555;
+}
+
+.dark-text,
+.dark-text h2,
+.dark-text p.count-display {
+    color: #333 !important;
+}
+
+.custom-marker {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    cursor: pointer;
+    transition: transform 0.2s ease, z-index 0.2s ease, box-shadow 0.2s ease;
+    cursor: default;
+}
+
+/* Hover effect */
+.custom-marker:hover,
+.custom-marker.hover-effect {
+    transform: scale(1.2);
+    z-index: 2;
+    box-shadow: 0px 5px 6px rgba(0, 0, 0, 0.3);
+}
+
+.mapboxgl-map .hovered {
+    fill: #05aaff;
+    fill-opacity: 0.5;
+}
+
+#home-logo {
+    position: fixed;
+    top: 20px;
+    left: 1px;
+    z-index: 20;
+    width: 80px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+#home-logo img {
+    display: block;
+    width: 140%;
+    height: auto;
+    filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.8));
+}
+
+
+/* Modernize the "More Info" button to match sidebar buttons */
+.more-info-btn {
+    background-color: #333; /* Matches the sidebar button color */
+    color: #fff;
+    border-radius: 50%; /* Rounded like other buttons */
+    width: 20px; /* Same size as sidebar buttons */
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Similar shadow effect */
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    border: none;
+    margin: 0; /* Aligns visually with other buttons */
+}
+
+.more-info-btn:hover {
+    background-color: #555; /* Hover effect to match other buttons */
+    transform: scale(1.1); /* Slight scale on hover */
+}
+
+.more-info-btn:focus {
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5); /* Accessible focus indicator */
+}
+
+.more-info-btn i {
+    font-size: 12px; /* Matches icon size of other buttons */
+}
+
+
+
+.button-group {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+}
+
+.round-button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease;
+}
+
+.round-button:hover {
+    background-color: #555;
+    transform: scale(1.1);
+}
+
+/* 1 */
+#hospital-list-sidebar.collapsed {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    max-height: 50px;
+    width: 90px;
+    overflow: hidden;
+    padding: 18px;
+    transition: max-height 0.3s ease-in-out, width 0.3s ease-in-out;
+
+    background-color: rgba(15, 40, 68, 0.9);
+}
+
+#hospital-list-sidebar.collapsed .button-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 100%;
+}
+
+#hospital-list-sidebar.collapsed .logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+#hospital-list-sidebar.collapsed #minimize-sidebar {
+    position: relative;
+    left: 0;
+    top: 0;
+    margin-left: 25px;
+    z-index: 12;
+}
+
+#hospital-list-sidebar.collapsed h2,
+#hospital-list-sidebar.collapsed ul,
+#hospital-list-sidebar.collapsed .count-display {
+    display: none;
+}
+
+#hospital-list-sidebar.collapsed #close-sidebar {
+    display: flex;
+    position: relative;
+    left: 0;
+    top: 0;
+    margin-right: 5px;
+    right: 0;
+}
+
+/* General Back to Top Button Styling */
+#back-to-top-button {
+    display: none;
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    z-index: 3000;
+    border: none;
+    left: 50%;
+    border-radius: 50%;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    left: 130px;
+    position: sticky;
+}
+
+#back-to-top-button.show {
+    display: block !important;
+}
+
+#back-to-top-button:hover {
+    background-color: #e57300;
+}
+
+/* Ensure it's hidden only when sidebar is collapsed */
+#hospital-list-sidebar.collapsed~#back-to-top-button {
+    display: none !important;
+}
+
+.dragging {
+    cursor: grabbing;
+    opacity: 0.9;
+    z-index: 9999;
+}
+
+.grabbing {
+    cursor: grabbing;
+}
+
+/* Icon Styling */
+#back-to-top-button i {
+    margin-top: -1px;
+    position: relative;
+    top: 1px;
+    left: -1px;
+    padding-bottom: 0;
+}
+
+#minimize-sidebar {
+    background-color: #333;
+    color: #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    z-index: 12;
+}
+
+#minimize-sidebar:hover {
+    background-color: #555;
+    transform: scale(1.1);
+}
+
+.sidebar-header {
+    cursor: grab;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 0 10px;
+    gap: 10px;
+}
+
+.sidebar-header.grabbing {
+    cursor: grabbing;
+}
+
+#minimize-sidebar,
+#close-sidebar {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* margin: 5px; */
+    background-color: #333;
+    color: #fff;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    top: 10px;
+    right: 10px;
+    z-index: 11;
+    border: none;
+    margin: 0 10px;
+}
+
+/* Hover Effect for Buttons */
+#minimize-sidebar:hover,
+#close-sidebar:hover {
+    background-color: #555;
+    transform: scale(1.1);
+}
+
+/* outline is removed for accessibility */
+#close-sidebar,
+#minimize-sidebar,
+.theme-toggle-btn,
+.round-button {
+    outline: none;
+}
+
+#close-sidebar i {
+    font-size: 12px;
+}
+
+.logo-container {
+    position: relative;
+    height: 20px;
+}
+
+.sidebar-logo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: auto;
+    background-color: #333;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s ease, z-index 0.3s ease;
+    margin-right: 10px;
+    background-size: 70%;
+    margin-left: 1px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.sidebar-logo:hover {
+    box-shadow: 0 6px 12px whitesmoke;
+    cursor: pointer;
+}
+
+/* Logo visibility when back button is displayed */
+.sidebar-logo.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#back-button {
+    display: none;
+    position: absolute;
+    top: 8px;
+    left: 11.10px;
+    transform: translate(-50%, -50%);
+    z-index: 15;
+    cursor: pointer;
+}
+
+#back-button i {
+    font-size: 0.8rem;
+    position: relative;
+    top: 0;
+    padding-bottom: 0;
+    left: -0.1rem;
+}
+
+#back-button:hover {
+    background-color: #777;
+}
+
+/* General Styling for the Logo Element */
+.company-logo {
+    width: 30px;
+    height: 40px;
+    background-size: 70%;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 50%;
+    transform: rotate(-50deg);
+    transition: visibility 0.3s ease, transform 1s linear;
+    visibility: hidden;
+    background-image: url('./img/gtLogo.png');
+    position: relative;
+    margin-top: -25px;
+    z-index: 10;
+}
+
+.company-logo:hover {
+    transform: scale(1.1) rotate(-50deg);
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+/* rotation effect when globe rotating */
+/* .company-logo.rotate {
+    transform: rotate(360deg);
+    transition: transform 1s ease-out;
+} */
+
+/* Default styling for the error message container */
+.error-code {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* "Error Code:" text in white */
+.error-code-label {
+    color: white;
+}
+
+/* Error numbers (e.g., 404, 500) in red */
+.error-code-number {
+    color: red;
+    font-weight: bold;
+}
+
+.not-found-page-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    color: #333;
+    background: linear-gradient(145deg, #040028, #0a0909);
+}
+
+.not-found-heading {
+    font-size: 2.5rem;
+    color: #ff8502;
+    margin-bottom: 1rem;
+}
+
+.not-found-handling h3 {
+    font-size: 1.2rem;
+    color: white;
+}
+
+.error404-go-home-button {
+    background-color: #ff8502;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.error404-go-home-button:hover {
+    background-color: #e57300;
+    transform: scale(1.05);
+}
+
+.goliath-fact-container {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    text-align: left;
+}
+
+.goliath-fact-heading {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.goliath-fact {
+    font-size: 1rem;
+    color: #555;
+}
+
+.image-container {
+    margin-top: 1.5rem;
+}
+
+.goliath-image {
+    max-width: 60%;
+    /* max-width: 20%; */
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover Effect */
+.g-marker:hover {
+    transform: scale(1.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* Marker Resizing for Dynamic Zoom Levels */
+.g-marker[data-size="small"] {
+    width: 15px;
+    height: 15px;
+}
+
+.g-marker[data-size="medium"] {
+    width: 25px;
+    height: 25px;
+}
+
+.g-marker[data-size="large"] {
+    width: 35px;
+    height: 35px;
+}
+
+/* Spinner container */
+#loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(240, 240, 240, 0.9);
+    z-index: 1000;
+}
+
+/* Spinner element */
+.spinner {
+    border-top: 4px solid #ff8502;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite, color-change 3s ease-in-out infinite;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Keyframe for spinning animation */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Keyframe for color-change animation */
+@keyframes color-change {
+    0% {
+        border-top-color: #0f2744;
+    }
+
+    33% {
+        border-top-color: #ff8502;
+    }
+
+    66% {
+        border-top-color: #f5f5f5;
+    }
+
+    100% {
+        border-top-color: #0f2744;
+    }
+}
+
+/* max height and scrollbar to the suggestion list */
+.mapboxgl-ctrl-geocoder .mapboxgl-ctrl-geocoder--suggestions {
+    max-height: 200px !important;
+    overflow-y: auto !important;
+    scrollbar-width: thin !important;
+}
+
+.mapboxgl-ctrl-geocoder--suggestions::-webkit-scrollbar {
+    width: 8px !important;
+}
+
+.mapboxgl-ctrl-geocoder--suggestions::-webkit-scrollbar-thumb {
+    background-color: #888 !important;
+    border-radius: 4px !important;
+}
+
+.mapboxgl-ctrl-geocoder--suggestions::-webkit-scrollbar-thumb:hover {
+    background-color: #555 !important;
+}
+
+.mapboxgl-ctrl-geocoder--button {
+    transform: translateY(-4px);
+}
+
+.mapboxgl-ctrl-geocoder--input:focus {
+    outline: none;
+    caret-color: black;
+}
+
+/* Zoom Warning Icon */
+/* #zoom-warning {
+    display: none;
+    position: absolute;
+    top: 50px;
+    left: 20px;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+} */
+
+/* Icon for Zoom Warning */
+/* #zoom-warning-icon {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+} */
+
+/* Tooltip for Zoom Warning */
+/* #zoom-tooltip {
+    display: none;
+    position: absolute;
+    top: 30px;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+} */
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    #map {
+        height: 100vh;
+        width: 100vw;
+    }
+
+    #hospital-list-sidebar {
+        width: 40%;
+    }
+
+    #back-to-top-button {
+        width: 20px;
+        height: 20px;
+        left: 40%;
+    }
+
+    #back-to-top-button i {
+        font-size: 12px;
+        padding-left: 1px;
+    }
+
+    #back-to-top-button.show {
+        display: flex !important;
+    }
+
+    #back-to-top-button:hover {
+        background-color: #e57300;
+        transform: scale(1.1);
+    }
+
+    #hospital-list-sidebar.collapsed~#back-to-top-button {
+        display: none !important;
+    }
+
+    #hospital-list-sidebar h2 {
+        font-size: 1.2rem;
+    }
+
+    #hospital-list-sidebar p.count-display {
+        font-size: 0.9rem;
+    }
+
+    #hospital-list li {
+        font-size: 0.85rem;
+    }
+
+    #close-sidebar {
+        padding: 5px;
+        font-size: 0.85rem;
+    }
+
+    #container {
+        flex-direction: column;
+    }
+
+    #home-logo {
+        width: 60px;
+    }
+
+    #zoom-warning:hover #zoom-tooltip {
+        display: block;
+        transition: opacity 0.3s;
+    }
+
+    #zoom-tooltip {
+        display: none;
+        position: absolute;
+        top: -5px;
+        left: -255px;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 10px;
+    }
+
+    /* #zoom-warning {
+        top: 10px;
+        left: auto;
+        right: 10px;
+        display: block;
+    } */
+
+    #zoom-warning-icon {
+        width: 15px;
+        height: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    #map {
+        width: 100vw;
+        height: calc(100vh - 40px);
+    }
+
+    #hospital-list-sidebar {
+        width: 60%;
+        max-height: 70vh;
+    }
+
+    #back-to-top-button {
+        width: 20px;
+        height: 20px;
+    }
+
+    #back-to-top-button i {
+        font-size: 12px;
+        padding-left: 1px;
+    }
+
+    #back-to-top-button.show {
+        display: flex !important;
+    }
+
+    #back-to-top-button:hover {
+        background-color: #e57300;
+        transform: scale(1.1);
+    }
+    #hospital-list-sidebar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    #hospital-list-sidebar::-webkit-scrollbar-thumb {
+        background: #ff8502;
+        border-radius: 8px; 
+    }
+
+    #hospital-list-sidebar::-webkit-scrollbar-thumb:hover {
+        background: #e57300;
+    }
+
+    #hospital-list-sidebar::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+    }
+}
+
+@media (max-width: 425px) {
+    #map {
+        width: 100vw;
+        height: calc(100vh - 40px);
+    }
+
+    #home-logo {
+        width: 40px;
+    }
+}
+
+@media (max-width: 375px) {
+    #map {
+        height: calc(100vh - 50px);
+        width: 100%;
+    }
+
+    #home-logo {
+        width: 40px;
+    }
+}
+
+@media (max-width: 320px) {
+    #map {
+        height: calc(100vh - 50px);
+        width: 100%;
+    }
+}

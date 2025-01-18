@@ -428,6 +428,40 @@ button:hover {
     filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.8));
 }
 
+
+/* Modernize the "More Info" button to match sidebar buttons */
+.more-info-btn {
+    background-color: #333; /* Matches the sidebar button color */
+    color: #fff;
+    border-radius: 50%; /* Rounded like other buttons */
+    width: 20px; /* Same size as sidebar buttons */
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Similar shadow effect */
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    border: none;
+    margin: 0; /* Aligns visually with other buttons */
+}
+
+.more-info-btn:hover {
+    background-color: #555; /* Hover effect to match other buttons */
+    transform: scale(1.1); /* Slight scale on hover */
+}
+
+.more-info-btn:focus {
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5); /* Accessible focus indicator */
+}
+
+.more-info-btn i {
+    font-size: 12px; /* Matches icon size of other buttons */
+}
+
+
+
 .button-group {
     display: flex;
     align-items: center;
