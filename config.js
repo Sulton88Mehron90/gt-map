@@ -1,4 +1,1 @@
-
-// mapboxgl.accessToken = 'pk.eyJ1IjoibmFuYWpvbjY2IiwiYSI6ImNtMnJxMmZtNTAwYWcyc3B1bGtzdjR5NTkifQ.5aPfUP-w8DUsBpaqVgjG9A';
-
-export const MAPBOX_TOKEN = 'pk.eyJ1IjoibmFuYWpvbjY2IiwiYSI6ImNtMnJxMmZtNTAwYWcyc3B1bGtzdjR5NTkifQ.5aPfUP-w8DUsBpaqVgjG9A';
+export const MAPBOX_TOKEN = 'pk.eyJ1IjoibmFuYWpvbjY2IiwiYSI6ImNtbGRyd3JvbzFkZjAzZXB1eWI5M2Z3cXkifQ.PJwqnMImQQYKLK3EMBUwzA';
